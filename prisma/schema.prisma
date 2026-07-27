@@ -38,6 +38,7 @@ enum NotificationType {
   DOCUMENT_REJECTED
   DOCUMENT_REMOVED
   DOCUMENT_REPORTED
+  POST_REMOVED
   SYSTEM
 }
 
@@ -153,6 +154,12 @@ model User {
 
   reports           Report[]         @relation("reporter")
   reportedPosts     Report[]         @relation("reportedUser")
+
+  violationCount   Int       @default(0)
+  lastViolationAt  DateTime?
+
+  moderationActionsReceived ModerationAction[] @relation("moderationTarget")
+  moderationActionsTaken    ModerationAction[] @relation("moderationActor")
 
   @@map("users")
 }
@@ -588,4 +595,26 @@ model Report {
   createdAt    DateTime     @default(now())
 
   @@map("reports")
+}
+
+model ModerationAction {
+  id           String        @id @default(cuid())
+
+  adminId      String
+  admin        User          @relation("moderationActor", fields: [adminId], references: [id], onDelete: Cascade)
+
+  targetUserId String
+  targetUser   User          @relation("moderationTarget", fields: [targetUserId], references: [id], onDelete: Cascade)
+
+  reason       ReportReason?
+  note         String?
+
+  notifiedUser Boolean       @default(false)
+  flaggedUser  Boolean       @default(false)
+
+  postExcerpt  String?
+
+  createdAt    DateTime      @default(now())
+
+  @@map("moderation_actions")
 }
