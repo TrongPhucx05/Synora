@@ -1,4 +1,6 @@
 "use client";
+
+import { useEffect, useState } from "react";
 import {
   Users,
   Activity,
@@ -14,15 +16,9 @@ import { StatCard } from "@/components/admin/dashboard/StatCard";
 import { TopPosts } from "@/components/admin/dashboard/TopPosts";
 import { TopReportedUsers } from "@/components/admin/dashboard/TopReportedUsers";
 import { RecentActivity } from "@/components/admin/dashboard/RecentActivity";
+import type { DashboardStats, TopPostItem } from "@/lib/admin/dashboard/types";
 
-const STATS = {
-  totalUsers: 12480,
-  newToday: 34,
-  newWeek: 210,
-  newMonth: 890,
-  activeUsers: 3120,
-  totalPosts: 8640,
-  totalComments: 25300,
+const PLACEHOLDER = {
   totalGroups: 156,
   totalDocuments: 4210,
   pendingReports: 27,
@@ -30,6 +26,23 @@ const STATS = {
 };
 
 export default function AdminDashboardPage() {
+  const [stats, setStats] = useState<DashboardStats | null>(null);
+  const [topPosts, setTopPosts] = useState<TopPostItem[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch("/api/admin/dashboard")
+      .then((r) => r.json())
+      .then((data) => {
+        if (data?.stats) setStats(data.stats);
+        if (Array.isArray(data?.topPosts)) setTopPosts(data.topPosts);
+      })
+      .finally(() => setLoading(false));
+  }, []);
+
+  const fmt = (n: number | undefined) =>
+    loading || n === undefined ? "—" : n.toLocaleString("vi-VN");
+
   return (
     <>
       <PageHeader
@@ -37,59 +50,72 @@ export default function AdminDashboardPage() {
         description="Tổng quan tình trạng hệ thống Synora"
       />
 
-      <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-4 mb-6">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
         <StatCard
           icon={Users}
           label="Tổng người dùng"
-          value={STATS.totalUsers.toLocaleString("vi-VN")}
-          colorClass="bg-blue-50 text-blue-500"
+          value={fmt(stats?.totalUsers)}
+          colorClass="bg-blue-50 text-blue-600"
         />
         <StatCard
           icon={Activity}
-          label="Đang hoạt động"
-          value={STATS.activeUsers.toLocaleString("vi-VN")}
-          colorClass="bg-purple-50 text-purple-500"
+          label="Đang hoạt động (24h)"
+          value={fmt(stats?.activeUsers)}
+          colorClass="bg-emerald-50 text-emerald-600"
         />
         <StatCard
           icon={FileText}
           label="Tổng bài viết"
-          value={STATS.totalPosts.toLocaleString("vi-VN")}
-          colorClass="bg-orange-50 text-orange-500"
+          value={fmt(stats?.totalPosts)}
+          colorClass="bg-violet-50 text-violet-600"
         />
         <StatCard
           icon={MessageSquare}
           label="Tổng bình luận"
-          value={STATS.totalComments.toLocaleString("vi-VN")}
-          colorClass="bg-cyan-50 text-cyan-500"
+          value={fmt(stats?.totalComments)}
+          colorClass="bg-cyan-50 text-cyan-600"
         />
+      </div>
+
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
         <StatCard
           icon={UsersRound}
           label="Tổng nhóm"
-          value={STATS.totalGroups}
-          colorClass="bg-pink-50 text-pink-500"
+          value={PLACEHOLDER.totalGroups}
+          colorClass="bg-pink-50 text-pink-600"
+          comingSoon
         />
         <StatCard
           icon={BookOpen}
           label="Tổng tài liệu"
-          value={STATS.totalDocuments.toLocaleString("vi-VN")}
-          colorClass="bg-indigo-50 text-indigo-500"
+          value={PLACEHOLDER.totalDocuments.toLocaleString("vi-VN")}
+          colorClass="bg-indigo-50 text-indigo-600"
+          comingSoon
         />
         <StatCard
           icon={Flag}
           label="Báo cáo chưa xử lý"
-          value={STATS.pendingReports}
-          colorClass="bg-red-50 text-red-500"
+          value={PLACEHOLDER.pendingReports}
+          colorClass="bg-red-50 text-red-600"
+          comingSoon
         />
         <StatCard
           icon={Clock}
           label="Nội dung đang chờ duyệt"
-          value={STATS.pendingContent}
-          colorClass="bg-amber-50 text-amber-500"
+          value={PLACEHOLDER.pendingContent}
+          colorClass="bg-amber-50 text-amber-600"
+          comingSoon
         />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 mb-5">
-        <TopPosts />
+        <TopPosts
+          posts={topPosts}
+          loading={loading}
+          onPostDeleted={(id) =>
+            setTopPosts((prev) => prev.filter((p) => p.id !== id))
+          }
+        />
         <TopReportedUsers />
       </div>
 
