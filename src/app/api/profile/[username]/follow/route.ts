@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { isBlockedEitherWay } from "@/lib/block/server";
 
 export async function POST(
   _req: NextRequest,
@@ -23,6 +24,14 @@ export async function POST(
     );
   if (target.id === session.user.id)
     return NextResponse.json({ error: "Không thể tự follow" }, { status: 400 });
+
+  const blocked = await isBlockedEitherWay(session.user.id, target.id);
+  if (blocked) {
+    return NextResponse.json(
+      { error: "Không thể gửi lời mời kết bạn cho người dùng này" },
+      { status: 403 },
+    );
+  }
 
   const senderId = session.user.id;
   const receiverId = target.id;
