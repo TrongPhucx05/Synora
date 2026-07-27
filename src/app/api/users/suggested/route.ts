@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { getFriendRequestEligibility } from "@/lib/chat/friends";
 
 export async function GET() {
   try {
@@ -58,23 +59,33 @@ export async function GET() {
       },
     });
 
-    const result = users
-      .map((u) => ({
-        id: u.id,
-        username: u.username,
-        displayName: u.profile?.displayName ?? u.username,
-        avatarUrl: u.profile?.avatarUrl ?? null,
-        role:
-          [u.profile?.major, u.profile?.school].filter(Boolean).join(" · ") ||
-          "",
-        followerCount: u._count.followers,
-        friendStatus: "none" as const,
-        incomingRequestId: pendingReceivedMap[u.id] ?? null,
-      }))
+    const result = await Promise.all(
+      users.map(async (u) => {
+        const eligibility = session?.user?.id
+          ? await getFriendRequestEligibility(session.user.id, u.id)
+          : { canSendFriendRequest: true, friendRequestBlockReason: null };
+        return {
+          id: u.id,
+          username: u.username,
+          displayName: u.profile?.displayName ?? u.username,
+          avatarUrl: u.profile?.avatarUrl ?? null,
+          role:
+            [u.profile?.major, u.profile?.school].filter(Boolean).join(" · ") ||
+            "",
+          followerCount: u._count.followers,
+          friendStatus: "none" as const,
+          incomingRequestId: pendingReceivedMap[u.id] ?? null,
+          canSendFriendRequest: eligibility.canSendFriendRequest,
+          friendRequestBlockReason: eligibility.friendRequestBlockReason,
+        };
+      }),
+    );
+
+    const sorted = result
       .sort((a, b) => b.followerCount - a.followerCount)
       .slice(0, 5);
 
-    return NextResponse.json(result);
+    return NextResponse.json(sorted);
   } catch (error) {
     console.error("[/api/users/suggested]", error);
     return NextResponse.json(

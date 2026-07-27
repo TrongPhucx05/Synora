@@ -3,13 +3,21 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
-import { Loader2, UserPlus, Clock, UserCheck, MessageCircle, ChevronDown } from "lucide-react";
+import {
+  Loader2,
+  UserPlus,
+  Clock,
+  UserCheck,
+  MessageCircle,
+  ChevronDown,
+} from "lucide-react";
 import { clsx } from "clsx";
 import { createPortal } from "react-dom";
 import { useRef } from "react";
 import Avatar from "@/components/ui/Avatar";
 import AuthGuardModal from "@/components/ui/AuthGuardModal";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
+import { useToast } from "@/components/ui/Toast";
 
 interface SuggestedUser {
   id: string;
@@ -20,6 +28,7 @@ interface SuggestedUser {
   followerCount: number;
   friendStatus?: "none" | "pending" | "friends";
   incomingRequestId?: string | null;
+  canSendFriendRequest?: boolean;
 }
 
 function formatCount(count: number): string {
@@ -64,6 +73,7 @@ function UserRow({
   const [showAuthModal, setShowAuthModal] = useState(false);
   const replyBtnRef = useRef<HTMLButtonElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
+  const { showToast } = useToast();
 
   useEffect(() => {
     if (!showReplyMenu) return;
@@ -107,6 +117,10 @@ function UserRow({
         method: "POST",
       });
       const data = await res.json();
+      if (!res.ok) {
+        showToast(data.error ?? "Không thể gửi lời mời kết bạn", "error");
+        return;
+      }
       const next = data.status ?? "none";
       if (next === "pending") {
         onRemove(user.id);
@@ -193,7 +207,9 @@ function UserRow({
               onClick={(e) => e.stopPropagation()}
               className={clsx(
                 "flex items-center gap-1 text-[10px] font-semibold text-primary border border-primary/30 hover:bg-primary hover:text-white transition-all disabled:opacity-70",
-                variant === "feed" ? "px-2 py-1 rounded-full" : "px-2 py-1 rounded-md",
+                variant === "feed"
+                  ? "px-2 py-1 rounded-full"
+                  : "px-2 py-1 rounded-md",
               )}
             >
               <MessageCircle size={10} />
@@ -207,7 +223,9 @@ function UserRow({
               disabled={loading}
               className={clsx(
                 "flex items-center gap-1 text-[10px] font-semibold bg-surface-100 text-text-secondary border border-surface-200 hover:bg-red-50 hover:text-red-500 hover:border-red-200 transition-all disabled:opacity-70",
-                variant === "feed" ? "px-2 py-1 rounded-full" : "px-2 py-1 rounded-md",
+                variant === "feed"
+                  ? "px-2 py-1 rounded-full"
+                  : "px-2 py-1 rounded-md",
               )}
             >
               <UserCheck size={10} />
@@ -220,7 +238,9 @@ function UserRow({
             disabled={loading}
             className={clsx(
               "flex items-center gap-1 text-[10px] font-semibold bg-primary text-white hover:bg-primary-700 transition-colors disabled:opacity-70",
-              variant === "feed" ? "px-2.5 py-1.5 rounded-full" : "px-2 py-1 rounded-md",
+              variant === "feed"
+                ? "px-2.5 py-1.5 rounded-full"
+                : "px-2 py-1 rounded-md",
             )}
           >
             Trả lời{" "}
@@ -238,12 +258,14 @@ function UserRow({
             disabled={loading}
             className={clsx(
               "flex items-center gap-1 text-[10px] font-semibold bg-surface-50 text-text-muted border border-surface-200 hover:bg-red-50 hover:text-red-500 hover:border-red-200 transition-all disabled:opacity-70",
-              variant === "feed" ? "px-2.5 py-1.5 rounded-full" : "px-2 py-1 rounded-md",
+              variant === "feed"
+                ? "px-2.5 py-1.5 rounded-full"
+                : "px-2 py-1 rounded-md",
             )}
           >
             <Clock size={10} /> Đã gửi
           </button>
-        ) : (
+        ) : user.canSendFriendRequest === false ? null : (
           <button
             onClick={handleFriendAction}
             disabled={loading}

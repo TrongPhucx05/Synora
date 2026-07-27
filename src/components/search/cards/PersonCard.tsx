@@ -170,13 +170,15 @@ export function PersonCard({ r }: { r: SearchResult }) {
         >
           {status === "friends" ? (
             <div className="flex items-center gap-1.5">
-              <Link
-                href={`/chat?with=${username}`}
-                onClick={(e) => e.stopPropagation()}
-                className="flex items-center gap-1.5 text-xs font-semibold text-primary border border-primary/30 px-3 py-1.5 rounded-lg hover:bg-primary hover:text-white transition-all"
-              >
-                <MessageCircle size={12} /> Nhắn tin
-              </Link>
+              {r.canMessage !== false && (
+                <Link
+                  href={`/chat?with=${username}`}
+                  onClick={(e) => e.stopPropagation()}
+                  className="flex items-center gap-1.5 text-xs font-semibold text-primary border border-primary/30 px-3 py-1.5 rounded-lg hover:bg-primary hover:text-white transition-all"
+                >
+                  <MessageCircle size={12} /> Nhắn tin
+                </Link>
+              )}
               <button
                 onClick={(e) => {
                   e.preventDefault();
@@ -213,7 +215,7 @@ export function PersonCard({ r }: { r: SearchResult }) {
             >
               <Clock size={12} /> Đã gửi
             </button>
-          ) : (
+          ) : r.canSendFriendRequest === false ? null : (
             <button
               onClick={handleFriendAction}
               disabled={loading}

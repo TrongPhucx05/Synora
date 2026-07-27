@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { getBlockedIds } from "@/lib/block/server";
+import { getFriendRequestEligibility } from "@/lib/chat/friends";
 
 export async function GET(req: NextRequest) {
   const session = await getServerSession(authOptions);
@@ -239,6 +240,9 @@ export async function GET(req: NextRequest) {
     !isHashtag && (tab === "all" || tab === "documents")
       ? prisma.document.findMany({
           where: {
+            ...(blockedIds.length > 0
+              ? { uploaderId: { notIn: blockedIds } }
+              : {}),
             OR: [
               { title: { contains: q, mode: "insensitive" } },
               { description: { contains: q, mode: "insensitive" } },
@@ -299,31 +303,66 @@ export async function GET(req: NextRequest) {
       select: { id: true, senderId: true, receiverId: true, status: true },
     });
 
-    peopleWithStatus = (people as any[]).map((u: any) => {
-      const req = friendRequests.find(
-        (r) =>
-          (r.senderId === session.user.id && r.receiverId === u.id) ||
-          (r.senderId === u.id && r.receiverId === session.user.id),
-      );
-      let friendStatus: "none" | "pending" | "friends" = "none";
-      let incomingRequestId: string | null = null;
+    peopleWithStatus = await Promise.all(
+      (people as any[]).map(async (u: any) => {
+        const req = friendRequests.find(
+          (r) =>
+            (r.senderId === session.user.id && r.receiverId === u.id) ||
+            (r.senderId === u.id && r.receiverId === session.user.id),
+        );
+        let friendStatus: "none" | "pending" | "friends" = "none";
+        let incomingRequestId: string | null = null;
 
-      if (req?.status === "ACCEPTED") {
-        friendStatus = "friends";
-      } else if (
-        req?.status === "PENDING" &&
-        req.senderId === session.user.id
-      ) {
-        friendStatus = "pending";
-      } else if (
-        req?.status === "PENDING" &&
-        req.receiverId === session.user.id
-      ) {
-        incomingRequestId = req.id;
-      }
+        if (req?.status === "ACCEPTED") {
+          friendStatus = "friends";
+        } else if (
+          req?.status === "PENDING" &&
+          req.senderId === session.user.id
+        ) {
+          friendStatus = "pending";
+        } else if (
+          req?.status === "PENDING" &&
+          req.receiverId === session.user.id
+        ) {
+          incomingRequestId = req.id;
+        }
 
-      return { ...u, friendStatus, incomingRequestId };
-    });
+        let canSendFriendRequest = false;
+        let friendRequestBlockReason: "NOBODY" | "NO_MUTUAL_FRIEND" | null =
+          null;
+        if (friendStatus === "none") {
+          const eligibility = await getFriendRequestEligibility(
+            session.user.id,
+            u.id,
+          );
+          canSendFriendRequest = eligibility.canSendFriendRequest;
+          friendRequestBlockReason = eligibility.friendRequestBlockReason;
+        }
+
+        let canMessage = true;
+        if (friendStatus !== "friends") {
+          const targetMessageFriendsOnly =
+            u.profile?.messageFromFriendsOnly ?? false;
+          if (targetMessageFriendsOnly) {
+            const dmKey = [session.user.id, u.id].sort().join("_");
+            const existingConv = await prisma.conversation.findUnique({
+              where: { dmKey },
+              select: { id: true },
+            });
+            canMessage = !!existingConv;
+          }
+        }
+
+        return {
+          ...u,
+          friendStatus,
+          incomingRequestId,
+          canSendFriendRequest,
+          friendRequestBlockReason,
+          canMessage,
+        };
+      }),
+    );
   }
 
   return NextResponse.json({

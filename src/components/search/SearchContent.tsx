@@ -58,6 +58,8 @@ function mapPerson(u: any, sessionUsername?: string | null): SearchResult {
     friendStatus: u.friendStatus ?? "none",
     incomingRequestId: u.incomingRequestId ?? null,
     sessionUsername: sessionUsername ?? null,
+    canSendFriendRequest: u.canSendFriendRequest ?? true,
+    canMessage: u.canMessage ?? true,
   };
 }
 
@@ -354,7 +356,9 @@ export function SearchContent() {
         setRawPosts(data.posts ?? []);
         setResults([
           ...(data.documents ?? []).map(mapDocument),
-          ...(data.people ?? []).map((p: any) => mapPerson(p, session?.user?.username)),
+          ...(data.people ?? []).map((p: any) =>
+            mapPerson(p, session?.user?.username),
+          ),
           ...(data.groups ?? []).map(mapGroup),
           ...(data.topics ?? []).map(mapTopic),
         ]);

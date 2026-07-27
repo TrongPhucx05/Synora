@@ -21,6 +21,8 @@ export interface SearchResult {
   friendStatus?: FriendStatus;
   username?: string;
   sessionUsername?: string | null;
+  canSendFriendRequest?: boolean;
+  canMessage?: boolean;
 }
 
 export interface FilterGroup {
