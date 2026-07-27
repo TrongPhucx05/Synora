@@ -16,6 +16,7 @@ import { clsx } from "clsx";
 import { EditProfileModal } from "@/components/profile/EditProfileModal";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 import AuthGuardModal from "@/components/ui/AuthGuardModal";
+import { useToast } from "@/components/ui/Toast";
 
 type FriendStatus = "none" | "pending" | "friends";
 
@@ -58,6 +59,9 @@ export function ProfileHeader({
   const [showEditModal, setShowEditModal] = useState(false);
   const [showUnfriendConfirm, setShowUnfriendConfirm] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
+  const { showToast } = useToast();
+  const canSendFriendRequest = profileData?.canSendFriendRequest ?? true;
+  const canMessage = profileData?.canMessage ?? true;
 
   const handleFollowToggle = async () => {
     if (isAdmin) return;
@@ -71,6 +75,10 @@ export function ProfileHeader({
         method: "POST",
       });
       const data = await res.json();
+      if (!res.ok) {
+        showToast(data.error ?? "Không thể gửi lời mời kết bạn", "error");
+        return;
+      }
       setStatus(data.status ?? "none");
       onFriendStatusChanged?.();
     } finally {
@@ -181,25 +189,27 @@ export function ProfileHeader({
         ) : (
           !isAdmin && (
             <>
-              <button
-                onClick={() => {
-                  if (isAdmin) return;
-                  if (!sessionUsername) {
-                    setShowAuthModal(true);
-                    return;
-                  }
-                  router.push(`/chat?with=${username}`);
-                }}
-                disabled={isAdmin}
-                className={clsx(
-                  "flex items-center gap-1.5 border border-surface-200 bg-white text-text-secondary text-xs font-medium px-3 py-1.5 rounded-lg transition-colors",
-                  isAdmin
-                    ? "opacity-40 cursor-not-allowed"
-                    : "hover:bg-surface-50",
-                )}
-              >
-                <MessageCircle size={13} /> Nhắn tin
-              </button>
+              {canMessage && (
+                <button
+                  onClick={() => {
+                    if (isAdmin) return;
+                    if (!sessionUsername) {
+                      setShowAuthModal(true);
+                      return;
+                    }
+                    router.push(`/chat?with=${username}`);
+                  }}
+                  disabled={isAdmin}
+                  className={clsx(
+                    "flex items-center gap-1.5 border border-surface-200 bg-white text-text-secondary text-xs font-medium px-3 py-1.5 rounded-lg transition-colors",
+                    isAdmin
+                      ? "opacity-40 cursor-not-allowed"
+                      : "hover:bg-surface-50",
+                  )}
+                >
+                  <MessageCircle size={13} /> Nhắn tin
+                </button>
+              )}
 
               {incomingRequestId && status !== "friends" ? (
                 <div className="relative">
@@ -240,39 +250,41 @@ export function ProfileHeader({
                       onCancel={() => setShowUnfriendConfirm(false)}
                     />
                   )}
-                  <button
-                    onClick={
-                      isAdmin
-                        ? undefined
-                        : status === "friends"
-                          ? () => setShowUnfriendConfirm(true)
-                          : handleFollowToggle
-                    }
-                    disabled={followLoading || isAdmin}
-                    className={clsx(
-                      "flex items-center gap-1.5 text-xs font-semibold px-4 py-1.5 rounded-lg transition-colors disabled:opacity-70",
-                      isAdmin && "opacity-40 cursor-not-allowed",
-                      status === "friends"
-                        ? "bg-surface-100 text-text-secondary border border-surface-200 hover:bg-red-50 hover:text-red-500 hover:border-red-200"
-                        : status === "pending"
-                          ? "bg-surface-50 text-text-muted border border-surface-200 hover:bg-red-50 hover:text-red-500 hover:border-red-200"
-                          : "bg-primary text-white hover:bg-primary-700",
-                    )}
-                  >
-                    {status === "friends" ? (
-                      <>
-                        <UserCheck size={13} /> Bạn bè
-                      </>
-                    ) : status === "pending" ? (
-                      <>
-                        <Clock size={13} /> Đã gửi yêu cầu
-                      </>
-                    ) : (
-                      <>
-                        <UserPlus size={13} /> Kết bạn
-                      </>
-                    )}
-                  </button>
+                  {status === "none" && !canSendFriendRequest ? null : (
+                    <button
+                      onClick={
+                        isAdmin
+                          ? undefined
+                          : status === "friends"
+                            ? () => setShowUnfriendConfirm(true)
+                            : handleFollowToggle
+                      }
+                      disabled={followLoading || isAdmin}
+                      className={clsx(
+                        "flex items-center gap-1.5 text-xs font-semibold px-4 py-1.5 rounded-lg transition-colors disabled:opacity-70",
+                        isAdmin && "opacity-40 cursor-not-allowed",
+                        status === "friends"
+                          ? "bg-surface-100 text-text-secondary border border-surface-200 hover:bg-red-50 hover:text-red-500 hover:border-red-200"
+                          : status === "pending"
+                            ? "bg-surface-50 text-text-muted border border-surface-200 hover:bg-red-50 hover:text-red-500 hover:border-red-200"
+                            : "bg-primary text-white hover:bg-primary-700",
+                      )}
+                    >
+                      {status === "friends" ? (
+                        <>
+                          <UserCheck size={13} /> Bạn bè
+                        </>
+                      ) : status === "pending" ? (
+                        <>
+                          <Clock size={13} /> Đã gửi yêu cầu
+                        </>
+                      ) : (
+                        <>
+                          <UserPlus size={13} /> Kết bạn
+                        </>
+                      )}
+                    </button>
+                  )}
                 </>
               )}
             </>

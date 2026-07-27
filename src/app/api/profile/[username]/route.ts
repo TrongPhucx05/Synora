@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { isBlockedEitherWay } from "@/lib/block/server";
+import { getFriendRequestEligibility } from "@/lib/chat/friends";
 
 export async function GET(
   req: NextRequest,
@@ -120,6 +121,39 @@ export async function GET(
       }
     }
 
+    let canSendFriendRequest = false;
+    let friendRequestBlockReason: "NOBODY" | "NO_MUTUAL_FRIEND" | null = null;
+    if (
+      session?.user?.id &&
+      session.user.id !== user.id &&
+      friendStatus === "none"
+    ) {
+      const eligibility = await getFriendRequestEligibility(
+        session.user.id,
+        user.id,
+      );
+      canSendFriendRequest = eligibility.canSendFriendRequest;
+      friendRequestBlockReason = eligibility.friendRequestBlockReason;
+    }
+
+    let canMessage = true;
+    if (
+      session?.user?.id &&
+      session.user.id !== user.id &&
+      friendStatus !== "friends"
+    ) {
+      const targetMessageFriendsOnly =
+        user.profile?.messageFromFriendsOnly ?? false;
+      if (targetMessageFriendsOnly) {
+        const dmKey = [session.user.id, user.id].sort().join("_");
+        const existingConv = await prisma.conversation.findUnique({
+          where: { dmKey },
+          select: { lastMessageAt: true },
+        });
+        canMessage = !!existingConv?.lastMessageAt;
+      }
+    }
+
     const postCategories = await prisma.post.findMany({
       where: { authorId: user.id, categoryId: { not: null } },
       select: { category: { select: { name: true } } },
@@ -140,6 +174,9 @@ export async function GET(
       isFollowing,
       friendStatus,
       incomingRequestId,
+      canSendFriendRequest,
+      friendRequestBlockReason,
+      canMessage,
       subjects,
       stats: {
         followers: followerCount,
