@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Ban, MoreVertical } from "lucide-react";
 import { SettingsCard } from "./SettingsCard";
 import {
@@ -31,6 +31,7 @@ export function PrivacySection() {
   const [loadingBlocked, setLoadingBlocked] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
   const [menuOpenId, setMenuOpenId] = useState<string | null>(null);
+  const buttonRefs = useRef<Record<string, HTMLButtonElement | null>>({});
 
   useEffect(() => {
     fetchBlockedUsers()
@@ -171,10 +172,7 @@ export function PrivacySection() {
               {preview.map((u) => {
                 const menuOpen = menuOpenId === u.id;
                 return (
-                  <div
-                    key={u.id}
-                    className="flex items-center gap-3 py-2 relative"
-                  >
+                  <div key={u.id} className="flex items-center gap-3 py-2">
                     <Avatar
                       src={u.avatarUrl ?? undefined}
                       initials={u.name.slice(0, 2).toUpperCase()}
@@ -189,15 +187,17 @@ export function PrivacySection() {
                         @{u.username}
                       </p>
                     </div>
-                    <div className="relative shrink-0">
+                    <div className="shrink-0">
                       <button
                         onClick={() => setMenuOpenId(menuOpen ? null : u.id)}
+                        ref={(el) => { buttonRefs.current[u.id] = el; }}
                         className="p-1.5 rounded-full hover:bg-surface-100 text-text-muted transition-colors"
                       >
                         <MoreVertical size={15} />
                       </button>
                       {menuOpen && (
                         <BlockedItemMenu
+                          anchorRef={{ current: buttonRefs.current[u.id] }}
                           user={u}
                           onClose={() => setMenuOpenId(null)}
                           onUnblock={() => {

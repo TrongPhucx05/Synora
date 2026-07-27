@@ -1,5 +1,6 @@
 "use client";
-import { useState, useRef } from "react";
+import { useState, useRef, useLayoutEffect, useEffect } from "react";
+import { createPortal } from "react-dom";
 import Link from "next/link";
 import { X, Search, MoreVertical, User, Ban, Flag } from "lucide-react";
 import { useOutsideClickRefs } from "@/lib/chat/hooks";
@@ -13,24 +14,57 @@ export type BlockedUser = {
   blockedAt: string;
 };
 
+function useMenuPosition(anchorRef: React.RefObject<HTMLElement | null>) {
+  const menuRef = useRef<HTMLDivElement | null>(null);
+  const [pos, setPos] = useState<{ top: number; left: number } | null>(null);
+
+  useLayoutEffect(() => {
+    const anchor = anchorRef.current;
+    const menu = menuRef.current;
+    if (!anchor || !menu) return;
+
+    const anchorRect = anchor.getBoundingClientRect();
+    const menuRect = menu.getBoundingClientRect();
+
+    let top = anchorRect.bottom + 4;
+    let left = anchorRect.right - menuRect.width;
+
+    if (top + menuRect.height > window.innerHeight) {
+      top = anchorRect.top - menuRect.height - 4;
+    }
+    if (left < 4) left = 4;
+
+    setPos({ top, left });
+  }, [anchorRef]);
+
+  return { menuRef, pos };
+}
+
 export function BlockedItemMenu({
+  anchorRef,
   user,
   onClose,
   onUnblock,
   onReport,
 }: {
+  anchorRef: React.RefObject<HTMLElement | null>;
   user: BlockedUser;
   onClose: () => void;
   onUnblock: () => void;
   onReport: () => void;
 }) {
-  const ref = useRef<HTMLDivElement>(null);
-  useOutsideClickRefs([ref], onClose);
+  const { menuRef, pos } = useMenuPosition(anchorRef);
+  useOutsideClickRefs([menuRef, anchorRef], onClose);
 
-  return (
+  return createPortal(
     <div
-      ref={ref}
-      className="absolute right-0 top-full mt-1 z-20 w-44 bg-white rounded-xl shadow-xl border border-surface-100 py-1 overflow-hidden"
+      ref={menuRef}
+      style={{
+        position: "fixed",
+        top: pos?.top ?? -9999,
+        left: pos?.left ?? -9999,
+      }}
+      className="z-[110] w-44 bg-white rounded-xl shadow-lg border border-surface-100 py-1 overflow-hidden"
     >
       <Link
         href={`/profile/${user.username}`}
@@ -55,7 +89,8 @@ export function BlockedItemMenu({
         <Flag size={13} className="shrink-0" />
         Báo cáo
       </button>
-    </div>
+    </div>,
+    document.body,
   );
 }
 
@@ -72,6 +107,7 @@ export function BlockedUsersModal({
 }) {
   const [query, setQuery] = useState("");
   const [menuOpenId, setMenuOpenId] = useState<string | null>(null);
+  const buttonRefs = useRef<Record<string, HTMLButtonElement | null>>({});
 
   const sorted = [...users].sort(
     (a, b) => new Date(b.blockedAt).getTime() - new Date(a.blockedAt).getTime(),
@@ -132,7 +168,7 @@ export function BlockedUsersModal({
               return (
                 <div
                   key={u.id}
-                  className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-surface-50 transition-colors relative"
+                  className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-surface-50 transition-colors"
                 >
                   <Avatar
                     src={u.avatarUrl ?? undefined}
@@ -148,15 +184,19 @@ export function BlockedUsersModal({
                       @{u.username}
                     </p>
                   </div>
-                  <div className="relative shrink-0">
+                  <div className="shrink-0">
                     <button
                       onClick={() => setMenuOpenId(menuOpen ? null : u.id)}
+                      ref={(el) => {
+                        buttonRefs.current[u.id] = el;
+                      }}
                       className="p-1.5 rounded-full hover:bg-surface-200 text-text-muted transition-colors"
                     >
                       <MoreVertical size={15} />
                     </button>
                     {menuOpen && (
                       <BlockedItemMenu
+                        anchorRef={{ current: buttonRefs.current[u.id] }}
                         user={u}
                         onClose={() => setMenuOpenId(null)}
                         onUnblock={() => {
