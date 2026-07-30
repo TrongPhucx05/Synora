@@ -25,6 +25,19 @@ enum DocumentType {
   OTHER
 }
 
+enum AccountStatus {
+  ACTIVE
+  SUSPENDED
+  BANNED
+}
+
+enum ModerationActionType {
+  POST_REMOVED
+  ACCOUNT_SUSPENDED
+  ACCOUNT_BANNED
+  ACCOUNT_UNLOCKED
+}
+
 enum NotificationType {
   LIKE
   COMMENT
@@ -39,6 +52,9 @@ enum NotificationType {
   DOCUMENT_REMOVED
   DOCUMENT_REPORTED
   POST_REMOVED
+  ACCOUNT_SUSPENDED
+  ACCOUNT_BANNED
+  ACCOUNT_UNLOCKED
   SYSTEM
 }
 
@@ -78,6 +94,11 @@ enum FriendRequestPermission {
   EVERYONE
   FRIENDS_OF_FRIENDS
   NOBODY
+}
+
+enum SupportRequestStatus {
+  PENDING
+  RESOLVED
 }
 
 model FriendRequest {
@@ -155,11 +176,17 @@ model User {
   reports           Report[]         @relation("reporter")
   reportedPosts     Report[]         @relation("reportedUser")
 
+  status            AccountStatus @default(ACTIVE)
+  suspendedUntil    DateTime?
+  suspensionReason  ReportReason?
+  suspensionNote    String?
   violationCount   Int       @default(0)
   lastViolationAt  DateTime?
 
   moderationActionsReceived ModerationAction[] @relation("moderationTarget")
   moderationActionsTaken    ModerationAction[] @relation("moderationActor")
+
+  supportRequests SupportRequest[]
 
   @@map("users")
 }
@@ -207,6 +234,21 @@ model Account {
 
   @@unique([provider, providerAccountId])
   @@map("accounts")
+}
+
+model SupportRequest {
+  id         String               @id @default(cuid())
+  userId     String
+  user       User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  subject    String
+  message    String
+  status     SupportRequestStatus @default(PENDING)
+
+  createdAt  DateTime             @default(now())
+  resolvedAt DateTime?
+
+  @@map("support_requests")
 }
 
 model Session {
@@ -598,23 +640,25 @@ model Report {
 }
 
 model ModerationAction {
-  id           String        @id @default(cuid())
+  id             String               @id @default(cuid())
+  type           ModerationActionType @default(POST_REMOVED)
 
-  adminId      String
-  admin        User          @relation("moderationActor", fields: [adminId], references: [id], onDelete: Cascade)
+  adminId        String
+  admin          User                 @relation("moderationActor", fields: [adminId], references: [id], onDelete: Cascade)
 
-  targetUserId String
-  targetUser   User          @relation("moderationTarget", fields: [targetUserId], references: [id], onDelete: Cascade)
+  targetUserId   String
+  targetUser     User                 @relation("moderationTarget", fields: [targetUserId], references: [id], onDelete: Cascade)
 
-  reason       ReportReason?
-  note         String?
+  reason         ReportReason?
+  note           String?
 
-  notifiedUser Boolean       @default(false)
-  flaggedUser  Boolean       @default(false)
+  notifiedUser   Boolean              @default(false)
+  flaggedUser    Boolean              @default(false)
 
-  postExcerpt  String?
+  postExcerpt    String?
+  suspendedUntil DateTime?
 
-  createdAt    DateTime      @default(now())
+  createdAt      DateTime             @default(now())
 
   @@map("moderation_actions")
 }
