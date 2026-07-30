@@ -71,6 +71,35 @@ export const authOptions: NextAuthOptions = {
         if (session.image) token.picture = session.image;
         if (session.email) token.email = session.email;
       }
+
+      if (token.id) {
+        const dbUser = await prisma.user.findUnique({
+          where: { id: token.id as string },
+          select: { status: true, suspendedUntil: true },
+        });
+
+        if (dbUser) {
+          if (
+            dbUser.status === "SUSPENDED" &&
+            dbUser.suspendedUntil &&
+            dbUser.suspendedUntil.getTime() <= Date.now()
+          ) {
+            await prisma.user.update({
+              where: { id: token.id as string },
+              data: {
+                status: "ACTIVE",
+                suspendedUntil: null,
+                suspensionReason: null,
+                suspensionNote: null,
+              },
+            });
+            token.status = "ACTIVE";
+          } else {
+            token.status = dbUser.status;
+          }
+        }
+      }
+
       return token;
     },
     async session({ session, token }) {
@@ -78,6 +107,7 @@ export const authOptions: NextAuthOptions = {
         session.user.id = token.id as string;
         session.user.username = token.username as string;
         session.user.role = token.role as string;
+        session.user.status = token.status as string;
         if (token.name) session.user.name = token.name as string;
         if (token.picture) session.user.image = token.picture as string;
         if (token.email) session.user.email = token.email as string;
