@@ -2,7 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { getBlockedIds } from "@/lib/block/server";
+import { getBlockedIds, isBlockedEitherWay } from "@/lib/block/server";
+import { assertActiveSession } from "@/lib/auth/assert-active";
 
 export async function GET(
   req: NextRequest,
@@ -67,10 +68,8 @@ export async function POST(
   { params }: { params: Promise<{ id: string }> },
 ) {
   const { id } = await params;
-  const session = await getServerSession(authOptions);
-  if (!session?.user?.id) {
-    return NextResponse.json({ error: "Chưa đăng nhập" }, { status: 401 });
-  }
+  const { session, response } = await assertActiveSession();
+  if (response) return response;
 
   try {
     const {
@@ -107,7 +106,7 @@ export async function POST(
       data: {
         content: content ?? "",
         postId: id,
-        authorId: session.user.id,
+        authorId: session!.user.id,
         parentId: parentId ?? null,
         imageUrl: imageUrl ?? null,
         videoUrl: videoUrl ?? null,
@@ -129,12 +128,12 @@ export async function POST(
 
     const recipientIds = new Set<string>();
 
-    if (post.authorId !== session.user.id) {
+    if (post.authorId !== session!.user.id) {
       recipientIds.add(post.authorId);
       await prisma.notification.create({
         data: {
           recipientId: post.authorId,
-          actorId: session.user.id,
+          actorId: session!.user.id,
           type: "COMMENT",
           postId: id,
           commentId: comment.id,
@@ -149,14 +148,14 @@ export async function POST(
       });
       if (
         parent &&
-        parent.authorId !== session.user.id &&
+        parent.authorId !== session!.user.id &&
         !recipientIds.has(parent.authorId)
       ) {
         recipientIds.add(parent.authorId);
         await prisma.notification.create({
           data: {
             recipientId: parent.authorId,
-            actorId: session.user.id,
+            actorId: session!.user.id,
             type: "REPLY",
             postId: id,
             commentId: comment.id,
@@ -178,14 +177,14 @@ export async function POST(
       });
 
       for (const u of mentionedUsers) {
-        if (u.id === session.user.id || recipientIds.has(u.id)) continue;
-        const blocked = await isBlockedEitherWay(session.user.id, u.id);
+        if (u.id === session!.user.id || recipientIds.has(u.id)) continue;
+        const blocked = await isBlockedEitherWay(session!.user.id, u.id);
         if (blocked) continue;
         recipientIds.add(u.id);
         await prisma.notification.create({
           data: {
             recipientId: u.id,
-            actorId: session.user.id,
+            actorId: session!.user.id,
             type: "MENTION",
             postId: id,
             commentId: comment.id,

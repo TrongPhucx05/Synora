@@ -124,11 +124,10 @@ export async function GET(req: NextRequest, { params }: Params) {
 }
 
 export async function POST(req: NextRequest, { params }: Params) {
-  const session = await getServerSession(authOptions);
-  if (!session?.user?.id)
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const { session, response } = await assertActiveSession();
+  if (response) return response;
 
-  const userId = session.user.id;
+  const userId = session!.user.id;
   const { id: conversationId } = await params;
 
   const membership = await prisma.conversationMember.findUnique({
@@ -136,12 +135,6 @@ export async function POST(req: NextRequest, { params }: Params) {
   });
   if (!membership)
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
-  if (!membership.isAccepted) {
-    await prisma.conversationMember.update({
-      where: { conversationId_userId: { conversationId, userId } },
-      data: { isAccepted: true, lastReadAt: new Date(), markedUnreadAt: null },
-    });
-  }
   if (!membership.isAccepted) {
     await prisma.conversationMember.update({
       where: { conversationId_userId: { conversationId, userId } },

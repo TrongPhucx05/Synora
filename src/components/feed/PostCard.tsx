@@ -19,6 +19,7 @@ import AuthGuardModal from "@/components/ui/AuthGuardModal";
 import { notifyTagsChanged } from "@/lib/feed/utils";
 import { blockUser } from "@/lib/block/utils";
 import type { Post, ModalState } from "@/lib/feed/types";
+import { handleLockedResponse } from "@/lib/feed/lockRedirect";
 
 import RichContent from "./PostCard/RichContent";
 import ImageGrid from "./PostCard/ImageGrid";
@@ -94,6 +95,7 @@ export default function PostCard({
     setLikeCount((c) => (nextLiked ? c + 1 : c - 1));
     const res = await fetch(`/api/posts/${post.id}/like`, { method: "POST" });
     if (!res.ok) {
+      if (await handleLockedResponse(res)) return;
       setLiked(!nextLiked);
       setLikeCount((c) => (nextLiked ? c - 1 : c + 1));
     }
@@ -114,6 +116,8 @@ export default function PostCard({
         data.saved ? "save" : "unsave",
       );
       onSaveToggle?.(post.id, data.saved);
+    } else {
+      await handleLockedResponse(res);
     }
   };
 
@@ -234,7 +238,8 @@ export default function PostCard({
     isSaved: saved,
     authorName: post.author.name,
     onSave: handleSave,
-    onBlock: () => setBlockTarget({ id: post.authorId, name: post.author.name }),
+    onBlock: () =>
+      setBlockTarget({ id: post.authorId, name: post.author.name }),
     onReport: () => setShowReportModal(true),
     isAdmin,
   };

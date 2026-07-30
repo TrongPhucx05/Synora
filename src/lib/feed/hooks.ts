@@ -4,6 +4,7 @@ import { useState, useCallback, useEffect, useMemo } from "react";
 import { useSession } from "next-auth/react";
 import type { Comment, Reply, CommentPayload, CommentSort } from "./types";
 import { formatCommentTime } from "./utils";
+import { handleLockedResponse } from "@/lib/feed/lockRedirect";
 
 export function useComments(
   postId: number | string,
@@ -115,6 +116,7 @@ export function useComments(
         method: "POST",
       });
       if (!res.ok) {
+        if (await handleLockedResponse(res)) return;
         setComments((prev) =>
           prev.map((c) =>
             c.id === id ? { ...c, liked: prevLiked, likes: prevLikes } : c,
@@ -155,6 +157,7 @@ export function useComments(
         method: "POST",
       });
       if (!res.ok) {
+        if (await handleLockedResponse(res)) return;
         setComments((prev) =>
           prev.map((c) =>
             c.id === commentId
@@ -187,7 +190,10 @@ export function useComments(
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ content: text, parentId: commentId }),
       });
-      if (!res.ok) return;
+      if (!res.ok) {
+        await handleLockedResponse(res);
+        return;
+      }
       const saved = await res.json();
       const currentName = session?.user?.name ?? "User";
       const isSelf = currentName === replyToName;
@@ -240,7 +246,10 @@ export function useComments(
           fileType: payload.fileType ?? null,
         }),
       });
-      if (!res.ok) return;
+      if (!res.ok) {
+        await handleLockedResponse(res);
+        return;
+      }
       const saved = await res.json();
       const currentName = session?.user?.name ?? "User";
       setComments((prev) => [

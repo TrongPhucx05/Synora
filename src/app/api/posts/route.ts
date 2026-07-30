@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { getBlockedIds } from "@/lib/block/server";
+import { assertActiveSession } from "@/lib/auth/assert-active";
 
 export async function GET() {
   const session = await getServerSession(authOptions);
@@ -62,9 +63,8 @@ export async function GET() {
 }
 
 export async function POST(req: NextRequest) {
-  const session = await getServerSession(authOptions);
-  if (!session?.user?.id)
-    return NextResponse.json({ error: "Chưa đăng nhập" }, { status: 401 });
+  const { session, response } = await assertActiveSession();
+  if (response) return response;
 
   try {
     const {
@@ -126,7 +126,7 @@ export async function POST(req: NextRequest) {
       data: {
         content,
         visibility: normalizedVisibility,
-        authorId: session.user.id,
+        authorId: session!.user.id,
         tags: {
           create: await Promise.all(
             tags.map(async (tagName: string) => {
@@ -150,7 +150,7 @@ export async function POST(req: NextRequest) {
                   fileSize: typeof f.size === "number" ? f.size : 0,
                   mimeType: f.type,
                   type: f.docType,
-                  uploaderId: session.user.id,
+                  uploaderId: session!.user.id,
                 })),
               }
             : undefined,

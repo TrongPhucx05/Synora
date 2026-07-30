@@ -1,53 +1,27 @@
-"use client";
+import { redirect } from "next/navigation";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
+import { prisma } from "@/lib/prisma";
+import MainLayout from "@/components/layout/MainLayout";
 
-import { usePathname } from "next/navigation";
-import { useSession } from "next-auth/react";
-import Navbar from "@/components/layout/Navbar";
-import Sidebar from "@/components/layout/Sidebar";
-import { PresenceHeartbeat } from "@/components/providers/PresenceHeartbeat";
+export const dynamic = "force-dynamic";
 
-export default function MainLayout({
+export default async function SiteLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const pathname = usePathname();
-  const { data: session, status } = useSession();
+  const session = await getServerSession(authOptions);
 
-  const hideAll = pathname.startsWith("/chat");
-  const hideSidebar =
-    hideAll ||
-    pathname.startsWith("/search") ||
-    pathname.startsWith("/profile") ||
-    pathname.startsWith("/friends") ||
-    pathname.startsWith("/settings");
-  const isFullWidth =
-    pathname.startsWith("/search") ||
-    pathname.startsWith("/profile") ||
-    pathname.startsWith("/friends") ||
-    pathname.startsWith("/settings");
+  if (session?.user?.id) {
+    const user = await prisma.user.findUnique({
+      where: { id: session.user.id },
+      select: { status: true },
+    });
 
-  if (hideAll) {
-    return (
-      <>
-        <PresenceHeartbeat />
-        {children}
-      </>
-    );
+    if (user?.status === "SUSPENDED") redirect("/account-suspended");
+    if (user?.status === "BANNED") redirect("/account-banned");
   }
 
-  return (
-    <div className="min-h-screen bg-surface-50">
-      <PresenceHeartbeat />
-      <Navbar
-        isLoggedIn={status === "authenticated"}
-        session={session}
-        status={status}
-      />
-      {!hideSidebar && <Sidebar />}
-      <main className={`pt-14 min-h-screen ${hideSidebar ? "" : "ml-[300px]"}`}>
-        <div className={isFullWidth ? "w-full" : "w-full px-6"}>{children}</div>
-      </main>
-    </div>
-  );
+  return <MainLayout>{children}</MainLayout>;
 }
