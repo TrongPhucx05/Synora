@@ -4,15 +4,8 @@ import { clsx } from "clsx";
 
 export type UserFilterState = {
   query: string;
-  role: "ALL" | "USER" | "ADMIN";
   status: "ALL" | "ACTIVE" | "SUSPENDED" | "BANNED";
 };
-
-const ROLE_OPTIONS: { value: UserFilterState["role"]; label: string }[] = [
-  { value: "ALL", label: "Tất cả vai trò" },
-  { value: "USER", label: "User" },
-  { value: "ADMIN", label: "Admin" },
-];
 
 const STATUS_OPTIONS: { value: UserFilterState["status"]; label: string }[] = [
   { value: "ALL", label: "Tất cả trạng thái" },
@@ -42,26 +35,12 @@ export function UserFilters({
       </div>
 
       <select
-        value={value.role}
-        onChange={(e) =>
-          onChange({ ...value, role: e.target.value as UserFilterState["role"] })
-        }
-        className={clsx(
-          "bg-white border border-slate-200 rounded-full px-4 py-2 text-sm text-slate-700",
-          "focus:outline-none focus:border-blue-400",
-        )}
-      >
-        {ROLE_OPTIONS.map((o) => (
-          <option key={o.value} value={o.value}>
-            {o.label}
-          </option>
-        ))}
-      </select>
-
-      <select
         value={value.status}
         onChange={(e) =>
-          onChange({ ...value, status: e.target.value as UserFilterState["status"] })
+          onChange({
+            ...value,
+            status: e.target.value as UserFilterState["status"],
+          })
         }
         className={clsx(
           "bg-white border border-slate-200 rounded-full px-4 py-2 text-sm text-slate-700",

@@ -1,162 +1,131 @@
 "use client";
-import { useState, useMemo } from "react";
+
+import { useEffect, useState, useCallback } from "react";
 import { PageHeader } from "@/components/admin/PageHeader";
-import { UserFilters, type UserFilterState } from "@/components/admin/users/UserFilters";
-import { UsersTable, type AdminUserRow } from "@/components/admin/users/UsersTable";
+import {
+  UserFilters,
+  type UserFilterState,
+} from "@/components/admin/users/UserFilters";
+import {
+  UsersTable,
+  type AdminUserRow,
+} from "@/components/admin/users/UsersTable";
 import { UserDetailModal } from "@/components/admin/users/UserDetailModal";
-import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
+import {
+  LockUserModal,
+  type LockPayload,
+} from "@/components/admin/users/LockUserModal";
 import { useToast } from "@/components/ui/Toast";
-import { ShieldCheck, Ban, Clock } from "lucide-react";
-
-const MOCK_USERS: AdminUserRow[] = [
-  { id: "1", name: "Nguyễn Văn A", username: "nva123", email: "a@example.com", avatarUrl: null, role: "USER", status: "ACTIVE", joinedAt: "12/03/2025", postCount: 45 },
-  { id: "2", name: "Trần Thị B", username: "ttb", email: "b@example.com", avatarUrl: null, role: "USER", status: "ACTIVE", joinedAt: "05/01/2025", postCount: 120 },
-  { id: "3", name: "Lê Văn C", username: "lvc2003", email: "c@example.com", avatarUrl: null, role: "USER", status: "SUSPENDED", joinedAt: "20/06/2025", postCount: 12 },
-  { id: "4", name: "Phạm Thị D", username: "ptd_studio", email: "d@example.com", avatarUrl: null, role: "USER", status: "BANNED", joinedAt: "01/02/2024", postCount: 3 },
-  { id: "5", name: "Hoàng Văn E", username: "hoangv", email: "e@example.com", avatarUrl: null, role: "ADMIN", status: "ACTIVE", joinedAt: "10/10/2023", postCount: 8 },
-];
-
-type ConfirmState =
-  | { type: "suspend"; user: AdminUserRow }
-  | { type: "ban"; user: AdminUserRow }
-  | { type: "unban"; user: AdminUserRow }
-  | null;
 
 export default function AdminUsersPage() {
   const { showToast } = useToast();
-  const [users, setUsers] = useState(MOCK_USERS);
   const [filters, setFilters] = useState<UserFilterState>({
     query: "",
-    role: "ALL",
     status: "ALL",
   });
+  const [users, setUsers] = useState<AdminUserRow[]>([]);
+  const [loading, setLoading] = useState(true);
   const [detailUser, setDetailUser] = useState<AdminUserRow | null>(null);
-  const [confirmState, setConfirmState] = useState<ConfirmState>(null);
-  const [confirmLoading, setConfirmLoading] = useState(false);
+  const [lockTarget, setLockTarget] = useState<AdminUserRow | null>(null);
+  const [lockLoading, setLockLoading] = useState(false);
 
-  const filtered = useMemo(() => {
-    return users.filter((u) => {
-      const q = filters.query.toLowerCase();
-      const matchesQuery =
-        !q ||
-        u.name.toLowerCase().includes(q) ||
-        u.username.toLowerCase().includes(q) ||
-        u.email.toLowerCase().includes(q);
-      const matchesRole = filters.role === "ALL" || u.role === filters.role;
-      const matchesStatus = filters.status === "ALL" || u.status === filters.status;
-      return matchesQuery && matchesRole && matchesStatus;
-    });
-  }, [users, filters]);
+  const fetchUsers = useCallback(() => {
+    setLoading(true);
+    const params = new URLSearchParams();
+    if (filters.query) params.set("query", filters.query);
+    if (filters.status !== "ALL") params.set("status", filters.status);
+    fetch(`/api/admin/users?${params.toString()}`)
+      .then((r) => r.json())
+      .then((data) => {
+        if (Array.isArray(data)) setUsers(data);
+      })
+      .finally(() => setLoading(false));
+  }, [filters]);
 
-  const handleGrantRole = (u: AdminUserRow) => {
-    showToast(`Chức năng cấp quyền cho ${u.name} đang được phát triển`, "error");
-  };
+  useEffect(() => {
+    const t = setTimeout(fetchUsers, 300);
+    return () => clearTimeout(t);
+  }, [fetchUsers]);
 
-  const handleResetAvatar = (u: AdminUserRow) => {
-    setUsers((prev) => prev.map((x) => (x.id === u.id ? { ...x, avatarUrl: null } : x)));
-    showToast(`Đã reset ảnh đại diện của ${u.name}`, "success");
-  };
-
-  const handleForcePasswordChange = (u: AdminUserRow) => {
-    showToast(`${u.name} sẽ phải đổi mật khẩu trong lần đăng nhập tới`, "success");
-  };
-
-  const handleConfirm = async () => {
-    if (!confirmState) return;
-    setConfirmLoading(true);
+  const handleLock = async (payload: LockPayload) => {
+    if (!lockTarget) return;
+    setLockLoading(true);
     try {
-      await new Promise((r) => setTimeout(r, 500));
-      const nextStatus =
-        confirmState.type === "suspend"
-          ? "SUSPENDED"
-          : confirmState.type === "ban"
-            ? "BANNED"
-            : "ACTIVE";
-      setUsers((prev) =>
-        prev.map((x) => (x.id === confirmState.user.id ? { ...x, status: nextStatus } : x)),
-      );
-      const message =
-        confirmState.type === "suspend"
+      const res = await fetch(`/api/admin/users/${lockTarget.id}/lock`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.error);
+      }
+      showToast(
+        payload.type === "SUSPEND"
           ? "Đã tạm khóa tài khoản"
-          : confirmState.type === "ban"
-            ? "Đã khóa vĩnh viễn tài khoản"
-            : "Đã mở khóa tài khoản";
-      showToast(message, "success");
+          : "Đã khóa vĩnh viễn tài khoản",
+        "success",
+      );
+      setLockTarget(null);
+      fetchUsers();
+    } catch (e) {
+      showToast(
+        e instanceof Error ? e.message : "Không thể khóa tài khoản",
+        "error",
+      );
     } finally {
-      setConfirmLoading(false);
-      setConfirmState(null);
+      setLockLoading(false);
+    }
+  };
+
+  const handleUnlock = async (u: AdminUserRow) => {
+    try {
+      const res = await fetch(`/api/admin/users/${u.id}/unlock`, {
+        method: "POST",
+      });
+      if (!res.ok) throw new Error();
+      showToast("Đã mở khóa tài khoản", "success");
+      fetchUsers();
+    } catch {
+      showToast("Không thể mở khóa tài khoản", "error");
     }
   };
 
   return (
     <>
       <PageHeader
-        title="Quản lý người dùng"
-        description="Tìm kiếm, lọc và quản lý toàn bộ tài khoản trên hệ thống"
+        title="Người dùng"
+        description="Quản lý tài khoản và xử lý vi phạm"
       />
 
       <UserFilters value={filters} onChange={setFilters} />
 
-      <UsersTable
-        users={filtered}
-        onViewDetail={setDetailUser}
-        onGrantRole={handleGrantRole}
-        onResetAvatar={handleResetAvatar}
-        onForcePasswordChange={handleForcePasswordChange}
-        onSuspend={(u) => setConfirmState({ type: "suspend", user: u })}
-        onBan={(u) => setConfirmState({ type: "ban", user: u })}
-        onUnban={(u) => setConfirmState({ type: "unban", user: u })}
-      />
-
-      {detailUser && (
-        <UserDetailModal user={detailUser} onClose={() => setDetailUser(null)} />
+      {loading ? (
+        <div className="bg-white border border-slate-200 rounded-2xl py-16 flex items-center justify-center">
+          <p className="text-sm text-slate-400">Đang tải...</p>
+        </div>
+      ) : (
+        <UsersTable
+          users={users}
+          onViewDetail={setDetailUser}
+          onLock={setLockTarget}
+          onUnlock={handleUnlock}
+        />
       )}
 
-      {confirmState && (
-        <ConfirmDialog
-          icon={
-            confirmState.type === "unban" ? (
-              <ShieldCheck size={20} className="text-emerald-500" />
-            ) : confirmState.type === "suspend" ? (
-              <Clock size={20} className="text-amber-500" />
-            ) : (
-              <Ban size={20} className="text-red-500" />
-            )
-          }
-          iconBgClass={
-            confirmState.type === "unban"
-              ? "bg-emerald-100"
-              : confirmState.type === "suspend"
-                ? "bg-amber-100"
-                : "bg-red-100"
-          }
-          title={
-            confirmState.type === "unban"
-              ? "Mở khóa tài khoản?"
-              : confirmState.type === "suspend"
-                ? "Tạm khóa tài khoản?"
-                : "Khóa vĩnh viễn tài khoản?"
-          }
-          description={
-            <>
-              Áp dụng cho{" "}
-              <span className="font-medium text-slate-700">
-                {confirmState.user.name}
-              </span>
-              .
-            </>
-          }
-          confirmLabel={
-            confirmState.type === "unban"
-              ? "Mở khóa"
-              : confirmState.type === "suspend"
-                ? "Tạm khóa"
-                : "Khóa vĩnh viễn"
-          }
-          confirmVariant={confirmState.type === "unban" ? "primary" : "danger"}
-          loading={confirmLoading}
-          onConfirm={handleConfirm}
-          onCancel={() => setConfirmState(null)}
+      {detailUser && (
+        <UserDetailModal
+          user={detailUser}
+          onClose={() => setDetailUser(null)}
+        />
+      )}
+
+      {lockTarget && (
+        <LockUserModal
+          userName={lockTarget.name}
+          loading={lockLoading}
+          onConfirm={handleLock}
+          onCancel={() => setLockTarget(null)}
         />
       )}
     </>
