@@ -55,6 +55,7 @@ export async function DELETE(
 
       await tx.moderationAction.create({
         data: {
+          type: "POST_REMOVED",
           adminId: session.user.id,
           targetUserId: post.authorId,
           reason: notifyUser || flagUser ? (reason as any) : undefined,
