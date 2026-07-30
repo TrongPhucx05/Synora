@@ -136,6 +136,22 @@ export async function GET(req: NextRequest) {
         text = `Tài liệu của bạn đã bị báo cáo`;
         href = n.documentId ? `/library/${n.documentId}` : "/library";
         break;
+      case "POST_REMOVED":
+        text = `Bài viết của bạn đã bị gỡ do vi phạm quy định`;
+        href = "/feed";
+        break;
+      case "ACCOUNT_SUSPENDED":
+        text = `Tài khoản của bạn đã bị tạm khóa`;
+        href = "/account-suspended";
+        break;
+      case "ACCOUNT_BANNED":
+        text = `Tài khoản của bạn đã bị khóa vĩnh viễn`;
+        href = "/account-banned";
+        break;
+      case "ACCOUNT_UNLOCKED":
+        text = `Tài khoản của bạn đã được mở khóa`;
+        href = "/feed";
+        break;
       default:
         text = n.message ?? "Bạn có thông báo mới";
     }

@@ -12,6 +12,9 @@ import {
   FileX,
   FileWarning,
   Bell,
+  ShieldAlert,
+  ShieldX,
+  ShieldCheck,
 } from "lucide-react";
 import type { NotifItem, NotifType } from "@/lib/notifications/types";
 import Avatar from "@/components/ui/Avatar";
@@ -56,6 +59,18 @@ const typeConfig: Record<NotifType, { icon: any; bg: string; color: string }> =
     },
     FOLLOW: { icon: UserPlus, bg: "bg-emerald-50", color: "text-emerald-500" },
     MESSAGE: { icon: MessageSquare, bg: "bg-blue-50", color: "text-blue-500" },
+    POST_REMOVED: { icon: FileX, bg: "bg-red-50", color: "text-red-500" },
+    ACCOUNT_SUSPENDED: {
+      icon: ShieldAlert,
+      bg: "bg-amber-50",
+      color: "text-amber-600",
+    },
+    ACCOUNT_BANNED: { icon: ShieldX, bg: "bg-red-50", color: "text-red-600" },
+    ACCOUNT_UNLOCKED: {
+      icon: ShieldCheck,
+      bg: "bg-emerald-50",
+      color: "text-emerald-600",
+    },
     SYSTEM: { icon: Bell, bg: "bg-slate-100", color: "text-slate-500" },
   };
 

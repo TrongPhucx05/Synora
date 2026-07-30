@@ -11,6 +11,10 @@ export type NotifType =
   | "DOCUMENT_REPORTED"
   | "FOLLOW"
   | "MESSAGE"
+  | "POST_REMOVED"
+  | "ACCOUNT_SUSPENDED"
+  | "ACCOUNT_BANNED"
+  | "ACCOUNT_UNLOCKED"
   | "SYSTEM";
 
 export interface NotifItem {
