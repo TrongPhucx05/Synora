@@ -77,11 +77,19 @@ enum PostVisibility {
 }
 
 enum ReportReason {
+  HATE_SPEECH
   SPAM
-  INAPPROPRIATE
-  COPYRIGHT
-  MISINFORMATION
+  SEXUAL_CONTENT
+  VIOLENCE
+  SCAM
+  HARASSMENT
   OTHER
+}
+
+enum ReportStatus {
+  PENDING
+  RESOLVED
+  DISMISSED
 }
 
 enum FriendRequestStatus {
@@ -173,8 +181,9 @@ model User {
   memberships       CommunityMember[]
   ownedCommunities  Community[]      @relation("owner")
 
-  reports           Report[]         @relation("reporter")
-  reportedPosts     Report[]         @relation("reportedUser")
+  reports           Report[] @relation("reporter")
+  reportedPosts     Report[] @relation("reportedUser")
+  resolvedReports   Report[] @relation("reportResolver")
 
   status            AccountStatus @default(ACTIVE)
   suspendedUntil    DateTime?
@@ -378,6 +387,7 @@ model Comment {
   replies   Comment[] @relation("replies")
 
   likes     Like[]
+  reports   Report[]
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
@@ -495,6 +505,7 @@ model Message {
   deletedAt      DateTime?
 
   isSystemMessage Boolean   @default(false)
+  reports         Report[]
 
   createdAt      DateTime      @default(now())
 
@@ -621,20 +632,29 @@ model CommunityMember {
 }
 
 model Report {
-  id           String       @id @default(cuid())
-  reporterId   String
-  reporter     User         @relation("reporter", fields: [reporterId], references: [id])
+  id             String       @id @default(cuid())
+  reporterId     String
+  reporter       User         @relation("reporter", fields: [reporterId], references: [id], onDelete: Cascade)
+
   reportedUserId String?
-  reportedUser User?        @relation("reportedUser", fields: [reportedUserId], references: [id])
+  reportedUser   User?        @relation("reportedUser", fields: [reportedUserId], references: [id], onDelete: Cascade)
+  postId         String?
+  post           Post?        @relation(fields: [postId], references: [id], onDelete: SetNull)
+  commentId      String?
+  comment        Comment?     @relation(fields: [commentId], references: [id], onDelete: SetNull)
+  messageId      String?
+  message        Message?     @relation(fields: [messageId], references: [id], onDelete: SetNull)
 
-  postId       String?
-  post         Post?        @relation(fields: [postId], references: [id], onDelete: SetNull)
+  reason         ReportReason
+  description    String?
 
-  reason       ReportReason
-  description  String?
-  isResolved   Boolean      @default(false)
+  status         ReportStatus @default(PENDING)
+  resolvedById   String?
+  resolvedBy     User?        @relation("reportResolver", fields: [resolvedById], references: [id], onDelete: SetNull)
+  resolutionNote String?
+  resolvedAt     DateTime?
 
-  createdAt    DateTime     @default(now())
+  createdAt      DateTime     @default(now())
 
   @@map("reports")
 }
