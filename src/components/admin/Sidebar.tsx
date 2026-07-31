@@ -1,4 +1,5 @@
 "use client";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -11,6 +12,7 @@ import {
   BarChart3,
   ScrollText,
   ArrowLeft,
+  LifeBuoy,
 } from "lucide-react";
 import { clsx } from "clsx";
 
@@ -18,15 +20,46 @@ const navItems = [
   { href: "/admin", icon: LayoutDashboard, label: "Dashboard", exact: true },
   { href: "/admin/users", icon: Users, label: "Người dùng" },
   { href: "/admin/content", icon: FileStack, label: "Nội dung" },
-  { href: "/admin/reports", icon: Flag, label: "Báo cáo", badge: 3 },
+  {
+    href: "/admin/reports",
+    icon: Flag,
+    label: "Báo cáo",
+    countKey: "pendingReports",
+  },
+  {
+    href: "/admin/support-requests",
+    icon: LifeBuoy,
+    label: "Yêu cầu hỗ trợ",
+    countKey: "pendingSupportRequests",
+  },
   { href: "/admin/groups", icon: UsersRound, label: "Nhóm" },
   { href: "/admin/notifications", icon: Bell, label: "Thông báo" },
   { href: "/admin/statistics", icon: BarChart3, label: "Thống kê" },
   { href: "/admin/audit-log", icon: ScrollText, label: "Nhật ký quản trị" },
-];
+] as const;
+
+type Counts = { pendingReports: number; pendingSupportRequests: number };
 
 export default function Sidebar() {
   const pathname = usePathname();
+  const [counts, setCounts] = useState<Counts>({
+    pendingReports: 0,
+    pendingSupportRequests: 0,
+  });
+
+  useEffect(() => {
+    const load = () => {
+      fetch("/api/admin/counts")
+        .then((r) => (r.ok ? r.json() : null))
+        .then((data) => {
+          if (data) setCounts(data);
+        })
+        .catch(() => {});
+    };
+    load();
+    const interval = setInterval(load, 15000);
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <aside className="fixed left-0 top-0 h-screen w-[260px] bg-slate-900 text-slate-300 flex flex-col z-30">
@@ -44,7 +77,9 @@ export default function Sidebar() {
         </div>
         <div>
           <p className="text-sm font-bold text-white leading-tight">Synora</p>
-          <p className="text-[10px] text-slate-400 leading-tight">Admin Panel</p>
+          <p className="text-[10px] text-slate-400 leading-tight">
+            Admin Panel
+          </p>
         </div>
       </div>
 
@@ -53,6 +88,8 @@ export default function Sidebar() {
           const isActive = item.exact
             ? pathname === item.href
             : pathname === item.href || pathname.startsWith(item.href + "/");
+          const badgeCount =
+            "countKey" in item ? counts[item.countKey as keyof Counts] : 0;
           return (
             <Link
               key={item.href}
@@ -66,11 +103,11 @@ export default function Sidebar() {
             >
               <item.icon size={17} className="shrink-0" />
               <span className="flex-1">{item.label}</span>
-              {"badge" in item && item.badge ? (
-                <span className="bg-primary text-white text-[10px] font-bold rounded-full w-5 h-5 flex items-center justify-center shrink-0">
-                  {item.badge}
+              {badgeCount > 0 && (
+                <span className="bg-primary text-white text-[10px] font-bold rounded-full min-w-5 h-5 px-1 flex items-center justify-center shrink-0">
+                  {badgeCount > 99 ? "99+" : badgeCount}
                 </span>
-              ) : null}
+              )}
             </Link>
           );
         })}
