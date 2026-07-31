@@ -15,16 +15,17 @@ import {
 } from "lucide-react";
 import { PillBadge, Badge } from "@/components/chat/Badge";
 import Avatar from "@/components/ui/Avatar";
+import { useToast } from "@/components/ui/Toast";
+import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
+import { ReportModal } from "@/components/ui/ReportModal";
+import { useOutsideClickRefs } from "@/lib/chat/hooks";
+import type { PendingConversation, Conversation } from "@/lib/chat/types";
+import { blockUser } from "@/lib/block/utils";
 import { clsx } from "clsx";
 import {
   fetchPendingConversations,
   respondPendingConversation,
 } from "@/lib/chat/utils";
-import { useOutsideClickRefs } from "@/lib/chat/hooks";
-import { useToast } from "@/components/ui/Toast";
-import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
-import type { PendingConversation, Conversation } from "@/lib/chat/types";
-import { blockUser } from "@/lib/block/utils";
 
 type Tab = "pending" | "archived";
 
@@ -211,6 +212,10 @@ export function PendingMessages({
     | null
   >(null);
   const [confirmLoading, setConfirmLoading] = useState(false);
+  const [reportingUser, setReportingUser] = useState<{
+    id: string;
+    username: string;
+  } | null>(null);
 
   const load = () => {
     setLoading(true);
@@ -353,9 +358,9 @@ export function PendingMessages({
     }
   };
 
-  const handleReport = () => {
+  const handleReport = (senderId: string, senderUsername: string) => {
     setMenuOpenId(null);
-    showToast("Chức năng báo cáo đang được phát triển", "error");
+    setReportingUser({ id: senderId, username: senderUsername });
   };
 
   const handleOpenConversation = (msg: PendingConversation) => {
@@ -573,7 +578,9 @@ export function PendingMessages({
                                     name: msg.sender,
                                   })
                                 }
-                                onReport={handleReport}
+                                onReport={() =>
+                                  handleReport(msg.senderId, msg.senderUsername)
+                                }
                               />
                             )}
                           </div>
@@ -703,10 +710,12 @@ export function PendingMessages({
                                 }}
                                 onReport={() => {
                                   setArchivedMenuOpenId(null);
-                                  showToast(
-                                    "Chức năng báo cáo đang được phát triển",
-                                    "error",
-                                  );
+                                  if (conv.otherUserId) {
+                                    setReportingUser({
+                                      id: conv.otherUserId,
+                                      username: conv.otherUsername ?? conv.name,
+                                    });
+                                  }
                                 }}
                               />
                             )}
@@ -784,6 +793,14 @@ export function PendingMessages({
           loading={confirmLoading}
           onConfirm={handleConfirmAction}
           onCancel={() => setConfirmAction(null)}
+        />
+      )}
+      {reportingUser && (
+        <ReportModal
+          targetType="USER"
+          targetId={reportingUser.id}
+          title={`Báo cáo ${reportingUser.username}`}
+          onClose={() => setReportingUser(null)}
         />
       )}
     </>

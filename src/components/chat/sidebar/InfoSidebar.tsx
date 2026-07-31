@@ -31,6 +31,7 @@ import { clsx } from "clsx";
 import { ToggleSwitch } from "@/components/ui/ToggleSwitch";
 import Avatar from "@/components/ui/Avatar";
 import { useToast } from "@/components/ui/Toast";
+import { ReportModal } from "@/components/ui/ReportModal";
 import { RoleBadge } from "@/components/chat/RoleBadge";
 import { useOutsideClick } from "@/lib/chat/hooks";
 import { useUploadThing } from "@/lib/uploadthing";
@@ -992,6 +993,7 @@ export function InfoSidebar({
   const [disbandOpen, setDisbandOpen] = useState(false);
   const avatarMenuRef = useRef<HTMLDivElement>(null);
   useOutsideClick(avatarMenuRef, () => setAvatarMenuOpen(false));
+  const [reportModalOpen, setReportModalOpen] = useState(false);
 
   useEffect(() => {
     setLoadingAttachments(true);
@@ -1592,7 +1594,10 @@ export function InfoSidebar({
                 onClick={() => {
                   if (confirm === "leave") handleSimpleLeave();
                   else if (confirm === "block") handleBlockUser();
-                  else setConfirm(null);
+                  else {
+                    setConfirm(null);
+                    setReportModalOpen(true);
+                  }
                 }}
                 className={clsx(
                   "flex-1 py-2 rounded-xl text-xs font-semibold text-white transition-colors",
@@ -1614,6 +1619,14 @@ export function InfoSidebar({
             </div>
           </div>
         </>
+      )}
+      {reportModalOpen && conv.otherUserId && (
+        <ReportModal
+          targetType="USER"
+          targetId={conv.otherUserId}
+          title={`Báo cáo ${conv.name}`}
+          onClose={() => setReportModalOpen(false)}
+        />
       )}
     </>
   );

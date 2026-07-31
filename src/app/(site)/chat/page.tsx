@@ -65,6 +65,7 @@ import { PendingMessages } from "@/components/chat/PendingMessages";
 import Avatar from "@/components/ui/Avatar";
 import { useToast } from "@/components/ui/Toast";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
+import { ReportModal } from "@/components/ui/ReportModal";
 
 function getInitials(name: string) {
   return name
@@ -173,6 +174,10 @@ export default function ChatPage() {
   const isPreviewingPendingRef = useRef(false);
   const [hiddenResults, setHiddenResults] = useState<Conversation[]>([]);
   const [searchingHidden, setSearchingHidden] = useState(false);
+  const [reportingUser, setReportingUser] = useState<{
+    id: string;
+    username: string;
+  } | null>(null);
   const loadPinned = useCallback(async (convId: string) => {
     try {
       const data = await fetchPinnedMessages(convId);
@@ -1091,12 +1096,14 @@ export default function ChatPage() {
     [showToast],
   );
 
-  const handleReportConv = useCallback(
-    (_id: string) => {
-      showToast("Chức năng báo cáo đang được phát triển", "error");
-    },
-    [showToast],
-  );
+  const handleReportConv = useCallback((id: string) => {
+    const conv = convListRef.current.find((c) => c.id === id);
+    if (!conv?.otherUserId) return;
+    setReportingUser({
+      id: conv.otherUserId,
+      username: conv.otherUsername ?? conv.name,
+    });
+  }, []);
 
   const handlePendingAccept = async () => {
     if (!activeId || pendingActionLoading) return;
@@ -1951,6 +1958,14 @@ export default function ChatPage() {
           loading={blockLoading}
           onConfirm={handleConfirmBlockUser}
           onCancel={() => setBlockTarget(null)}
+        />
+      )}
+      {reportingUser && (
+        <ReportModal
+          targetType="USER"
+          targetId={reportingUser.id}
+          title={`Báo cáo ${reportingUser.username}`}
+          onClose={() => setReportingUser(null)}
         />
       )}
     </div>

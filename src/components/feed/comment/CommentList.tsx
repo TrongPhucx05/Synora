@@ -11,6 +11,7 @@ import EditCommentInput from "./EditCommentInput";
 import ReplyInput from "./ReplyInput";
 import { CommentMediaThumb, CommentFileBadge } from "./CommentInput";
 import { useToast } from "@/components/ui/Toast";
+import { ReportModal } from "@/components/ui/ReportModal";
 import { blockUser } from "@/lib/block/utils";
 
 export function BlockConfirmDialog({
@@ -173,6 +174,10 @@ export default function CommentList({
     new Set<string>(),
   );
   const [highlightedId, setHighlightedId] = useState<string | null>(null);
+  const [reportingTarget, setReportingTarget] = useState<{
+    type: "COMMENT";
+    id: string;
+  } | null>(null);
   const commentRefs = useRef<Record<string, HTMLDivElement | null>>({});
   const REPLIES_PREVIEW = 2;
 
@@ -401,7 +406,9 @@ export default function CommentList({
                             name: c.author.name,
                           })
                         }
-                        onReport={() => {}}
+                        onReport={() =>
+                          setReportingTarget({ type: "COMMENT", id: c.id })
+                        }
                       />
                     )}
                   </div>
@@ -579,7 +586,12 @@ export default function CommentList({
                                     name: r.author.name,
                                   })
                                 }
-                                onReport={() => {}}
+                                onReport={() =>
+                                  setReportingTarget({
+                                    type: "COMMENT",
+                                    id: r.id,
+                                  })
+                                }
                               />
                             )}
                           </div>
@@ -703,6 +715,13 @@ export default function CommentList({
           loading={blockLoading}
           onConfirm={handleConfirmBlock}
           onCancel={() => setBlockingTarget(null)}
+        />
+      )}
+      {reportingTarget && (
+        <ReportModal
+          targetType={reportingTarget.type}
+          targetId={reportingTarget.id}
+          onClose={() => setReportingTarget(null)}
         />
       )}
     </>

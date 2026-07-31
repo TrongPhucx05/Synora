@@ -10,6 +10,7 @@ import {
 import Avatar from "@/components/ui/Avatar";
 import { useToast } from "@/components/ui/Toast";
 import { ToggleSwitch } from "@/components/ui/ToggleSwitch";
+import { ReportModal } from "@/components/ui/ReportModal";
 import { fetchBlockedUsers, unblockUser } from "@/lib/block/utils";
 import { useSyncedBoolean, useSyncedPermission } from "@/lib/settings/hooks";
 import { clsx } from "clsx";
@@ -32,6 +33,10 @@ export function PrivacySection() {
   const [modalOpen, setModalOpen] = useState(false);
   const [menuOpenId, setMenuOpenId] = useState<string | null>(null);
   const buttonRefs = useRef<Record<string, HTMLButtonElement | null>>({});
+  const [reportingUser, setReportingUser] = useState<{
+    id: string;
+    name: string;
+  } | null>(null);
 
   useEffect(() => {
     fetchBlockedUsers()
@@ -60,8 +65,9 @@ export function PrivacySection() {
     }
   };
 
-  const handleReport = (_id: string) => {
-    showToast("Chức năng báo cáo đang được phát triển", "error");
+  const handleReport = (id: string) => {
+    const user = blocked.find((u) => u.id === id);
+    setReportingUser({ id, name: user?.name ?? "người dùng" });
   };
 
   const {
@@ -190,7 +196,9 @@ export function PrivacySection() {
                     <div className="shrink-0">
                       <button
                         onClick={() => setMenuOpenId(menuOpen ? null : u.id)}
-                        ref={(el) => { buttonRefs.current[u.id] = el; }}
+                        ref={(el) => {
+                          buttonRefs.current[u.id] = el;
+                        }}
                         className="p-1.5 rounded-full hover:bg-surface-100 text-text-muted transition-colors"
                       >
                         <MoreVertical size={15} />
@@ -316,6 +324,15 @@ export function PrivacySection() {
           onClose={() => setModalOpen(false)}
           onUnblock={handleUnblock}
           onReport={handleReport}
+        />
+      )}
+
+      {reportingUser && (
+        <ReportModal
+          targetType="USER"
+          targetId={reportingUser.id}
+          title={`Báo cáo ${reportingUser.name}`}
+          onClose={() => setReportingUser(null)}
         />
       )}
     </div>

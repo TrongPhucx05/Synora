@@ -28,6 +28,7 @@ import Avatar from "@/components/ui/Avatar";
 import { useToast } from "@/components/ui/Toast";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 import { useOutsideClickRefs } from "@/lib/chat/hooks";
+import { ReportModal } from "@/components/ui/ReportModal";
 import type {
   Message,
   Attachment,
@@ -231,6 +232,7 @@ interface MessageActionsProps {
   onRecall: () => void;
   onForward: () => void;
   onTogglePin: () => void;
+  onReport: () => void;
 }
 
 function isPreviewable(type: Attachment["type"]) {
@@ -405,6 +407,7 @@ function MessageActions({
   onRecall,
   onForward,
   onTogglePin,
+  onReport,
 }: MessageActionsProps) {
   const [emojiOpen, setEmojiOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -547,7 +550,10 @@ function MessageActions({
 
           <div className="h-px bg-surface-100 my-0.5" />
           <button
-            onClick={() => setMenuOpen(false)}
+            onClick={() => {
+              onReport();
+              setMenuOpen(false);
+            }}
             className="w-full flex items-center gap-2.5 px-3.5 py-2.5 text-sm text-red-500 hover:bg-red-50 transition-colors"
           >
             <Flag size={14} className="shrink-0" />
@@ -737,6 +743,7 @@ export function MessageBubble({
   const [recallDialogOpen, setRecallDialogOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
   const [avatarPopupOpen, setAvatarPopupOpen] = useState(false);
+  const [reportingMessage, setReportingMessage] = useState(false);
   const mediaAttachments = msg.attachments.filter(
     (a) => a.type === "IMAGE" || a.type === "VIDEO",
   );
@@ -1067,6 +1074,7 @@ export function MessageBubble({
               onRecall={handleRecallClick}
               onForward={() => onForward(msg)}
               onTogglePin={() => onTogglePin(msg)}
+              onReport={() => setReportingMessage(true)}
             />
           </div>
 
@@ -1107,6 +1115,15 @@ export function MessageBubble({
           onCancel={() => !recalling && setRecallDialogOpen(false)}
         />
       )}
+
+      {reportingMessage && (
+        <ReportModal
+          targetType="MESSAGE"
+          targetId={msg.id}
+          onClose={() => setReportingMessage(false)}
+        />
+      )}
+
       {lightboxIndex !== null && (
         <MediaLightbox
           media={mediaAttachments}

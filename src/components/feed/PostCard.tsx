@@ -28,7 +28,7 @@ import PostMoreMenu from "./PostCard/PostMoreMenu";
 import EditPostComposer from "./PostCard/EditPostComposer";
 import MediaLightbox from "./PostCard/MediaLightbox";
 import CommentModal from "./PostCard/CommentModal";
-import ReportPostModal from "./PostCard/ReportPostModal";
+import { ReportModal } from "@/components/ui/ReportModal";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 import { BlockConfirmDialog } from "@/components/feed/comment/CommentList";
 
@@ -441,8 +441,9 @@ export default function PostCard({
       )}
 
       {showReportModal && (
-        <ReportPostModal
-          postId={post.id}
+        <ReportModal
+          targetType="POST"
+          targetId={String(post.id)}
           onClose={() => setShowReportModal(false)}
         />
       )}
