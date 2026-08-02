@@ -135,5 +135,13 @@ export async function POST(req: NextRequest) {
     },
   });
 
+  await prisma.notification.create({
+    data: {
+      recipientId: session.user.id,
+      type: "REPORT_SUBMITTED",
+      message: "Báo cáo của bạn đã được gửi và đang chờ quản trị viên xem xét.",
+    },
+  });
+
   return NextResponse.json({ ok: true });
 }

@@ -30,15 +30,30 @@ export async function PATCH(
     );
   }
 
-  await prisma.report.update({
-    where: { id },
-    data: {
-      status: action === "resolve" ? "RESOLVED" : "DISMISSED",
-      resolvedById: session.user.id,
-      resolutionNote: note?.trim() || undefined,
-      resolvedAt: new Date(),
-    },
-  });
+  const trimmedNote = note?.trim() || undefined;
+
+  await prisma.$transaction([
+    prisma.report.update({
+      where: { id },
+      data: {
+        status: action === "resolve" ? "RESOLVED" : "DISMISSED",
+        resolvedById: session.user.id,
+        resolutionNote: trimmedNote,
+        resolvedAt: new Date(),
+      },
+    }),
+    prisma.notification.create({
+      data: {
+        recipientId: report.reporterId,
+        actorId: session.user.id,
+        type: action === "resolve" ? "REPORT_RESOLVED" : "REPORT_DISMISSED",
+        message:
+          action === "resolve"
+            ? `Báo cáo của bạn đã được xử lý.${trimmedNote ? " Ghi chú: " + trimmedNote : ""}`
+            : `Báo cáo của bạn đã được xem xét nhưng không phát hiện vi phạm.${trimmedNote ? " Ghi chú: " + trimmedNote : ""}`,
+      },
+    }),
+  ]);
 
   return NextResponse.json({ ok: true });
 }
