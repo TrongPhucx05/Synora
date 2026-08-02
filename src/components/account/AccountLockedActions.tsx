@@ -32,6 +32,7 @@ export function AccountLockedActions({
       {showSupportModal && (
         <SupportRequestModal
           defaultSubject={defaultSubject}
+          type="BAN_APPEAL"
           onClose={() => setShowSupportModal(false)}
         />
       )}

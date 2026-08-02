@@ -33,6 +33,7 @@ export async function GET(req: NextRequest) {
     },
     subject: r.subject,
     message: r.message,
+    type: r.type,
     status: r.status,
     createdAt: r.createdAt.toLocaleString("vi-VN"),
     resolvedAt: r.resolvedAt ? r.resolvedAt.toLocaleString("vi-VN") : undefined,

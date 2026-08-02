@@ -6,9 +6,11 @@ import { clsx } from "clsx";
 
 export function SupportRequestModal({
   defaultSubject,
+  type = "GENERAL",
   onClose,
 }: {
   defaultSubject?: string;
+  type?: "GENERAL" | "BAN_APPEAL";
   onClose: () => void;
 }) {
   const [subject, setSubject] = useState(defaultSubject ?? "");
@@ -28,7 +30,7 @@ export function SupportRequestModal({
       const res = await fetch("/api/account/support-request", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ subject, message }),
+        body: JSON.stringify({ subject, message, type }),
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(data.error ?? "Không thể gửi yêu cầu");

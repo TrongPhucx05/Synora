@@ -1,4 +1,5 @@
 export type SupportRequestStatus = "PENDING" | "RESOLVED";
+export type SupportRequestType = "GENERAL" | "BAN_APPEAL";
 
 export type SupportRequestPerson = {
   id: string;
@@ -12,6 +13,7 @@ export type AdminSupportRequestRow = {
   user: SupportRequestPerson;
   subject: string;
   message: string;
+  type: SupportRequestType;
   status: SupportRequestStatus;
   createdAt: string;
   resolvedAt?: string;
