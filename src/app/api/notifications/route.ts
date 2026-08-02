@@ -2,34 +2,10 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { initialsFor } from "@/lib/avatar";
 
 function formatActorName(actor: any) {
   return actor?.profile?.displayName ?? actor?.username ?? "Người dùng";
-}
-
-function initials(name: string) {
-  return name
-    .split(" ")
-    .map((w: string) => w[0])
-    .slice(-2)
-    .join("")
-    .toUpperCase();
-}
-
-const AVATAR_COLORS = [
-  "bg-violet-500",
-  "bg-emerald-500",
-  "bg-blue-500",
-  "bg-orange-500",
-  "bg-rose-500",
-  "bg-teal-500",
-];
-
-function colorIndexFor(id: string) {
-  let hash = 0;
-  for (let i = 0; i < id.length; i++)
-    hash = (hash * 31 + id.charCodeAt(i)) % AVATAR_COLORS.length;
-  return hash;
 }
 
 export async function GET(req: NextRequest) {
@@ -152,6 +128,22 @@ export async function GET(req: NextRequest) {
         text = `Tài khoản của bạn đã được mở khóa`;
         href = "/feed";
         break;
+      case "REPORT_SUBMITTED":
+        text = `Báo cáo của bạn đã được gửi`;
+        href = "/notifications";
+        break;
+      case "REPORT_RESOLVED":
+        text = `Báo cáo của bạn đã được xử lý`;
+        href = "/notifications";
+        break;
+      case "REPORT_DISMISSED":
+        text = `Báo cáo của bạn đã được xem xét`;
+        href = "/notifications";
+        break;
+      case "SUPPORT_REQUEST_SUBMITTED":
+        text = `Yêu cầu hỗ trợ của bạn đã được gửi`;
+        href = "/notifications";
+        break;
       default:
         text = n.message ?? "Bạn có thông báo mới";
     }
@@ -164,7 +156,7 @@ export async function GET(req: NextRequest) {
       href,
       createdAt: n.createdAt.toISOString(),
       unread: !n.isRead,
-      avatars: n.actor ? [initials(actorName)] : [],
+      avatars: n.actor ? [initialsFor(actorName)] : [],
       avatarColors: n.actor ? ["bg-primary"] : [],
       avatarUrls: n.actor ? [avatarUrl] : [],
       action,

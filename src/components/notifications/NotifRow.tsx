@@ -15,6 +15,8 @@ import {
   ShieldAlert,
   ShieldX,
   ShieldCheck,
+  Flag,
+  LifeBuoy,
 } from "lucide-react";
 import type { NotifItem, NotifType } from "@/lib/notifications/types";
 import Avatar from "@/components/ui/Avatar";
@@ -72,6 +74,26 @@ const typeConfig: Record<NotifType, { icon: any; bg: string; color: string }> =
       color: "text-emerald-600",
     },
     SYSTEM: { icon: Bell, bg: "bg-slate-100", color: "text-slate-500" },
+    REPORT_SUBMITTED: {
+      icon: Flag,
+      bg: "bg-orange-50",
+      color: "text-orange-500",
+    },
+    REPORT_RESOLVED: {
+      icon: ShieldCheck,
+      bg: "bg-emerald-50",
+      color: "text-emerald-600",
+    },
+    REPORT_DISMISSED: {
+      icon: ShieldAlert,
+      bg: "bg-slate-100",
+      color: "text-slate-500",
+    },
+    SUPPORT_REQUEST_SUBMITTED: {
+      icon: LifeBuoy,
+      bg: "bg-blue-50",
+      color: "text-blue-500",
+    },
   };
 
 export function formatVietnameseTime(isoString: string) {

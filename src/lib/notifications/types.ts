@@ -15,7 +15,11 @@ export type NotifType =
   | "ACCOUNT_SUSPENDED"
   | "ACCOUNT_BANNED"
   | "ACCOUNT_UNLOCKED"
-  | "SYSTEM";
+  | "SYSTEM"
+  | "REPORT_SUBMITTED"
+  | "REPORT_RESOLVED"
+  | "REPORT_DISMISSED"
+  | "SUPPORT_REQUEST_SUBMITTED";
 
 export interface NotifItem {
   id: string;
