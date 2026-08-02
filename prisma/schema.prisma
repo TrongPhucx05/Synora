@@ -56,6 +56,10 @@ enum NotificationType {
   ACCOUNT_BANNED
   ACCOUNT_UNLOCKED
   SYSTEM
+  REPORT_SUBMITTED
+  REPORT_RESOLVED
+  REPORT_DISMISSED
+  SUPPORT_REQUEST_SUBMITTED
 }
 
 enum MessageStatus {
@@ -107,6 +111,11 @@ enum FriendRequestPermission {
 enum SupportRequestStatus {
   PENDING
   RESOLVED
+}
+
+enum SupportRequestType {
+  GENERAL
+  BAN_APPEAL
 }
 
 model FriendRequest {
@@ -250,6 +259,8 @@ model SupportRequest {
   userId     String
   user       User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
 
+  type       SupportRequestType    @default(GENERAL)
+
   subject    String
   message    String
   status     SupportRequestStatus @default(PENDING)
@@ -287,6 +298,8 @@ model Post {
   title       String?
   content     String
   visibility  PostVisibility @default(PUBLIC)
+  hidden      Boolean        @default(false)
+  scheduledDeleteAt DateTime?
 
   documents   Document[]
 
@@ -341,6 +354,8 @@ model Document {
   pageCount   Int?
 
   extractedText String?
+  hidden        Boolean @default(false)
+  scheduledDeleteAt DateTime?
 
   downloadCount Int        @default(0)
 
