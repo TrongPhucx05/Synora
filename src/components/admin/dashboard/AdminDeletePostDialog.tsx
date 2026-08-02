@@ -10,6 +10,7 @@ import {
 } from "@/lib/admin/moderation";
 
 export type AdminDeletePayload = {
+  mode: "delete-now" | "schedule-7d";
   reason?: ViolationReason;
   note?: string;
   notifyUser: boolean;
@@ -29,11 +30,13 @@ export function AdminDeletePostDialog({
   const [note, setNote] = useState("");
   const [notifyUser, setNotifyUser] = useState(true);
   const [flagUser, setFlagUser] = useState(false);
+  const [mode, setMode] = useState<"delete-now" | "schedule-7d">("delete-now");
 
   const needsReason = notifyUser || flagUser;
 
   const handleConfirm = () => {
     onConfirm({
+      mode,
       reason: needsReason ? reason : undefined,
       note: note.trim() || undefined,
       notifyUser,
@@ -57,6 +60,33 @@ export function AdminDeletePostDialog({
               Bài viết sẽ bị xóa vĩnh viễn và không thể khôi phục.
             </p>
           </div>
+        </div>
+
+        <div className="flex gap-2 px-5 mb-1">
+          <button
+            type="button"
+            onClick={() => setMode("delete-now")}
+            className={clsx(
+              "flex-1 text-xs px-3 py-2.5 rounded-xl border font-medium transition-colors",
+              mode === "delete-now"
+                ? "border-red-400 bg-red-50 text-red-700"
+                : "border-slate-200 text-slate-500 hover:bg-slate-50",
+            )}
+          >
+            Xóa ngay lập tức
+          </button>
+          <button
+            type="button"
+            onClick={() => setMode("schedule-7d")}
+            className={clsx(
+              "flex-1 text-xs px-3 py-2.5 rounded-xl border font-medium transition-colors",
+              mode === "schedule-7d"
+                ? "border-amber-400 bg-amber-50 text-amber-700"
+                : "border-slate-200 text-slate-500 hover:bg-slate-50",
+            )}
+          >
+            Ẩn ngay, tự xóa sau 7 ngày
+          </button>
         </div>
 
         <div className="px-5 flex flex-col gap-3">
@@ -115,7 +145,10 @@ export function AdminDeletePostDialog({
 
           <div>
             <label className="text-xs font-medium text-slate-700 mb-1 block">
-              Ghi chú {needsReason ? "(hiển thị cho người dùng)" : "(nội bộ, không bắt buộc)"}
+              Ghi chú{" "}
+              {needsReason
+                ? "(hiển thị cho người dùng)"
+                : "(nội bộ, không bắt buộc)"}
             </label>
             <textarea
               value={note}

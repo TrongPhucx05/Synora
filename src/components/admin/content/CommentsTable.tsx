@@ -24,11 +24,21 @@ export function CommentsTable({
     <div className="bg-white rounded-2xl border border-slate-200 divide-y divide-slate-50">
       {comments.map((c) => (
         <div key={c.id} className="flex items-start gap-3 px-5 py-4">
-          <Avatar src={c.author.avatarUrl} name={c.author.name} size="sm" />
+          <Avatar
+            src={c.author.avatarUrl}
+            name={c.author.name}
+            initials={c.author.initials}
+            color={c.author.color}
+            size="sm"
+          />
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2">
-              <p className="text-sm font-medium text-slate-700">{c.author.name}</p>
-              <span className="text-xs text-slate-400">@{c.author.username}</span>
+              <p className="text-sm font-medium text-slate-700">
+                {c.author.name}
+              </p>
+              <span className="text-xs text-slate-400">
+                @{c.author.username}
+              </span>
               <span className="text-xs text-slate-300">·</span>
               <span className="text-xs text-slate-400">{c.createdAt}</span>
               {c.status === "HIDDEN" && (
@@ -53,7 +63,11 @@ export function CommentsTable({
               title={c.status === "VISIBLE" ? "Ẩn bình luận" : "Bỏ ẩn"}
               className="p-1.5 rounded-lg hover:bg-slate-100 text-slate-400 hover:text-slate-600"
             >
-              {c.status === "VISIBLE" ? <EyeOff size={15} /> : <Eye size={15} />}
+              {c.status === "VISIBLE" ? (
+                <EyeOff size={15} />
+              ) : (
+                <Eye size={15} />
+              )}
             </button>
             <button
               onClick={() => onDelete(c)}

@@ -2,6 +2,8 @@ export type ContentStatus = "VISIBLE" | "HIDDEN";
 
 export type ContentAuthor = {
   name: string;
+  initials: string;
+  color: string;
   username: string;
   avatarUrl: string | null;
 };
