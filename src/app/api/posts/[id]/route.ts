@@ -172,6 +172,15 @@ export async function GET(
         { status: 404 },
       );
 
+    const isOwner = session?.user?.id === post.authorId;
+    const isAdmin = session?.user?.role === "ADMIN";
+    if (post.hidden && !isOwner && !isAdmin) {
+      return NextResponse.json(
+        { error: "Không tìm thấy bài viết" },
+        { status: 404 },
+      );
+    }
+
     return NextResponse.json(post);
   } catch (e) {
     console.error(e);

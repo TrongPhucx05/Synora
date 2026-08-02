@@ -29,6 +29,7 @@ export async function GET() {
 
     const posts = await prisma.post.findMany({
       where: {
+        hidden: false,
         ...(blockedIds.length > 0 ? { authorId: { notIn: blockedIds } } : {}),
         OR: [
           { visibility: "PUBLIC" },
