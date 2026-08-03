@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { isBlockedEitherWay } from "@/lib/block/server";
+import { assertActiveSession } from "@/lib/auth/assert-active";
 
 type Params = { params: Promise<{ id: string }> };
 

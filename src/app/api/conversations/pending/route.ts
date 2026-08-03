@@ -12,25 +12,26 @@ export async function GET(_req: NextRequest) {
   const userId = session.user.id;
 
   const pending = await prisma.conversationMember.findMany({
-    where: { userId, isAccepted: false },
+    where: { userId, isAccepted: false, hiddenAt: null },
     select: {
       hiddenAt: true,
       conversation: {
         select: {
           id: true,
           isGroup: true,
+          name: true,
+          avatarUrl: true,
           lastMessageAt: true,
           members: {
             where: { userId: { not: userId } },
             take: 1,
+            orderBy: { isLeader: "desc" },
             select: {
               user: {
                 select: {
                   id: true,
                   username: true,
-                  profile: {
-                    select: { displayName: true, avatarUrl: true },
-                  },
+                  profile: { select: { displayName: true, avatarUrl: true } },
                 },
               },
             },
@@ -48,9 +49,7 @@ export async function GET(_req: NextRequest) {
           },
           _count: {
             select: {
-              messages: {
-                where: { deletedAt: null, isSystemMessage: false },
-              } as any,
+              messages: { where: { deletedAt: null, isSystemMessage: false } },
             },
           },
         },
@@ -59,8 +58,6 @@ export async function GET(_req: NextRequest) {
     orderBy: { joinedAt: "desc" },
   });
 
-  // Chỉ hiện tin nhắn chờ chưa bị ẩn, hoặc đã bị ẩn nhưng đối phương
-  // vừa nhắn thêm sau thời điểm ẩn.
   const visible = pending.filter((m) => {
     if (!m.hiddenAt) return true;
     const lastMsgAt = m.conversation.lastMessageAt;
@@ -79,16 +76,34 @@ export async function GET(_req: NextRequest) {
         content = buildAttachmentLabel(lastMsg.attachments);
     }
 
-    return {
-      id: conv.id,
-      senderId: other?.id ?? "",
-      senderUsername: other?.username ?? "",
-      sender: other?.profile?.displayName ?? other?.username ?? "Người dùng",
-      avatarUrl: other?.profile?.avatarUrl ?? null,
-      content,
-      createdAt: lastMsg?.createdAt?.toISOString() ?? null,
-      messageCount: conv._count.messages,
-    };
+    return conv.isGroup
+      ? {
+          id: conv.id,
+          isGroup: true,
+          senderId: other?.id ?? "",
+          senderUsername: other?.username ?? "",
+          sender: conv.name ?? "Nhóm chat",
+          avatarUrl: conv.avatarUrl,
+          content:
+            content ??
+            `Bạn được ${
+              other?.profile?.displayName ?? other?.username ?? "ai đó"
+            } mời vào nhóm`,
+          createdAt: lastMsg?.createdAt?.toISOString() ?? null,
+          messageCount: conv._count.messages,
+        }
+      : {
+          id: conv.id,
+          isGroup: false,
+          senderId: other?.id ?? "",
+          senderUsername: other?.username ?? "",
+          sender:
+            other?.profile?.displayName ?? other?.username ?? "Người dùng",
+          avatarUrl: other?.profile?.avatarUrl ?? null,
+          content,
+          createdAt: lastMsg?.createdAt?.toISOString() ?? null,
+          messageCount: conv._count.messages,
+        };
   });
 
   return NextResponse.json(result);

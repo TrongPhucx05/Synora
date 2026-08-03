@@ -20,7 +20,7 @@ export async function GET(_req: NextRequest, { params }: Params) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
   const members = await prisma.conversationMember.findMany({
-    where: { conversationId },
+    where: { conversationId, isAccepted: true },
     orderBy: [{ isLeader: "desc" }, { joinedAt: "asc" }],
     select: {
       isLeader: true,
@@ -65,6 +65,13 @@ export async function POST(req: NextRequest, { params }: Params) {
       { status: 400 },
     );
 
+  const conversation = await prisma.conversation.findUnique({
+    where: { id: conversationId },
+    select: { name: true },
+  });
+  if (!conversation)
+    return NextResponse.json({ error: "Không tìm thấy nhóm" }, { status: 404 });
+
   const users = await prisma.user.findMany({
     where: { username: { in: usernames } },
     select: { id: true },
@@ -75,26 +82,71 @@ export async function POST(req: NextRequest, { params }: Params) {
       { status: 404 },
     );
 
-  const existingIds = (
-    await prisma.conversationMember.findMany({
-      where: { conversationId, userId: { in: users.map((u) => u.id) } },
-      select: { userId: true },
-    })
-  ).map((m) => m.userId);
+  const existing = await prisma.conversationMember.findMany({
+    where: { conversationId, userId: { in: users.map((u) => u.id) } },
+    select: { userId: true, isAccepted: true, hiddenAt: true },
+  });
+  const existingMap = new Map(existing.map((m) => [m.userId, m]));
 
-  const newUserIds = users
-    .map((u) => u.id)
-    .filter((id) => !existingIds.includes(id));
+  const brandNewIds: string[] = [];
+  const reInviteIds: string[] = [];
 
-  if (newUserIds.length === 0)
+  for (const u of users) {
+    const e = existingMap.get(u.id);
+    if (!e) {
+      brandNewIds.push(u.id);
+    } else if (!e.isAccepted && e.hiddenAt) {
+      reInviteIds.push(u.id);
+    }
+  }
+
+  const invitedIds = [...brandNewIds, ...reInviteIds];
+  if (invitedIds.length === 0)
     return NextResponse.json(
-      { error: "Tất cả đã là thành viên của nhóm" },
+      { error: "Tất cả đã là thành viên hoặc đang có lời mời chờ" },
       { status: 400 },
     );
 
-  await prisma.conversationMember.createMany({
-    data: newUserIds.map((id) => ({ conversationId, userId: id })),
+  const actor = await prisma.user.findUnique({
+    where: { id: userId },
+    select: { username: true, profile: { select: { displayName: true } } },
   });
+  const actorName = actor?.profile?.displayName ?? actor?.username ?? "Ai đó";
 
-  return NextResponse.json({ added: newUserIds.length }, { status: 201 });
+  await prisma.$transaction([
+    ...(brandNewIds.length > 0
+      ? [
+          prisma.conversationMember.createMany({
+            data: brandNewIds.map((id) => ({
+              conversationId,
+              userId: id,
+              isAccepted: false,
+              origin: "INVITED" as const,
+            })),
+          }),
+        ]
+      : []),
+    ...reInviteIds.map((id) =>
+      prisma.conversationMember.update({
+        where: { conversationId_userId: { conversationId, userId: id } },
+        data: {
+          isAccepted: false,
+          origin: "INVITED",
+          hiddenAt: null,
+          clearedAt: null,
+        },
+      }),
+    ),
+    prisma.notification.createMany({
+      data: invitedIds.map((id) => ({
+        recipientId: id,
+        actorId: userId,
+        type: "GROUP_INVITE",
+        message: `${actorName} đã mời bạn vào nhóm "${conversation.name}"`,
+        conversationId,
+      })),
+    }),
+  ]);
+
+  return NextResponse.json({ invited: invitedIds.length }, { status: 201 });
 }

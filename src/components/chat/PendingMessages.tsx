@@ -50,12 +50,14 @@ export type OpenPendingPayload = {
 
 function PendingItemMenu({
   username,
+  isGroup,
   onClose,
   onBlock,
   onDelete,
   onReport,
 }: {
   username: string;
+  isGroup: boolean;
   onClose: () => void;
   onBlock: () => void;
   onDelete: () => void;
@@ -69,27 +71,31 @@ function PendingItemMenu({
       ref={ref}
       className="absolute right-0 top-full mt-1 z-20 w-44 bg-white rounded-xl shadow-xl border border-surface-100 py-1 overflow-hidden"
     >
-      <Link
-        href={`/profile/${username}`}
-        onClick={onClose}
-        className="flex items-center gap-2.5 px-3.5 py-2.5 text-xs text-text-primary hover:bg-surface-50 transition-colors"
-      >
-        <User size={13} className="text-text-muted shrink-0" />
-        Trang cá nhân
-      </Link>
-      <button
-        onClick={onBlock}
-        className="w-full flex items-center gap-2.5 px-3.5 py-2.5 text-xs text-text-primary hover:bg-surface-50 transition-colors"
-      >
-        <Ban size={13} className="text-text-muted shrink-0" />
-        Chặn
-      </button>
+      {!isGroup && (
+        <Link
+          href={`/profile/${username}`}
+          onClick={onClose}
+          className="flex items-center gap-2.5 px-3.5 py-2.5 text-xs text-text-primary hover:bg-surface-50 transition-colors"
+        >
+          <User size={13} className="text-text-muted shrink-0" />
+          Trang cá nhân
+        </Link>
+      )}
+      {!isGroup && (
+        <button
+          onClick={onBlock}
+          className="w-full flex items-center gap-2.5 px-3.5 py-2.5 text-xs text-text-primary hover:bg-surface-50 transition-colors"
+        >
+          <Ban size={13} className="text-text-muted shrink-0" />
+          Chặn
+        </button>
+      )}
       <button
         onClick={onDelete}
         className="w-full flex items-center gap-2.5 px-3.5 py-2.5 text-xs text-text-primary hover:bg-surface-50 transition-colors"
       >
         <Trash2 size={13} className="text-text-muted shrink-0" />
-        Xóa
+        {isGroup ? "Từ chối lời mời" : "Xóa"}
       </button>
       <div className="h-px bg-surface-100 my-0.5" />
       <button
@@ -532,7 +538,9 @@ export function PendingMessages({
                             <div className="flex items-center justify-between gap-2">
                               <p className="text-[11px] text-text-muted truncate flex-1">
                                 {msg.content ??
-                                  `${msg.sender} muốn trò chuyện với bạn`}
+                                  (msg.isGroup
+                                    ? `Bạn được mời tham gia "${msg.sender}"`
+                                    : `${msg.sender} muốn trò chuyện với bạn`)}
                               </p>
                               {msg.messageCount > 1 && (
                                 <Badge
@@ -561,6 +569,7 @@ export function PendingMessages({
                             {menuOpen && (
                               <PendingItemMenu
                                 username={msg.senderUsername}
+                                isGroup={msg.isGroup}
                                 onClose={() => setMenuOpenId(null)}
                                 onBlock={() => {
                                   setMenuOpenId(null);

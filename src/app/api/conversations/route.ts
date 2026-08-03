@@ -304,6 +304,7 @@ export async function POST(req: NextRequest) {
       const memberIds = Array.from(
         new Set([userId, ...members.map((m) => m.id)]),
       );
+      const invitedIds = memberIds.filter((id) => id !== userId);
 
       const conversation = await prisma.conversation.create({
         data: {
@@ -313,11 +314,35 @@ export async function POST(req: NextRequest) {
             create: memberIds.map((id) => ({
               userId: id,
               isLeader: id === userId,
+              isAccepted: id === userId,
+              origin: "INVITED",
             })),
           },
         },
         select: { id: true, isGroup: true, name: true, avatarUrl: true },
       });
+
+      if (invitedIds.length > 0) {
+        const creator = await prisma.user.findUnique({
+          where: { id: userId },
+          select: {
+            username: true,
+            profile: { select: { displayName: true } },
+          },
+        });
+        const creatorName =
+          creator?.profile?.displayName ?? creator?.username ?? "Ai đó";
+
+        await prisma.notification.createMany({
+          data: invitedIds.map((id) => ({
+            recipientId: id,
+            actorId: userId,
+            type: "GROUP_INVITE",
+            message: `${creatorName} đã mời bạn vào nhóm "${trimmedName}"`,
+            conversationId: conversation.id,
+          })),
+        });
+      }
 
       return NextResponse.json({
         id: conversation.id,
