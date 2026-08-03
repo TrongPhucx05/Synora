@@ -30,6 +30,7 @@ export async function GET(req: NextRequest) {
     ...(cursor && { cursor: { id: cursor }, skip: 1 }),
     include: {
       actor: { include: { profile: true } },
+      conversation: { select: { id: true, name: true, isGroup: true } }, // 👈 mới
     },
   });
 
@@ -50,14 +51,37 @@ export async function GET(req: NextRequest) {
     for (const p of pending) incomingRequestMap[p.senderId] = p.id;
   }
 
+  let stillPendingJoinRequestSet = new Set<string>();
+  const joinRequestNotifs = notifs.filter(
+    (n) => n.type === "GROUP_JOIN_REQUEST" && n.actorId && n.conversationId,
+  );
+  if (joinRequestNotifs.length > 0) {
+    const stillPending = await prisma.conversationMember.findMany({
+      where: {
+        isAccepted: false,
+        origin: "REQUESTED",
+        OR: joinRequestNotifs.map((n) => ({
+          conversationId: n.conversationId!,
+          userId: n.actorId!,
+        })),
+      },
+      select: { conversationId: true, userId: true },
+    });
+    stillPendingJoinRequestSet = new Set(
+      stillPending.map((m) => `${m.conversationId}_${m.userId}`),
+    );
+  }
+
   const items = notifs.map((n) => {
     const actorName = formatActorName(n.actor);
     const avatarUrl = n.actor?.profile?.avatarUrl ?? null;
+    const groupName = n.conversation?.name ?? "nhóm";
 
     let text = "";
     let href = "/feed";
     let action: { accept: string; decline: string } | null = null;
     let requestId: string | undefined;
+    const isGroupType = n.type.startsWith("GROUP_");
 
     switch (n.type) {
       case "LIKE":
@@ -144,6 +168,26 @@ export async function GET(req: NextRequest) {
         text = `Yêu cầu hỗ trợ của bạn đã được gửi`;
         href = "/notifications";
         break;
+      case "GROUP_INVITE":
+        text = `${actorName} đã mời bạn vào nhóm "${groupName}"`;
+        href = n.conversationId ? `/chat?conv=${n.conversationId}` : "/chat";
+        break;
+      case "GROUP_JOIN_REQUEST": {
+        const key = `${n.conversationId}_${n.actorId}`;
+        const stillPending = stillPendingJoinRequestSet.has(key);
+        text = `${actorName} muốn tham gia nhóm "${groupName}"`;
+        href = n.conversationId ? `/chat?conv=${n.conversationId}` : "/chat";
+        action = stillPending ? { accept: "Duyệt", decline: "Từ chối" } : null;
+        break;
+      }
+      case "GROUP_JOIN_APPROVED":
+        text = `Yêu cầu tham gia nhóm "${groupName}" của bạn đã được chấp nhận`;
+        href = n.conversationId ? `/chat?conv=${n.conversationId}` : "/chat";
+        break;
+      case "GROUP_JOIN_REJECTED":
+        text = `Yêu cầu tham gia nhóm "${groupName}" của bạn đã bị từ chối`;
+        href = "/notifications";
+        break;
       default:
         text = n.message ?? "Bạn có thông báo mới";
     }
@@ -152,7 +196,7 @@ export async function GET(req: NextRequest) {
       id: n.id,
       type: n.type,
       text,
-      sub: n.message ?? undefined,
+      sub: isGroupType ? undefined : (n.message ?? undefined),
       href,
       createdAt: n.createdAt.toISOString(),
       unread: !n.isRead,
@@ -161,6 +205,8 @@ export async function GET(req: NextRequest) {
       avatarUrls: n.actor ? [avatarUrl] : [],
       action,
       requestId,
+      conversationId: n.conversationId ?? undefined,
+      actorId: n.actorId ?? undefined,
     };
   });
 

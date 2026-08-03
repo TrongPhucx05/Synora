@@ -20,6 +20,12 @@ const DOCUMENT_TYPES = [
   "DOCUMENT_REJECTED",
   "DOCUMENT_REMOVED",
 ];
+const GROUP_TYPES = [
+  "GROUP_INVITE",
+  "GROUP_JOIN_REQUEST",
+  "GROUP_JOIN_APPROVED",
+  "GROUP_JOIN_REJECTED",
+];
 
 export default function NotificationsPage() {
   const [notifs, setNotifs] = useState<NotifItem[]>([]);
@@ -80,12 +86,15 @@ export default function NotificationsPage() {
   const unreadDocs = notifs.filter(
     (n) => n.unread && DOCUMENT_TYPES.includes(n.type),
   ).length;
+  const unreadGroups = notifs.filter(
+    (n) => n.unread && GROUP_TYPES.includes(n.type),
+  ).length;
 
   const tabs = [
     { id: "all", label: "Tất cả", badge: totalUnread },
     { id: "unread", label: "Chưa đọc", badge: 0 },
     { id: "activity", label: "Hoạt động", badge: unreadActivity },
-    { id: "groups", label: "Nhóm", badge: 0 },
+    { id: "groups", label: "Nhóm", badge: unreadGroups },
     { id: "documents", label: "Tài liệu", badge: unreadDocs },
   ];
 
@@ -93,7 +102,7 @@ export default function NotificationsPage() {
     if (activeTab === "unread") return n.unread;
     if (activeTab === "activity") return ACTIVITY_TYPES.includes(n.type);
     if (activeTab === "documents") return DOCUMENT_TYPES.includes(n.type);
-    if (activeTab === "groups") return false;
+    if (activeTab === "groups") return GROUP_TYPES.includes(n.type);
     return true;
   });
 
@@ -149,11 +158,6 @@ export default function NotificationsPage() {
             <div className="flex items-center justify-center py-24 gap-2 text-slate-400">
               <Loader2 size={18} className="animate-spin" />
               <span className="text-sm">Đang tải...</span>
-            </div>
-          ) : activeTab === "groups" ? (
-            <div className="flex flex-col items-center justify-center py-24 text-slate-400 gap-3">
-              <Bell size={36} className="opacity-20" />
-              <p className="text-sm">Thông báo nhóm sẽ sớm ra mắt</p>
             </div>
           ) : filteredNotifs.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-24 text-slate-400 gap-3">

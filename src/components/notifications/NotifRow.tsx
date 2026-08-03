@@ -17,6 +17,8 @@ import {
   ShieldCheck,
   Flag,
   LifeBuoy,
+  Users,
+  UserCog,
 } from "lucide-react";
 import type { NotifItem, NotifType } from "@/lib/notifications/types";
 import Avatar from "@/components/ui/Avatar";
@@ -94,6 +96,22 @@ const typeConfig: Record<NotifType, { icon: any; bg: string; color: string }> =
       bg: "bg-blue-50",
       color: "text-blue-500",
     },
+    GROUP_INVITE: { icon: Users, bg: "bg-indigo-50", color: "text-indigo-500" },
+    GROUP_JOIN_REQUEST: {
+      icon: UserCog,
+      bg: "bg-amber-50",
+      color: "text-amber-500",
+    },
+    GROUP_JOIN_APPROVED: {
+      icon: UserCheck,
+      bg: "bg-emerald-50",
+      color: "text-emerald-500",
+    },
+    GROUP_JOIN_REJECTED: {
+      icon: UserPlus,
+      bg: "bg-slate-100",
+      color: "text-slate-500",
+    },
   };
 
 export function formatVietnameseTime(isoString: string) {
@@ -129,20 +147,46 @@ export function NotifRow({
   ) => {
     e.preventDefault();
     e.stopPropagation();
-    if (!notif.requestId || loading || !session?.user?.username) return;
-    setLoading(true);
-    try {
-      const res = await fetch(
-        `/api/profile/${session.user.username}/friend-requests`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ requestId: notif.requestId, action }),
-        },
-      );
-      if (res.ok) setStatus(action === "accept" ? "accepted" : "declined");
-    } finally {
-      setLoading(false);
+    if (loading) return;
+
+    if (notif.type === "FRIEND_REQUEST") {
+      if (!notif.requestId || !session?.user?.username) return;
+      setLoading(true);
+      try {
+        const res = await fetch(
+          `/api/profile/${session.user.username}/friend-requests`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ requestId: notif.requestId, action }),
+          },
+        );
+        if (res.ok) setStatus(action === "accept" ? "accepted" : "declined");
+      } finally {
+        setLoading(false);
+      }
+      return;
+    }
+
+    if (notif.type === "GROUP_JOIN_REQUEST") {
+      if (!notif.conversationId || !notif.actorId) return;
+      setLoading(true);
+      try {
+        const res = await fetch(
+          `/api/conversations/${notif.conversationId}/join-requests/${notif.actorId}`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              action: action === "accept" ? "approve" : "reject",
+            }),
+          },
+        );
+        if (res.ok) setStatus(action === "accept" ? "accepted" : "declined");
+      } finally {
+        setLoading(false);
+      }
+      return;
     }
   };
 
@@ -193,7 +237,9 @@ export function NotifRow({
           <div className="flex items-center gap-2 mt-2.5">
             {status === "accepted" ? (
               <span className="text-xs text-emerald-600 font-semibold bg-emerald-50 px-3 py-1 rounded-lg">
-                Đã chấp nhận
+                {notif.type === "GROUP_JOIN_REQUEST"
+                  ? "Đã duyệt"
+                  : "Đã chấp nhận"}
               </span>
             ) : status === "declined" ? (
               <span className="text-xs text-slate-400 bg-slate-100 px-3 py-1 rounded-lg">
