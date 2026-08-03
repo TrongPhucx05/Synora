@@ -20,6 +20,7 @@ export type Conversation = {
 
 export type PendingConversation = {
   id: string;
+  isGroup: boolean;
   senderId: string;
   senderUsername: string;
   sender: string;
@@ -199,3 +200,24 @@ export type FilterChip = "all" | "unread" | "group";
 export type NewConvTab = "direct" | "group";
 export type AvatarMenuPanel = "main" | "pending" | "blocked" | "settings";
 export type ConfirmAction = "block" | "leave" | "report";
+
+export type GroupInviteLinkInfo = {
+  token: string | null;
+  isActive: boolean;
+};
+
+export type JoinLinkPreview = {
+  conversationId: string;
+  name: string | null;
+  avatarUrl: string | null;
+  memberCount: number;
+  viewerStatus: "member" | "invited" | "requested" | "none";
+};
+
+export type JoinRequestItem = {
+  userId: string;
+  username: string;
+  displayName: string;
+  avatarUrl: string | null;
+  requestedAt: string;
+};

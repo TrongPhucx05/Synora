@@ -9,6 +9,9 @@ import type {
   PinnedMessage,
   GroupMember,
   Conversation,
+  GroupInviteLinkInfo,
+  JoinLinkPreview,
+  JoinRequestItem,
 } from "./types";
 
 export const RECALL_WINDOW_MS = 24 * 60 * 60 * 1000;
@@ -476,4 +479,94 @@ export async function searchConversations(q: string): Promise<Conversation[]> {
   const res = await fetch(`/api/conversations?q=${encodeURIComponent(q)}`);
   if (!res.ok) return [];
   return res.json();
+}
+
+export async function fetchInviteLink(
+  conversationId: string,
+): Promise<GroupInviteLinkInfo> {
+  const res = await fetch(`/api/conversations/${conversationId}/invite-link`);
+  if (!res.ok) throw new Error("Không thể tải link mời");
+  return res.json();
+}
+
+export async function createInviteLink(
+  conversationId: string,
+): Promise<GroupInviteLinkInfo> {
+  const res = await fetch(`/api/conversations/${conversationId}/invite-link`, {
+    method: "POST",
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(data.error ?? "Không thể tạo link mời");
+  return data;
+}
+
+export async function regenerateInviteLink(
+  conversationId: string,
+): Promise<GroupInviteLinkInfo> {
+  const res = await fetch(`/api/conversations/${conversationId}/invite-link`, {
+    method: "PATCH",
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(data.error ?? "Không thể tạo lại link mời");
+  return data;
+}
+
+export async function revokeInviteLink(conversationId: string): Promise<void> {
+  const res = await fetch(`/api/conversations/${conversationId}/invite-link`, {
+    method: "DELETE",
+  });
+  if (!res.ok) {
+    const data = await res.json().catch(() => ({}));
+    throw new Error(data.error ?? "Không thể thu hồi link mời");
+  }
+}
+
+export async function fetchJoinRequests(
+  conversationId: string,
+): Promise<JoinRequestItem[]> {
+  const res = await fetch(`/api/conversations/${conversationId}/join-requests`);
+  if (!res.ok) throw new Error("Không thể tải yêu cầu tham gia");
+  return res.json();
+}
+
+export async function respondJoinRequest(
+  conversationId: string,
+  userId: string,
+  action: "approve" | "reject",
+): Promise<void> {
+  const res = await fetch(
+    `/api/conversations/${conversationId}/join-requests/${userId}`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action }),
+    },
+  );
+  if (!res.ok) {
+    const data = await res.json().catch(() => ({}));
+    throw new Error(data.error ?? "Có lỗi xảy ra");
+  }
+}
+
+export async function fetchJoinPreview(
+  token: string,
+): Promise<JoinLinkPreview> {
+  const res = await fetch(`/api/groups/join/${token}`);
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(data.error ?? "Link mời không hợp lệ");
+  return data;
+}
+
+export async function submitJoinRequest(
+  token: string,
+): Promise<{ status: string; conversationId: string }> {
+  const res = await fetch(`/api/groups/join/${token}`, { method: "POST" });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(data.error ?? "Không thể gửi yêu cầu tham gia");
+  return data;
+}
+
+export function buildInviteLinkUrl(token: string): string {
+  if (typeof window === "undefined") return `/join/${token}`;
+  return `${window.location.origin}/join/${token}`;
 }
