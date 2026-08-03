@@ -60,6 +60,15 @@ enum NotificationType {
   REPORT_RESOLVED
   REPORT_DISMISSED
   SUPPORT_REQUEST_SUBMITTED
+  GROUP_INVITE
+  GROUP_JOIN_REQUEST
+  GROUP_JOIN_APPROVED
+  GROUP_JOIN_REJECTED
+}
+
+enum MembershipOrigin {
+  INVITED
+  REQUESTED
 }
 
 enum MessageStatus {
@@ -205,6 +214,7 @@ model User {
   moderationActionsTaken    ModerationAction[] @relation("moderationActor")
 
   supportRequests SupportRequest[]
+  createdInviteLinks GroupInviteLink[] @relation("inviteLinkCreator")
 
   @@map("users")
 }
@@ -464,6 +474,9 @@ model Conversation {
   members   ConversationMember[]
   messages  Message[]
 
+  inviteLink    GroupInviteLink?
+  notifications Notification[]
+
   lastMessageAt DateTime?
 
   createdAt DateTime             @default(now())
@@ -481,6 +494,9 @@ model ConversationMember {
 
   isLeader       Boolean      @default(false)
   isAccepted     Boolean      @default(true)
+  origin         MembershipOrigin @default(INVITED)
+  rejectedAt     DateTime?
+  invitedById    String?
   lastReadAt     DateTime?
   
   markedUnreadAt DateTime?
@@ -492,6 +508,20 @@ model ConversationMember {
 
   @@unique([conversationId, userId])
   @@map("conversation_members")
+}
+
+model GroupInviteLink {
+  id             String       @id @default(cuid())
+  conversationId String       @unique
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  token          String       @unique @default(cuid())
+  createdById    String
+  createdBy      User         @relation("inviteLinkCreator", fields: [createdById], references: [id], onDelete: Cascade)
+  isActive       Boolean      @default(true)
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  @@map("group_invite_links")
 }
 
 model Message {
@@ -571,6 +601,8 @@ model Notification {
   postId      String?
   commentId   String?
   documentId  String?
+  conversationId String?
+  conversation   Conversation? @relation(fields: [conversationId], references: [id], onDelete: Cascade)
 
   isRead      Boolean          @default(false)
 
