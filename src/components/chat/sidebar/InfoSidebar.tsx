@@ -18,6 +18,7 @@ import {
   PhoneCall,
   VideoIcon,
   BanIcon,
+  Ban,
   Play,
   Crown,
   UserPlus,
@@ -26,12 +27,15 @@ import {
   Camera,
   Loader2,
   Pencil,
+  Check,
+  Link2,
 } from "lucide-react";
 import { clsx } from "clsx";
 import { ToggleSwitch } from "@/components/ui/ToggleSwitch";
 import Avatar from "@/components/ui/Avatar";
 import { useToast } from "@/components/ui/Toast";
 import { ReportModal } from "@/components/ui/ReportModal";
+import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 import { RoleBadge } from "@/components/chat/RoleBadge";
 import { useOutsideClick } from "@/lib/chat/hooks";
 import { useUploadThing } from "@/lib/uploadthing";
@@ -50,12 +54,21 @@ import {
   downloadFile,
   getColorForUser,
   getInitialsFromName,
+  fetchInviteLink,
+  createInviteLink,
+  regenerateInviteLink,
+  revokeInviteLink,
+  buildInviteLinkUrl,
+  fetchJoinRequests,
+  respondJoinRequest,
 } from "@/lib/chat/utils";
 import type {
   Conversation,
   ConfirmAction,
   SharedAttachment,
   GroupMember,
+  GroupInviteLinkInfo,
+  JoinRequestItem,
 } from "@/lib/chat/types";
 import { useUserPresence } from "@/lib/presence/hooks";
 import { formatLastSeen } from "@/lib/presence/utils";
@@ -947,6 +960,304 @@ function DisbandGroupModal({
     </>
   );
 }
+
+function InviteLinkPanel({
+  conversationId,
+  isLeader,
+  onClose,
+}: {
+  conversationId: string;
+  isLeader: boolean;
+  onClose: () => void;
+}) {
+  const { showToast } = useToast();
+  const [info, setInfo] = useState<GroupInviteLinkInfo | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [busy, setBusy] = useState(false);
+  const [copied, setCopied] = useState(false);
+  const [confirmRevoke, setConfirmRevoke] = useState(false);
+
+  const load = async () => {
+    setLoading(true);
+    try {
+      setInfo(await fetchInviteLink(conversationId));
+    } catch {
+      setInfo({ token: null, isActive: false });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    load();
+  }, [conversationId]);
+
+  const handleCreate = async () => {
+    setBusy(true);
+    try {
+      const data = await createInviteLink(conversationId);
+      setInfo(data);
+    } catch (e) {
+      showToast(e instanceof Error ? e.message : "Có lỗi xảy ra", "error");
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const handleRegenerate = async () => {
+    setBusy(true);
+    try {
+      const data = await regenerateInviteLink(conversationId);
+      setInfo(data);
+      showToast("Đã tạo link mới, link cũ không còn hiệu lực", "success");
+    } catch (e) {
+      showToast(e instanceof Error ? e.message : "Có lỗi xảy ra", "error");
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const handleRevoke = async () => {
+    setBusy(true);
+    try {
+      await revokeInviteLink(conversationId);
+      setInfo({ token: null, isActive: false });
+      showToast("Đã thu hồi link mời", "success");
+    } catch (e) {
+      showToast(e instanceof Error ? e.message : "Có lỗi xảy ra", "error");
+    } finally {
+      setBusy(false);
+      setConfirmRevoke(false);
+    }
+  };
+
+  const handleCopy = () => {
+    if (!info?.token) return;
+    navigator.clipboard.writeText(buildInviteLinkUrl(info.token));
+    setCopied(true);
+    setTimeout(() => setCopied(false), 1500);
+  };
+
+  return (
+    <>
+      <div className="fixed inset-0 bg-black/40 z-[60]" onClick={onClose} />
+      <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[380px] bg-white rounded-2xl shadow-2xl z-[60] p-6">
+        <div className="flex items-center justify-between mb-1">
+          <p className="text-sm font-bold text-text-primary">Link mời nhóm</p>
+          <button
+            onClick={onClose}
+            className="p-1.5 hover:bg-surface-100 rounded-lg text-text-muted"
+          >
+            <X size={15} />
+          </button>
+        </div>
+        <p className="text-xs text-text-muted mb-4">
+          Bất kỳ ai có link này đều có thể gửi yêu cầu tham gia nhóm, chờ trưởng
+          nhóm duyệt.
+        </p>
+
+        {loading ? (
+          <div className="flex items-center justify-center py-6 text-text-muted text-xs gap-2">
+            <Loader2 size={14} className="animate-spin" /> Đang tải...
+          </div>
+        ) : info?.isActive && info.token ? (
+          <>
+            <div className="flex items-center gap-2 bg-surface-100 rounded-xl px-3 py-2.5 mb-3">
+              <p className="flex-1 text-xs text-text-secondary truncate">
+                {buildInviteLinkUrl(info.token)}
+              </p>
+              <button
+                onClick={handleCopy}
+                className="shrink-0 px-2.5 py-1 rounded-lg bg-primary text-white text-[11px] font-semibold hover:bg-primary-700 transition-colors"
+              >
+                {copied ? "Đã sao chép" : "Sao chép"}
+              </button>
+            </div>
+            {isLeader && (
+              <div className="flex gap-2">
+                <button
+                  onClick={handleRegenerate}
+                  disabled={busy}
+                  className="flex-1 py-2 rounded-xl border border-surface-200 text-xs font-semibold text-text-secondary hover:bg-surface-50 transition-colors disabled:opacity-50"
+                >
+                  Tạo link mới
+                </button>
+                <button
+                  onClick={() => setConfirmRevoke(true)}
+                  disabled={busy}
+                  className="flex-1 py-2 rounded-xl border border-red-200 text-xs font-semibold text-red-500 hover:bg-red-50 transition-colors disabled:opacity-50"
+                >
+                  Thu hồi link
+                </button>
+              </div>
+            )}
+          </>
+        ) : (
+          <button
+            onClick={handleCreate}
+            disabled={busy}
+            className="w-full py-2.5 rounded-xl bg-primary text-white text-xs font-semibold hover:bg-primary-700 transition-colors disabled:opacity-50 flex items-center justify-center gap-1.5"
+          >
+            {busy && <Loader2 size={12} className="animate-spin" />}
+            Tạo link mời
+          </button>
+        )}
+      </div>
+
+      {confirmRevoke && (
+        <ConfirmDialog
+          icon={<Ban size={20} className="text-red-500" />}
+          iconBgClass="bg-red-100"
+          title="Thu hồi link mời?"
+          description="Link hiện tại sẽ ngừng hoạt động. Những người chưa dùng link sẽ không thể tham gia qua link này nữa."
+          confirmLabel="Thu hồi"
+          confirmVariant="danger"
+          loading={busy}
+          onConfirm={handleRevoke}
+          onCancel={() => setConfirmRevoke(false)}
+        />
+      )}
+    </>
+  );
+}
+
+function JoinRequestsPanel({
+  conversationId,
+  onClose,
+  onProcessed,
+}: {
+  conversationId: string;
+  onClose: () => void;
+  onProcessed?: () => void;
+}) {
+  const { showToast } = useToast();
+  const [requests, setRequests] = useState<JoinRequestItem[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [actioningId, setActioningId] = useState<string | null>(null);
+
+  const load = async () => {
+    setLoading(true);
+    try {
+      setRequests(await fetchJoinRequests(conversationId));
+    } catch {
+      setRequests([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    load();
+  }, [conversationId]);
+
+  const handleRespond = async (
+    userId: string,
+    action: "approve" | "reject",
+  ) => {
+    setActioningId(userId);
+    try {
+      await respondJoinRequest(conversationId, userId, action);
+      setRequests((prev) => prev.filter((r) => r.userId !== userId));
+      onProcessed?.();
+      showToast(
+        action === "approve"
+          ? "Đã chấp nhận thành viên mới"
+          : "Đã từ chối yêu cầu",
+        "success",
+      );
+    } catch (e) {
+      showToast(e instanceof Error ? e.message : "Có lỗi xảy ra", "error");
+    } finally {
+      setActioningId(null);
+    }
+  };
+
+  return (
+    <>
+      <div className="fixed inset-0 bg-black/40 z-[60]" onClick={onClose} />
+      <div className="fixed inset-y-0 right-0 w-[340px] bg-white z-[60] flex flex-col shadow-2xl">
+        <div className="flex items-center justify-between px-5 py-4 border-b border-surface-100">
+          <div>
+            <p className="text-sm font-bold text-text-primary">
+              Yêu cầu tham gia
+            </p>
+            <p className="text-xs text-text-muted mt-0.5">
+              {requests.length} yêu cầu đang chờ
+            </p>
+          </div>
+          <button
+            onClick={onClose}
+            className="p-1.5 hover:bg-surface-100 rounded-lg text-text-muted"
+          >
+            <X size={15} />
+          </button>
+        </div>
+
+        <div className="flex-1 overflow-y-auto py-2">
+          {loading ? (
+            <div className="flex items-center justify-center py-8 text-text-muted text-xs gap-2">
+              <Loader2 size={14} className="animate-spin" /> Đang tải...
+            </div>
+          ) : requests.length === 0 ? (
+            <div className="flex flex-col items-center py-16 gap-3 text-text-muted px-6">
+              <div className="w-12 h-12 rounded-full bg-surface-100 flex items-center justify-center">
+                <UserPlus size={22} className="opacity-50" />
+              </div>
+              <p className="text-xs text-center">
+                Chưa có yêu cầu tham gia nào
+              </p>
+            </div>
+          ) : (
+            requests.map((r) => {
+              const busy = actioningId === r.userId;
+              return (
+                <div
+                  key={r.userId}
+                  className="flex items-center gap-3 px-5 py-3 hover:bg-surface-50 transition-colors"
+                >
+                  <Avatar
+                    src={r.avatarUrl}
+                    initials={getInitialsFromName(r.displayName)}
+                    size="md"
+                    shape="circle"
+                  />
+                  <div className="flex-1 min-w-0">
+                    <p className="text-xs font-semibold text-text-primary truncate">
+                      {r.displayName}
+                    </p>
+                    <p className="text-[11px] text-text-muted">@{r.username}</p>
+                  </div>
+                  <div className="flex items-center gap-1.5 shrink-0">
+                    <button
+                      onClick={() => handleRespond(r.userId, "reject")}
+                      disabled={busy}
+                      className="w-7 h-7 rounded-full bg-surface-100 hover:bg-red-100 flex items-center justify-center text-text-muted hover:text-red-500 transition-colors disabled:opacity-50"
+                      title="Từ chối"
+                    >
+                      <X size={13} />
+                    </button>
+                    <button
+                      onClick={() => handleRespond(r.userId, "approve")}
+                      disabled={busy}
+                      className="w-7 h-7 rounded-full bg-primary/10 hover:bg-primary/20 flex items-center justify-center text-primary transition-colors disabled:opacity-50"
+                      title="Chấp nhận"
+                    >
+                      {busy ? (
+                        <Loader2 size={13} className="animate-spin" />
+                      ) : (
+                        <Check size={13} />
+                      )}
+                    </button>
+                  </div>
+                </div>
+              );
+            })
+          )}
+        </div>
+      </div>
+    </>
+  );
+}
 interface InfoSidebarProps {
   conv: Conversation;
   currentUserId: string;
@@ -994,6 +1305,9 @@ export function InfoSidebar({
   const avatarMenuRef = useRef<HTMLDivElement>(null);
   useOutsideClick(avatarMenuRef, () => setAvatarMenuOpen(false));
   const [reportModalOpen, setReportModalOpen] = useState(false);
+  const [inviteLinkOpen, setInviteLinkOpen] = useState(false);
+  const [joinRequestsOpen, setJoinRequestsOpen] = useState(false);
+  const [joinRequestCount, setJoinRequestCount] = useState(0);
 
   useEffect(() => {
     setLoadingAttachments(true);
@@ -1019,6 +1333,13 @@ export function InfoSidebar({
 
   const isLeader =
     members.find((m) => m.userId === currentUserId)?.isLeader ?? false;
+
+  useEffect(() => {
+    if (!conv.isGroup || !isLeader) return;
+    fetchJoinRequests(conv.id)
+      .then((r) => setJoinRequestCount(r.length))
+      .catch(() => setJoinRequestCount(0));
+  }, [conv.id, conv.isGroup, isLeader]);
 
   const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -1257,7 +1578,7 @@ export function InfoSidebar({
         </div>
 
         {conv.isGroup && (
-          <div className="px-4 py-3 border-b border-surface-100">
+          <div className="px-4 py-3 border-b border-surface-100 flex flex-col gap-2">
             <button
               onClick={() => setMembersOpen(true)}
               className="w-full flex items-center gap-2.5 group"
@@ -1278,6 +1599,57 @@ export function InfoSidebar({
                 className="text-text-muted group-hover:text-text-secondary transition-colors"
               />
             </button>
+
+            <button
+              onClick={() => setInviteLinkOpen(true)}
+              className="w-full flex items-center gap-2.5 group"
+            >
+              <div className="w-8 h-8 rounded-xl bg-emerald-50 flex items-center justify-center shrink-0">
+                <Link2 size={14} className="text-emerald-500" />
+              </div>
+              <div className="flex-1 text-left">
+                <p className="text-xs font-semibold text-text-primary">
+                  Link mời nhóm
+                </p>
+                <p className="text-[11px] text-text-muted">
+                  Chia sẻ để mời người tham gia
+                </p>
+              </div>
+              <ChevronRight
+                size={13}
+                className="text-text-muted group-hover:text-text-secondary transition-colors"
+              />
+            </button>
+
+            {isLeader && (
+              <button
+                onClick={() => setJoinRequestsOpen(true)}
+                className="w-full flex items-center gap-2.5 group"
+              >
+                <div className="w-8 h-8 rounded-xl bg-amber-50 flex items-center justify-center shrink-0 relative">
+                  <UserPlus size={14} className="text-amber-500" />
+                  {joinRequestCount > 0 && (
+                    <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-red-500 text-white text-[9px] font-bold flex items-center justify-center">
+                      {joinRequestCount > 9 ? "9+" : joinRequestCount}
+                    </span>
+                  )}
+                </div>
+                <div className="flex-1 text-left">
+                  <p className="text-xs font-semibold text-text-primary">
+                    Yêu cầu tham gia
+                  </p>
+                  <p className="text-[11px] text-text-muted">
+                    {joinRequestCount > 0
+                      ? `${joinRequestCount} yêu cầu đang chờ`
+                      : "Chưa có yêu cầu nào"}
+                  </p>
+                </div>
+                <ChevronRight
+                  size={13}
+                  className="text-text-muted group-hover:text-text-secondary transition-colors"
+                />
+              </button>
+            )}
           </div>
         )}
 
@@ -1626,6 +1998,24 @@ export function InfoSidebar({
           targetId={conv.otherUserId}
           title={`Báo cáo ${conv.name}`}
           onClose={() => setReportModalOpen(false)}
+        />
+      )}
+      {inviteLinkOpen && (
+        <InviteLinkPanel
+          conversationId={conv.id}
+          isLeader={isLeader}
+          onClose={() => setInviteLinkOpen(false)}
+        />
+      )}
+
+      {joinRequestsOpen && (
+        <JoinRequestsPanel
+          conversationId={conv.id}
+          onClose={() => setJoinRequestsOpen(false)}
+          onProcessed={() => {
+            setJoinRequestCount((c) => Math.max(0, c - 1));
+            reloadMembers();
+          }}
         />
       )}
     </>
