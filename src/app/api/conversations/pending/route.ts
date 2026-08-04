@@ -12,7 +12,7 @@ export async function GET(_req: NextRequest) {
   const userId = session.user.id;
 
   const pending = await prisma.conversationMember.findMany({
-    where: { userId, isAccepted: false, hiddenAt: null, origin: "INVITED", },
+    where: { userId, isAccepted: false, hiddenAt: null, origin: "INVITED" },
     select: {
       hiddenAt: true,
       invitedById: true,
@@ -60,60 +60,71 @@ export async function GET(_req: NextRequest) {
   });
 
   const visible = pending.filter((m) => {
-    if (!m.hiddenAt) return true;
-    const lastMsgAt = m.conversation.lastMessageAt;
-    return !!lastMsgAt && lastMsgAt > m.hiddenAt;
+    if (m.hiddenAt) {
+      const lastMsgAt = m.conversation.lastMessageAt;
+      if (!lastMsgAt || lastMsgAt <= m.hiddenAt) return false;
+    }
+    if (!m.conversation.isGroup && m.conversation._count.messages === 0) {
+      return false;
+    }
+    return true;
   });
 
-  const result = await Promise.all(visible.map(async (m) => {
-  const conv = m.conversation;
-  let other = conv.members[0]?.user;
+  const result = await Promise.all(
+    visible.map(async (m) => {
+      const conv = m.conversation;
+      let other = conv.members[0]?.user;
 
-  if (conv.isGroup && m.invitedById) {
-    const inviter = await prisma.user.findUnique({
-      where: { id: m.invitedById },
-      select: { id: true, username: true, profile: { select: { displayName: true, avatarUrl: true } } },
-    });
-    if (inviter) other = inviter;
-  }
-    const lastMsg = conv.messages[0];
+      if (conv.isGroup && m.invitedById) {
+        const inviter = await prisma.user.findUnique({
+          where: { id: m.invitedById },
+          select: {
+            id: true,
+            username: true,
+            profile: { select: { displayName: true, avatarUrl: true } },
+          },
+        });
+        if (inviter) other = inviter;
+      }
+      const lastMsg = conv.messages[0];
 
-    let content: string | null = null;
-    if (lastMsg) {
-      if (lastMsg.content) content = lastMsg.content;
-      else if (lastMsg.attachments.length > 0)
-        content = buildAttachmentLabel(lastMsg.attachments);
-    }
+      let content: string | null = null;
+      if (lastMsg) {
+        if (lastMsg.content) content = lastMsg.content;
+        else if (lastMsg.attachments.length > 0)
+          content = buildAttachmentLabel(lastMsg.attachments);
+      }
 
-    return conv.isGroup
-      ? {
-          id: conv.id,
-          isGroup: true,
-          senderId: other?.id ?? "",
-          senderUsername: other?.username ?? "",
-          sender: conv.name ?? "Nhóm chat",
-          avatarUrl: conv.avatarUrl,
-          content:
-            content ??
-            `Bạn được ${
-              other?.profile?.displayName ?? other?.username ?? "ai đó"
-            } mời vào nhóm`,
-          createdAt: lastMsg?.createdAt?.toISOString() ?? null,
-          messageCount: conv._count.messages,
-        }
-      : {
-          id: conv.id,
-          isGroup: false,
-          senderId: other?.id ?? "",
-          senderUsername: other?.username ?? "",
-          sender:
-            other?.profile?.displayName ?? other?.username ?? "Người dùng",
-          avatarUrl: other?.profile?.avatarUrl ?? null,
-          content,
-          createdAt: lastMsg?.createdAt?.toISOString() ?? null,
-          messageCount: conv._count.messages,
-        };
-  }));
+      return conv.isGroup
+        ? {
+            id: conv.id,
+            isGroup: true,
+            senderId: other?.id ?? "",
+            senderUsername: other?.username ?? "",
+            sender: conv.name ?? "Nhóm chat",
+            avatarUrl: conv.avatarUrl,
+            content:
+              content ??
+              `Bạn được ${
+                other?.profile?.displayName ?? other?.username ?? "ai đó"
+              } mời vào nhóm`,
+            createdAt: lastMsg?.createdAt?.toISOString() ?? null,
+            messageCount: conv._count.messages,
+          }
+        : {
+            id: conv.id,
+            isGroup: false,
+            senderId: other?.id ?? "",
+            senderUsername: other?.username ?? "",
+            sender:
+              other?.profile?.displayName ?? other?.username ?? "Người dùng",
+            avatarUrl: other?.profile?.avatarUrl ?? null,
+            content,
+            createdAt: lastMsg?.createdAt?.toISOString() ?? null,
+            messageCount: conv._count.messages,
+          };
+    }),
+  );
 
   return NextResponse.json(result);
 }

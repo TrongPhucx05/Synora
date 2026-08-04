@@ -30,6 +30,7 @@ export async function GET(_req: NextRequest) {
       lastReadAt: true,
       markedUnreadAt: true,
       hiddenAt: true,
+      clearedAt: true,
       conversation: {
         select: {
           id: true,
@@ -80,6 +81,14 @@ export async function GET(_req: NextRequest) {
     visibleMemberships.map(async (m) => {
       const conv = m.conversation;
       const isSelf = !conv.isGroup && conv.dmKey === `${userId}_${userId}`;
+      const clearedAt = m.clearedAt;
+
+      const cutoffCandidates = [m.lastReadAt, clearedAt].filter(
+        (d): d is Date => !!d,
+      );
+      const readCutoff = cutoffCandidates.length
+        ? new Date(Math.max(...cutoffCandidates.map((d) => d.getTime())))
+        : null;
 
       let unreadCount = await prisma.message.count({
         where: {
@@ -87,7 +96,7 @@ export async function GET(_req: NextRequest) {
           senderId: { not: userId },
           deletedAt: null,
           isSystemMessage: false,
-          ...(m.lastReadAt ? { createdAt: { gt: m.lastReadAt } } : {}),
+          ...(readCutoff ? { createdAt: { gt: readCutoff } } : {}),
         },
       });
       if (unreadCount === 0 && m.markedUnreadAt) unreadCount = 1;
@@ -104,7 +113,11 @@ export async function GET(_req: NextRequest) {
           ? (me?.profile?.avatarUrl ?? null)
           : (other?.profile?.avatarUrl ?? null);
 
-      const lastMsg = conv.messages[0];
+      const rawLastMsg = conv.messages[0];
+      const lastMsg =
+        rawLastMsg && (!clearedAt || new Date(rawLastMsg.createdAt) > clearedAt)
+          ? rawLastMsg
+          : null;
 
       let lastMessage = "";
       let lastEventAt: Date | null = null;
@@ -154,7 +167,13 @@ export async function GET(_req: NextRequest) {
       }
 
       const latestPin = await prisma.message.findFirst({
-        where: { conversationId: conv.id, pinnedAt: { not: null } },
+        where: {
+          conversationId: conv.id,
+          pinnedAt: {
+            not: null,
+            ...(clearedAt ? { gt: clearedAt } : {}),
+          },
+        },
         orderBy: { pinnedAt: "desc" },
         select: {
           pinnedAt: true,
@@ -191,7 +210,7 @@ export async function GET(_req: NextRequest) {
         });
       }
 
-      if (convLastMessageAt) {
+      if (convLastMessageAt && (!clearedAt || convLastMessageAt > clearedAt)) {
         const maxKnownTs = candidates.length
           ? Math.max(...candidates.map((c) => c.ts))
           : 0;

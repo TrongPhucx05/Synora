@@ -93,8 +93,6 @@ export async function GET(req: NextRequest, { params }: Params) {
   });
   if (!membership)
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
-  if (!membership.isAccepted)
-    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
   const { searchParams } = new URL(req.url);
   const cursor = searchParams.get("cursor");
@@ -117,10 +115,12 @@ export async function GET(req: NextRequest, { params }: Params) {
   if (hasMore) messages.pop();
   messages.reverse();
 
-  await prisma.conversationMember.update({
-    where: { conversationId_userId: { conversationId, userId } },
-    data: { lastReadAt: new Date(), markedUnreadAt: null },
-  });
+  if (membership.isAccepted) {
+    await prisma.conversationMember.update({
+      where: { conversationId_userId: { conversationId, userId } },
+      data: { lastReadAt: new Date(), markedUnreadAt: null },
+    });
+  }
 
   const nextCursor = hasMore ? messages[0]?.id : null;
   return NextResponse.json({ messages, nextCursor });
@@ -144,7 +144,7 @@ export async function POST(req: NextRequest, { params }: Params) {
       { error: "Bạn chưa tham gia cuộc trò chuyện này" },
       { status: 403 },
     );
-    }
+  }
   const conversation = await prisma.conversation.findUnique({
     where: { id: conversationId },
     select: {
