@@ -163,6 +163,16 @@ export default function JoinGroupPage() {
               Yêu cầu tham gia đang chờ trưởng nhóm duyệt
             </p>
           </div>
+        ) : effectiveStatus === "cooldown" ? (
+          <div className="flex flex-col items-center gap-2">
+            <Clock size={20} className="text-amber-500" />
+            <p className="text-xs text-text-secondary">
+              Yêu cầu trước đó đã bị từ chối. Bạn có thể gửi lại sau{" "}
+              {preview.cooldownEndsAt &&
+                new Date(preview.cooldownEndsAt).toLocaleDateString("vi-VN")}
+              .
+            </p>
+          </div>
         ) : effectiveStatus === "invited" ? (
           <button
             onClick={handleJoin}

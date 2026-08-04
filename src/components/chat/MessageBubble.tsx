@@ -29,6 +29,7 @@ import { useToast } from "@/components/ui/Toast";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 import { useOutsideClickRefs } from "@/lib/chat/hooks";
 import { ReportModal } from "@/components/ui/ReportModal";
+import { GroupInviteCard } from "@/components/chat/GroupInviteCard";
 import type {
   Message,
   Attachment,
@@ -50,6 +51,12 @@ const QUICK_EMOJIS = ["👍", "❤️", "😂", "😮", "😢"];
 interface ReactionModalProps {
   reactions: ReactionGroup[];
   onClose: () => void;
+}
+
+function extractJoinToken(content: string | null): string | null {
+  if (!content) return null;
+  const match = content.match(/\/join\/([a-zA-Z0-9_-]{8,})/);
+  return match ? match[1] : null;
 }
 
 function ReactionModal({ reactions, onClose }: ReactionModalProps) {
@@ -1044,19 +1051,25 @@ export function MessageBubble({
                 msg.isMe ? "items-end" : "items-start",
               )}
             >
-              {msg.content && (
-                <div
-                  className={clsx(
-                    "px-4 py-3 rounded-2xl text-sm leading-relaxed",
-                    msg.isMe
-                      ? "bg-primary text-white rounded-br-sm"
-                      : "bg-white border border-surface-200 text-text-primary rounded-bl-sm shadow-sm",
-                  )}
-                >
-                  {msg.content}
-                </div>
-              )}
-
+              {msg.content &&
+                (() => {
+                  const joinToken = extractJoinToken(msg.content);
+                  if (joinToken) {
+                    return <GroupInviteCard token={joinToken} />;
+                  }
+                  return (
+                    <div
+                      className={clsx(
+                        "px-4 py-3 rounded-2xl text-sm leading-relaxed",
+                        msg.isMe
+                          ? "bg-primary text-white rounded-br-sm"
+                          : "bg-white border border-surface-200 text-text-primary rounded-bl-sm shadow-sm",
+                      )}
+                    >
+                      {msg.content}
+                    </div>
+                  );
+                })()}
               {msg.attachments.length > 0 && (
                 <AttachmentGrid
                   attachments={msg.attachments}

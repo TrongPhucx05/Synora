@@ -316,6 +316,7 @@ export async function POST(req: NextRequest) {
               isLeader: id === userId,
               isAccepted: id === userId,
               origin: "INVITED",
+              invitedById: id === userId ? null : userId,
             })),
           },
         },

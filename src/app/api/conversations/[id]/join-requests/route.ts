@@ -25,7 +25,7 @@ export async function GET(_req: NextRequest, { params }: Params) {
     );
 
   const requests = await prisma.conversationMember.findMany({
-    where: { conversationId, isAccepted: false, origin: "REQUESTED" },
+    where: { conversationId, isAccepted: false, origin: "REQUESTED", rejectedAt: null },
     orderBy: { joinedAt: "desc" },
     select: {
       joinedAt: true,

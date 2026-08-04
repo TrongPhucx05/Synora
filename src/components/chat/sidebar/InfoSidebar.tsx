@@ -55,9 +55,6 @@ import {
   getColorForUser,
   getInitialsFromName,
   fetchInviteLink,
-  createInviteLink,
-  regenerateInviteLink,
-  revokeInviteLink,
   buildInviteLinkUrl,
   fetchJoinRequests,
   respondJoinRequest,
@@ -963,73 +960,23 @@ function DisbandGroupModal({
 
 function InviteLinkPanel({
   conversationId,
-  isLeader,
   onClose,
 }: {
   conversationId: string;
-  isLeader: boolean;
   onClose: () => void;
 }) {
   const { showToast } = useToast();
   const [info, setInfo] = useState<GroupInviteLinkInfo | null>(null);
   const [loading, setLoading] = useState(true);
-  const [busy, setBusy] = useState(false);
   const [copied, setCopied] = useState(false);
-  const [confirmRevoke, setConfirmRevoke] = useState(false);
-
-  const load = async () => {
-    setLoading(true);
-    try {
-      setInfo(await fetchInviteLink(conversationId));
-    } catch {
-      setInfo({ token: null, isActive: false });
-    } finally {
-      setLoading(false);
-    }
-  };
 
   useEffect(() => {
-    load();
+    setLoading(true);
+    fetchInviteLink(conversationId)
+      .then(setInfo)
+      .catch(() => showToast("Không thể tải link mời", "error"))
+      .finally(() => setLoading(false));
   }, [conversationId]);
-
-  const handleCreate = async () => {
-    setBusy(true);
-    try {
-      const data = await createInviteLink(conversationId);
-      setInfo(data);
-    } catch (e) {
-      showToast(e instanceof Error ? e.message : "Có lỗi xảy ra", "error");
-    } finally {
-      setBusy(false);
-    }
-  };
-
-  const handleRegenerate = async () => {
-    setBusy(true);
-    try {
-      const data = await regenerateInviteLink(conversationId);
-      setInfo(data);
-      showToast("Đã tạo link mới, link cũ không còn hiệu lực", "success");
-    } catch (e) {
-      showToast(e instanceof Error ? e.message : "Có lỗi xảy ra", "error");
-    } finally {
-      setBusy(false);
-    }
-  };
-
-  const handleRevoke = async () => {
-    setBusy(true);
-    try {
-      await revokeInviteLink(conversationId);
-      setInfo({ token: null, isActive: false });
-      showToast("Đã thu hồi link mời", "success");
-    } catch (e) {
-      showToast(e instanceof Error ? e.message : "Có lỗi xảy ra", "error");
-    } finally {
-      setBusy(false);
-      setConfirmRevoke(false);
-    }
-  };
 
   const handleCopy = () => {
     if (!info?.token) return;
@@ -1037,6 +984,10 @@ function InviteLinkPanel({
     setCopied(true);
     setTimeout(() => setCopied(false), 1500);
   };
+
+  const expiresText = info
+    ? new Date(info.expiresAt).toLocaleDateString("vi-VN")
+    : "";
 
   return (
     <>
@@ -1052,17 +1003,17 @@ function InviteLinkPanel({
           </button>
         </div>
         <p className="text-xs text-text-muted mb-4">
-          Bất kỳ ai có link này đều có thể gửi yêu cầu tham gia nhóm, chờ trưởng
-          nhóm duyệt.
+          Bất kỳ ai có link này đều có thể gửi yêu cầu tham gia, chờ trưởng nhóm
+          duyệt. Link tự động đổi mới sau 30 ngày kể từ lần tạo.
         </p>
 
         {loading ? (
           <div className="flex items-center justify-center py-6 text-text-muted text-xs gap-2">
             <Loader2 size={14} className="animate-spin" /> Đang tải...
           </div>
-        ) : info?.isActive && info.token ? (
+        ) : info ? (
           <>
-            <div className="flex items-center gap-2 bg-surface-100 rounded-xl px-3 py-2.5 mb-3">
+            <div className="flex items-center gap-2 bg-surface-100 rounded-xl px-3 py-2.5 mb-2">
               <p className="flex-1 text-xs text-text-secondary truncate">
                 {buildInviteLinkUrl(info.token)}
               </p>
@@ -1073,50 +1024,12 @@ function InviteLinkPanel({
                 {copied ? "Đã sao chép" : "Sao chép"}
               </button>
             </div>
-            {isLeader && (
-              <div className="flex gap-2">
-                <button
-                  onClick={handleRegenerate}
-                  disabled={busy}
-                  className="flex-1 py-2 rounded-xl border border-surface-200 text-xs font-semibold text-text-secondary hover:bg-surface-50 transition-colors disabled:opacity-50"
-                >
-                  Tạo link mới
-                </button>
-                <button
-                  onClick={() => setConfirmRevoke(true)}
-                  disabled={busy}
-                  className="flex-1 py-2 rounded-xl border border-red-200 text-xs font-semibold text-red-500 hover:bg-red-50 transition-colors disabled:opacity-50"
-                >
-                  Thu hồi link
-                </button>
-              </div>
-            )}
+            <p className="text-[11px] text-text-muted">
+              Hết hạn vào {expiresText}
+            </p>
           </>
-        ) : (
-          <button
-            onClick={handleCreate}
-            disabled={busy}
-            className="w-full py-2.5 rounded-xl bg-primary text-white text-xs font-semibold hover:bg-primary-700 transition-colors disabled:opacity-50 flex items-center justify-center gap-1.5"
-          >
-            {busy && <Loader2 size={12} className="animate-spin" />}
-            Tạo link mời
-          </button>
-        )}
+        ) : null}
       </div>
-
-      {confirmRevoke && (
-        <ConfirmDialog
-          icon={<Ban size={20} className="text-red-500" />}
-          iconBgClass="bg-red-100"
-          title="Thu hồi link mời?"
-          description="Link hiện tại sẽ ngừng hoạt động. Những người chưa dùng link sẽ không thể tham gia qua link này nữa."
-          confirmLabel="Thu hồi"
-          confirmVariant="danger"
-          loading={busy}
-          onConfirm={handleRevoke}
-          onCancel={() => setConfirmRevoke(false)}
-        />
-      )}
     </>
   );
 }
@@ -1535,7 +1448,7 @@ export function InfoSidebar({
                 </p>
               )
             ))}
-          {!conv.isGroup && conv.otherUsername && (
+          {!conv.isGroup && conv.otherUsername && !conv.isPending && (
             <Link
               href={`/profile/${conv.otherUsername}`}
               className="mt-2.5 px-3.5 py-1.5 bg-primary/10 text-primary text-xs font-semibold rounded-full hover:bg-primary/20 transition-colors flex items-center gap-1.5"
@@ -1545,37 +1458,48 @@ export function InfoSidebar({
             </Link>
           )}
         </div>
-
-        <div className="px-4 py-3 border-b border-surface-100">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2.5">
-              <div
-                className={clsx(
-                  "w-8 h-8 rounded-xl flex items-center justify-center shrink-0",
-                  notifOn ? "bg-primary/10" : "bg-surface-100",
-                )}
-              >
-                {notifOn ? (
-                  <Bell size={14} className="text-primary" />
-                ) : (
-                  <BellOff size={14} className="text-text-muted" />
-                )}
-              </div>
-              <div>
-                <p className="text-xs font-semibold text-text-primary">
-                  Thông báo
-                </p>
-                <p className="text-[11px] text-text-muted">
-                  {notifOn ? "Đang bật" : "Đã tắt"}
-                </p>
+        {conv.isPending ? (
+          <div className="px-4 py-4 text-center">
+            <p className="text-xs text-text-muted">
+              {conv.isGroup
+                ? "Chấp nhận lời mời để xem đầy đủ thông tin nhóm"
+                : "Chấp nhận cuộc trò chuyện để xem thêm tuỳ chọn"}
+            </p>
+          </div>
+        ) : (
+          <>
+            <div className="px-4 py-3 border-b border-surface-100">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2.5">
+                  <div
+                    className={clsx(
+                      "w-8 h-8 rounded-xl flex items-center justify-center shrink-0",
+                      notifOn ? "bg-primary/10" : "bg-surface-100",
+                    )}
+                  >
+                    {notifOn ? (
+                      <Bell size={14} className="text-primary" />
+                    ) : (
+                      <BellOff size={14} className="text-text-muted" />
+                    )}
+                  </div>
+                  <div>
+                    <p className="text-xs font-semibold text-text-primary">
+                      Thông báo
+                    </p>
+                    <p className="text-[11px] text-text-muted">
+                      {notifOn ? "Đang bật" : "Đã tắt"}
+                    </p>
+                  </div>
+                </div>
+                <ToggleSwitch
+                  checked={notifOn}
+                  onChange={() => setNotifOn((v) => !v)}
+                />
               </div>
             </div>
-            <ToggleSwitch
-              checked={notifOn}
-              onChange={() => setNotifOn((v) => !v)}
-            />
-          </div>
-        </div>
+          </>
+        )}
 
         {conv.isGroup && (
           <div className="px-4 py-3 border-b border-surface-100 flex flex-col gap-2">
@@ -2003,7 +1927,6 @@ export function InfoSidebar({
       {inviteLinkOpen && (
         <InviteLinkPanel
           conversationId={conv.id}
-          isLeader={isLeader}
           onClose={() => setInviteLinkOpen(false)}
         />
       )}

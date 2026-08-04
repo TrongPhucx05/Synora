@@ -1335,8 +1335,9 @@ export default function ChatPage() {
                   id: conv.id,
                   name: conv.name,
                   avatarUrl: conv.avatarUrl,
-                  isGroup: false,
+                  isGroup: conv.isGroup,
                   otherUsername: conv.otherUsername,
+                  otherUserId: conv.otherUserId,
                   lastMessage: conv.lastMessage || "",
                   lastMessageAt: conv.lastMessageAt,
                   unreadCount: 0,
@@ -1696,19 +1697,21 @@ export default function ChatPage() {
 
             {currentConv.isPending ? (
               <div className="px-4 py-4 border-t border-surface-200 bg-white shrink-0 flex items-center justify-center gap-2">
-                <button
-                  onClick={handlePendingBlock}
-                  disabled={pendingActionLoading}
-                  className="flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-semibold bg-surface-100 text-text-secondary hover:bg-surface-200 transition-colors disabled:opacity-50"
-                >
-                  Chặn
-                </button>
+                {!currentConv.isGroup && (
+                  <button
+                    onClick={handlePendingBlock}
+                    disabled={pendingActionLoading}
+                    className="flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-semibold bg-surface-100 text-text-secondary hover:bg-surface-200 transition-colors disabled:opacity-50"
+                  >
+                    Chặn
+                  </button>
+                )}
                 <button
                   onClick={handlePendingDelete}
                   disabled={pendingActionLoading}
                   className="flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-semibold bg-red-50 text-red-500 hover:bg-red-100 transition-colors disabled:opacity-50"
                 >
-                  Xóa
+                  Từ chối
                 </button>
                 <button
                   onClick={handlePendingAccept}

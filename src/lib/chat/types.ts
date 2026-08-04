@@ -202,8 +202,8 @@ export type AvatarMenuPanel = "main" | "pending" | "blocked" | "settings";
 export type ConfirmAction = "block" | "leave" | "report";
 
 export type GroupInviteLinkInfo = {
-  token: string | null;
-  isActive: boolean;
+  token: string;
+  expiresAt: string;
 };
 
 export type JoinLinkPreview = {
@@ -211,7 +211,8 @@ export type JoinLinkPreview = {
   name: string | null;
   avatarUrl: string | null;
   memberCount: number;
-  viewerStatus: "member" | "invited" | "requested" | "none";
+  viewerStatus: "member" | "invited" | "requested" | "none" | "cooldown";
+  cooldownEndsAt?: string;
 };
 
 export type JoinRequestItem = {

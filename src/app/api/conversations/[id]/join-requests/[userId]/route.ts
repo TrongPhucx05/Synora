@@ -96,8 +96,9 @@ export async function POST(req: NextRequest, { params }: Params) {
     return NextResponse.json({ approved: true });
   }
 
-  const { count } = await prisma.conversationMember.deleteMany({
+  const { count } = await prisma.conversationMember.updateMany({
     where: stillPendingWhere,
+    data: { rejectedAt: new Date(), hiddenAt: new Date() },
   });
 
   if (count === 0) {

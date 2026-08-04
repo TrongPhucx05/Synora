@@ -4,6 +4,7 @@ import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
 type Params = { params: Promise<{ token: string }> };
+const COOLDOWN_MS = 3 * 24 * 60 * 60 * 1000;
 
 export async function GET(_req: NextRequest, { params }: Params) {
   const session = await getServerSession(authOptions);
@@ -38,13 +39,37 @@ export async function GET(_req: NextRequest, { params }: Params) {
 
   const membership = await prisma.conversationMember.findUnique({
     where: { conversationId_userId: { conversationId: conv.id, userId } },
-    select: { isAccepted: true, origin: true },
+    select: { isAccepted: true, origin: true, rejectedAt: true },
   });
 
-  let viewerStatus: "member" | "invited" | "requested" | "none" = "none";
-  if (membership?.isAccepted) viewerStatus = "member";
-  else if (membership && membership.origin === "INVITED") viewerStatus = "invited";
-  else if (membership && membership.origin === "REQUESTED") viewerStatus = "requested";
+  let viewerStatus: "member" | "invited" | "requested" | "none" | "cooldown" =
+    "none";
+  let cooldownEndsAt: string | undefined;
+
+  if (membership?.isAccepted) {
+    viewerStatus = "member";
+  } else if (membership?.rejectedAt) {
+    const remaining =
+      membership.rejectedAt.getTime() + COOLDOWN_MS - Date.now();
+    if (remaining > 0) {
+      viewerStatus = "cooldown";
+      cooldownEndsAt = new Date(
+        membership.rejectedAt.getTime() + COOLDOWN_MS,
+      ).toISOString();
+    }
+  } else if (
+    membership &&
+    !membership.isAccepted &&
+    membership.origin === "INVITED"
+  ) {
+    viewerStatus = "invited";
+  } else if (
+    membership &&
+    !membership.isAccepted &&
+    membership.origin === "REQUESTED"
+  ) {
+    viewerStatus = "requested";
+  }
 
   return NextResponse.json({
     conversationId: conv.id,
@@ -52,6 +77,7 @@ export async function GET(_req: NextRequest, { params }: Params) {
     avatarUrl: conv.avatarUrl,
     memberCount: conv._count.members,
     viewerStatus,
+    cooldownEndsAt,
   });
 }
 
@@ -82,8 +108,55 @@ export async function POST(_req: NextRequest, { params }: Params) {
     where: { conversationId_userId: { conversationId, userId } },
   });
 
-  if (membership?.isAccepted) {
+  if (membership?.isAccepted)
     return NextResponse.json({ status: "already_member", conversationId });
+
+  if (membership?.rejectedAt) {
+    const remaining =
+      membership.rejectedAt.getTime() + COOLDOWN_MS - Date.now();
+    if (remaining > 0) {
+      const days = Math.ceil(remaining / (24 * 60 * 60 * 1000));
+      return NextResponse.json(
+        {
+          error: `Bạn đã bị từ chối trước đó. Vui lòng thử lại sau ${days} ngày.`,
+        },
+        { status: 403 },
+      );
+    }
+    const requester = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { username: true, profile: { select: { displayName: true } } },
+    });
+    const requesterName =
+      requester?.profile?.displayName ??
+      requester?.username ??
+      "Một người dùng";
+    const leaders = await prisma.conversationMember.findMany({
+      where: { conversationId, isLeader: true, isAccepted: true },
+      select: { userId: true },
+    });
+
+    await prisma.$transaction([
+      prisma.conversationMember.update({
+        where: { conversationId_userId: { conversationId, userId } },
+        data: {
+          isAccepted: false,
+          origin: "REQUESTED",
+          rejectedAt: null,
+          hiddenAt: null,
+        },
+      }),
+      prisma.notification.createMany({
+        data: leaders.map((l) => ({
+          recipientId: l.userId,
+          actorId: userId,
+          type: "GROUP_JOIN_REQUEST",
+          message: `${requesterName} yêu cầu tham gia nhóm "${link.conversation.name}"`,
+          conversationId,
+        })),
+      }),
+    ]);
+    return NextResponse.json({ status: "requested", conversationId });
   }
 
   if (membership && !membership.isAccepted && membership.origin === "INVITED") {
@@ -94,7 +167,11 @@ export async function POST(_req: NextRequest, { params }: Params) {
     return NextResponse.json({ status: "joined", conversationId });
   }
 
-  if (membership && !membership.isAccepted && membership.origin === "REQUESTED") {
+  if (
+    membership &&
+    !membership.isAccepted &&
+    membership.origin === "REQUESTED"
+  ) {
     return NextResponse.json({ status: "already_requested", conversationId });
   }
 

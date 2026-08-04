@@ -122,6 +122,7 @@ export async function POST(req: NextRequest, { params }: Params) {
               userId: id,
               isAccepted: false,
               origin: "INVITED" as const,
+              invitedById: userId,
             })),
           }),
         ]

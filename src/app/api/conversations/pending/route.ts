@@ -12,9 +12,10 @@ export async function GET(_req: NextRequest) {
   const userId = session.user.id;
 
   const pending = await prisma.conversationMember.findMany({
-    where: { userId, isAccepted: false, hiddenAt: null },
+    where: { userId, isAccepted: false, hiddenAt: null, origin: "INVITED", },
     select: {
       hiddenAt: true,
+      invitedById: true,
       conversation: {
         select: {
           id: true,
@@ -64,9 +65,17 @@ export async function GET(_req: NextRequest) {
     return !!lastMsgAt && lastMsgAt > m.hiddenAt;
   });
 
-  const result = visible.map((m) => {
-    const conv = m.conversation;
-    const other = conv.members[0]?.user;
+  const result = await Promise.all(visible.map(async (m) => {
+  const conv = m.conversation;
+  let other = conv.members[0]?.user;
+
+  if (conv.isGroup && m.invitedById) {
+    const inviter = await prisma.user.findUnique({
+      where: { id: m.invitedById },
+      select: { id: true, username: true, profile: { select: { displayName: true, avatarUrl: true } } },
+    });
+    if (inviter) other = inviter;
+  }
     const lastMsg = conv.messages[0];
 
     let content: string | null = null;
@@ -104,7 +113,7 @@ export async function GET(_req: NextRequest) {
           createdAt: lastMsg?.createdAt?.toISOString() ?? null,
           messageCount: conv._count.messages,
         };
-  });
+  }));
 
   return NextResponse.json(result);
 }

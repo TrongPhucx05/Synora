@@ -42,7 +42,9 @@ export type OpenPendingPayload = {
   id: string;
   name: string;
   avatarUrl: string | null;
+  isGroup: boolean;
   otherUsername: string;
+  otherUserId?: string;
   lastMessage: string;
   lastMessageAt: string | null;
   kind: "pending" | "archived";
@@ -374,7 +376,9 @@ export function PendingMessages({
       id: msg.id,
       name: msg.sender,
       avatarUrl: msg.avatarUrl,
+      isGroup: msg.isGroup,
       otherUsername: msg.senderUsername,
+      otherUserId: msg.isGroup ? undefined : msg.senderId,
       lastMessage: msg.content ?? "",
       lastMessageAt: msg.createdAt,
       kind: "pending",
@@ -644,7 +648,9 @@ export function PendingMessages({
                               id: conv.id,
                               name: conv.name,
                               avatarUrl: conv.avatarUrl,
+                              isGroup: conv.isGroup,
                               otherUsername: conv.otherUsername ?? "",
+                              otherUserId: conv.otherUserId,
                               lastMessage: conv.lastMessage,
                               lastMessageAt: conv.lastMessageAt,
                               kind: "archived",

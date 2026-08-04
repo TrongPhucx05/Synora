@@ -489,38 +489,6 @@ export async function fetchInviteLink(
   return res.json();
 }
 
-export async function createInviteLink(
-  conversationId: string,
-): Promise<GroupInviteLinkInfo> {
-  const res = await fetch(`/api/conversations/${conversationId}/invite-link`, {
-    method: "POST",
-  });
-  const data = await res.json().catch(() => ({}));
-  if (!res.ok) throw new Error(data.error ?? "Không thể tạo link mời");
-  return data;
-}
-
-export async function regenerateInviteLink(
-  conversationId: string,
-): Promise<GroupInviteLinkInfo> {
-  const res = await fetch(`/api/conversations/${conversationId}/invite-link`, {
-    method: "PATCH",
-  });
-  const data = await res.json().catch(() => ({}));
-  if (!res.ok) throw new Error(data.error ?? "Không thể tạo lại link mời");
-  return data;
-}
-
-export async function revokeInviteLink(conversationId: string): Promise<void> {
-  const res = await fetch(`/api/conversations/${conversationId}/invite-link`, {
-    method: "DELETE",
-  });
-  if (!res.ok) {
-    const data = await res.json().catch(() => ({}));
-    throw new Error(data.error ?? "Không thể thu hồi link mời");
-  }
-}
-
 export async function fetchJoinRequests(
   conversationId: string,
 ): Promise<JoinRequestItem[]> {
