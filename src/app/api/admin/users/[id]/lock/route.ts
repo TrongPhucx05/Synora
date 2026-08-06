@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { LOCK_REASONS } from "@/lib/admin/account-lock";
+import type { ViolationReason } from "@/lib/admin/moderation";
 
 export async function POST(
   req: NextRequest,
@@ -23,16 +24,19 @@ export async function POST(
     notifyUser = true,
   }: {
     type?: "SUSPEND" | "BAN";
-    reason?: string;
+    reason?: ViolationReason;
     note?: string;
     suspendedUntil?: string;
     notifyUser?: boolean;
   } = body ?? {};
 
   if (type !== "SUSPEND" && type !== "BAN") {
-    return NextResponse.json({ error: "Loại khóa không hợp lệ" }, { status: 400 });
+    return NextResponse.json(
+      { error: "Loại khóa không hợp lệ" },
+      { status: 400 },
+    );
   }
-  if (!LOCK_REASONS.includes(reason as any)) {
+  if (!reason || !LOCK_REASONS.includes(reason)) {
     return NextResponse.json({ error: "Vui lòng chọn lý do" }, { status: 400 });
   }
   if (type === "SUSPEND" && !suspendedUntil) {
@@ -53,7 +57,10 @@ export async function POST(
     select: { id: true, role: true },
   });
   if (!target) {
-    return NextResponse.json({ error: "Không tìm thấy người dùng" }, { status: 404 });
+    return NextResponse.json(
+      { error: "Không tìm thấy người dùng" },
+      { status: 404 },
+    );
   }
   if (target.role === "ADMIN") {
     return NextResponse.json(
@@ -72,7 +79,7 @@ export async function POST(
         data: {
           status: type === "SUSPEND" ? "SUSPENDED" : "BANNED",
           suspendedUntil: until,
-          suspensionReason: reason as any,
+          suspensionReason: reason,
           suspensionNote: trimmedNote,
           violationCount: { increment: 1 },
           lastViolationAt: new Date(),
@@ -84,7 +91,7 @@ export async function POST(
           type: type === "SUSPEND" ? "ACCOUNT_SUSPENDED" : "ACCOUNT_BANNED",
           adminId: session.user.id,
           targetUserId: id,
-          reason: reason as any,
+          reason: reason,
           note: trimmedNote,
           notifiedUser: notifyUser,
           flaggedUser: true,

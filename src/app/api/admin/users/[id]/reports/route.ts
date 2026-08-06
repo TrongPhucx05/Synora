@@ -25,7 +25,7 @@ export async function GET(
     id: r.id,
     reason: r.reason,
     description: r.description,
-    isResolved: r.isResolved,
+    isResolved: r.status === "RESOLVED",
     reporter: r.reporter.profile?.displayName ?? r.reporter.username,
     date: r.createdAt.toLocaleDateString("vi-VN", {
       day: "2-digit",

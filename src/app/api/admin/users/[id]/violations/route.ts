@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { VIOLATION_REASON_LABELS } from "@/lib/admin/moderation";
 
 export async function GET(
   _req: NextRequest,
@@ -33,7 +34,7 @@ export async function GET(
   const result = actions.map((a) => ({
     id: a.id,
     action: LABEL[a.type] ?? a.type,
-    reason: a.reason ?? "—",
+    reason: a.reason ? VIOLATION_REASON_LABELS[a.reason] : "—",
     note: a.note,
     adminUsername: a.admin.username,
     date: a.createdAt.toLocaleDateString("vi-VN", {

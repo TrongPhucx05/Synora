@@ -99,6 +99,14 @@ enum ReportReason {
   OTHER
 }
 
+enum SuspensionReason {
+  SPAM
+  INAPPROPRIATE
+  COPYRIGHT
+  MISINFORMATION
+  OTHER
+}
+
 enum ReportStatus {
   PENDING
   RESOLVED
@@ -205,7 +213,7 @@ model User {
 
   status            AccountStatus @default(ACTIVE)
   suspendedUntil    DateTime?
-  suspensionReason  ReportReason?
+  suspensionReason  SuspensionReason?
   suspensionNote    String?
   violationCount   Int       @default(0)
   lastViolationAt  DateTime?
@@ -716,7 +724,7 @@ model ModerationAction {
   targetUserId   String
   targetUser     User                 @relation("moderationTarget", fields: [targetUserId], references: [id], onDelete: Cascade)
 
-  reason         ReportReason?
+  reason  SuspensionReason?
   note           String?
 
   notifiedUser   Boolean              @default(false)
