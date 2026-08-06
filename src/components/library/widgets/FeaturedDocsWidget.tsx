@@ -17,22 +17,25 @@ export default function FeaturedDocsWidget({
 
   useEffect(() => {
     fetch("/api/library/documents?sort=mostDownloaded", {
-  headers: { "Cache-Control": "no-cache", "Pragma": "no-cache" }
-})
+      headers: { "Cache-Control": "no-cache", Pragma: "no-cache" },
+    })
       .then((r) => r.json())
       .then((data) => {
-        const mapped = (data.docs ?? []).slice(0, 3).map((d: any) => ({
-          id: d.id,
-          title: d.title,
-          type: d.mimeType?.includes("pdf")
-            ? "PDF"
-            : d.mimeType?.includes("presentation")
-              ? "PPTX"
-              : d.mimeType?.includes("wordprocessing")
-                ? "DOCX"
-                : "PDF",
-          downloadCount: d.downloadCount,
-        }));
+        const mapped = (data.docs ?? [])
+          .filter((d: any) => (d.downloadCount ?? 0) > 0)
+          .slice(0, 3)
+          .map((d: any) => ({
+            id: d.id,
+            title: d.title,
+            type: d.mimeType?.includes("pdf")
+              ? "PDF"
+              : d.mimeType?.includes("presentation")
+                ? "PPTX"
+                : d.mimeType?.includes("wordprocessing")
+                  ? "DOCX"
+                  : "PDF",
+            downloadCount: d.downloadCount,
+          }));
         setDocs(mapped);
       });
   }, [refreshKey]);
@@ -75,7 +78,9 @@ export default function FeaturedDocsWidget({
           );
         })}
         {docs.length === 0 && (
-          <p className="text-xs text-text-muted py-2">Chưa có tài liệu.</p>
+          <p className="text-xs text-text-muted py-2">
+            Chưa có tài liệu nào được tải xuống.
+          </p>
         )}
       </div>
     </div>
