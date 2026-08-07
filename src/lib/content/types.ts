@@ -36,6 +36,21 @@ export type AdminMediaRow = {
   type: "IMAGE" | "VIDEO";
   author: ContentAuthor;
   postExcerpt: string;
+  reportCount: number;
+  status: ContentStatus;
+  createdAt: string;
+};
+
+export type AdminDocumentRow = {
+  id: string;
+  title: string;
+  type: string;
+  subject: string | null;
+  level: string | null;
+  fileUrl: string;
+  downloadCount: number;
+  author: ContentAuthor;
+  reportCount: number;
   status: ContentStatus;
   createdAt: string;
 };
