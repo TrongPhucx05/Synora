@@ -1,4 +1,9 @@
-export type ReportTargetType = "USER" | "POST" | "COMMENT" | "MESSAGE";
+export type ReportTargetType =
+  | "USER"
+  | "POST"
+  | "COMMENT"
+  | "MESSAGE"
+  | "DOCUMENT";
 export type ReportStatus = "PENDING" | "RESOLVED" | "DISMISSED";
 
 export type ReportReasonKey =

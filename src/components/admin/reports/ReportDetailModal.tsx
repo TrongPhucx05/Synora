@@ -8,6 +8,7 @@ const TARGET_LINKS: Record<AdminReportRow["targetType"], string> = {
   POST: "/admin/content?tab=posts",
   COMMENT: "/admin/content?tab=comments",
   MESSAGE: "/admin/conversations",
+  DOCUMENT: "/admin/library",
 };
 
 const TARGET_LINK_LABELS: Record<AdminReportRow["targetType"], string> = {
@@ -15,6 +16,7 @@ const TARGET_LINK_LABELS: Record<AdminReportRow["targetType"], string> = {
   POST: "Xem bài viết trong Quản lý nội dung",
   COMMENT: "Xem bình luận trong Quản lý nội dung",
   MESSAGE: "Xem đoạn chat liên quan",
+  DOCUMENT: "Xem tài liệu trong Quản lý tài liệu",
 };
 
 export function ReportDetailModal({

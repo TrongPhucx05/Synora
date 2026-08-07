@@ -7,6 +7,7 @@ import {
   FileText,
   MessageSquare,
   Mail,
+  BookOpen,
 } from "lucide-react";
 import {
   REASON_LABELS,
@@ -38,6 +39,11 @@ const TARGET_CONFIG: Record<
     label: "Tin nhắn",
     icon: Mail,
     className: "bg-cyan-50 text-cyan-600",
+  },
+  DOCUMENT: {
+    label: "Tài liệu",
+    icon: BookOpen,
+    className: "bg-emerald-50 text-emerald-600",
   },
 };
 

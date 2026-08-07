@@ -12,7 +12,7 @@ const VALID_REASONS = [
   "HARASSMENT",
   "OTHER",
 ];
-const VALID_TARGETS = ["USER", "POST", "COMMENT", "MESSAGE"];
+const VALID_TARGETS = ["USER", "POST", "COMMENT", "MESSAGE", "DOCUMENT"];
 
 export async function POST(req: NextRequest) {
   const session = await getServerSession(authOptions);
@@ -103,6 +103,21 @@ export async function POST(req: NextRequest) {
         { error: "Không thể tự báo cáo tin nhắn của mình" },
         { status: 400 },
       );
+  } else if (targetType === "DOCUMENT") {
+    const exists = await prisma.document.findUnique({
+      where: { id: targetId },
+      select: { uploaderId: true },
+    });
+    if (!exists)
+      return NextResponse.json(
+        { error: "Không tìm thấy tài liệu" },
+        { status: 404 },
+      );
+    if (exists.uploaderId === session.user.id)
+      return NextResponse.json(
+        { error: "Không thể tự báo cáo tài liệu của mình" },
+        { status: 400 },
+      );
   }
 
   const dup = await prisma.report.findFirst({
@@ -113,6 +128,7 @@ export async function POST(req: NextRequest) {
       ...(targetType === "POST" && { postId: targetId }),
       ...(targetType === "COMMENT" && { commentId: targetId }),
       ...(targetType === "MESSAGE" && { messageId: targetId }),
+      ...(targetType === "DOCUMENT" && { documentId: targetId }),
     },
     select: { id: true },
   });
@@ -132,6 +148,7 @@ export async function POST(req: NextRequest) {
       ...(targetType === "POST" && { postId: targetId }),
       ...(targetType === "COMMENT" && { commentId: targetId }),
       ...(targetType === "MESSAGE" && { messageId: targetId }),
+      ...(targetType === "DOCUMENT" && { documentId: targetId }),
     },
   });
 

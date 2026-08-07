@@ -1,5 +1,7 @@
+import type { ReportTargetType } from "@/lib/reports/types";
+
 export async function submitReport(
-  targetType: "USER" | "POST" | "COMMENT" | "MESSAGE",
+  targetType: ReportTargetType,
   targetId: string,
   reason: string,
   detail?: string,

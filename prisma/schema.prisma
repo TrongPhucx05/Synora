@@ -369,6 +369,8 @@ model Document {
   tags        String[]
   savedBy     SavedDocument[]
 
+  reports     Report[]
+
   pageCount   Int?
 
   extractedText String?
@@ -699,6 +701,9 @@ model Report {
   comment        Comment?     @relation(fields: [commentId], references: [id], onDelete: SetNull)
   messageId      String?
   message        Message?     @relation(fields: [messageId], references: [id], onDelete: SetNull)
+
+  documentId     String?
+  document       Document?    @relation(fields: [documentId], references: [id], onDelete: SetNull)
 
   reason         ReportReason
   description    String?

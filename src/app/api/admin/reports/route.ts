@@ -3,10 +3,11 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
-function targetTypeOf(r: any): "USER" | "POST" | "COMMENT" | "MESSAGE" {
+function targetTypeOf(r: any): "USER" | "POST" | "COMMENT" | "MESSAGE" | "DOCUMENT" {
   if (r.reportedUserId) return "USER";
   if (r.commentId) return "COMMENT";
   if (r.messageId) return "MESSAGE";
+  if (r.documentId) return "DOCUMENT";
   return "POST";
 }
 
@@ -60,6 +61,13 @@ export async function GET(req: NextRequest) {
           sender: { include: { profile: true } },
         },
       },
+      document: {
+        select: {
+          title: true,
+          uploaderId: true,
+          uploader: { include: { profile: true } },
+        },
+      },
     },
   });
 
@@ -78,6 +86,9 @@ export async function GET(req: NextRequest) {
     } else if (targetType === "COMMENT") {
       targetPreview = r.comment?.content ?? "Bình luận đã bị xóa";
       targetAuthor = personOf(r.comment?.author);
+    } else if (targetType === "DOCUMENT") {
+      targetPreview = r.document?.title ?? "Tài liệu đã bị xóa";
+      targetAuthor = personOf(r.document?.uploader);
     } else {
       targetPreview = r.message?.content ?? "Tin nhắn đã bị xóa/thu hồi";
       targetAuthor = personOf(r.message?.sender);

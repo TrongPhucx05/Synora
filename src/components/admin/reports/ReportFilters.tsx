@@ -14,6 +14,7 @@ const TARGET_LABELS: Record<ReportTargetType, string> = {
   POST: "Bài viết",
   COMMENT: "Bình luận",
   MESSAGE: "Tin nhắn",
+  DOCUMENT: "Tài liệu",
 };
 
 export function ReportFilters({
