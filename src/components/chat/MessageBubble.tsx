@@ -8,6 +8,7 @@ import {
   useEffect,
 } from "react";
 import { createPortal } from "react-dom";
+import Link from "next/link";
 import {
   Smile,
   CornerUpLeft,
@@ -970,6 +971,7 @@ export function MessageBubble({
                 userId={msg.senderId}
                 onClose={() => setAvatarPopupOpen(false)}
                 onStartDM={onStartDM ?? (() => {})}
+                onBlock={onBlockUser ?? (() => {})}
               />
             )}
           </div>

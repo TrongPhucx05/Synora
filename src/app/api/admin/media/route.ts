@@ -23,7 +23,12 @@ export async function GET(req: NextRequest) {
     take: 200,
     include: {
       uploader: { include: { profile: true } },
-      post: { select: { content: true } },
+      post: {
+        select: {
+          content: true,
+          _count: { select: { reports: true } },
+        },
+      },
     },
   });
 
@@ -41,7 +46,7 @@ export async function GET(req: NextRequest) {
         avatarUrl: d.uploader.profile?.avatarUrl ?? null,
       },
       postExcerpt: d.post?.content?.slice(0, 80) ?? "",
-      reportCount: 0,
+      reportCount: d.post?._count.reports ?? 0,
       status: d.hidden ? "HIDDEN" : "VISIBLE",
       createdAt: d.createdAt.toLocaleDateString("vi-VN"),
     };

@@ -58,6 +58,12 @@ export async function POST(req: NextRequest) {
       },
     });
   } else {
+    if (!session.user.email) {
+      return NextResponse.json(
+        { error: "Tài khoản của bạn chưa có email để gửi xác nhận" },
+        { status: 400 },
+      );
+    }
     const { subject: mailSubject, html } = supportRequestReceivedEmail(
       created.subject,
     );

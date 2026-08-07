@@ -39,9 +39,9 @@ export async function PATCH(
   if (post.authorId !== session.user.id)
     return NextResponse.json({ error: "Không có quyền" }, { status: 403 });
 
-  const tags = Array.from(
-    new Set(
-      (content.match(/#[\wÀ-ỹ]+/gu) ?? []).map((t: string) =>
+  const tags: string[] = Array.from(
+    new Set<string>(
+      ((content.match(/#[\wÀ-ỹ]+/gu) ?? []) as string[]).map((t: string) =>
         t.replace(/^#/, "").toLowerCase(),
       ),
     ),

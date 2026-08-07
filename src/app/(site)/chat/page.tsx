@@ -780,6 +780,7 @@ export default function ChatPage() {
     const tempId = `temp-${Date.now()}`;
     const optimistic: Message = {
       id: tempId,
+      senderId: currentUserId,
       sender: session?.user?.name ?? "Bạn",
       initials: getInitials(session?.user?.name ?? "B"),
       color: "bg-primary",
@@ -791,6 +792,7 @@ export default function ChatPage() {
       createdAt: now,
       content: text || null,
       isMe: true,
+      isSystemMessage: false,
       attachments: uploadedAttachments.map((a, i) => ({
         id: `temp-att-${i}`,
         url: a.url,

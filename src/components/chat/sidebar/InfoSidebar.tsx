@@ -650,6 +650,7 @@ function MembersModal({
           existingUserIds={members.map((m) => m.userId)}
           onClose={() => setInviteOpen(false)}
           onInvited={load}
+          onStartDM={onStartDM}
         />
       )}
 
@@ -766,7 +767,15 @@ function RenameGroupModal({
   );
 }
 
-function LeaveChoiceModal({ onClose, onChooseTransfer, onChooseDisband }) {
+function LeaveChoiceModal({
+  onClose,
+  onChooseTransfer,
+  onChooseDisband,
+}: {
+  onClose: () => void;
+  onChooseTransfer: () => void;
+  onChooseDisband: () => void;
+}) {
   return (
     <>
       <div className="fixed inset-0 bg-black/50 z-[70]" onClick={onClose} />
