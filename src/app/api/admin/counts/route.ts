@@ -9,10 +9,18 @@ export async function GET() {
     return NextResponse.json({ error: "Không có quyền" }, { status: 403 });
   }
 
-  const [pendingReports, pendingSupportRequests] = await Promise.all([
-    prisma.report.count({ where: { status: "PENDING" } }),
-    prisma.supportRequest.count({ where: { status: "PENDING" } }),
-  ]);
+  const [pendingReports, pendingSupportRequests, pendingDocumentReports] =
+    await Promise.all([
+      prisma.report.count({ where: { status: "PENDING" } }),
+      prisma.supportRequest.count({ where: { status: "PENDING" } }),
+      prisma.report.count({
+        where: { status: "PENDING", documentId: { not: null } },
+      }),
+    ]);
 
-  return NextResponse.json({ pendingReports, pendingSupportRequests });
+  return NextResponse.json({
+    pendingReports,
+    pendingSupportRequests,
+    pendingDocumentReports,
+  });
 }

@@ -6,6 +6,7 @@ import {
   LayoutDashboard,
   Users,
   FileStack,
+  BookOpen,
   Flag,
   UsersRound,
   Bell,
@@ -20,6 +21,12 @@ const navItems = [
   { href: "/admin", icon: LayoutDashboard, label: "Dashboard", exact: true },
   { href: "/admin/users", icon: Users, label: "Người dùng" },
   { href: "/admin/content", icon: FileStack, label: "Nội dung" },
+  {
+    href: "/admin/library",
+    icon: BookOpen,
+    label: "Tài liệu",
+    countKey: "pendingDocumentReports",
+  },
   {
     href: "/admin/reports",
     icon: Flag,
@@ -38,13 +45,18 @@ const navItems = [
   { href: "/admin/audit-log", icon: ScrollText, label: "Nhật ký quản trị" },
 ] as const;
 
-type Counts = { pendingReports: number; pendingSupportRequests: number };
+type Counts = {
+  pendingReports: number;
+  pendingSupportRequests: number;
+  pendingDocumentReports: number;
+};
 
 export default function Sidebar() {
   const pathname = usePathname();
   const [counts, setCounts] = useState<Counts>({
     pendingReports: 0,
     pendingSupportRequests: 0,
+    pendingDocumentReports: 0,
   });
 
   useEffect(() => {
@@ -85,7 +97,8 @@ export default function Sidebar() {
 
       <nav className="flex-1 flex flex-col gap-0.5 px-3 overflow-y-auto">
         {navItems.map((item) => {
-          const isActive = item.exact
+          const isExact = "exact" in item && item.exact;
+          const isActive = isExact
             ? pathname === item.href
             : pathname === item.href || pathname.startsWith(item.href + "/");
           const badgeCount =
