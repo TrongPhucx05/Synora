@@ -12,27 +12,45 @@ export async function GET() {
   }
 
   try {
-    const [totalUsers, totalPosts, totalComments, activeUsers, topPostsRaw] =
-      await Promise.all([
-        prisma.user.count(),
-        prisma.post.count(),
-        prisma.comment.count(),
-        prisma.user.count({
-          where: {
-            lastActiveAt: { gte: new Date(Date.now() - ACTIVE_WINDOW_MS) },
-          },
-        }),
-        prisma.post.findMany({
-          where: { visibility: "PUBLIC" },
-          orderBy: [{ likeCount: "desc" }, { commentCount: "desc" }],
-          take: 5,
-          include: {
-            author: { include: { profile: true } },
-            tags: { include: { tag: true } },
-            documents: true,
-          },
-        }),
-      ]);
+    const [
+      totalUsers,
+      totalPosts,
+      totalComments,
+      activeUsers,
+      totalDocuments,
+      pendingReports,
+      topPostsRaw,
+    ] = await Promise.all([
+      prisma.user.count(),
+      prisma.post.count(),
+      prisma.comment.count(),
+      prisma.user.count({
+        where: {
+          lastActiveAt: { gte: new Date(Date.now() - ACTIVE_WINDOW_MS) },
+        },
+      }),
+      prisma.document.count({
+        where: {
+          postId: null,
+          type: { notIn: ["IMAGE", "VIDEO"] },
+          hidden: false,
+        },
+      }),
+      prisma.report.count({ where: { status: "PENDING" } }),
+      prisma.post.findMany({
+        where: {
+          visibility: "PUBLIC",
+          OR: [{ likeCount: { gt: 0 } }, { commentCount: { gt: 0 } }],
+        },
+        orderBy: [{ likeCount: "desc" }, { commentCount: "desc" }],
+        take: 5,
+        include: {
+          author: { include: { profile: true } },
+          tags: { include: { tag: true } },
+          documents: true,
+        },
+      }),
+    ]);
 
     const topPosts = topPostsRaw.map((post) => {
       const displayName =
@@ -81,7 +99,14 @@ export async function GET() {
     });
 
     return NextResponse.json({
-      stats: { totalUsers, activeUsers, totalPosts, totalComments },
+      stats: {
+        totalUsers,
+        activeUsers,
+        totalPosts,
+        totalComments,
+        totalDocuments,
+        pendingReports,
+      },
       topPosts,
     });
   } catch (err) {

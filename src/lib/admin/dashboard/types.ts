@@ -10,6 +10,8 @@ export type DashboardStats = {
   activeUsers: number;
   totalPosts: number;
   totalComments: number;
+  totalDocuments: number;
+  pendingReports: number;
 };
 
 export type TopPostAttachment = {

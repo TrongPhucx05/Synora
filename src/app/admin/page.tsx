@@ -20,8 +20,6 @@ import type { DashboardStats, TopPostItem } from "@/lib/admin/dashboard/types";
 
 const PLACEHOLDER = {
   totalGroups: 156,
-  totalDocuments: 4210,
-  pendingReports: 27,
   pendingContent: 9,
 };
 
@@ -88,16 +86,14 @@ export default function AdminDashboardPage() {
         <StatCard
           icon={BookOpen}
           label="Tổng tài liệu"
-          value={PLACEHOLDER.totalDocuments.toLocaleString("vi-VN")}
+          value={fmt(stats?.totalDocuments)}
           colorClass="bg-indigo-50 text-indigo-600"
-          comingSoon
         />
         <StatCard
           icon={Flag}
           label="Báo cáo chưa xử lý"
-          value={PLACEHOLDER.pendingReports}
+          value={fmt(stats?.pendingReports)}
           colorClass="bg-red-50 text-red-600"
-          comingSoon
         />
         <StatCard
           icon={Clock}
