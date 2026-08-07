@@ -10,19 +10,26 @@ import {
   BookmarkCheck,
   Pencil,
   Trash2,
+  ChevronDown,
 } from "lucide-react";
 import clsx from "clsx";
 import { FILE_TYPE_COLORS } from "@/lib/library/data";
 import type { Document } from "@/lib/library/types";
 import EditDocumentModal from "@/components/library/EditDocumentModal";
+import { ReportModal } from "@/components/ui/ReportModal";
 import { useToast } from "@/components/ui/Toast";
+import {
+  VIOLATION_REASON_LABELS,
+  VIOLATION_REASONS,
+  type ViolationReason,
+} from "@/lib/admin/moderation";
 
 interface DocumentCardProps {
   doc: Document;
   isSaved: boolean;
   isLoggedIn: boolean;
   onToggleSave: (id: string) => void;
-  onReport: (id: string) => void;
+  onReport?: (id: string) => void;
   onDownload?: () => void;
   currentUserId?: string;
   onEdited?: (updated: Partial<Document>) => void;
@@ -30,16 +37,11 @@ interface DocumentCardProps {
   isAdmin?: boolean;
 }
 
-function getGoogleViewerUrl(fileUrl: string) {
-  return `https://docs.google.com/viewer?url=${encodeURIComponent(fileUrl)}&embedded=false`;
-}
-
 export default function DocumentCard({
   doc,
   isSaved,
   isLoggedIn,
   onToggleSave,
-  onReport,
   onDownload,
   currentUserId,
   onEdited,
@@ -50,6 +52,13 @@ export default function DocumentCard({
   const [showEditModal, setShowEditModal] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [showReportModal, setShowReportModal] = useState(false);
+
+  const [showAdminDeleteConfirm, setShowAdminDeleteConfirm] = useState(false);
+  const [adminReason, setAdminReason] = useState<ViolationReason | "">("");
+  const [adminNote, setAdminNote] = useState("");
+  const [isAdminDeleting, setIsAdminDeleting] = useState(false);
+
   const { showToast } = useToast();
   const menuRef = useRef<HTMLDivElement>(null);
   const isOwner = !!currentUserId && currentUserId === doc.uploader?.id;
@@ -90,6 +99,33 @@ export default function DocumentCard({
       showToast("Lỗi kết nối, vui lòng thử lại", "error");
     } finally {
       setIsDeleting(false);
+    }
+  };
+
+  const handleAdminDelete = async () => {
+    if (!adminReason) return;
+    setIsAdminDeleting(true);
+    try {
+      const res = await fetch(`/api/admin/documents/${doc.id}`, {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          reason: adminReason,
+          note: adminNote.trim() || undefined,
+        }),
+      });
+      if (res.ok) {
+        setShowAdminDeleteConfirm(false);
+        showToast("Đã xóa tài liệu vi phạm và gửi thông báo", "delete");
+        setTimeout(() => onDeleted?.(doc.id), 400);
+      } else {
+        const data = await res.json();
+        showToast(data.error ?? "Xóa thất bại", "error");
+      }
+    } catch {
+      showToast("Lỗi kết nối, vui lòng thử lại", "error");
+    } finally {
+      setIsAdminDeleting(false);
     }
   };
 
@@ -154,8 +190,8 @@ export default function DocumentCard({
             {doc.type.toUpperCase().slice(0, 4)}
           </div>
 
-          <div ref={menuRef} className="relative">
-            {!isAdmin && (
+          {(isLoggedIn || isAdmin) && (
+            <div ref={menuRef} className="relative">
               <button
                 onClick={() => setMenuOpen((p) => !p)}
                 aria-label="Tùy chọn"
@@ -163,68 +199,79 @@ export default function DocumentCard({
               >
                 <MoreHorizontal size={15} />
               </button>
-            )}
 
-            {!isAdmin && menuOpen && (
-              <div className="absolute right-0 top-full mt-1 z-20 w-40 bg-white border border-surface-200 rounded-xl shadow-lg py-1 animate-in fade-in zoom-in-95 duration-150 origin-top-right">
-                {isLoggedIn ? (
-                  <>
-                    <button
-                      onClick={handleToggleSaveWithToast}
-                      className="w-full flex items-center gap-2.5 px-3.5 py-2 text-sm text-text-secondary hover:bg-surface-50 hover:text-text-primary transition-colors"
-                    >
-                      {isSaved ? (
-                        <BookmarkCheck size={14} className="text-primary" />
-                      ) : (
-                        <Bookmark size={14} />
-                      )}
-                      {isSaved ? "Bỏ lưu" : "Lưu tài liệu"}
-                    </button>
-                    {isOwner && (
-                      <>
-                        <div className="my-1 border-t border-surface-100" />
-                        <button
-                          onClick={() => {
-                            setShowEditModal(true);
-                            setMenuOpen(false);
-                          }}
-                          className="w-full flex items-center gap-2.5 px-3.5 py-2 text-sm text-text-secondary hover:bg-surface-50 hover:text-text-primary transition-colors"
-                        >
-                          <Pencil size={14} />
-                          Chỉnh sửa
-                        </button>
-                        <button
-                          onClick={() => {
-                            setShowDeleteConfirm(true);
-                            setMenuOpen(false);
-                          }}
-                          className="w-full flex items-center gap-2.5 px-3.5 py-2 text-sm text-red-500 hover:bg-red-50 transition-colors"
-                        >
-                          <Trash2 size={14} />
-                          Xóa tài liệu
-                        </button>
-                      </>
-                    )}
-                    <div className="my-1 border-t border-surface-100" />
+              {menuOpen && (
+                <div className="absolute right-0 top-full mt-1 z-20 w-44 bg-white border border-surface-200 rounded-xl shadow-lg py-1 animate-in fade-in zoom-in-95 duration-150 origin-top-right">
+                  {isAdmin ? (
                     <button
                       onClick={() => {
-                        onReport(doc.id);
+                        setShowAdminDeleteConfirm(true);
                         setMenuOpen(false);
                       }}
                       className="w-full flex items-center gap-2.5 px-3.5 py-2 text-sm text-red-500 hover:bg-red-50 transition-colors"
                     >
-                      <Flag size={14} />
-                      Báo cáo
+                      <Trash2 size={14} />
+                      Xóa tài liệu
                     </button>
-                  </>
-                ) : (
-                  <p className="px-3.5 py-2 text-xs text-text-muted">
-                    Đăng nhập để dùng tính năng này
-                  </p>
-                )}
-              </div>
-            )}
-          </div>
+                  ) : (
+                    <>
+                      <button
+                        onClick={handleToggleSaveWithToast}
+                        className="w-full flex items-center gap-2.5 px-3.5 py-2 text-sm text-text-secondary hover:bg-surface-50 hover:text-text-primary transition-colors"
+                      >
+                        {isSaved ? (
+                          <BookmarkCheck size={14} className="text-primary" />
+                        ) : (
+                          <Bookmark size={14} />
+                        )}
+                        {isSaved ? "Bỏ lưu" : "Lưu tài liệu"}
+                      </button>
+
+                      {isOwner ? (
+                        <>
+                          <div className="my-1 border-t border-surface-100" />
+                          <button
+                            onClick={() => {
+                              setShowEditModal(true);
+                              setMenuOpen(false);
+                            }}
+                            className="w-full flex items-center gap-2.5 px-3.5 py-2 text-sm text-text-secondary hover:bg-surface-50 hover:text-text-primary transition-colors"
+                          >
+                            <Pencil size={14} />
+                            Chỉnh sửa
+                          </button>
+                          <button
+                            onClick={() => {
+                              setShowDeleteConfirm(true);
+                              setMenuOpen(false);
+                            }}
+                            className="w-full flex items-center gap-2.5 px-3.5 py-2 text-sm text-red-500 hover:bg-red-50 transition-colors"
+                          >
+                            <Trash2 size={14} />
+                            Xóa tài liệu
+                          </button>
+                        </>
+                      ) : (
+                        <>
+                          <div className="my-1 border-t border-surface-100" />
+                          <button
+                            onClick={() => {
+                              setShowReportModal(true);
+                              setMenuOpen(false);
+                            }}
+                            className="w-full flex items-center gap-2.5 px-3.5 py-2 text-sm text-red-500 hover:bg-red-50 transition-colors"
+                          >
+                            <Flag size={14} />
+                            Báo cáo
+                          </button>
+                        </>
+                      )}
+                    </>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
         </div>
 
         <div className="h-8 mb-3">
@@ -304,6 +351,15 @@ export default function DocumentCard({
         />
       )}
 
+      {showReportModal && (
+        <ReportModal
+          targetType="DOCUMENT"
+          targetId={doc.id}
+          title="Báo cáo tài liệu"
+          onClose={() => setShowReportModal(false)}
+        />
+      )}
+
       {showDeleteConfirm && (
         <div className="fixed inset-0 z-[90] flex items-center justify-center bg-black/40 backdrop-blur-sm">
           <div className="bg-white rounded-2xl shadow-xl p-6 w-80 mx-4 animate-in fade-in zoom-in-95 duration-150">
@@ -322,13 +378,6 @@ export default function DocumentCard({
             </p>
             <div className="flex gap-2">
               <button
-                onClick={() => setShowDeleteConfirm(false)}
-                disabled={isDeleting}
-                className="flex-1 py-2 text-sm font-medium text-text-secondary bg-surface-100 hover:bg-surface-200 rounded-xl transition-colors disabled:opacity-50"
-              >
-                Hủy
-              </button>
-              <button
                 onClick={handleDelete}
                 disabled={isDeleting}
                 className="flex-1 py-2 text-sm font-medium text-white bg-red-500 hover:bg-red-600 rounded-xl transition-colors disabled:opacity-70 flex items-center justify-center gap-1.5"
@@ -341,6 +390,92 @@ export default function DocumentCard({
                 ) : (
                   "Xóa"
                 )}
+              </button>
+              <button
+                onClick={() => setShowDeleteConfirm(false)}
+                disabled={isDeleting}
+                className="flex-1 py-2 text-sm font-medium text-text-secondary bg-surface-100 hover:bg-surface-200 rounded-xl transition-colors disabled:opacity-50"
+              >
+                Hủy
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showAdminDeleteConfirm && (
+        <div className="fixed inset-0 z-[90] flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
+          <div className="bg-white rounded-2xl shadow-xl p-6 w-full max-w-sm animate-in fade-in zoom-in-95 duration-150">
+            <div className="flex items-center justify-center w-11 h-11 rounded-full bg-red-100 mx-auto mb-4">
+              <Trash2 size={20} className="text-red-500" />
+            </div>
+            <h3 className="text-sm font-semibold text-text-primary text-center mb-1">
+              Xóa tài liệu vi phạm?
+            </h3>
+            <p className="text-xs text-text-muted text-center mb-4 leading-relaxed">
+              Tài liệu{" "}
+              <span className="font-medium text-text-secondary">
+                "{doc.title}"
+              </span>{" "}
+              sẽ bị xóa vĩnh viễn. Người đăng tải sẽ nhận được thông báo kèm lý
+              do.
+            </p>
+
+            <div className="flex flex-col gap-1.5 mb-3">
+              <label className="text-xs font-semibold text-text-primary">
+                Lý do vi phạm <span className="text-red-500">*</span>
+              </label>
+              <div className="relative">
+                <select
+                  value={adminReason}
+                  onChange={(e) =>
+                    setAdminReason(e.target.value as ViolationReason)
+                  }
+                  className="w-full px-3 py-2.5 bg-white border border-surface-200 rounded-xl text-sm appearance-none focus:outline-none focus:border-primary"
+                >
+                  <option value="">Chọn lý do...</option>
+                  {VIOLATION_REASONS.map((r) => (
+                    <option key={r} value={r}>
+                      {VIOLATION_REASON_LABELS[r]}
+                    </option>
+                  ))}
+                </select>
+                <ChevronDown
+                  size={14}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted pointer-events-none"
+                />
+              </div>
+            </div>
+
+            <textarea
+              value={adminNote}
+              onChange={(e) => setAdminNote(e.target.value)}
+              rows={2}
+              placeholder="Ghi chú thêm cho người dùng (tùy chọn)"
+              className="w-full text-sm border border-surface-200 rounded-xl p-3 mb-4 resize-none focus:outline-none focus:border-primary"
+            />
+
+            <div className="flex gap-2">
+              <button
+                onClick={handleAdminDelete}
+                disabled={isAdminDeleting || !adminReason}
+                className="flex-1 py-2 text-sm font-medium text-white bg-red-500 hover:bg-red-600 rounded-xl transition-colors disabled:opacity-70 flex items-center justify-center gap-1.5"
+              >
+                {isAdminDeleting ? (
+                  <>
+                    <span className="w-3.5 h-3.5 border-2 border-white/40 border-t-white rounded-full animate-spin" />
+                    Đang xóa...
+                  </>
+                ) : (
+                  "Xóa & gửi thông báo"
+                )}
+              </button>
+              <button
+                onClick={() => setShowAdminDeleteConfirm(false)}
+                disabled={isAdminDeleting}
+                className="flex-1 py-2 text-sm font-medium text-text-secondary bg-surface-100 hover:bg-surface-200 rounded-xl transition-colors disabled:opacity-50"
+              >
+                Hủy
               </button>
             </div>
           </div>
