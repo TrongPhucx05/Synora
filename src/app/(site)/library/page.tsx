@@ -137,10 +137,6 @@ export default function LibraryPage() {
     }
   };
 
-  const handleReport = (id: string) => {
-    console.log("Report", id);
-  };
-
   return (
     <div className="flex gap-5 py-5 max-w-[1100px] mx-auto w-full items-start">
       <div className="flex-1 min-w-0 flex flex-col gap-4">
@@ -188,7 +184,6 @@ export default function LibraryPage() {
                     isSaved={savedIds.has(doc.id)}
                     isLoggedIn={isLoggedIn}
                     onToggleSave={handleToggleSave}
-                    onReport={handleReport}
                     onDownload={() => setRefreshKey((k) => k + 1)}
                     currentUserId={session?.user?.id}
                     isAdmin={isAdmin}
