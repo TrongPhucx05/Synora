@@ -6,7 +6,8 @@ export async function GET() {
   try {
     const libraryWhere = {
       postId: null,
-      type: { notIn: ["IMAGE", "VIDEO"] as DocumentType[] },
+      type: { notIn: ["IMAGE", "VIDEO"] as const },
+      hidden: false,
     };
 
     const [totalDocuments, totalContributors, downloads] = await Promise.all([
