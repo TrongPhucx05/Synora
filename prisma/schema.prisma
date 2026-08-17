@@ -36,6 +36,9 @@ enum ModerationActionType {
   ACCOUNT_SUSPENDED
   ACCOUNT_BANNED
   ACCOUNT_UNLOCKED
+  GROUP_DISABLED
+  GROUP_ENABLED
+  GROUP_DELETED
 }
 
 enum NotificationType {
@@ -64,6 +67,10 @@ enum NotificationType {
   GROUP_JOIN_REQUEST
   GROUP_JOIN_APPROVED
   GROUP_JOIN_REJECTED
+  GROUP_DISABLED
+  GROUP_ENABLED
+  GROUP_DELETED
+  GROUP_AUTO_DISBANDED
 }
 
 enum MembershipOrigin {
@@ -480,12 +487,17 @@ model Conversation {
   avatarUrl String?
   avatarKey String?
   dmKey     String?              @unique
+  isDisabled        Boolean   @default(false)
+  disabledAt        DateTime?
+  leaderBanDeadline DateTime?
 
   members   ConversationMember[]
   messages  Message[]
 
   inviteLink    GroupInviteLink?
   notifications Notification[]
+  reports           Report[]
+  moderationActions ModerationAction[]
 
   lastMessageAt DateTime?
 
@@ -705,6 +717,9 @@ model Report {
   documentId     String?
   document       Document?    @relation(fields: [documentId], references: [id], onDelete: SetNull)
 
+  conversationId String?
+  conversation   Conversation? @relation(fields: [conversationId], references: [id], onDelete: SetNull)
+
   reason         ReportReason
   description    String?
 
@@ -728,6 +743,8 @@ model ModerationAction {
 
   targetUserId   String
   targetUser     User                 @relation("moderationTarget", fields: [targetUserId], references: [id], onDelete: Cascade)
+  targetConversationId String?
+  targetConversation    Conversation? @relation(fields: [targetConversationId], references: [id], onDelete: SetNull)
 
   reason  SuspensionReason?
   note           String?
