@@ -9,6 +9,7 @@ const TARGET_LINKS: Record<AdminReportRow["targetType"], string> = {
   COMMENT: "/admin/content?tab=comments",
   MESSAGE: "/admin/conversations",
   DOCUMENT: "/admin/library",
+  GROUP: "/admin/groups",
 };
 
 const TARGET_LINK_LABELS: Record<AdminReportRow["targetType"], string> = {
@@ -17,6 +18,7 @@ const TARGET_LINK_LABELS: Record<AdminReportRow["targetType"], string> = {
   COMMENT: "Xem bình luận trong Quản lý nội dung",
   MESSAGE: "Xem đoạn chat liên quan",
   DOCUMENT: "Xem tài liệu trong Quản lý tài liệu",
+  GROUP: "Xem nhóm trong Quản lý nhóm chat",
 };
 
 export function ReportDetailModal({

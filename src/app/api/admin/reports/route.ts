@@ -3,11 +3,14 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
-function targetTypeOf(r: any): "USER" | "POST" | "COMMENT" | "MESSAGE" | "DOCUMENT" {
+function targetTypeOf(
+  r: any,
+): "USER" | "POST" | "COMMENT" | "MESSAGE" | "DOCUMENT" | "GROUP" {
   if (r.reportedUserId) return "USER";
   if (r.commentId) return "COMMENT";
   if (r.messageId) return "MESSAGE";
   if (r.documentId) return "DOCUMENT";
+  if (r.conversationId) return "GROUP";
   return "POST";
 }
 
@@ -68,6 +71,20 @@ export async function GET(req: NextRequest) {
           uploader: { include: { profile: true } },
         },
       },
+      conversation: {
+        select: {
+          name: true,
+          isDisabled: true,
+          _count: { select: { members: { where: { isAccepted: true } } } },
+          members: {
+            where: { isLeader: true },
+            take: 1,
+            select: {
+              user: { include: { profile: true } },
+            },
+          },
+        },
+      },
     },
   });
 
@@ -89,6 +106,12 @@ export async function GET(req: NextRequest) {
     } else if (targetType === "DOCUMENT") {
       targetPreview = r.document?.title ?? "Tài liệu đã bị xóa";
       targetAuthor = personOf(r.document?.uploader);
+    } else if (targetType === "GROUP") {
+      const leader = r.conversation?.members[0]?.user;
+      targetPreview = r.conversation
+        ? `${r.conversation.name ?? "Nhóm chat"} · ${r.conversation._count.members} thành viên${r.conversation.isDisabled ? " · Đã vô hiệu hóa" : ""}`
+        : "Nhóm đã bị xóa";
+      targetAuthor = personOf(leader);
     } else {
       targetPreview = r.message?.content ?? "Tin nhắn đã bị xóa/thu hồi";
       targetAuthor = personOf(r.message?.sender);

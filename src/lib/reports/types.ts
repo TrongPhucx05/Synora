@@ -3,7 +3,8 @@ export type ReportTargetType =
   | "POST"
   | "COMMENT"
   | "MESSAGE"
-  | "DOCUMENT";
+  | "DOCUMENT"
+  | "GROUP";
 export type ReportStatus = "PENDING" | "RESOLVED" | "DISMISSED";
 
 export type ReportReasonKey =

@@ -551,7 +551,9 @@ function MembersModal({
               Thành viên nhóm
             </p>
             <p className="text-xs text-text-muted mt-0.5">
-              {members.length} thành viên
+              {members.filter((m) => m.isAccepted).length}/{members.length} thành viên
+              {members.some((m) => !m.isAccepted) &&
+                ` · ${members.filter((m) => !m.isAccepted).length} đang chờ`}
             </p>
           </div>
           <button
@@ -606,6 +608,11 @@ function MembersModal({
                         {isMe ? `${m.displayName} (Bạn)` : m.displayName}
                       </p>
                       <RoleBadge isLeader={m.isLeader} />
+                      {!m.isAccepted && (
+                        <span className="text-[10px] font-semibold text-amber-600 bg-amber-50 px-1.5 py-0.5 rounded-full">
+                          Đang chờ
+                        </span>
+                      )}
                     </div>
                     <p className="text-xs text-text-muted mt-0.5">
                       @{m.username}
@@ -1524,7 +1531,7 @@ export function InfoSidebar({
                   Thành viên
                 </p>
                 <p className="text-[11px] text-text-muted">
-                  {members.length} người
+                  {members.filter((m) => m.isAccepted).length}/{members.length} người
                 </p>
               </div>
               <ChevronRight
@@ -1892,7 +1899,9 @@ export function InfoSidebar({
                 ? `Bạn sẽ không nhận được tin nhắn từ ${conv.name} nữa.`
                 : confirm === "leave"
                   ? `Bạn sẽ rời ${conv.name}. Bạn chắc chứ ?`
-                  : "Mô tả vấn đề sẽ giúp chúng tôi xử lý nhanh hơn."}
+                  : conv.isGroup
+                    ? `Báo cáo nhóm "${conv.name}" tới quản trị viên.`
+                    : "Mô tả vấn đề sẽ giúp chúng tôi xử lý nhanh hơn."}
             </p>
             <div className="flex gap-2">
               <button
@@ -1925,14 +1934,22 @@ export function InfoSidebar({
           </div>
         </>
       )}
-      {reportModalOpen && conv.otherUserId && (
-        <ReportModal
-          targetType="USER"
-          targetId={conv.otherUserId}
-          title={`Báo cáo ${conv.name}`}
-          onClose={() => setReportModalOpen(false)}
-        />
-      )}
+      {reportModalOpen &&
+        (conv.isGroup ? (
+          <ReportModal
+            targetType="GROUP"
+            targetId={conv.id}
+            title={`Báo cáo nhóm ${conv.name}`}
+            onClose={() => setReportModalOpen(false)}
+          />
+        ) : conv.otherUserId ? (
+          <ReportModal
+            targetType="USER"
+            targetId={conv.otherUserId}
+            title={`Báo cáo ${conv.name}`}
+            onClose={() => setReportModalOpen(false)}
+          />
+        ) : null)}
       {inviteLinkOpen && (
         <InviteLinkPanel
           conversationId={conv.id}

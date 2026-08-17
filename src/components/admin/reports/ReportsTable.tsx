@@ -4,6 +4,7 @@ import {
   CheckCircle2,
   XCircle,
   User,
+  Users,
   FileText,
   MessageSquare,
   Mail,
@@ -44,6 +45,11 @@ const TARGET_CONFIG: Record<
     label: "Tài liệu",
     icon: BookOpen,
     className: "bg-emerald-50 text-emerald-600",
+  },
+  GROUP: {
+    label: "Nhóm chat",
+    icon: Users,
+    className: "bg-indigo-50 text-indigo-600",
   },
 };
 
