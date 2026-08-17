@@ -16,35 +16,9 @@ import { useUnreadChatCount } from "@/lib/chat/hooks";
 
 const navItems = [
   { href: "/feed", icon: Home, label: "Trang chủ" },
-  { href: "/explore", icon: Compass, label: "Khám phá" },
   { href: "/library", icon: BookOpen, label: "Tài liệu" },
   { href: "/chat", icon: MessageCircle, label: "Nhắn tin" },
   { href: "/notifications", icon: Bell, label: "Thông báo" },
-  { href: "/community", icon: Users, label: "Cộng đồng" },
-];
-
-const groups = [
-  {
-    id: 1,
-    name: "Luyện thi THPT Quốc gia",
-    members: "12k",
-    color: "bg-orange-500",
-    initials: "LT",
-  },
-  {
-    id: 2,
-    name: "Hội yêu Toán học",
-    members: "5.4k",
-    color: "bg-blue-500",
-    initials: "HT",
-  },
-  {
-    id: 3,
-    name: "Cộng đồng IELTS 7.0+",
-    members: "8.2k",
-    color: "bg-green-500",
-    initials: "IE",
-  },
 ];
 
 export default function Sidebar() {
@@ -98,43 +72,6 @@ export default function Sidebar() {
           );
         })}
       </nav>
-
-      <div className="px-4 pt-2 pb-1">
-        <div className="flex items-center justify-between">
-          <p className="text-[11px] font-bold text-text-secondary uppercase tracking-wider">
-            Nhóm học tập
-          </p>
-          <button className="text-xs text-primary font-medium hover:text-primary-700 cursor-pointer">
-            Xem tất cả nhóm
-          </button>
-        </div>
-        <div className="flex flex-col gap-1 mt-3">
-          {groups.map((group) => (
-            <Link
-              key={group.id}
-              href={`/community`}
-              className="flex items-center gap-2.5 px-1 py-1.5 rounded-lg hover:bg-surface-100 transition-colors"
-            >
-              <div
-                className={clsx(
-                  "w-7 h-7 rounded-lg flex items-center justify-center text-white text-xs font-bold",
-                  group.color,
-                )}
-              >
-                {group.initials}
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-xs font-medium text-text-primary truncate">
-                  {group.name}
-                </p>
-                <p className="text-[10px] text-text-muted">
-                  {group.members} thành viên
-                </p>
-              </div>
-            </Link>
-          ))}
-        </div>
-      </div>
     </aside>
   );
 }
