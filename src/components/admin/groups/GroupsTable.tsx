@@ -1,70 +1,43 @@
 "use client";
-import { useState } from "react";
-import { MoreVertical, Users as UsersIcon } from "lucide-react";
+import { Users as UsersIcon, Flag } from "lucide-react";
 import { clsx } from "clsx";
 import Avatar from "@/components/ui/Avatar";
 import { GroupActionsMenu } from "./GroupActionsMenu";
-
-export type AdminGroupRow = {
-  id: string;
-  name: string;
-  slug: string;
-  avatarUrl: string | null;
-  description: string;
-  ownerName: string;
-  ownerUsername: string;
-  privacy: "PUBLIC" | "PRIVATE";
-  status: "ACTIVE" | "LOCKED";
-  memberCount: number;
-  postCount: number;
-  createdAt: string;
-};
-
-const PRIVACY_BADGE: Record<AdminGroupRow["privacy"], string> = {
-  PUBLIC: "bg-blue-50 text-blue-600",
-  PRIVATE: "bg-slate-100 text-slate-600",
-};
-
-const PRIVACY_LABEL: Record<AdminGroupRow["privacy"], string> = {
-  PUBLIC: "Công khai",
-  PRIVATE: "Riêng tư",
-};
+import type { AdminGroupRow } from "@/lib/admin/groups/types";
 
 const STATUS_BADGE: Record<AdminGroupRow["status"], string> = {
   ACTIVE: "bg-emerald-50 text-emerald-600",
-  LOCKED: "bg-red-50 text-red-600",
+  DISABLED: "bg-red-50 text-red-600",
 };
 
 const STATUS_LABEL: Record<AdminGroupRow["status"], string> = {
   ACTIVE: "Đang hoạt động",
-  LOCKED: "Đã khóa",
+  DISABLED: "Đã vô hiệu hóa",
 };
 
 export function GroupsTable({
   groups,
   onViewDetail,
-  onLock,
-  onUnlock,
+  onDisable,
+  onEnable,
   onDelete,
 }: {
   groups: AdminGroupRow[];
   onViewDetail: (g: AdminGroupRow) => void;
-  onLock: (g: AdminGroupRow) => void;
-  onUnlock: (g: AdminGroupRow) => void;
+  onDisable: (g: AdminGroupRow) => void;
+  onEnable: (g: AdminGroupRow) => void;
   onDelete: (g: AdminGroupRow) => void;
 }) {
-  const [menuOpenId, setMenuOpenId] = useState<string | null>(null);
-
   if (groups.length === 0) {
     return (
       <div className="bg-white border border-slate-200 rounded-2xl py-16 flex items-center justify-center">
-        <p className="text-sm text-slate-400">Không tìm thấy nhóm nào</p>
+        <p className="text-sm text-slate-400">Không tìm thấy nhóm chat nào</p>
       </div>
     );
   }
 
   return (
-    <div className="bg-white border border-slate-200 rounded-2xl overflow-hidden">
+    <div className="bg-white border border-slate-200 rounded-2xl overflow-x-auto">
       <table className="w-full text-sm">
         <thead>
           <tr className="border-b border-slate-100 bg-slate-50">
@@ -72,13 +45,13 @@ export function GroupsTable({
               Nhóm
             </th>
             <th className="text-left font-semibold text-slate-500 text-xs px-4 py-3">
-              Chủ nhóm
-            </th>
-            <th className="text-left font-semibold text-slate-500 text-xs px-4 py-3">
-              Quyền riêng tư
+              Trưởng nhóm
             </th>
             <th className="text-left font-semibold text-slate-500 text-xs px-4 py-3">
               Thành viên
+            </th>
+            <th className="text-left font-semibold text-slate-500 text-xs px-4 py-3">
+              Báo cáo
             </th>
             <th className="text-left font-semibold text-slate-500 text-xs px-4 py-3">
               Trạng thái
@@ -90,88 +63,76 @@ export function GroupsTable({
           </tr>
         </thead>
         <tbody>
-          {groups.map((g) => {
-            const menuOpen = menuOpenId === g.id;
-            return (
-              <tr key={g.id} className="border-b border-slate-50 last:border-b-0 hover:bg-slate-50/50">
-                <td className="px-5 py-3">
-                  <div className="flex items-center gap-2.5">
-                    <Avatar
-                      src={g.avatarUrl ?? undefined}
-                      initials={g.name.slice(0, 2).toUpperCase()}
-                      size="sm"
-                      shape="rounded"
-                    />
-                    <div className="min-w-0">
-                      <p className="text-xs font-medium text-slate-800 truncate">{g.name}</p>
-                      <p className="text-[11px] text-slate-400 truncate">{g.memberCount} thành viên · {g.postCount} bài viết</p>
-                    </div>
-                  </div>
-                </td>
-                <td className="px-4 py-3">
-                  <p className="text-xs font-medium text-slate-700">{g.ownerName}</p>
-                  <p className="text-[11px] text-slate-400">@{g.ownerUsername}</p>
-                </td>
-                <td className="px-4 py-3">
-                  <span
-                    className={clsx(
-                      "text-[11px] font-semibold px-2 py-0.5 rounded-full",
-                      PRIVACY_BADGE[g.privacy],
-                    )}
-                  >
-                    {PRIVACY_LABEL[g.privacy]}
-                  </span>
-                </td>
-                <td className="px-4 py-3">
-                  <div className="flex items-center gap-1.5 text-xs text-slate-500">
-                    <UsersIcon size={13} className="text-slate-400" />
-                    {g.memberCount}
-                  </div>
-                </td>
-                <td className="px-4 py-3">
-                  <span
-                    className={clsx(
-                      "text-[11px] font-semibold px-2 py-0.5 rounded-full",
-                      STATUS_BADGE[g.status],
-                    )}
-                  >
-                    {STATUS_LABEL[g.status]}
-                  </span>
-                </td>
-                <td className="px-4 py-3 text-xs text-slate-500">{g.createdAt}</td>
-                <td className="px-4 py-3 relative">
-                  <button
-                    onClick={() => setMenuOpenId(menuOpen ? null : g.id)}
-                    className="p-1.5 rounded-full hover:bg-slate-100 text-slate-400 transition-colors"
-                  >
-                    <MoreVertical size={15} />
-                  </button>
-                  {menuOpen && (
-                    <GroupActionsMenu
-                      group={g}
-                      onClose={() => setMenuOpenId(null)}
-                      onViewDetail={() => {
-                        setMenuOpenId(null);
-                        onViewDetail(g);
-                      }}
-                      onLock={() => {
-                        setMenuOpenId(null);
-                        onLock(g);
-                      }}
-                      onUnlock={() => {
-                        setMenuOpenId(null);
-                        onUnlock(g);
-                      }}
-                      onDelete={() => {
-                        setMenuOpenId(null);
-                        onDelete(g);
-                      }}
-                    />
+          {groups.map((g) => (
+            <tr
+              key={g.id}
+              className="border-b border-slate-50 last:border-b-0 hover:bg-slate-50/50"
+            >
+              <td className="px-5 py-3">
+                <div className="flex items-center gap-2.5">
+                  <Avatar
+                    src={g.avatarUrl ?? undefined}
+                    initials={g.name.slice(0, 2).toUpperCase()}
+                    size="sm"
+                    shape="rounded"
+                  />
+                  <p className="text-xs font-medium text-slate-800 truncate max-w-[160px]">
+                    {g.name}
+                  </p>
+                </div>
+              </td>
+              <td className="px-4 py-3">
+                <p className="text-xs font-medium text-slate-700">
+                  {g.leaderName}
+                </p>
+                <p className="text-[11px] text-slate-400">
+                  @{g.leaderUsername}
+                </p>
+              </td>
+              <td className="px-4 py-3">
+                <div className="flex items-center gap-1.5 text-xs text-slate-500">
+                  <UsersIcon size={13} className="text-slate-400" />
+                  {g.acceptedMemberCount}/{g.memberCount}
+                  {g.acceptedMemberCount < g.memberCount && (
+                    <span className="text-[10px] text-amber-500">
+                      ({g.memberCount - g.acceptedMemberCount} chờ)
+                    </span>
                   )}
-                </td>
-              </tr>
-            );
-          })}
+                </div>
+              </td>
+              <td className="px-4 py-3">
+                {g.reportCount > 0 ? (
+                  <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-amber-600 bg-amber-50 px-2 py-0.5 rounded-full">
+                    <Flag size={11} /> {g.reportCount}
+                  </span>
+                ) : (
+                  <span className="text-[11px] text-slate-300">—</span>
+                )}
+              </td>
+              <td className="px-4 py-3">
+                <span
+                  className={clsx(
+                    "text-[11px] font-semibold px-2 py-0.5 rounded-full",
+                    STATUS_BADGE[g.status],
+                  )}
+                >
+                  {STATUS_LABEL[g.status]}
+                </span>
+              </td>
+              <td className="px-4 py-3 text-xs text-slate-500">
+                {g.createdAt}
+              </td>
+              <td className="px-4 py-3">
+                <GroupActionsMenu
+                  group={g}
+                  onViewDetail={() => onViewDetail(g)}
+                  onDisable={() => onDisable(g)}
+                  onEnable={() => onEnable(g)}
+                  onDelete={() => onDelete(g)}
+                />
+              </td>
+            </tr>
+          ))}
         </tbody>
       </table>
     </div>

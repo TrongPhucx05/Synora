@@ -4,20 +4,13 @@ import { clsx } from "clsx";
 
 export type GroupFilterState = {
   query: string;
-  privacy: "ALL" | "PUBLIC" | "PRIVATE";
-  status: "ALL" | "ACTIVE" | "LOCKED";
+  status: "ALL" | "ACTIVE" | "DISABLED";
 };
-
-const PRIVACY_OPTIONS: { value: GroupFilterState["privacy"]; label: string }[] = [
-  { value: "ALL", label: "Tất cả quyền riêng tư" },
-  { value: "PUBLIC", label: "Công khai" },
-  { value: "PRIVATE", label: "Riêng tư" },
-];
 
 const STATUS_OPTIONS: { value: GroupFilterState["status"]; label: string }[] = [
   { value: "ALL", label: "Tất cả trạng thái" },
   { value: "ACTIVE", label: "Đang hoạt động" },
-  { value: "LOCKED", label: "Đã khóa" },
+  { value: "DISABLED", label: "Đã vô hiệu hóa" },
 ];
 
 export function GroupFilters({
@@ -35,32 +28,18 @@ export function GroupFilters({
           type="text"
           value={value.query}
           onChange={(e) => onChange({ ...value, query: e.target.value })}
-          placeholder="Tìm theo tên nhóm, chủ nhóm..."
+          placeholder="Tìm theo tên nhóm..."
           className="flex-1 bg-transparent text-sm text-slate-700 placeholder:text-slate-400 focus:outline-none"
         />
       </div>
 
       <select
-        value={value.privacy}
-        onChange={(e) =>
-          onChange({ ...value, privacy: e.target.value as GroupFilterState["privacy"] })
-        }
-        className={clsx(
-          "bg-white border border-slate-200 rounded-full px-4 py-2 text-sm text-slate-700",
-          "focus:outline-none focus:border-blue-400",
-        )}
-      >
-        {PRIVACY_OPTIONS.map((o) => (
-          <option key={o.value} value={o.value}>
-            {o.label}
-          </option>
-        ))}
-      </select>
-
-      <select
         value={value.status}
         onChange={(e) =>
-          onChange({ ...value, status: e.target.value as GroupFilterState["status"] })
+          onChange({
+            ...value,
+            status: e.target.value as GroupFilterState["status"],
+          })
         }
         className={clsx(
           "bg-white border border-slate-200 rounded-full px-4 py-2 text-sm text-slate-700",
