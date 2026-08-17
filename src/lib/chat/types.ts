@@ -9,6 +9,7 @@ export type Conversation = {
   lastMessageAt: string | null;
   unreadCount: number;
   memberCount?: number;
+  totalMemberCount?: number;
   isPending?: boolean;
   isDraft?: boolean;
   isSelf?: boolean;
@@ -16,6 +17,7 @@ export type Conversation = {
   isHidden?: boolean;
   isBlockedByMe?: boolean;
   hasBlockedMe?: boolean;
+  isDisabled?: boolean;
 };
 
 export type PendingConversation = {
@@ -37,6 +39,7 @@ export type GroupMember = {
   displayName: string;
   avatarUrl: string | null;
   isLeader: boolean;
+  isAccepted: boolean;
   joinedAt: string;
 };
 

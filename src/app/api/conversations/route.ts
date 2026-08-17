@@ -39,6 +39,7 @@ export async function GET(_req: NextRequest) {
           avatarUrl: true,
           lastMessageAt: true,
           dmKey: true,
+          isDisabled: true,
           members: {
             where: { userId: { not: userId } },
             select: {
@@ -76,6 +77,20 @@ export async function GET(_req: NextRequest) {
     const lastMsgAt = m.conversation.lastMessageAt;
     return !!lastMsgAt && lastMsgAt > m.hiddenAt;
   });
+
+  const groupConvIds = visibleMemberships
+    .filter((m) => m.conversation.isGroup)
+    .map((m) => m.conversation.id);
+  const acceptedCounts = groupConvIds.length
+    ? await prisma.conversationMember.groupBy({
+        by: ["conversationId"],
+        where: { conversationId: { in: groupConvIds }, isAccepted: true },
+        _count: { _all: true },
+      })
+    : [];
+  const acceptedMemberMap = new Map(
+    acceptedCounts.map((c) => [c.conversationId, c._count._all]),
+  );
 
   const result = await Promise.all(
     visibleMemberships.map(async (m) => {
@@ -240,6 +255,7 @@ export async function GET(_req: NextRequest) {
         isGroup: conv.isGroup,
         name,
         avatarUrl,
+        isDisabled: conv.isDisabled,
         otherUsername: conv.isGroup
           ? undefined
           : isSelf
@@ -250,7 +266,10 @@ export async function GET(_req: NextRequest) {
         lastMessage,
         lastMessageAt: conv.lastMessageAt,
         unreadCount,
-        memberCount: conv._count.members,
+        memberCount: conv.isGroup
+          ? (acceptedMemberMap.get(conv.id) ?? 0)
+          : conv._count.members,
+        totalMemberCount: conv.isGroup ? conv._count.members : undefined,
         isHidden: !!m.hiddenAt,
         isBlockedByMe,
         hasBlockedMe,

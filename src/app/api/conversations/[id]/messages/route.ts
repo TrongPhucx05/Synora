@@ -149,9 +149,17 @@ export async function POST(req: NextRequest, { params }: Params) {
     where: { id: conversationId },
     select: {
       isGroup: true,
+      isDisabled: true,
       members: { where: { userId: { not: userId } }, select: { userId: true } },
     },
   });
+
+  if (conversation?.isDisabled) {
+    return NextResponse.json(
+      { error: "Nhóm đã bị quản trị viên vô hiệu hóa, không thể gửi tin nhắn" },
+      { status: 403 },
+    );
+  }
 
   if (conversation && !conversation.isGroup) {
     const other = conversation.members[0];

@@ -20,10 +20,11 @@ export async function GET(_req: NextRequest, { params }: Params) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
   const members = await prisma.conversationMember.findMany({
-    where: { conversationId, isAccepted: true },
-    orderBy: [{ isLeader: "desc" }, { joinedAt: "asc" }],
+    where: { conversationId },
+    orderBy: [{ isLeader: "desc" }, { isAccepted: "desc" }, { joinedAt: "asc" }],
     select: {
       isLeader: true,
+      isAccepted: true,
       joinedAt: true,
       user: {
         select: {
@@ -67,10 +68,15 @@ export async function POST(req: NextRequest, { params }: Params) {
 
   const conversation = await prisma.conversation.findUnique({
     where: { id: conversationId },
-    select: { name: true },
+    select: { name: true, isDisabled: true },
   });
   if (!conversation)
     return NextResponse.json({ error: "Không tìm thấy nhóm" }, { status: 404 });
+  if (conversation.isDisabled)
+    return NextResponse.json(
+      { error: "Nhóm đã bị vô hiệu hóa, không thể thêm thành viên" },
+      { status: 403 },
+    );
 
   const users = await prisma.user.findMany({
     where: { username: { in: usernames } },

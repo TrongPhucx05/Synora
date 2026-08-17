@@ -1418,7 +1418,10 @@ export default function ChatPage() {
                   </p>
                   <p className="text-xs text-text-muted">
                     {currentConv.isGroup
-                      ? `${currentConv.memberCount ?? 0} thành viên`
+                      ? currentConv.totalMemberCount &&
+                        currentConv.totalMemberCount !== currentConv.memberCount
+                        ? `${currentConv.memberCount ?? 0}/${currentConv.totalMemberCount} thành viên`
+                        : `${currentConv.memberCount ?? 0} thành viên`
                       : currentOtherOnline
                         ? "Đang hoạt động"
                         : (formatLastSeen(currentOtherLastActive) ?? "")}
@@ -1753,6 +1756,13 @@ export default function ChatPage() {
                 >
                   Bỏ lưu trữ
                 </button>
+              </div>
+            ) : currentConv.isDisabled ? (
+              <div className="px-4 py-4 border-t border-surface-200 bg-white shrink-0 flex items-center justify-center gap-3">
+                <p className="text-xs text-text-muted">
+                  Nhóm này đã bị quản trị viên vô hiệu hóa. Bạn vẫn có thể xem
+                  lịch sử nhưng không thể gửi tin nhắn mới.
+                </p>
               </div>
             ) : currentConv.isBlockedByMe || currentConv.hasBlockedMe ? (
               <div className="px-4 py-4 border-t border-surface-200 bg-white shrink-0 flex items-center justify-center gap-3">

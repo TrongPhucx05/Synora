@@ -351,6 +351,7 @@ export async function fetchGroupMembers(
   return data.map(
     (m: {
       isLeader: boolean;
+      isAccepted: boolean;
       joinedAt: string;
       user: {
         id: string;
@@ -366,6 +367,7 @@ export async function fetchGroupMembers(
       displayName: m.user.profile?.displayName ?? m.user.username,
       avatarUrl: m.user.profile?.avatarUrl ?? null,
       isLeader: m.isLeader,
+      isAccepted: m.isAccepted,
       joinedAt: m.joinedAt,
     }),
   );
