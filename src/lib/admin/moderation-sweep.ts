@@ -28,3 +28,54 @@ export async function sweepScheduledDeletions() {
     await prisma.document.delete({ where: { id: doc.id } });
   }
 }
+
+export async function sweepAutoDisbandGroups() {
+  const now = new Date();
+
+  const dueGroups = await prisma.conversation.findMany({
+    where: { isGroup: true, leaderBanDeadline: { lte: now } },
+    select: {
+      id: true,
+      name: true,
+      avatarKey: true,
+      members: { select: { userId: true, isLeader: true } },
+      messages: { select: { attachments: { select: { key: true } } } },
+    },
+  });
+
+  for (const g of dueGroups) {
+    const leaderId = g.members.find((m) => m.isLeader)?.userId;
+    if (leaderId) {
+      const user = await prisma.user.findUnique({
+        where: { id: leaderId },
+        select: { status: true },
+      });
+      if (user?.status !== "BANNED") {
+        await prisma.conversation.update({
+          where: { id: g.id },
+          data: { leaderBanDeadline: null },
+        });
+        continue;
+      }
+    }
+
+    const memberIds = g.members.map((m) => m.userId);
+    const attachmentKeys = g.messages.flatMap((m) =>
+      m.attachments.map((a) => a.key),
+    );
+    const allKeys = [...attachmentKeys, ...(g.avatarKey ? [g.avatarKey] : [])];
+
+    await prisma.notification.createMany({
+      data: memberIds.map((uid) => ({
+        recipientId: uid,
+        type: "GROUP_AUTO_DISBANDED",
+        message: `Nhóm "${g.name}" đã tự động giải tán do trưởng nhóm bị khóa tài khoản vĩnh viễn và không giải quyết yêu cầu hỗ trợ trong 7 ngày.`,
+      })),
+    });
+    await prisma.conversation.delete({ where: { id: g.id } });
+
+    if (allKeys.length > 0) {
+      await utapi.deleteFiles(allKeys).catch(() => {});
+    }
+  }
+}

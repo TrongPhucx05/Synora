@@ -85,6 +85,13 @@ export async function POST(
           lastViolationAt: new Date(),
         },
       });
+      
+      if (type === "BAN") {
+        await tx.conversation.updateMany({
+          where: { isGroup: true, members: { some: { userId: id, isLeader: true } } },
+          data: { leaderBanDeadline: new Date(Date.now() + 7 * 24 * 3600_000) },
+        });
+      }
 
       await tx.moderationAction.create({
         data: {

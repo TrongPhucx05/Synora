@@ -38,6 +38,13 @@ export async function PATCH(
   });
 
   if (request.type === "BAN_APPEAL") {
+    await prisma.conversation.updateMany({
+      where: { isGroup: true, members: { some: { userId: request.userId, isLeader: true } } },
+      data: { leaderBanDeadline: null },
+    });
+  }
+
+  if (request.type === "BAN_APPEAL") {
     const { subject, html } = supportRequestResolvedEmail(
       request.subject,
       reply?.trim(),

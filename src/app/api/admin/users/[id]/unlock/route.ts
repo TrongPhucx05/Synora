@@ -26,6 +26,14 @@ export async function POST(
         },
       });
 
+      await tx.conversation.updateMany({
+        where: {
+          isGroup: true,
+          members: { some: { userId: id, isLeader: true } },
+        },
+        data: { leaderBanDeadline: null },
+      });
+
       await tx.moderationAction.create({
         data: {
           type: "ACCOUNT_UNLOCKED",
