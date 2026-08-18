@@ -1,53 +1,95 @@
 "use client";
-import { useMemo, useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { PageHeader } from "@/components/admin/PageHeader";
-import { AuditLogFilters, type AuditLogFilterState } from "@/components/admin/audit-log/AuditLogFilters";
+import {
+  AuditLogFilters,
+  type AuditLogFilterState,
+} from "@/components/admin/audit-log/AuditLogFilters";
 import { AuditLogTable } from "@/components/admin/audit-log/AuditLogTable";
 import { AuditLogDetailModal } from "@/components/admin/audit-log/AuditLogDetailModal";
-import { ACTION_GROUP, type AuditLogEntry } from "@/lib/audit-log/types";
-
-const MOCK_ENTRIES: AuditLogEntry[] = [
-  { id: "1", actor: { id: "5", name: "Hoàng Văn E", username: "hoangv", avatarUrl: null, role: "ADMIN" }, action: "USER_BAN", targetLabel: "Phạm Thị D (@ptd_studio)", targetType: "USER", detail: "Khóa vĩnh viễn do vi phạm nhiều lần điều khoản sử dụng.", ipAddress: "118.70.23.11", createdAt: "08/07/2026 09:12" },
-  { id: "2", actor: { id: "5", name: "Hoàng Văn E", username: "hoangv", avatarUrl: null, role: "ADMIN" }, action: "NOTIF_USER_SEND", targetLabel: "Lê Văn C (@lvc2003)", targetType: "USER", detail: "Gửi thông báo vi phạm nội dung.", ipAddress: "118.70.23.11", createdAt: "06/07/2026 14:05" },
-  { id: "3", actor: { id: "5", name: "Hoàng Văn E", username: "hoangv", avatarUrl: null, role: "ADMIN" }, action: "NOTIF_SYSTEM_SEND", targetLabel: "Toàn bộ hệ thống (12,480 người dùng)", targetType: "SYSTEM", detail: "Thông báo bảo trì hệ thống 02:00 - 04:00.", ipAddress: "118.70.23.11", createdAt: "05/07/2026 22:00" },
-  { id: "4", actor: { id: "5", name: "Hoàng Văn E", username: "hoangv", avatarUrl: null, role: "ADMIN" }, action: "USER_UNBAN", targetLabel: "Lê Văn C (@lvc2003)", targetType: "USER", ipAddress: "118.70.23.11", createdAt: "02/07/2026 11:15" },
-];
+import { Pagination } from "@/components/admin/Pagination";
+import type { AuditLogEntry } from "@/lib/audit-log/types";
 
 export default function AdminAuditLogPage() {
+  const [entries, setEntries] = useState<AuditLogEntry[]>([]);
+  const [loading, setLoading] = useState(true);
   const [filters, setFilters] = useState<AuditLogFilterState>({
     query: "",
     group: "ALL",
     dateFrom: "",
     dateTo: "",
   });
+  const [debouncedQuery, setDebouncedQuery] = useState("");
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [rangeDays, setRangeDays] = useState<number | null>(null);
   const [detailEntry, setDetailEntry] = useState<AuditLogEntry | null>(null);
 
-  const filtered = useMemo(() => {
-    return MOCK_ENTRIES.filter((e) => {
-      const q = filters.query.toLowerCase();
-      const matchesQuery =
-        !q ||
-        e.actor.name.toLowerCase().includes(q) ||
-        e.actor.username.toLowerCase().includes(q) ||
-        e.targetLabel.toLowerCase().includes(q);
-      const matchesGroup = filters.group === "ALL" || ACTION_GROUP[e.action] === filters.group;
-      return matchesQuery && matchesGroup;
-    });
-  }, [filters]);
+  useEffect(() => {
+    const t = setTimeout(() => setDebouncedQuery(filters.query.trim()), 350);
+    return () => clearTimeout(t);
+  }, [filters.query]);
+
+  useEffect(() => {
+    setPage(1);
+  }, [filters.group, filters.dateFrom, filters.dateTo, debouncedQuery]);
+
+  const fetchEntries = useCallback(() => {
+    setLoading(true);
+    const params = new URLSearchParams();
+    if (filters.group !== "ALL") params.set("group", filters.group);
+    if (filters.dateFrom) params.set("dateFrom", filters.dateFrom);
+    if (filters.dateTo) params.set("dateTo", filters.dateTo);
+    if (debouncedQuery) params.set("query", debouncedQuery);
+    params.set("page", String(page));
+    fetch(`/api/admin/audit-log?${params.toString()}`)
+      .then((r) => r.json())
+      .then((data) => {
+        setEntries(data.entries ?? []);
+        setTotalPages(data.totalPages ?? 1);
+        setRangeDays(data.rangeDays ?? null);
+      })
+      .finally(() => setLoading(false));
+  }, [filters.group, filters.dateFrom, filters.dateTo, debouncedQuery, page]);
+
+  useEffect(() => {
+    fetchEntries();
+  }, [fetchEntries]);
+
+  const showRangeHint = rangeDays && !filters.dateFrom && !filters.dateTo;
 
   return (
     <>
       <PageHeader
         title="Nhật ký quản trị"
-        description="Ghi lại mọi thao tác của quản trị viên trên hệ thống"
+        description="Ghi lại các thao tác khóa/mở khóa tài khoản, xóa bài viết và quản lý nhóm chat của quản trị viên"
       />
 
       <AuditLogFilters value={filters} onChange={setFilters} />
 
-      <AuditLogTable entries={filtered} onViewDetail={setDetailEntry} />
+      {showRangeHint && (
+        <p className="text-xs text-slate-400 -mt-3 mb-4">
+          Đang hiển thị {rangeDays} ngày gần nhất. Chọn khoảng ngày ở trên để
+          xem xa hơn.
+        </p>
+      )}
+
+      {loading ? (
+        <div className="bg-white border border-slate-200 rounded-2xl py-16 flex items-center justify-center">
+          <p className="text-sm text-slate-400">Đang tải...</p>
+        </div>
+      ) : (
+        <>
+          <AuditLogTable entries={entries} onViewDetail={setDetailEntry} />
+          <Pagination page={page} totalPages={totalPages} onChange={setPage} />
+        </>
+      )}
 
       {detailEntry && (
-        <AuditLogDetailModal entry={detailEntry} onClose={() => setDetailEntry(null)} />
+        <AuditLogDetailModal
+          entry={detailEntry}
+          onClose={() => setDetailEntry(null)}
+        />
       )}
     </>
   );

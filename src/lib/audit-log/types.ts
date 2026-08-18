@@ -1,73 +1,64 @@
+import type { LucideIcon } from "lucide-react";
+import {
+  FileX,
+  Clock,
+  Ban,
+  UserCheck,
+  Lock,
+  Unlock,
+  Trash2,
+} from "lucide-react";
+
 export type AuditActionType =
-  | "USER_SUSPEND"
-  | "USER_BAN"
-  | "USER_UNBAN"
-  | "USER_GRANT_ROLE"
-  | "USER_RESET_AVATAR"
-  | "GROUP_LOCK"
-  | "GROUP_UNLOCK"
-  | "GROUP_DELETE"
-  | "POST_HIDE"
-  | "POST_DELETE"
-  | "COMMENT_HIDE"
-  | "REPORT_RESOLVE"
-  | "REPORT_DISMISS"
-  | "NOTIF_SYSTEM_SEND"
-  | "NOTIF_USER_SEND";
+  | "POST_REMOVED"
+  | "ACCOUNT_SUSPENDED"
+  | "ACCOUNT_BANNED"
+  | "ACCOUNT_UNLOCKED"
+  | "GROUP_DISABLED"
+  | "GROUP_ENABLED"
+  | "GROUP_DELETED";
 
 export type AdminActor = {
-  id: string;
   name: string;
   username: string;
   avatarUrl: string | null;
-  role: "ADMIN";
 };
 
 export type AuditLogEntry = {
   id: string;
   actor: AdminActor;
   action: AuditActionType;
+  targetType: "USER" | "GROUP" | "POST";
   targetLabel: string;
-  targetType: "USER" | "GROUP" | "POST" | "COMMENT" | "REPORT" | "SYSTEM";
   detail?: string;
-  ipAddress: string;
+  reasonLabel?: string;
+  notifiedUser: boolean;
+  flaggedUser: boolean;
+  suspendedUntil?: string;
   createdAt: string;
 };
 
 export const ACTION_LABELS: Record<AuditActionType, string> = {
-  USER_SUSPEND: "Tạm khóa người dùng",
-  USER_BAN: "Khóa vĩnh viễn người dùng",
-  USER_UNBAN: "Mở khóa người dùng",
-  USER_GRANT_ROLE: "Cấp quyền người dùng",
-  USER_RESET_AVATAR: "Reset ảnh đại diện",
-  GROUP_LOCK: "Khóa nhóm",
-  GROUP_UNLOCK: "Mở khóa nhóm",
-  GROUP_DELETE: "Xóa nhóm",
-  POST_HIDE: "Ẩn bài viết",
-  POST_DELETE: "Xóa bài viết",
-  COMMENT_HIDE: "Ẩn bình luận",
-  REPORT_RESOLVE: "Xử lý báo cáo",
-  REPORT_DISMISS: "Bỏ qua báo cáo",
-  NOTIF_SYSTEM_SEND: "Gửi thông báo hệ thống",
-  NOTIF_USER_SEND: "Gửi thông báo người dùng",
+  POST_REMOVED: "Xóa bài viết",
+  ACCOUNT_SUSPENDED: "Tạm khóa người dùng",
+  ACCOUNT_BANNED: "Khóa vĩnh viễn người dùng",
+  ACCOUNT_UNLOCKED: "Mở khóa người dùng",
+  GROUP_DISABLED: "Vô hiệu hóa nhóm",
+  GROUP_ENABLED: "Mở lại nhóm",
+  GROUP_DELETED: "Xóa nhóm",
 };
 
-export const ACTION_GROUP: Record<AuditActionType, "USER" | "GROUP" | "CONTENT" | "REPORT" | "NOTIF"> = {
-  USER_SUSPEND: "USER",
-  USER_BAN: "USER",
-  USER_UNBAN: "USER",
-  USER_GRANT_ROLE: "USER",
-  USER_RESET_AVATAR: "USER",
-  GROUP_LOCK: "GROUP",
-  GROUP_UNLOCK: "GROUP",
-  GROUP_DELETE: "GROUP",
-  POST_HIDE: "CONTENT",
-  POST_DELETE: "CONTENT",
-  COMMENT_HIDE: "CONTENT",
-  REPORT_RESOLVE: "REPORT",
-  REPORT_DISMISS: "REPORT",
-  NOTIF_SYSTEM_SEND: "NOTIF",
-  NOTIF_USER_SEND: "NOTIF",
+export const ACTION_GROUP: Record<
+  AuditActionType,
+  "USER" | "GROUP" | "CONTENT"
+> = {
+  POST_REMOVED: "CONTENT",
+  ACCOUNT_SUSPENDED: "USER",
+  ACCOUNT_BANNED: "USER",
+  ACCOUNT_UNLOCKED: "USER",
+  GROUP_DISABLED: "GROUP",
+  GROUP_ENABLED: "GROUP",
+  GROUP_DELETED: "GROUP",
 };
 
 export const GROUP_LABELS: Record<string, string> = {
@@ -75,14 +66,24 @@ export const GROUP_LABELS: Record<string, string> = {
   USER: "Người dùng",
   GROUP: "Nhóm",
   CONTENT: "Nội dung",
-  REPORT: "Báo cáo",
-  NOTIF: "Thông báo",
 };
 
-export const GROUP_BADGE: Record<string, string> = {
-  USER: "bg-blue-50 text-blue-600",
-  GROUP: "bg-purple-50 text-purple-600",
-  CONTENT: "bg-orange-50 text-orange-600",
-  REPORT: "bg-red-50 text-red-600",
-  NOTIF: "bg-cyan-50 text-cyan-600",
+export const ACTION_ICON: Record<AuditActionType, LucideIcon> = {
+  POST_REMOVED: FileX,
+  ACCOUNT_SUSPENDED: Clock,
+  ACCOUNT_BANNED: Ban,
+  ACCOUNT_UNLOCKED: UserCheck,
+  GROUP_DISABLED: Lock,
+  GROUP_ENABLED: Unlock,
+  GROUP_DELETED: Trash2,
+};
+
+export const ACTION_BADGE: Record<AuditActionType, string> = {
+  POST_REMOVED: "bg-orange-50 text-orange-600",
+  ACCOUNT_SUSPENDED: "bg-amber-50 text-amber-600",
+  ACCOUNT_BANNED: "bg-red-50 text-red-600",
+  ACCOUNT_UNLOCKED: "bg-emerald-50 text-emerald-600",
+  GROUP_DISABLED: "bg-amber-50 text-amber-600",
+  GROUP_ENABLED: "bg-emerald-50 text-emerald-600",
+  GROUP_DELETED: "bg-red-50 text-red-600",
 };

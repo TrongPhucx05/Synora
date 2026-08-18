@@ -1,22 +1,14 @@
 "use client";
-import { Eye, User, UsersRound, FileText, Flag, Bell } from "lucide-react";
+import { Eye, FileText } from "lucide-react";
 import { clsx } from "clsx";
 import Avatar from "@/components/ui/Avatar";
 import { EmptyPlaceholder } from "@/components/admin/EmptyPlaceholder";
 import {
-  ACTION_GROUP,
+  ACTION_ICON,
   ACTION_LABELS,
-  GROUP_BADGE,
+  ACTION_BADGE,
   type AuditLogEntry,
 } from "@/lib/audit-log/types";
-
-const GROUP_ICON = {
-  USER: User,
-  GROUP: UsersRound,
-  CONTENT: FileText,
-  REPORT: Flag,
-  NOTIF: Bell,
-};
 
 export function AuditLogTable({
   entries,
@@ -40,20 +32,29 @@ export function AuditLogTable({
       <table className="w-full text-sm">
         <thead>
           <tr className="border-b border-slate-100 bg-slate-50">
-            <th className="text-left font-semibold text-slate-500 text-xs px-5 py-3">Quản trị viên</th>
-            <th className="text-left font-semibold text-slate-500 text-xs px-4 py-3">Thao tác</th>
-            <th className="text-left font-semibold text-slate-500 text-xs px-4 py-3">Đối tượng</th>
-            <th className="text-left font-semibold text-slate-500 text-xs px-4 py-3">Địa chỉ IP</th>
-            <th className="text-left font-semibold text-slate-500 text-xs px-4 py-3">Thời gian</th>
+            <th className="text-left font-semibold text-slate-500 text-xs px-5 py-3">
+              Quản trị viên
+            </th>
+            <th className="text-left font-semibold text-slate-500 text-xs px-4 py-3">
+              Thao tác
+            </th>
+            <th className="text-left font-semibold text-slate-500 text-xs px-4 py-3">
+              Đối tượng
+            </th>
+            <th className="text-left font-semibold text-slate-500 text-xs px-4 py-3">
+              Thời gian
+            </th>
             <th className="w-12 px-4 py-3" />
           </tr>
         </thead>
         <tbody>
           {entries.map((e) => {
-            const group = ACTION_GROUP[e.action];
-            const Icon = GROUP_ICON[group];
+            const Icon = ACTION_ICON[e.action];
             return (
-              <tr key={e.id} className="border-b border-slate-50 last:border-b-0 hover:bg-slate-50/50">
+              <tr
+                key={e.id}
+                className="border-b border-slate-50 last:border-b-0 hover:bg-slate-50/50"
+              >
                 <td className="px-5 py-3">
                   <div className="flex items-center gap-2.5">
                     <Avatar
@@ -62,8 +63,12 @@ export function AuditLogTable({
                       size="sm"
                     />
                     <div className="min-w-0">
-                      <p className="text-xs font-medium text-slate-800 truncate">{e.actor.name}</p>
-                      <p className="text-[11px] text-slate-400 truncate">{e.actor.role}</p>
+                      <p className="text-xs font-medium text-slate-800 truncate">
+                        {e.actor.name}
+                      </p>
+                      <p className="text-[11px] text-slate-400 truncate">
+                        Quản trị viên
+                      </p>
                     </div>
                   </div>
                 </td>
@@ -71,16 +76,19 @@ export function AuditLogTable({
                   <span
                     className={clsx(
                       "inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 rounded-full",
-                      GROUP_BADGE[group],
+                      ACTION_BADGE[e.action],
                     )}
                   >
                     <Icon size={11} />
                     {ACTION_LABELS[e.action]}
                   </span>
                 </td>
-                <td className="px-4 py-3 text-xs text-slate-600 max-w-[220px] truncate">{e.targetLabel}</td>
-                <td className="px-4 py-3 text-xs text-slate-400 font-mono">{e.ipAddress}</td>
-                <td className="px-4 py-3 text-xs text-slate-500">{e.createdAt}</td>
+                <td className="px-4 py-3 text-xs text-slate-600 max-w-[280px] truncate">
+                  {e.targetLabel}
+                </td>
+                <td className="px-4 py-3 text-xs text-slate-500 whitespace-nowrap">
+                  {e.createdAt}
+                </td>
                 <td className="px-4 py-3">
                   <button
                     onClick={() => onViewDetail(e)}

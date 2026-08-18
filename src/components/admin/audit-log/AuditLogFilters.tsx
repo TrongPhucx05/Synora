@@ -1,11 +1,10 @@
 "use client";
 import { Search } from "lucide-react";
-import { clsx } from "clsx";
 import { GROUP_LABELS } from "@/lib/audit-log/types";
 
 export type AuditLogFilterState = {
   query: string;
-  group: "ALL" | "USER" | "GROUP" | "CONTENT" | "REPORT" | "NOTIF";
+  group: "ALL" | "USER" | "GROUP" | "CONTENT";
   dateFrom: string;
   dateTo: string;
 };
@@ -33,12 +32,15 @@ export function AuditLogFilters({
       <select
         value={value.group}
         onChange={(e) =>
-          onChange({ ...value, group: e.target.value as AuditLogFilterState["group"] })
+          onChange({
+            ...value,
+            group: e.target.value as AuditLogFilterState["group"],
+          })
         }
         className="bg-white border border-slate-200 rounded-full px-4 py-2 text-sm text-slate-700 focus:outline-none focus:border-blue-400"
       >
-        {Object.entries(GROUP_LABELS).map(([value, label]) => (
-          <option key={value} value={value}>
+        {Object.entries(GROUP_LABELS).map(([key, label]) => (
+          <option key={key} value={key}>
             {label}
           </option>
         ))}
