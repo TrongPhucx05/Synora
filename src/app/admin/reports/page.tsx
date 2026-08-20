@@ -1,5 +1,5 @@
 "use client";
-import { useState, useMemo, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { PageHeader } from "@/components/admin/PageHeader";
 import {
   ReportFilters,
@@ -8,6 +8,7 @@ import {
 import { ReportsTable } from "@/components/admin/reports/ReportsTable";
 import { ReportDetailModal } from "@/components/admin/reports/ReportDetailModal";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
+import { Pagination } from "@/components/admin/Pagination";
 import { useToast } from "@/components/ui/Toast";
 import { CheckCircle2, XCircle } from "lucide-react";
 import type { AdminReportRow } from "@/lib/reports/types";
@@ -28,35 +29,38 @@ export default function AdminReportsPage() {
     status: "ALL",
     reason: "ALL",
   });
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
   const [detailReport, setDetailReport] = useState<AdminReportRow | null>(null);
   const [confirmState, setConfirmState] = useState<ConfirmState>(null);
   const [confirmLoading, setConfirmLoading] = useState(false);
+
+  useEffect(() => {
+    setPage(1);
+  }, [filters.status, filters.reason, filters.targetType, filters.query]);
 
   const fetchReports = useCallback(() => {
     setLoading(true);
     const params = new URLSearchParams();
     if (filters.status !== "ALL") params.set("status", filters.status);
     if (filters.reason !== "ALL") params.set("reason", filters.reason);
+    if (filters.targetType !== "ALL")
+      params.set("targetType", filters.targetType);
+    if (filters.query) params.set("query", filters.query);
+    params.set("page", String(page));
     fetch(`/api/admin/reports?${params.toString()}`)
       .then((r) => r.json())
-      .then((data) => setReports(Array.isArray(data) ? data : []))
+      .then((data) => {
+        setReports(Array.isArray(data.items) ? data.items : []);
+        setTotalPages(data.totalPages ?? 1);
+      })
       .finally(() => setLoading(false));
-  }, [filters.status, filters.reason]);
+  }, [filters, page]);
 
   useEffect(() => {
-    fetchReports();
+    const t = setTimeout(fetchReports, 300);
+    return () => clearTimeout(t);
   }, [fetchReports]);
-
-  const filtered = useMemo(() => {
-    const q = filters.query.toLowerCase();
-    return reports.filter(
-      (r) =>
-        (!q ||
-          r.reporter.username.toLowerCase().includes(q) ||
-          r.targetPreview.toLowerCase().includes(q)) &&
-        (filters.targetType === "ALL" || r.targetType === filters.targetType),
-    );
-  }, [reports, filters.query, filters.targetType]);
 
   const applyResolution = async (
     kind: "resolve" | "dismiss",
@@ -101,16 +105,19 @@ export default function AdminReportsPage() {
           Đang tải...
         </div>
       ) : (
-        <ReportsTable
-          reports={filtered}
-          onViewDetail={setDetailReport}
-          onQuickResolve={(r) =>
-            setConfirmState({ kind: "resolve", report: r, note: "" })
-          }
-          onQuickDismiss={(r) =>
-            setConfirmState({ kind: "dismiss", report: r, note: "" })
-          }
-        />
+        <>
+          <ReportsTable
+            reports={reports}
+            onViewDetail={setDetailReport}
+            onQuickResolve={(r) =>
+              setConfirmState({ kind: "resolve", report: r, note: "" })
+            }
+            onQuickDismiss={(r) =>
+              setConfirmState({ kind: "dismiss", report: r, note: "" })
+            }
+          />
+          <Pagination page={page} totalPages={totalPages} onChange={setPage} />
+        </>
       )}
 
       {detailReport && (

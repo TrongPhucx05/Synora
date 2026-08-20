@@ -3,6 +3,8 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
+const PAGE_SIZE = 20;
+
 function targetTypeOf(
   r: any,
 ): "USER" | "POST" | "COMMENT" | "MESSAGE" | "DOCUMENT" | "GROUP" {
@@ -23,6 +25,15 @@ function personOf(u: any) {
   };
 }
 
+const TARGET_TYPE_WHERE: Record<string, any> = {
+  USER: { reportedUserId: { not: null } },
+  POST: { postId: { not: null } },
+  COMMENT: { commentId: { not: null } },
+  MESSAGE: { messageId: { not: null } },
+  DOCUMENT: { documentId: { not: null } },
+  GROUP: { conversationId: { not: null } },
+};
+
 export async function GET(req: NextRequest) {
   const session = await getServerSession(authOptions);
   if (!session?.user?.id || session.user.role !== "ADMIN") {
@@ -32,81 +43,107 @@ export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const status = searchParams.get("status");
   const reason = searchParams.get("reason");
+  const targetType = searchParams.get("targetType");
+  const query = searchParams.get("query")?.trim();
+  const page = Math.max(1, parseInt(searchParams.get("page") ?? "1", 10) || 1);
 
-  const reports = await prisma.report.findMany({
-    where: {
-      ...(status && status !== "ALL" && { status: status as any }),
-      ...(reason && reason !== "ALL" && { reason: reason as any }),
-    },
-    orderBy: { createdAt: "desc" },
-    take: 200,
-    include: {
-      reporter: { include: { profile: true } },
-      reportedUser: { include: { profile: true } },
-      post: {
-        select: {
-          content: true,
-          authorId: true,
-          author: { include: { profile: true } },
+  const where: any = {
+    ...(status && status !== "ALL" && { status: status as any }),
+    ...(reason && reason !== "ALL" && { reason: reason as any }),
+    ...(targetType && targetType !== "ALL" && TARGET_TYPE_WHERE[targetType]),
+    ...(query && {
+      OR: [
+        { reporter: { username: { contains: query, mode: "insensitive" } } },
+        {
+          reporter: {
+            profile: { displayName: { contains: query, mode: "insensitive" } },
+          },
         },
-      },
-      comment: {
-        select: {
-          content: true,
-          authorId: true,
-          author: { include: { profile: true } },
+        {
+          reportedUser: { username: { contains: query, mode: "insensitive" } },
         },
-      },
-      message: {
-        select: {
-          content: true,
-          senderId: true,
-          sender: { include: { profile: true } },
+        { post: { content: { contains: query, mode: "insensitive" } } },
+        { comment: { content: { contains: query, mode: "insensitive" } } },
+        { message: { content: { contains: query, mode: "insensitive" } } },
+        { document: { title: { contains: query, mode: "insensitive" } } },
+        { conversation: { name: { contains: query, mode: "insensitive" } } },
+      ],
+    }),
+  };
+
+  const [totalCount, reports] = await Promise.all([
+    prisma.report.count({ where }),
+    prisma.report.findMany({
+      where,
+      orderBy: { createdAt: "desc" },
+      skip: (page - 1) * PAGE_SIZE,
+      take: PAGE_SIZE,
+      include: {
+        reporter: { include: { profile: true } },
+        reportedUser: { include: { profile: true } },
+        post: {
+          select: {
+            content: true,
+            authorId: true,
+            author: { include: { profile: true } },
+          },
         },
-      },
-      document: {
-        select: {
-          title: true,
-          uploaderId: true,
-          uploader: { include: { profile: true } },
+        comment: {
+          select: {
+            content: true,
+            authorId: true,
+            author: { include: { profile: true } },
+          },
         },
-      },
-      conversation: {
-        select: {
-          name: true,
-          isDisabled: true,
-          _count: { select: { members: { where: { isAccepted: true } } } },
-          members: {
-            where: { isLeader: true },
-            take: 1,
-            select: {
-              user: { include: { profile: true } },
+        message: {
+          select: {
+            content: true,
+            senderId: true,
+            sender: { include: { profile: true } },
+          },
+        },
+        document: {
+          select: {
+            title: true,
+            uploaderId: true,
+            uploader: { include: { profile: true } },
+          },
+        },
+        conversation: {
+          select: {
+            name: true,
+            isDisabled: true,
+            _count: { select: { members: { where: { isAccepted: true } } } },
+            members: {
+              where: { isLeader: true },
+              take: 1,
+              select: { user: { include: { profile: true } } },
             },
           },
         },
       },
-    },
-  });
+    }),
+  ]);
 
-  const result = reports.map((r) => {
-    const targetType = targetTypeOf(r);
+  const items = reports.map((r) => {
+    const type = targetTypeOf(r);
     let targetPreview = "";
     let targetAuthor = null;
 
-    if (targetType === "USER") {
+    if (type === "USER") {
       targetPreview = r.reportedUser
         ? `Tài khoản @${r.reportedUser.username}`
         : "Người dùng đã bị xóa";
-    } else if (targetType === "POST") {
+    } else if (type === "POST") {
       targetPreview = r.post?.content ?? "Bài viết đã bị xóa";
       targetAuthor = personOf(r.post?.author);
-    } else if (targetType === "COMMENT") {
+    } else if (type === "COMMENT") {
       targetPreview = r.comment?.content ?? "Bình luận đã bị xóa";
       targetAuthor = personOf(r.comment?.author);
-    } else if (targetType === "DOCUMENT") {
+    } else if (type === "DOCUMENT") {
       targetPreview = r.document?.title ?? "Tài liệu đã bị xóa";
       targetAuthor = personOf(r.document?.uploader);
-    } else if (targetType === "GROUP") {
+    } else if (type === "GROUP") {
       const leader = r.conversation?.members[0]?.user;
       targetPreview = r.conversation
         ? `${r.conversation.name ?? "Nhóm chat"} · ${r.conversation._count.members} thành viên${r.conversation.isDisabled ? " · Đã vô hiệu hóa" : ""}`
@@ -120,7 +157,7 @@ export async function GET(req: NextRequest) {
     return {
       id: r.id,
       reporter: personOf(r.reporter),
-      targetType,
+      targetType: type,
       targetPreview,
       targetAuthor,
       reason: r.reason,
@@ -134,5 +171,11 @@ export async function GET(req: NextRequest) {
     };
   });
 
-  return NextResponse.json(result);
+  return NextResponse.json({
+    items,
+    totalCount,
+    page,
+    pageSize: PAGE_SIZE,
+    totalPages: Math.max(1, Math.ceil(totalCount / PAGE_SIZE)),
+  });
 }

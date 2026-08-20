@@ -1,5 +1,5 @@
 "use client";
-import { useState, useMemo, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { PageHeader } from "@/components/admin/PageHeader";
 import {
   SupportRequestFilters,
@@ -7,6 +7,7 @@ import {
 } from "@/components/admin/support/SupportRequestFilters";
 import { SupportRequestsTable } from "@/components/admin/support/SupportRequestsTable";
 import { SupportRequestDetailModal } from "@/components/admin/support/SupportRequestDetailModal";
+import { Pagination } from "@/components/admin/Pagination";
 import { useToast } from "@/components/ui/Toast";
 import type { AdminSupportRequestRow } from "@/lib/support/types";
 
@@ -18,33 +19,35 @@ export default function AdminSupportRequestsPage() {
     query: "",
     status: "ALL",
   });
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
   const [detailRequest, setDetailRequest] =
     useState<AdminSupportRequestRow | null>(null);
   const [resolving, setResolving] = useState(false);
+
+  useEffect(() => {
+    setPage(1);
+  }, [filters.query, filters.status]);
 
   const fetchRequests = useCallback(() => {
     setLoading(true);
     const params = new URLSearchParams();
     if (filters.status !== "ALL") params.set("status", filters.status);
+    if (filters.query) params.set("query", filters.query);
+    params.set("page", String(page));
     fetch(`/api/admin/support-requests?${params.toString()}`)
       .then((r) => r.json())
-      .then((data) => setRequests(Array.isArray(data) ? data : []))
+      .then((data) => {
+        setRequests(Array.isArray(data.items) ? data.items : []);
+        setTotalPages(data.totalPages ?? 1);
+      })
       .finally(() => setLoading(false));
-  }, [filters.status]);
+  }, [filters, page]);
 
   useEffect(() => {
-    fetchRequests();
+    const t = setTimeout(fetchRequests, 300);
+    return () => clearTimeout(t);
   }, [fetchRequests]);
-
-  const filtered = useMemo(() => {
-    const q = filters.query.toLowerCase();
-    return requests.filter(
-      (r) =>
-        !q ||
-        r.user.username.toLowerCase().includes(q) ||
-        r.subject.toLowerCase().includes(q),
-    );
-  }, [requests, filters.query]);
 
   const handleResolve = async (reply: string) => {
     if (!detailRequest) return;
@@ -83,10 +86,13 @@ export default function AdminSupportRequestsPage() {
           Đang tải...
         </div>
       ) : (
-        <SupportRequestsTable
-          requests={filtered}
-          onViewDetail={setDetailRequest}
-        />
+        <>
+          <SupportRequestsTable
+            requests={requests}
+            onViewDetail={setDetailRequest}
+          />
+          <Pagination page={page} totalPages={totalPages} onChange={setPage} />
+        </>
       )}
 
       {detailRequest && (

@@ -4,6 +4,8 @@ import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { initialsFor } from "@/lib/avatar";
 
+const PAGE_SIZE = 20;
+
 export async function GET(req: NextRequest) {
   const session = await getServerSession(authOptions);
   if (!session?.user?.id || session.user.role !== "ADMIN") {
@@ -12,23 +14,39 @@ export async function GET(req: NextRequest) {
 
   const { searchParams } = new URL(req.url);
   const status = searchParams.get("status");
+  const query = searchParams.get("query")?.trim();
+  const onlyReported = searchParams.get("onlyReported") === "1";
+  const page = Math.max(1, parseInt(searchParams.get("page") ?? "1", 10) || 1);
 
-  const docs = await prisma.document.findMany({
-    where: {
-      postId: null,
-      type: { notIn: ["IMAGE", "VIDEO"] },
-      ...(status === "VISIBLE" && { hidden: false }),
-      ...(status === "HIDDEN" && { hidden: true }),
-    },
-    orderBy: { createdAt: "desc" },
-    take: 200,
-    include: {
-      uploader: { include: { profile: true } },
-      _count: { select: { reports: true } },
-    },
-  });
+  const where: any = {
+    postId: null,
+    type: { notIn: ["IMAGE", "VIDEO"] },
+    ...(status === "VISIBLE" && { hidden: false }),
+    ...(status === "HIDDEN" && { hidden: true }),
+    ...(query && {
+      OR: [
+        { title: { contains: query, mode: "insensitive" } },
+        { uploader: { username: { contains: query, mode: "insensitive" } } },
+      ],
+    }),
+    ...(onlyReported && { reports: { some: {} } }),
+  };
 
-  const result = docs.map((d) => {
+  const [totalCount, docs] = await Promise.all([
+    prisma.document.count({ where }),
+    prisma.document.findMany({
+      where,
+      orderBy: { createdAt: "desc" },
+      skip: (page - 1) * PAGE_SIZE,
+      take: PAGE_SIZE,
+      include: {
+        uploader: { include: { profile: true } },
+        _count: { select: { reports: true } },
+      },
+    }),
+  ]);
+
+  const items = docs.map((d) => {
     const authorName = d.uploader.profile?.displayName ?? d.uploader.username;
     return {
       id: d.id,
@@ -51,5 +69,11 @@ export async function GET(req: NextRequest) {
     };
   });
 
-  return NextResponse.json(result);
+  return NextResponse.json({
+    items,
+    totalCount,
+    page,
+    pageSize: PAGE_SIZE,
+    totalPages: Math.max(1, Math.ceil(totalCount / PAGE_SIZE)),
+  });
 }

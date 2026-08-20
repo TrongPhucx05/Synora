@@ -1,9 +1,10 @@
 "use client";
-import { useState, useMemo, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { PageHeader } from "@/components/admin/PageHeader";
 import { DocumentsTable } from "@/components/admin/library/DocumentsTable";
 import { DeleteDocumentDialog } from "@/components/admin/library/DeleteDocumentDialog";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
+import { Pagination } from "@/components/admin/Pagination";
 import { useToast } from "@/components/ui/Toast";
 import { Search, EyeOff, Eye } from "lucide-react";
 import type { AdminDocumentRow, ContentStatus } from "@/lib/content/types";
@@ -19,35 +20,37 @@ export default function AdminLibraryPage() {
   const [query, setQuery] = useState("");
   const [status, setStatus] = useState<ContentStatus | "ALL">("ALL");
   const [onlyReported, setOnlyReported] = useState(false);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
 
   const [hideConfirm, setHideConfirm] = useState<HideConfirm>(null);
   const [deleteConfirm, setDeleteConfirm] = useState<DeleteConfirm>(null);
   const [actionLoading, setActionLoading] = useState(false);
 
+  useEffect(() => {
+    setPage(1);
+  }, [query, status, onlyReported]);
+
   const fetchData = useCallback(() => {
     setLoading(true);
     const params = new URLSearchParams();
     if (status !== "ALL") params.set("status", status);
+    if (query) params.set("query", query);
+    if (onlyReported) params.set("onlyReported", "1");
+    params.set("page", String(page));
     fetch(`/api/admin/documents?${params.toString()}`)
       .then((r) => r.json())
-      .then((data) => Array.isArray(data) && setDocuments(data))
+      .then((data) => {
+        setDocuments(Array.isArray(data.items) ? data.items : []);
+        setTotalPages(data.totalPages ?? 1);
+      })
       .finally(() => setLoading(false));
-  }, [status]);
+  }, [status, query, onlyReported, page]);
 
   useEffect(() => {
-    fetchData();
+    const t = setTimeout(fetchData, 300);
+    return () => clearTimeout(t);
   }, [fetchData]);
-
-  const filtered = useMemo(() => {
-    const q = query.toLowerCase();
-    return documents.filter(
-      (d) =>
-        (!q ||
-          d.title.toLowerCase().includes(q) ||
-          d.author.username.toLowerCase().includes(q)) &&
-        (!onlyReported || d.reportCount > 0),
-    );
-  }, [documents, query, onlyReported]);
 
   const handleToggleHide = async () => {
     if (!hideConfirm) return;
@@ -136,11 +139,14 @@ export default function AdminLibraryPage() {
           Đang tải...
         </div>
       ) : (
-        <DocumentsTable
-          documents={filtered}
-          onToggleVisibility={(d) => setHideConfirm({ item: d })}
-          onDelete={(d) => setDeleteConfirm({ item: d })}
-        />
+        <>
+          <DocumentsTable
+            documents={documents}
+            onToggleVisibility={(d) => setHideConfirm({ item: d })}
+            onDelete={(d) => setDeleteConfirm({ item: d })}
+          />
+          <Pagination page={page} totalPages={totalPages} onChange={setPage} />
+        </>
       )}
 
       {hideConfirm && (

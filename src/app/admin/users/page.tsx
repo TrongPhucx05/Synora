@@ -15,6 +15,7 @@ import {
   LockUserModal,
   type LockPayload,
 } from "@/components/admin/users/LockUserModal";
+import { Pagination } from "@/components/admin/Pagination";
 import { useToast } from "@/components/ui/Toast";
 
 export default function AdminUsersPage() {
@@ -25,22 +26,30 @@ export default function AdminUsersPage() {
   });
   const [users, setUsers] = useState<AdminUserRow[]>([]);
   const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
   const [detailUser, setDetailUser] = useState<AdminUserRow | null>(null);
   const [lockTarget, setLockTarget] = useState<AdminUserRow | null>(null);
   const [lockLoading, setLockLoading] = useState(false);
+
+  useEffect(() => {
+    setPage(1);
+  }, [filters.query, filters.status]);
 
   const fetchUsers = useCallback(() => {
     setLoading(true);
     const params = new URLSearchParams();
     if (filters.query) params.set("query", filters.query);
     if (filters.status !== "ALL") params.set("status", filters.status);
+    params.set("page", String(page));
     fetch(`/api/admin/users?${params.toString()}`)
       .then((r) => r.json())
       .then((data) => {
-        if (Array.isArray(data)) setUsers(data);
+        setUsers(Array.isArray(data.items) ? data.items : []);
+        setTotalPages(data.totalPages ?? 1);
       })
       .finally(() => setLoading(false));
-  }, [filters]);
+  }, [filters, page]);
 
   useEffect(() => {
     const t = setTimeout(fetchUsers, 300);
@@ -105,12 +114,15 @@ export default function AdminUsersPage() {
           <p className="text-sm text-slate-400">Đang tải...</p>
         </div>
       ) : (
-        <UsersTable
-          users={users}
-          onViewDetail={setDetailUser}
-          onLock={setLockTarget}
-          onUnlock={handleUnlock}
-        />
+        <>
+          <UsersTable
+            users={users}
+            onViewDetail={setDetailUser}
+            onLock={setLockTarget}
+            onUnlock={handleUnlock}
+          />
+          <Pagination page={page} totalPages={totalPages} onChange={setPage} />
+        </>
       )}
 
       {detailUser && (

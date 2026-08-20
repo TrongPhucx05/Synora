@@ -1,5 +1,5 @@
 "use client";
-import { useState, useMemo, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useSearchParams } from "next/navigation";
 import { PageHeader } from "@/components/admin/PageHeader";
 import {
@@ -16,6 +16,7 @@ import { MediaGrid } from "@/components/admin/content/MediaGrid";
 import { PostDetailModal } from "@/components/admin/content/PostDetailModal";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 import { AdminDeletePostDialog } from "@/components/admin/dashboard/AdminDeletePostDialog";
+import { Pagination } from "@/components/admin/Pagination";
 import { useToast } from "@/components/ui/Toast";
 import { EyeOff, Eye, Trash2 } from "lucide-react";
 import type {
@@ -45,6 +46,8 @@ export default function AdminContentPage() {
   const [comments, setComments] = useState<AdminCommentRow[]>([]);
   const [media, setMedia] = useState<AdminMediaRow[]>([]);
   const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
 
   const [tabCounts, setTabCounts] = useState<TabCounts>({
     posts: 0,
@@ -69,18 +72,25 @@ export default function AdminContentPage() {
     ])
       .then(([p, c, m]) => {
         setTabCounts({
-          posts: Array.isArray(p) ? p.length : 0,
-          comments: Array.isArray(c) ? c.length : 0,
-          media: Array.isArray(m) ? m.length : 0,
+          posts: p?.totalCount ?? 0,
+          comments: c?.totalCount ?? 0,
+          media: m?.totalCount ?? 0,
         });
       })
       .catch(() => {});
   }, []);
 
+  useEffect(() => {
+    setPage(1);
+  }, [tab, filters.query, filters.status, filters.onlyReported]);
+
   const fetchData = useCallback(() => {
     setLoading(true);
     const params = new URLSearchParams();
     if (filters.status !== "ALL") params.set("status", filters.status);
+    if (filters.query) params.set("query", filters.query);
+    if (filters.onlyReported) params.set("onlyReported", "1");
+    params.set("page", String(page));
     const endpoint =
       tab === "posts"
         ? "/api/admin/posts"
@@ -90,51 +100,20 @@ export default function AdminContentPage() {
     fetch(`${endpoint}?${params.toString()}`)
       .then((r) => r.json())
       .then((data) => {
-        if (!Array.isArray(data)) return;
-        if (tab === "posts") setPosts(data);
-        else if (tab === "comments") setComments(data);
-        else setMedia(data);
+        const items = Array.isArray(data.items) ? data.items : [];
+        if (tab === "posts") setPosts(items);
+        else if (tab === "comments") setComments(items);
+        else setMedia(items);
+        setTotalPages(data.totalPages ?? 1);
       })
       .finally(() => setLoading(false));
     fetchCounts();
-  }, [tab, filters.status, fetchCounts]);
+  }, [tab, filters, page, fetchCounts]);
 
   useEffect(() => {
-    fetchData();
+    const t = setTimeout(fetchData, 300);
+    return () => clearTimeout(t);
   }, [fetchData]);
-
-  const filteredPosts = useMemo(() => {
-    const q = filters.query.toLowerCase();
-    return posts.filter(
-      (p) =>
-        (!q ||
-          p.excerpt.toLowerCase().includes(q) ||
-          p.author.username.toLowerCase().includes(q)) &&
-        (filters.status === "ALL" || p.status === filters.status) &&
-        (!filters.onlyReported || p.reportCount > 0),
-    );
-  }, [posts, filters]);
-
-  const filteredComments = useMemo(() => {
-    const q = filters.query.toLowerCase();
-    return comments.filter(
-      (c) =>
-        (!q ||
-          c.content.toLowerCase().includes(q) ||
-          c.author.username.toLowerCase().includes(q)) &&
-        (filters.status === "ALL" || c.status === filters.status) &&
-        (!filters.onlyReported || c.reportCount > 0),
-    );
-  }, [comments, filters]);
-
-  const filteredMedia = useMemo(() => {
-    const q = filters.query.toLowerCase();
-    return media.filter(
-      (m) =>
-        (!q || m.author.username.toLowerCase().includes(q)) &&
-        (filters.status === "ALL" || m.status === filters.status),
-    );
-  }, [media, filters]);
 
   const searchPlaceholder =
     tab === "posts"
@@ -207,7 +186,6 @@ export default function AdminContentPage() {
           }
           showToast("Đã xóa bình luận", "success");
           fetchData();
-          fetchCounts();
           break;
         }
         case "delete-media": {
@@ -220,7 +198,6 @@ export default function AdminContentPage() {
           }
           showToast("Đã xóa media", "success");
           fetchData();
-          fetchCounts();
           break;
         }
       }
@@ -257,33 +234,48 @@ export default function AdminContentPage() {
         searchPlaceholder={searchPlaceholder}
       />
 
-      {tab === "posts" && (
-        <PostsTable
-          posts={filteredPosts}
-          onViewDetail={(p) => setViewingPostId(String(p.id))}
-          onToggleVisibility={(p) =>
-            setConfirmState({ kind: "hide-post", item: p })
-          }
-          onDelete={(p) => setConfirmState({ kind: "delete-post", item: p })}
-        />
-      )}
-      {tab === "comments" && (
-        <CommentsTable
-          comments={filteredComments}
-          onToggleVisibility={(c) =>
-            setConfirmState({ kind: "hide-comment", item: c })
-          }
-          onDelete={(c) => setConfirmState({ kind: "delete-comment", item: c })}
-        />
-      )}
-      {tab === "media" && (
-        <MediaGrid
-          items={filteredMedia}
-          onToggleVisibility={(m) =>
-            setConfirmState({ kind: "hide-media", item: m })
-          }
-          onDelete={(m) => setConfirmState({ kind: "delete-media", item: m })}
-        />
+      {loading ? (
+        <div className="bg-white border border-slate-200 rounded-2xl py-16 flex items-center justify-center">
+          <p className="text-sm text-slate-400">Đang tải...</p>
+        </div>
+      ) : (
+        <>
+          {tab === "posts" && (
+            <PostsTable
+              posts={posts}
+              onViewDetail={(p) => setViewingPostId(String(p.id))}
+              onToggleVisibility={(p) =>
+                setConfirmState({ kind: "hide-post", item: p })
+              }
+              onDelete={(p) =>
+                setConfirmState({ kind: "delete-post", item: p })
+              }
+            />
+          )}
+          {tab === "comments" && (
+            <CommentsTable
+              comments={comments}
+              onToggleVisibility={(c) =>
+                setConfirmState({ kind: "hide-comment", item: c })
+              }
+              onDelete={(c) =>
+                setConfirmState({ kind: "delete-comment", item: c })
+              }
+            />
+          )}
+          {tab === "media" && (
+            <MediaGrid
+              items={media}
+              onToggleVisibility={(m) =>
+                setConfirmState({ kind: "hide-media", item: m })
+              }
+              onDelete={(m) =>
+                setConfirmState({ kind: "delete-media", item: m })
+              }
+            />
+          )}
+          <Pagination page={page} totalPages={totalPages} onChange={setPage} />
+        </>
       )}
 
       {confirmState?.kind === "delete-post" ? (
@@ -310,7 +302,6 @@ export default function AdminContentPage() {
                 "success",
               );
               fetchData();
-              fetchCounts();
             } catch (e) {
               showToast(
                 e instanceof Error ? e.message : "Có lỗi xảy ra",

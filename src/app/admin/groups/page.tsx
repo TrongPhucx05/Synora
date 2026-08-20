@@ -8,6 +8,7 @@ import {
 import { GroupsTable } from "@/components/admin/groups/GroupsTable";
 import { GroupDetailModal } from "@/components/admin/groups/GroupDetailModal";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
+import { Pagination } from "@/components/admin/Pagination";
 import { useToast } from "@/components/ui/Toast";
 import { Ban, CheckCircle2, Trash2 } from "lucide-react";
 import type { AdminGroupRow } from "@/lib/admin/groups/types";
@@ -26,9 +27,15 @@ export default function AdminGroupsPage() {
     query: "",
     status: "ALL",
   });
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
   const [detailGroup, setDetailGroup] = useState<AdminGroupRow | null>(null);
   const [confirmState, setConfirmState] = useState<ConfirmState>(null);
   const [confirmLoading, setConfirmLoading] = useState(false);
+
+  useEffect(() => {
+    setPage(1);
+  }, [filters.query, filters.status]);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -36,12 +43,17 @@ export default function AdminGroupsPage() {
       const params = new URLSearchParams();
       if (filters.query) params.set("query", filters.query);
       if (filters.status !== "ALL") params.set("status", filters.status);
+      params.set("page", String(page));
       const res = await fetch(`/api/admin/groups?${params.toString()}`);
-      if (res.ok) setGroups(await res.json());
+      if (res.ok) {
+        const data = await res.json();
+        setGroups(Array.isArray(data.items) ? data.items : []);
+        setTotalPages(data.totalPages ?? 1);
+      }
     } finally {
       setLoading(false);
     }
-  }, [filters]);
+  }, [filters, page]);
 
   useEffect(() => {
     const t = setTimeout(load, 300);
@@ -57,8 +69,8 @@ export default function AdminGroupsPage() {
           method: "DELETE",
         });
         if (!res.ok) throw new Error();
-        setGroups((prev) => prev.filter((g) => g.id !== confirmState.group.id));
         showToast("Đã xóa nhóm", "success");
+        load();
       } else {
         const res = await fetch(`/api/admin/groups/${confirmState.group.id}`, {
           method: "PATCH",
@@ -102,13 +114,16 @@ export default function AdminGroupsPage() {
           <p className="text-sm text-slate-400">Đang tải...</p>
         </div>
       ) : (
-        <GroupsTable
-          groups={groups}
-          onViewDetail={setDetailGroup}
-          onDisable={(g) => setConfirmState({ type: "disable", group: g })}
-          onEnable={(g) => setConfirmState({ type: "enable", group: g })}
-          onDelete={(g) => setConfirmState({ type: "delete", group: g })}
-        />
+        <>
+          <GroupsTable
+            groups={groups}
+            onViewDetail={setDetailGroup}
+            onDisable={(g) => setConfirmState({ type: "disable", group: g })}
+            onEnable={(g) => setConfirmState({ type: "enable", group: g })}
+            onDelete={(g) => setConfirmState({ type: "delete", group: g })}
+          />
+          <Pagination page={page} totalPages={totalPages} onChange={setPage} />
+        </>
       )}
 
       {detailGroup && (
