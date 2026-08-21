@@ -44,7 +44,7 @@ export default function AdminDashboardPage() {
   return (
     <>
       <PageHeader
-        title="Dashboard"
+        title="Tổng quan"
         description="Tổng quan tình trạng hệ thống Synora"
       />
 
@@ -97,7 +97,7 @@ export default function AdminDashboardPage() {
         />
         <StatCard
           icon={Clock}
-          label="Nội dung đang chờ duyệt"
+          label="Yêu cầu hỗ trợ chưa xử lý"
           value={PLACEHOLDER.pendingContent}
           colorClass="bg-amber-50 text-amber-600"
           comingSoon
