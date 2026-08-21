@@ -134,12 +134,20 @@ enum FriendRequestPermission {
 
 enum SupportRequestStatus {
   PENDING
+  IN_PROGRESS
+  WAITING_FOR_USER
   RESOLVED
+  CLOSED
+  REJECTED
 }
 
 enum SupportRequestType {
-  GENERAL
+  ACCOUNT_SUPPORT
   BAN_APPEAL
+  ACCOUNT_DELETION
+  BUG_REPORT
+  FEEDBACK
+  OTHER
 }
 
 model FriendRequest {
@@ -157,11 +165,11 @@ model FriendRequest {
 }
 
 model Block {
-  id        String   @id @default(cuid())
+  id        String @id @default(cuid())
   blockerId String
-  blocker   User     @relation("blocker", fields: [blockerId], references: [id], onDelete: Cascade)
+  blocker   User   @relation("blocker", fields: [blockerId], references: [id], onDelete: Cascade)
   blockedId String
-  blocked   User     @relation("blocked", fields: [blockedId], references: [id], onDelete: Cascade)
+  blocked   User   @relation("blocked", fields: [blockedId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
 
@@ -170,27 +178,27 @@ model Block {
 }
 
 model User {
-  id            String   @id @default(cuid())
-  email         String   @unique
+  id            String    @id @default(cuid())
+  email         String    @unique
   emailVerified DateTime?
-  username      String   @unique
+  username      String    @unique
   passwordHash  String?
-  role          Role     @default(USER)
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  role          Role      @default(USER)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
 
-  lastActiveAt  DateTime?
+  lastActiveAt DateTime?
 
-  profile       Profile?
+  profile Profile?
 
-  accounts      Account[]
-  sessions      Session[]
+  accounts Account[]
+  sessions Session[]
 
-  posts         Post[]
-  comments      Comment[]
-  likes         Like[]
-  saves         Save[]
-  documents     Document[]
+  posts          Post[]
+  comments       Comment[]
+  likes          Like[]
+  saves          Save[]
+  documents      Document[]
   savedDocuments SavedDocument[]
 
   sentRequests     FriendRequest[] @relation("sentRequests")
@@ -201,43 +209,44 @@ model User {
 
   pinnedMessages Message[] @relation("pinnedMessages")
 
-  followers     Follow[]  @relation("following")
-  following     Follow[]  @relation("follower")
+  followers Follow[] @relation("following")
+  following Follow[] @relation("follower")
 
-  sentMessages      Message[]        @relation("sender")
-  conversations     ConversationMember[]
-  messageReactions  MessageReaction[]
+  sentMessages     Message[]            @relation("sender")
+  conversations    ConversationMember[]
+  messageReactions MessageReaction[]
 
-  notifications     Notification[]   @relation("recipient")
-  triggeredNotifs   Notification[]   @relation("actor")
+  notifications   Notification[] @relation("recipient")
+  triggeredNotifs Notification[] @relation("actor")
 
-  memberships       CommunityMember[]
-  ownedCommunities  Community[]      @relation("owner")
+  memberships      CommunityMember[]
+  ownedCommunities Community[]       @relation("owner")
 
-  reports           Report[] @relation("reporter")
-  reportedPosts     Report[] @relation("reportedUser")
-  resolvedReports   Report[] @relation("reportResolver")
+  reports         Report[] @relation("reporter")
+  reportedPosts   Report[] @relation("reportedUser")
+  resolvedReports Report[] @relation("reportResolver")
 
-  status            AccountStatus @default(ACTIVE)
-  suspendedUntil    DateTime?
-  suspensionReason  SuspensionReason?
-  suspensionNote    String?
-  violationCount   Int       @default(0)
+  status           AccountStatus     @default(ACTIVE)
+  suspendedUntil   DateTime?
+  suspensionReason SuspensionReason?
+  suspensionNote   String?
+  violationCount   Int               @default(0)
   lastViolationAt  DateTime?
+  scheduledDeleteAt DateTime?
 
   moderationActionsReceived ModerationAction[] @relation("moderationTarget")
   moderationActionsTaken    ModerationAction[] @relation("moderationActor")
 
-  supportRequests SupportRequest[]
+  supportRequests    SupportRequest[]
   createdInviteLinks GroupInviteLink[] @relation("inviteLinkCreator")
 
   @@map("users")
 }
 
 model Profile {
-  id          String   @id @default(cuid())
-  userId      String   @unique
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id     String @id @default(cuid())
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   displayName String?
   bio         String?
@@ -252,17 +261,17 @@ model Profile {
   friendRequestPermission FriendRequestPermission @default(EVERYONE)
   messageFromFriendsOnly  Boolean                 @default(false)
   showFriendsList         Boolean                 @default(true)
-  showActivityStatus Boolean @default(true)
+  showActivityStatus      Boolean                 @default(true)
 
-  updatedAt   DateTime @updatedAt
+  updatedAt DateTime @updatedAt
 
   @@map("profiles")
 }
 
 model Account {
-  id                String  @id @default(cuid())
-  userId            String
-  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id     String @id @default(cuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   type              String
   provider          String
@@ -280,20 +289,47 @@ model Account {
 }
 
 model SupportRequest {
-  id         String               @id @default(cuid())
-  userId     String
-  user       User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id   String @id @default(cuid())
+  code String @unique
 
-  type       SupportRequestType    @default(GENERAL)
+  userId String?
+  user   User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
 
-  subject    String
-  message    String
-  status     SupportRequestStatus @default(PENDING)
+  contactEmail String
+  guestName    String?
 
-  createdAt  DateTime             @default(now())
+  type    SupportRequestType   @default(ACCOUNT_SUPPORT)
+  subject String
+  message String
+  status  SupportRequestStatus @default(PENDING)
+
+  trackingTokenHash String? @unique
+
+  ipHash String?
+
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
   resolvedAt DateTime?
 
+  replies SupportRequestReply[]
+
+  @@index([contactEmail])
+  @@index([status])
+  @@index([createdAt])
+  @@index([ipHash])
   @@map("support_requests")
+}
+
+model SupportRequestReply {
+  id               String               @id @default(cuid())
+  supportRequestId String
+  supportRequest   SupportRequest       @relation(fields: [supportRequestId], references: [id], onDelete: Cascade)
+  adminId          String?
+  message          String
+  statusAtReply    SupportRequestStatus
+  createdAt        DateTime             @default(now())
+
+  @@map("support_request_replies")
 }
 
 model Session {
@@ -316,49 +352,49 @@ model VerificationToken {
 }
 
 model Post {
-  id          String         @id @default(cuid())
-  authorId    String
-  author      User           @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  id       String @id @default(cuid())
+  authorId String
+  author   User   @relation(fields: [authorId], references: [id], onDelete: Cascade)
 
-  title       String?
-  content     String
-  visibility  PostVisibility @default(PUBLIC)
-  hidden      Boolean        @default(false)
+  title             String?
+  content           String
+  visibility        PostVisibility @default(PUBLIC)
+  hidden            Boolean        @default(false)
   scheduledDeleteAt DateTime?
 
-  documents   Document[]
+  documents Document[]
 
-  tags        TagsOnPosts[]
-  categoryId  String?
-  category    Category?      @relation(fields: [categoryId], references: [id])
+  tags       TagsOnPosts[]
+  categoryId String?
+  category   Category?     @relation(fields: [categoryId], references: [id])
 
   communityId String?
-  community   Community?     @relation(fields: [communityId], references: [id])
+  community   Community? @relation(fields: [communityId], references: [id])
 
-  comments    Comment[]
-  likes       Like[]
-  saves       Save[]
-  reports     Report[]
+  comments Comment[]
+  likes    Like[]
+  saves    Save[]
+  reports  Report[]
 
-  likeCount   Int            @default(0)
-  commentCount Int           @default(0)
-  saveCount   Int            @default(0)
-  viewCount   Int            @default(0)
+  likeCount    Int @default(0)
+  commentCount Int @default(0)
+  saveCount    Int @default(0)
+  viewCount    Int @default(0)
 
-  editedAt    DateTime?
-  createdAt   DateTime       @default(now())
-  updatedAt   DateTime       @updatedAt
+  editedAt  DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
 
   @@map("posts")
 }
 
 model Document {
-  id          String       @id @default(cuid())
-  uploaderId  String
-  uploader    User         @relation(fields: [uploaderId], references: [id], onDelete: Cascade)
+  id         String @id @default(cuid())
+  uploaderId String
+  uploader   User   @relation(fields: [uploaderId], references: [id], onDelete: Cascade)
 
-  postId      String?
-  post        Post?        @relation(fields: [postId], references: [id], onDelete: SetNull)
+  postId String?
+  post   Post?   @relation(fields: [postId], references: [id], onDelete: SetNull)
 
   title       String
   description String?
@@ -368,26 +404,26 @@ model Document {
   mimeType    String
   type        DocumentType
 
-  subject     String?
-  subjectId   String?
-  level       String?
-  grade       String?
-  major       String?
-  tags        String[]
-  savedBy     SavedDocument[]
+  subject   String?
+  subjectId String?
+  level     String?
+  grade     String?
+  major     String?
+  tags      String[]
+  savedBy   SavedDocument[]
 
-  reports     Report[]
+  reports Report[]
 
-  pageCount   Int?
+  pageCount Int?
 
-  extractedText String?
-  hidden        Boolean @default(false)
+  extractedText     String?
+  hidden            Boolean   @default(false)
   scheduledDeleteAt DateTime?
 
-  downloadCount Int        @default(0)
+  downloadCount Int @default(0)
 
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@map("documents")
 }
@@ -405,42 +441,42 @@ model SavedDocument {
 }
 
 model Comment {
-  id        String    @id @default(cuid())
-  postId    String
-  post      Post      @relation(fields: [postId], references: [id], onDelete: Cascade)
-  authorId  String
-  author    User      @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  id       String @id @default(cuid())
+  postId   String
+  post     Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+  authorId String
+  author   User   @relation(fields: [authorId], references: [id], onDelete: Cascade)
 
-  hidden    Boolean   @default(false)
+  hidden         Boolean   @default(false)
   hiddenByAuthor String?
-  editedAt  DateTime?
+  editedAt       DateTime?
 
-  content   String
+  content String
 
-  imageUrl  String?
-  videoUrl  String?
-  fileUrl   String?
-  fileName  String?
-  fileSize  String?
-  fileType  String?
+  imageUrl String?
+  videoUrl String?
+  fileUrl  String?
+  fileName String?
+  fileSize String?
+  fileType String?
 
-  parentId  String?
-  parent    Comment?  @relation("replies", fields: [parentId], references: [id], onDelete: Cascade)
-  replies   Comment[] @relation("replies")
+  parentId String?
+  parent   Comment?  @relation("replies", fields: [parentId], references: [id], onDelete: Cascade)
+  replies  Comment[] @relation("replies")
 
-  likes     Like[]
-  reports   Report[]
+  likes   Like[]
+  reports Report[]
 
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@map("comments")
 }
 
 model Like {
-  id        String   @id @default(cuid())
-  userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id     String @id @default(cuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   postId    String?
   post      Post?    @relation(fields: [postId], references: [id], onDelete: Cascade)
@@ -455,11 +491,11 @@ model Like {
 }
 
 model Save {
-  id        String   @id @default(cuid())
-  userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  postId    String
-  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  id     String @id @default(cuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  postId String
+  post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
 
@@ -468,41 +504,41 @@ model Save {
 }
 
 model Follow {
-  id          String   @id @default(cuid())
+  id          String @id @default(cuid())
   followerId  String
-  follower    User     @relation("follower", fields: [followerId], references: [id], onDelete: Cascade)
+  follower    User   @relation("follower", fields: [followerId], references: [id], onDelete: Cascade)
   followingId String
-  following   User     @relation("following", fields: [followingId], references: [id], onDelete: Cascade)
+  following   User   @relation("following", fields: [followingId], references: [id], onDelete: Cascade)
 
-  createdAt   DateTime @default(now())
+  createdAt DateTime @default(now())
 
   @@unique([followerId, followingId])
   @@map("follows")
 }
 
 model Conversation {
-  id        String               @id @default(cuid())
-  isGroup   Boolean              @default(false)
-  name      String?
-  avatarUrl String?
-  avatarKey String?
-  dmKey     String?              @unique
+  id                String    @id @default(cuid())
+  isGroup           Boolean   @default(false)
+  name              String?
+  avatarUrl         String?
+  avatarKey         String?
+  dmKey             String?   @unique
   isDisabled        Boolean   @default(false)
   disabledAt        DateTime?
   leaderBanDeadline DateTime?
 
-  members   ConversationMember[]
-  messages  Message[]
+  members  ConversationMember[]
+  messages Message[]
 
-  inviteLink    GroupInviteLink?
-  notifications Notification[]
+  inviteLink        GroupInviteLink?
+  notifications     Notification[]
   reports           Report[]
   moderationActions ModerationAction[]
 
   lastMessageAt DateTime?
 
-  createdAt DateTime             @default(now())
-  updatedAt DateTime             @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@map("conversations")
 }
@@ -514,19 +550,19 @@ model ConversationMember {
   userId         String
   user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  isLeader       Boolean      @default(false)
-  isAccepted     Boolean      @default(true)
-  origin         MembershipOrigin @default(INVITED)
-  rejectedAt     DateTime?
-  invitedById    String?
-  lastReadAt     DateTime?
-  
+  isLeader    Boolean          @default(false)
+  isAccepted  Boolean          @default(true)
+  origin      MembershipOrigin @default(INVITED)
+  rejectedAt  DateTime?
+  invitedById String?
+  lastReadAt  DateTime?
+
   markedUnreadAt DateTime?
-  isArchived     Boolean      @default(false)
+  isArchived     Boolean   @default(false)
   hiddenAt       DateTime?
   clearedAt      DateTime?
 
-  joinedAt       DateTime     @default(now())
+  joinedAt DateTime @default(now())
 
   @@unique([conversationId, userId])
   @@map("conversation_members")
@@ -547,61 +583,61 @@ model GroupInviteLink {
 }
 
 model Message {
-  id             String        @id @default(cuid())
+  id             String       @id @default(cuid())
   conversationId String
-  conversation   Conversation  @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
   senderId       String
-  sender         User          @relation("sender", fields: [senderId], references: [id], onDelete: Cascade)
+  sender         User         @relation("sender", fields: [senderId], references: [id], onDelete: Cascade)
 
-  content        String?
-  status         MessageStatus @default(SENT)
+  content String?
+  status  MessageStatus @default(SENT)
 
-  attachments    MessageAttachment[]
+  attachments MessageAttachment[]
 
-  replyToId      String?
-  replyTo        Message?      @relation("replies", fields: [replyToId], references: [id], onDelete: SetNull)
-  replies        Message[]     @relation("replies")
-  reactions      MessageReaction[]
+  replyToId String?
+  replyTo   Message?          @relation("replies", fields: [replyToId], references: [id], onDelete: SetNull)
+  replies   Message[]         @relation("replies")
+  reactions MessageReaction[]
 
   forwardedFromSender String?
 
-  pinnedAt       DateTime?
-  pinnedById     String?
-  pinnedBy       User?         @relation("pinnedMessages", fields: [pinnedById], references: [id], onDelete: SetNull)
+  pinnedAt   DateTime?
+  pinnedById String?
+  pinnedBy   User?     @relation("pinnedMessages", fields: [pinnedById], references: [id], onDelete: SetNull)
 
-  deletedAt      DateTime?
+  deletedAt DateTime?
 
-  isSystemMessage Boolean   @default(false)
+  isSystemMessage Boolean  @default(false)
   reports         Report[]
 
-  createdAt      DateTime      @default(now())
+  createdAt DateTime @default(now())
 
   @@map("messages")
 }
 
 model MessageAttachment {
-  id        String         @id @default(cuid())
+  id        String  @id @default(cuid())
   messageId String
-  message   Message        @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  message   Message @relation(fields: [messageId], references: [id], onDelete: Cascade)
 
-  url       String
-  key       String
-  name      String
-  size      Int
-  type      AttachmentType
-  mimeType  String?
+  url      String
+  key      String
+  name     String
+  size     Int
+  type     AttachmentType
+  mimeType String?
 
-  createdAt DateTime       @default(now())
+  createdAt DateTime @default(now())
 
   @@map("message_attachments")
 }
 
 model MessageReaction {
-  id        String   @id @default(cuid())
+  id        String  @id @default(cuid())
   messageId String
-  message   Message  @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  message   Message @relation(fields: [messageId], references: [id], onDelete: Cascade)
   userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
   emoji     String
 
   createdAt DateTime @default(now())
@@ -611,24 +647,24 @@ model MessageReaction {
 }
 
 model Notification {
-  id          String           @id @default(cuid())
+  id          String  @id @default(cuid())
   recipientId String
-  recipient   User             @relation("recipient", fields: [recipientId], references: [id], onDelete: Cascade)
+  recipient   User    @relation("recipient", fields: [recipientId], references: [id], onDelete: Cascade)
   actorId     String?
-  actor       User?            @relation("actor", fields: [actorId], references: [id], onDelete: SetNull)
+  actor       User?   @relation("actor", fields: [actorId], references: [id], onDelete: SetNull)
 
-  type        NotificationType
-  message     String?
+  type    NotificationType
+  message String?
 
-  postId      String?
-  commentId   String?
-  documentId  String?
+  postId         String?
+  commentId      String?
+  documentId     String?
   conversationId String?
   conversation   Conversation? @relation(fields: [conversationId], references: [id], onDelete: Cascade)
 
-  isRead      Boolean          @default(false)
+  isRead Boolean @default(false)
 
-  createdAt   DateTime         @default(now())
+  createdAt DateTime @default(now())
 
   @@map("notifications")
 }
@@ -641,7 +677,7 @@ model Category {
   iconUrl     String?
   color       String?
 
-  posts       Post[]
+  posts Post[]
 
   @@map("categories")
 }
@@ -666,22 +702,22 @@ model TagsOnPosts {
 }
 
 model Community {
-  id          String            @id @default(cuid())
-  ownerId     String
-  owner       User              @relation("owner", fields: [ownerId], references: [id])
+  id      String @id @default(cuid())
+  ownerId String
+  owner   User   @relation("owner", fields: [ownerId], references: [id])
 
-  name        String            @unique
-  slug        String            @unique
+  name        String  @unique
+  slug        String  @unique
   description String?
   avatarUrl   String?
   coverUrl    String?
-  isPrivate   Boolean           @default(false)
+  isPrivate   Boolean @default(false)
 
-  members     CommunityMember[]
-  posts       Post[]
+  members CommunityMember[]
+  posts   Post[]
 
-  createdAt   DateTime          @default(now())
-  updatedAt   DateTime          @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@map("communities")
 }
@@ -693,35 +729,35 @@ model CommunityMember {
   userId      String
   user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  isAdmin     Boolean   @default(false)
-  joinedAt    DateTime  @default(now())
+  isAdmin  Boolean  @default(false)
+  joinedAt DateTime @default(now())
 
   @@unique([communityId, userId])
   @@map("community_members")
 }
 
 model Report {
-  id             String       @id @default(cuid())
-  reporterId     String
-  reporter       User         @relation("reporter", fields: [reporterId], references: [id], onDelete: Cascade)
+  id         String @id @default(cuid())
+  reporterId String
+  reporter   User   @relation("reporter", fields: [reporterId], references: [id], onDelete: Cascade)
 
   reportedUserId String?
-  reportedUser   User?        @relation("reportedUser", fields: [reportedUserId], references: [id], onDelete: Cascade)
+  reportedUser   User?    @relation("reportedUser", fields: [reportedUserId], references: [id], onDelete: Cascade)
   postId         String?
-  post           Post?        @relation(fields: [postId], references: [id], onDelete: SetNull)
+  post           Post?    @relation(fields: [postId], references: [id], onDelete: SetNull)
   commentId      String?
-  comment        Comment?     @relation(fields: [commentId], references: [id], onDelete: SetNull)
+  comment        Comment? @relation(fields: [commentId], references: [id], onDelete: SetNull)
   messageId      String?
-  message        Message?     @relation(fields: [messageId], references: [id], onDelete: SetNull)
+  message        Message? @relation(fields: [messageId], references: [id], onDelete: SetNull)
 
-  documentId     String?
-  document       Document?    @relation(fields: [documentId], references: [id], onDelete: SetNull)
+  documentId String?
+  document   Document? @relation(fields: [documentId], references: [id], onDelete: SetNull)
 
   conversationId String?
   conversation   Conversation? @relation(fields: [conversationId], references: [id], onDelete: SetNull)
 
-  reason         ReportReason
-  description    String?
+  reason      ReportReason
+  description String?
 
   status         ReportStatus @default(PENDING)
   resolvedById   String?
@@ -729,33 +765,33 @@ model Report {
   resolutionNote String?
   resolvedAt     DateTime?
 
-  createdAt      DateTime     @default(now())
+  createdAt DateTime @default(now())
 
   @@map("reports")
 }
 
 model ModerationAction {
-  id             String               @id @default(cuid())
-  type           ModerationActionType @default(POST_REMOVED)
+  id   String               @id @default(cuid())
+  type ModerationActionType @default(POST_REMOVED)
 
-  adminId        String
-  admin          User                 @relation("moderationActor", fields: [adminId], references: [id], onDelete: Cascade)
+  adminId String
+  admin   User   @relation("moderationActor", fields: [adminId], references: [id], onDelete: Cascade)
 
-  targetUserId   String
-  targetUser     User                 @relation("moderationTarget", fields: [targetUserId], references: [id], onDelete: Cascade)
+  targetUserId         String
+  targetUser           User          @relation("moderationTarget", fields: [targetUserId], references: [id], onDelete: Cascade)
   targetConversationId String?
-  targetConversation    Conversation? @relation(fields: [targetConversationId], references: [id], onDelete: SetNull)
+  targetConversation   Conversation? @relation(fields: [targetConversationId], references: [id], onDelete: SetNull)
 
-  reason  SuspensionReason?
-  note           String?
+  reason SuspensionReason?
+  note   String?
 
-  notifiedUser   Boolean              @default(false)
-  flaggedUser    Boolean              @default(false)
+  notifiedUser Boolean @default(false)
+  flaggedUser  Boolean @default(false)
 
   postExcerpt    String?
   suspendedUntil DateTime?
 
-  createdAt      DateTime             @default(now())
+  createdAt DateTime @default(now())
 
   @@map("moderation_actions")
 }
