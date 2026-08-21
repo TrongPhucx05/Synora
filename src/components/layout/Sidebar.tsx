@@ -4,11 +4,10 @@ import { usePathname } from "next/navigation";
 import { useSession } from "next-auth/react";
 import {
   Home,
-  Compass,
   BookOpen,
   MessageCircle,
   Bell,
-  Users,
+  HelpCircle,
 } from "lucide-react";
 import { clsx } from "clsx";
 import { useUnreadNotifCount } from "@/lib/notifications/hooks";
@@ -19,6 +18,7 @@ const navItems = [
   { href: "/library", icon: BookOpen, label: "Tài liệu" },
   { href: "/chat", icon: MessageCircle, label: "Nhắn tin" },
   { href: "/notifications", icon: Bell, label: "Thông báo" },
+  { href: "/support", icon: HelpCircle, label: "Trợ giúp" },
 ];
 
 export default function Sidebar() {
