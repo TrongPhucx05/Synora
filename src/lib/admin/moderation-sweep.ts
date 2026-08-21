@@ -79,3 +79,24 @@ export async function sweepAutoDisbandGroups() {
     }
   }
 }
+
+export async function sweepAccountDeletions() {
+  const now = new Date();
+
+  const dueUsers = await prisma.user.findMany({
+    where: { scheduledDeleteAt: { lte: now } },
+    select: {
+      id: true,
+      documents: { select: { fileKey: true } },
+    },
+  });
+
+  for (const user of dueUsers) {
+    const docKeys = user.documents.map((d) => d.fileKey).filter(Boolean);
+    if (docKeys.length) {
+      await utapi.deleteFiles(docKeys).catch(() => {});
+    }
+
+    await prisma.user.delete({ where: { id: user.id } });
+  }
+}
