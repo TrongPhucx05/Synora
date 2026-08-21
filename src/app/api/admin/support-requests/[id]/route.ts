@@ -3,7 +3,22 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { emailService } from "@/lib/email/service";
-import { supportRequestReceivedEmail, supportRequestResolvedEmail } from "@/lib/email/templates/support-request-received";
+import { supportRequestStatusUpdateEmail } from "@/lib/email/templates/support-request-lifecycle";
+import type { SupportRequestStatus } from "@/generated/prisma/enums";
+
+const VALID_STATUSES: SupportRequestStatus[] = [
+  "PENDING",
+  "IN_PROGRESS",
+  "WAITING_FOR_USER",
+  "RESOLVED",
+  "CLOSED",
+  "REJECTED",
+];
+const TERMINAL_STATUSES = new Set<SupportRequestStatus>([
+  "RESOLVED",
+  "CLOSED",
+  "REJECTED",
+]);
 
 export async function PATCH(
   req: NextRequest,
@@ -15,50 +30,92 @@ export async function PATCH(
   }
 
   const { id } = await params;
-  const { reply } = await req.json().catch(() => ({}));
+  const { reply, status } = await req.json().catch(() => ({}));
 
-  const request = await prisma.supportRequest.findUnique({
-    where: { id },
-    include: { user: { select: { email: true } } },
-  });
-  if (!request)
+  if (!VALID_STATUSES.includes(status)) {
+    return NextResponse.json(
+      { error: "Trạng thái không hợp lệ" },
+      { status: 400 },
+    );
+  }
+
+  const existing = await prisma.supportRequest.findUnique({ where: { id } });
+  if (!existing) {
     return NextResponse.json(
       { error: "Không tìm thấy yêu cầu" },
       { status: 404 },
     );
-  if (request.status === "RESOLVED")
+  }
+  if (TERMINAL_STATUSES.has(existing.status)) {
     return NextResponse.json(
-      { error: "Yêu cầu này đã được xử lý" },
+      {
+        error: "Yêu cầu này đã ở trạng thái kết thúc, không thể cập nhật thêm",
+      },
       { status: 409 },
     );
+  }
 
-  await prisma.supportRequest.update({
-    where: { id },
-    data: { status: "RESOLVED", resolvedAt: new Date() },
-  });
+  const wasResolvedNow =
+    existing.status !== "RESOLVED" && status === "RESOLVED";
 
-  if (request.type === "BAN_APPEAL") {
+  const [updated] = await prisma.$transaction([
+    prisma.supportRequest.update({
+      where: { id },
+      data: {
+        status,
+        resolvedAt: TERMINAL_STATUSES.has(status)
+          ? new Date()
+          : existing.resolvedAt,
+      },
+    }),
+    prisma.supportRequestReply.create({
+      data: {
+        supportRequestId: id,
+        adminId: session.user.id,
+        message: reply?.trim() ?? "",
+        statusAtReply: status,
+      },
+    }),
+  ]);
+
+  if (existing.type === "BAN_APPEAL" && wasResolvedNow && existing.userId) {
     await prisma.conversation.updateMany({
-      where: { isGroup: true, members: { some: { userId: request.userId, isLeader: true } } },
+      where: {
+        isGroup: true,
+        members: { some: { userId: existing.userId, isLeader: true } },
+      },
       data: { leaderBanDeadline: null },
     });
   }
 
-  if (request.type === "BAN_APPEAL") {
-    const { subject, html } = supportRequestResolvedEmail(
-      request.subject,
-      reply?.trim(),
+  const { subject: mailSubject, html } = supportRequestStatusUpdateEmail({
+    code: updated.code,
+    subject: updated.subject,
+    status: updated.status,
+    reply: reply?.trim() || undefined,
+    updatedAt: updated.updatedAt,
+  });
+  const emailResult = await emailService.send({
+    to: updated.contactEmail,
+    subject: mailSubject,
+    html,
+  });
+  if (emailResult.error) {
+    console.error(
+      "[admin support-requests PATCH] email send failed:",
+      emailResult.error,
     );
-    await emailService.send({ to: request.user.email, subject, html });
-  } else {
+  }
+
+  if (updated.userId) {
     await prisma.notification.create({
       data: {
-        recipientId: request.userId,
+        recipientId: updated.userId,
         actorId: session.user.id,
         type: "SYSTEM",
         message: reply?.trim()
-          ? `Yêu cầu hỗ trợ "${request.subject}" của bạn đã được xử lý: ${reply.trim()}`
-          : `Yêu cầu hỗ trợ "${request.subject}" của bạn đã được xử lý.`,
+          ? `Yêu cầu hỗ trợ ${updated.code} đã được cập nhật: ${reply.trim()}`
+          : `Yêu cầu hỗ trợ ${updated.code} đã được cập nhật trạng thái.`,
       },
     });
   }
