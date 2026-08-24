@@ -7,7 +7,13 @@ import { formatDateTime } from "@/lib/admin/account-lock";
 import type { AuditActionType } from "@/lib/audit-log/types";
 
 const TYPES_BY_GROUP: Record<string, AuditActionType[]> = {
-  USER: ["ACCOUNT_SUSPENDED", "ACCOUNT_BANNED", "ACCOUNT_UNLOCKED"],
+  USER: [
+    "ACCOUNT_SUSPENDED",
+    "ACCOUNT_BANNED",
+    "ACCOUNT_UNLOCKED",
+    "ACCOUNT_DELETION_SCHEDULED",
+    "ACCOUNT_DELETION_CANCELLED",
+  ],
   GROUP: ["GROUP_DISABLED", "GROUP_ENABLED", "GROUP_DELETED"],
   CONTENT: ["POST_REMOVED"],
 };

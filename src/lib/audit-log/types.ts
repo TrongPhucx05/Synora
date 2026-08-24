@@ -7,6 +7,8 @@ import {
   Lock,
   Unlock,
   Trash2,
+  CalendarX2,
+  CalendarCheck2,
 } from "lucide-react";
 
 export type AuditActionType =
@@ -14,6 +16,8 @@ export type AuditActionType =
   | "ACCOUNT_SUSPENDED"
   | "ACCOUNT_BANNED"
   | "ACCOUNT_UNLOCKED"
+  | "ACCOUNT_DELETION_SCHEDULED"
+  | "ACCOUNT_DELETION_CANCELLED"
   | "GROUP_DISABLED"
   | "GROUP_ENABLED"
   | "GROUP_DELETED";
@@ -43,6 +47,8 @@ export const ACTION_LABELS: Record<AuditActionType, string> = {
   ACCOUNT_SUSPENDED: "Tạm khóa người dùng",
   ACCOUNT_BANNED: "Khóa vĩnh viễn người dùng",
   ACCOUNT_UNLOCKED: "Mở khóa người dùng",
+  ACCOUNT_DELETION_SCHEDULED: "Lên lịch xóa tài khoản",
+  ACCOUNT_DELETION_CANCELLED: "Hủy lịch xóa tài khoản",
   GROUP_DISABLED: "Vô hiệu hóa nhóm",
   GROUP_ENABLED: "Mở lại nhóm",
   GROUP_DELETED: "Xóa nhóm",
@@ -56,6 +62,8 @@ export const ACTION_GROUP: Record<
   ACCOUNT_SUSPENDED: "USER",
   ACCOUNT_BANNED: "USER",
   ACCOUNT_UNLOCKED: "USER",
+  ACCOUNT_DELETION_SCHEDULED: "USER",
+  ACCOUNT_DELETION_CANCELLED: "USER",
   GROUP_DISABLED: "GROUP",
   GROUP_ENABLED: "GROUP",
   GROUP_DELETED: "GROUP",
@@ -73,6 +81,8 @@ export const ACTION_ICON: Record<AuditActionType, LucideIcon> = {
   ACCOUNT_SUSPENDED: Clock,
   ACCOUNT_BANNED: Ban,
   ACCOUNT_UNLOCKED: UserCheck,
+  ACCOUNT_DELETION_SCHEDULED: CalendarX2,
+  ACCOUNT_DELETION_CANCELLED: CalendarCheck2,
   GROUP_DISABLED: Lock,
   GROUP_ENABLED: Unlock,
   GROUP_DELETED: Trash2,
@@ -83,6 +93,8 @@ export const ACTION_BADGE: Record<AuditActionType, string> = {
   ACCOUNT_SUSPENDED: "bg-amber-50 text-amber-600",
   ACCOUNT_BANNED: "bg-red-50 text-red-600",
   ACCOUNT_UNLOCKED: "bg-emerald-50 text-emerald-600",
+  ACCOUNT_DELETION_SCHEDULED: "bg-rose-50 text-rose-600",
+  ACCOUNT_DELETION_CANCELLED: "bg-emerald-50 text-emerald-600",
   GROUP_DISABLED: "bg-amber-50 text-amber-600",
   GROUP_ENABLED: "bg-emerald-50 text-emerald-600",
   GROUP_DELETED: "bg-red-50 text-red-600",

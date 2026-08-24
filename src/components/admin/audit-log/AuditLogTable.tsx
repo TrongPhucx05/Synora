@@ -49,7 +49,7 @@ export function AuditLogTable({
         </thead>
         <tbody>
           {entries.map((e) => {
-            const Icon = ACTION_ICON[e.action];
+            const Icon = ACTION_ICON[e.action] ?? FileText;
             return (
               <tr
                 key={e.id}
@@ -76,11 +76,11 @@ export function AuditLogTable({
                   <span
                     className={clsx(
                       "inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 rounded-full",
-                      ACTION_BADGE[e.action],
+                      ACTION_BADGE[e.action] ?? "bg-slate-50 text-slate-600",
                     )}
                   >
                     <Icon size={11} />
-                    {ACTION_LABELS[e.action]}
+                    {ACTION_LABELS[e.action] ?? e.action}
                   </span>
                 </td>
                 <td className="px-4 py-3 text-xs text-slate-600 max-w-[280px] truncate">

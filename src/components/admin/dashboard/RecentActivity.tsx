@@ -1,40 +1,86 @@
-type AdminActivity = {
-  id: string;
-  time: string;
-  admin: string;
-  action: string;
-};
+"use client";
+import { useEffect, useState } from "react";
+import Link from "next/link";
+import { FileText } from "lucide-react";
+import { EmptyPlaceholder } from "@/components/admin/EmptyPlaceholder";
+import {
+  ACTION_ICON,
+  ACTION_LABELS,
+  type AuditLogEntry,
+} from "@/lib/audit-log/types";
 
-const MOCK_ACTIVITY: AdminActivity[] = [
-  { id: "1", time: "08:10", admin: "Admin A", action: "Xóa bài viết #1234" },
-  { id: "2", time: "09:20", admin: "Admin B", action: "Khóa tài khoản @abc" },
-  { id: "3", time: "10:05", admin: "Admin A", action: "Duyệt tài liệu #556" },
-  { id: "4", time: "11:42", admin: "Admin C", action: "Giải tán nhóm 'Test Group'" },
-  { id: "5", time: "13:15", admin: "Admin B", action: "Từ chối báo cáo #89" },
-];
+const LIMIT = 5;
 
 export function RecentActivity() {
+  const [entries, setEntries] = useState<AuditLogEntry[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let cancelled = false;
+    fetch("/api/admin/audit-log?page=1")
+      .then((r) => r.json())
+      .then((data) => {
+        if (cancelled) return;
+        if (Array.isArray(data?.entries))
+          setEntries(data.entries.slice(0, LIMIT));
+      })
+      .finally(() => !cancelled && setLoading(false));
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   return (
     <div className="bg-white border border-slate-200 rounded-2xl p-5">
-      <h3 className="text-sm font-bold text-slate-900 mb-4">
-        Hoạt động gần đây của admin
-      </h3>
-      <div className="flex flex-col">
-        {MOCK_ACTIVITY.map((a, i) => (
-          <div
-            key={a.id}
-            className="flex items-center gap-3 py-2.5 border-b border-slate-50 last:border-b-0"
-          >
-            <span className="text-[11px] font-mono text-slate-400 w-10 shrink-0">
-              {a.time}
-            </span>
-            <span className="text-xs font-semibold text-blue-600 shrink-0">
-              {a.admin}
-            </span>
-            <span className="text-xs text-slate-600 truncate">{a.action}</span>
-          </div>
-        ))}
+      <div className="flex items-center justify-between mb-4">
+        <h3 className="text-sm font-bold text-slate-900">
+          Hoạt động gần đây của admin
+        </h3>
+        <Link
+          href="/admin/audit-log"
+          className="text-xs font-medium text-blue-600 hover:underline"
+        >
+          Xem tất cả
+        </Link>
       </div>
+
+      {loading ? (
+        <div className="flex flex-col gap-2.5">
+          {Array.from({ length: LIMIT }).map((_, i) => (
+            <div key={i} className="h-8 bg-slate-50 rounded-lg animate-pulse" />
+          ))}
+        </div>
+      ) : entries.length === 0 ? (
+        <EmptyPlaceholder
+          icon={FileText}
+          title="Chưa có hoạt động nào"
+          description="Các thao tác quản trị gần đây sẽ hiển thị ở đây"
+        />
+      ) : (
+        <div className="flex flex-col">
+          {entries.map((e) => {
+            const Icon = ACTION_ICON[e.action] ?? FileText;
+            return (
+              <div
+                key={e.id}
+                className="flex items-center gap-3 py-2.5 border-b border-slate-50 last:border-b-0"
+              >
+                <Icon size={14} className="text-slate-400 shrink-0" />
+                <span className="text-xs font-semibold text-blue-600 shrink-0">
+                  {e.actor.name}
+                </span>
+                <span className="text-xs text-slate-600 truncate flex-1">
+                  {ACTION_LABELS[e.action] ?? e.action}
+                  {e.targetLabel ? ` · ${e.targetLabel}` : ""}
+                </span>
+                <span className="text-[11px] font-mono text-slate-400 shrink-0">
+                  {e.createdAt}
+                </span>
+              </div>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }

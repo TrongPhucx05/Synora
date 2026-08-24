@@ -1,5 +1,5 @@
 "use client";
-import { X, Bell, Flag } from "lucide-react";
+import { X, Bell, Flag, FileQuestion } from "lucide-react";
 import { clsx } from "clsx";
 import Avatar from "@/components/ui/Avatar";
 import {
@@ -16,7 +16,7 @@ export function AuditLogDetailModal({
   entry: AuditLogEntry;
   onClose: () => void;
 }) {
-  const Icon = ACTION_ICON[entry.action];
+  const Icon = ACTION_ICON[entry.action] ?? FileQuestion;
 
   return (
     <div
@@ -62,11 +62,11 @@ export function AuditLogDetailModal({
               <span
                 className={clsx(
                   "inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 rounded-full",
-                  ACTION_BADGE[entry.action],
+                  ACTION_BADGE[entry.action] ?? "bg-slate-50 text-slate-600",
                 )}
               >
                 <Icon size={11} />
-                {ACTION_LABELS[entry.action]}
+                {ACTION_LABELS[entry.action] ?? entry.action}
               </span>
             </div>
 
