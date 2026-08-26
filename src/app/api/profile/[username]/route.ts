@@ -32,6 +32,13 @@ export async function GET(
       );
     }
 
+    if (user.role === "ADMIN" && session?.user?.id !== user.id) {
+      return NextResponse.json(
+        { error: "Không tìm thấy người dùng" },
+        { status: 404 },
+      );
+    }
+
     if (session?.user?.id && session.user.id !== user.id) {
       const blocked = await isBlockedEitherWay(session.user.id, user.id);
       if (blocked) {

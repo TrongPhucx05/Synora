@@ -42,6 +42,7 @@ export async function GET() {
       where: {
         ...(excludeIds.length > 0 && { id: { notIn: excludeIds } }),
         profile: { isNot: null },
+        role: { not: "ADMIN" },
       },
       take: 10,
       select: {
