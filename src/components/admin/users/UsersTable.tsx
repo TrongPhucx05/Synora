@@ -16,6 +16,7 @@ export type AdminUserRow = {
   role: "USER" | "ADMIN";
   status: "ACTIVE" | "SUSPENDED" | "BANNED";
   suspendedUntil: string | null;
+  scheduledDeleteAt: string | null;
   joinedAt: string;
 };
 
@@ -41,11 +42,15 @@ export function UsersTable({
   onViewDetail,
   onLock,
   onUnlock,
+  onDeleteRequest,
+  onCancelDeleteRequest,
 }: {
   users: AdminUserRow[];
   onViewDetail: (u: AdminUserRow) => void;
   onLock: (u: AdminUserRow) => void;
   onUnlock: (u: AdminUserRow) => void;
+  onDeleteRequest: (u: AdminUserRow) => void;
+  onCancelDeleteRequest: (u: AdminUserRow) => void;
 }) {
   const [menuAnchor, setMenuAnchor] = useState<{
     id: string;
@@ -140,6 +145,11 @@ export function UsersTable({
                       Đến {formatDateTime(u.suspendedUntil)}
                     </p>
                   )}
+                  {u.scheduledDeleteAt && (
+                    <p className="text-[10px] text-red-500 mt-1 truncate">
+                      Sẽ xóa {formatDateTime(u.scheduledDeleteAt)}
+                    </p>
+                  )}
                 </td>
                 <td className="px-3 py-3 text-xs text-slate-500 whitespace-nowrap">
                   {u.joinedAt}
@@ -176,6 +186,14 @@ export function UsersTable({
           onUnlock={() => {
             setMenuAnchor(null);
             onUnlock(activeUser);
+          }}
+          onDeleteRequest={() => {
+            setMenuAnchor(null);
+            onDeleteRequest(activeUser);
+          }}
+          onCancelDeleteRequest={() => {
+            setMenuAnchor(null);
+            onCancelDeleteRequest(activeUser);
           }}
         />
       )}

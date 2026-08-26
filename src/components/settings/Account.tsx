@@ -17,10 +17,8 @@ import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 
 const DELETION_GRACE_DAYS = 7;
 
-function formatScheduledDate(requestedAt: string): string {
-  const d = new Date(requestedAt);
-  d.setDate(d.getDate() + DELETION_GRACE_DAYS);
-  return d.toLocaleDateString("vi-VN", {
+function formatScheduledDate(scheduledDeleteAt: string): string {
+  return new Date(scheduledDeleteAt).toLocaleDateString("vi-VN", {
     day: "2-digit",
     month: "2-digit",
     year: "numeric",
@@ -122,16 +120,35 @@ export function AccountSection() {
     }
   };
 
+  useEffect(() => {
+    fetch("/api/account/delete-request")
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.scheduledDeleteAt) {
+          setDeletionRequest({ requestedAt: data.scheduledDeleteAt });
+        }
+      })
+      .catch(() => {});
+  }, []);
+
   const handleRequestDelete = async () => {
     setDeleteLoading(true);
     try {
-      await new Promise((r) => setTimeout(r, 800));
-      const requestedAt = new Date().toISOString();
-      setDeletionRequest({ requestedAt });
+      const res = await fetch("/api/account/delete-request", {
+        method: "POST",
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        showToast(data.error || "Không thể gửi yêu cầu", "error");
+        return;
+      }
+      setDeletionRequest({ requestedAt: new Date().toISOString() });
       showToast(
         `Yêu cầu xóa tài khoản đã được ghi nhận. Tài khoản sẽ bị xóa sau ${DELETION_GRACE_DAYS} ngày nếu bạn không hủy.`,
         "success",
       );
+    } catch {
+      showToast("Lỗi kết nối, vui lòng thử lại", "error");
     } finally {
       setDeleteLoading(false);
       setDeleteOpen(false);
@@ -141,9 +158,18 @@ export function AccountSection() {
   const handleCancelDeleteRequest = async () => {
     setCancelLoading(true);
     try {
-      await new Promise((r) => setTimeout(r, 500));
+      const res = await fetch("/api/account/delete-request", {
+        method: "DELETE",
+      });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        showToast(data.error || "Không thể hủy yêu cầu", "error");
+        return;
+      }
       setDeletionRequest(null);
       showToast("Đã hủy yêu cầu xóa tài khoản", "success");
+    } catch {
+      showToast("Lỗi kết nối, vui lòng thử lại", "error");
     } finally {
       setCancelLoading(false);
     }
@@ -205,7 +231,11 @@ export function AccountSection() {
           {[
             { label: "Mật khẩu hiện tại", value: currentPw, set: setCurrentPw },
             { label: "Mật khẩu mới", value: newPw, set: setNewPw },
-            { label: "Xác nhận mật khẩu mới", value: confirmPw, set: setConfirmPw },
+            {
+              label: "Xác nhận mật khẩu mới",
+              value: confirmPw,
+              set: setConfirmPw,
+            },
           ].map((f, i) => (
             <div key={i} className="flex flex-col gap-1.5">
               <label className="text-xs font-medium text-text-secondary">
@@ -275,7 +305,10 @@ export function AccountSection() {
         ) : (
           <>
             <div className="flex items-start gap-3 bg-red-50 border border-red-100 rounded-xl p-3.5">
-              <AlertTriangle size={16} className="text-red-500 shrink-0 mt-0.5" />
+              <AlertTriangle
+                size={16}
+                className="text-red-500 shrink-0 mt-0.5"
+              />
               <p className="text-xs text-red-600 leading-relaxed">
                 Sau khi gửi yêu cầu, tài khoản sẽ bị xóa vĩnh viễn sau{" "}
                 {DELETION_GRACE_DAYS} ngày. Trong thời gian này bạn vẫn có thể

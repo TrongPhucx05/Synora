@@ -2,7 +2,7 @@
 
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { User, Lock, Unlock } from "lucide-react";
+import { User, Lock, Unlock, Trash2, RotateCcw } from "lucide-react";
 import { useOutsideClickRefs } from "@/lib/chat/hooks";
 import type { AdminUserRow } from "./UsersTable";
 
@@ -12,12 +12,16 @@ export function UserActionsMenu({
   onClose,
   onLock,
   onUnlock,
+  onDeleteRequest,
+  onCancelDeleteRequest,
 }: {
   user: AdminUserRow;
   anchorEl: HTMLElement;
   onClose: () => void;
   onLock: () => void;
   onUnlock: () => void;
+  onDeleteRequest: () => void;
+  onCancelDeleteRequest: () => void;
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const [pos, setPos] = useState<{ top: number; left: number } | null>(null);
@@ -46,6 +50,7 @@ export function UserActionsMenu({
   if (!pos) return null;
 
   const isLocked = user.status !== "ACTIVE";
+  const isScheduledForDeletion = !!user.scheduledDeleteAt;
 
   return (
     <div
@@ -80,6 +85,26 @@ export function UserActionsMenu({
         >
           <Lock size={13} className="shrink-0" />
           Khóa tài khoản
+        </button>
+      )}
+
+      <div className="h-px bg-slate-100 my-0.5" />
+
+      {isScheduledForDeletion ? (
+        <button
+          onClick={onCancelDeleteRequest}
+          className="w-full flex items-center gap-2.5 px-3.5 py-2.5 text-xs text-emerald-600 hover:bg-emerald-50 transition-colors"
+        >
+          <RotateCcw size={13} className="shrink-0" />
+          Hủy lịch xóa tài khoản
+        </button>
+      ) : (
+        <button
+          onClick={onDeleteRequest}
+          className="w-full flex items-center gap-2.5 px-3.5 py-2.5 text-xs text-red-500 hover:bg-red-50 transition-colors"
+        >
+          <Trash2 size={13} className="shrink-0" />
+          Xóa tài khoản
         </button>
       )}
     </div>

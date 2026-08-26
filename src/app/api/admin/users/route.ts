@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { sweepAccountDeletions } from "@/lib/admin/moderation-sweep";
 
 const PAGE_SIZE = 20;
 
@@ -17,6 +18,8 @@ export async function GET(req: NextRequest) {
   const page = Math.max(1, parseInt(searchParams.get("page") ?? "1", 10) || 1);
 
   try {
+    await sweepAccountDeletions();
+
     const where: any = {
       role: "USER",
       ...(status !== "ALL" && { status: status as any }),
@@ -45,6 +48,7 @@ export async function GET(req: NextRequest) {
           role: true,
           status: true,
           suspendedUntil: true,
+          scheduledDeleteAt: true,
           createdAt: true,
           profile: { select: { displayName: true, avatarUrl: true } },
         },
@@ -60,6 +64,7 @@ export async function GET(req: NextRequest) {
       role: u.role,
       status: u.status,
       suspendedUntil: u.suspendedUntil ? u.suspendedUntil.toISOString() : null,
+      scheduledDeleteAt: u.scheduledDeleteAt ? u.scheduledDeleteAt.toISOString() : null,
       joinedAt: u.createdAt.toLocaleDateString("vi-VN", {
         day: "2-digit",
         month: "2-digit",

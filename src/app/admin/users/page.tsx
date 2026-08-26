@@ -15,6 +15,10 @@ import {
   LockUserModal,
   type LockPayload,
 } from "@/components/admin/users/LockUserModal";
+import {
+  DeleteAccountModal,
+  type DeleteAccountPayload,
+} from "@/components/admin/users/DeleteAccountModal";
 import { Pagination } from "@/components/admin/Pagination";
 import { useToast } from "@/components/ui/Toast";
 
@@ -31,6 +35,8 @@ export default function AdminUsersPage() {
   const [detailUser, setDetailUser] = useState<AdminUserRow | null>(null);
   const [lockTarget, setLockTarget] = useState<AdminUserRow | null>(null);
   const [lockLoading, setLockLoading] = useState(false);
+  const [deleteTarget, setDeleteTarget] = useState<AdminUserRow | null>(null);
+  const [deleteLoading, setDeleteLoading] = useState(false);
 
   useEffect(() => {
     setPage(1);
@@ -100,6 +106,51 @@ export default function AdminUsersPage() {
     }
   };
 
+  const handleDeleteRequest = async (payload: DeleteAccountPayload) => {
+    if (!deleteTarget) return;
+    setDeleteLoading(true);
+    try {
+      const res = await fetch(
+        `/api/admin/users/${deleteTarget.id}/delete-request`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        },
+      );
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.error);
+      }
+      showToast("Đã lên lịch xóa tài khoản sau 7 ngày", "success");
+      setDeleteTarget(null);
+      fetchUsers();
+    } catch (e) {
+      showToast(
+        e instanceof Error ? e.message : "Không thể lên lịch xóa tài khoản",
+        "error",
+      );
+    } finally {
+      setDeleteLoading(false);
+    }
+  };
+
+  const handleCancelDeleteRequest = async (u: AdminUserRow) => {
+    try {
+      const res = await fetch(
+        `/api/admin/users/${u.id}/cancel-delete-request`,
+        {
+          method: "POST",
+        },
+      );
+      if (!res.ok) throw new Error();
+      showToast("Đã hủy lịch xóa tài khoản", "success");
+      fetchUsers();
+    } catch {
+      showToast("Không thể hủy lịch xóa tài khoản", "error");
+    }
+  };
+
   return (
     <>
       <PageHeader
@@ -120,6 +171,8 @@ export default function AdminUsersPage() {
             onViewDetail={setDetailUser}
             onLock={setLockTarget}
             onUnlock={handleUnlock}
+            onDeleteRequest={setDeleteTarget}
+            onCancelDeleteRequest={handleCancelDeleteRequest}
           />
           <Pagination page={page} totalPages={totalPages} onChange={setPage} />
         </>
@@ -138,6 +191,15 @@ export default function AdminUsersPage() {
           loading={lockLoading}
           onConfirm={handleLock}
           onCancel={() => setLockTarget(null)}
+        />
+      )}
+
+      {deleteTarget && (
+        <DeleteAccountModal
+          userName={deleteTarget.name}
+          loading={deleteLoading}
+          onConfirm={handleDeleteRequest}
+          onCancel={() => setDeleteTarget(null)}
         />
       )}
     </>
