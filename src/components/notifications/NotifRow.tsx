@@ -96,6 +96,11 @@ const typeConfig: Record<NotifType, { icon: any; bg: string; color: string }> =
       bg: "bg-blue-50",
       color: "text-blue-500",
     },
+    SUPPORT_REQUEST_UPDATED: {
+      icon: LifeBuoy,
+      bg: "bg-emerald-50",
+      color: "text-emerald-500",
+    },
     GROUP_INVITE: { icon: Users, bg: "bg-indigo-50", color: "text-indigo-500" },
     GROUP_JOIN_REQUEST: {
       icon: UserCog,

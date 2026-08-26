@@ -20,6 +20,7 @@ export type NotifType =
   | "REPORT_RESOLVED"
   | "REPORT_DISMISSED"
   | "SUPPORT_REQUEST_SUBMITTED"
+  | "SUPPORT_REQUEST_UPDATED"
   | "GROUP_INVITE"
   | "GROUP_JOIN_REQUEST"
   | "GROUP_JOIN_APPROVED"
@@ -41,4 +42,5 @@ export interface NotifItem {
   commentId?: string;
   conversationId?: string;
   actorId?: string;
+  supportRequestId?: string;
 }

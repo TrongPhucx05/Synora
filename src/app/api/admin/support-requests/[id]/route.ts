@@ -112,7 +112,8 @@ export async function PATCH(
       data: {
         recipientId: updated.userId,
         actorId: session.user.id,
-        type: "SYSTEM",
+        type: "SUPPORT_REQUEST_UPDATED",
+        supportRequestId: updated.id,
         message: reply?.trim()
           ? `Yêu cầu hỗ trợ ${updated.code} đã được cập nhật: ${reply.trim()}`
           : `Yêu cầu hỗ trợ ${updated.code} đã được cập nhật trạng thái.`,
@@ -121,4 +122,45 @@ export async function PATCH(
   }
 
   return NextResponse.json({ ok: true });
+}
+
+export async function GET(
+  req: NextRequest,
+  { params }: { params: Promise<{ id: string }> },
+) {
+  const session = await getServerSession(authOptions);
+  if (!session?.user?.id || session.user.role !== "ADMIN") {
+    return NextResponse.json({ error: "Không có quyền" }, { status: 403 });
+  }
+
+  const { id } = await params;
+  const request = await prisma.supportRequest.findUnique({
+    where: { id },
+    include: { user: { include: { profile: true } } },
+  });
+  if (!request) {
+    return NextResponse.json({ error: "Không tìm thấy yêu cầu" }, { status: 404 });
+  }
+
+  return NextResponse.json({
+    id: request.id,
+    code: request.code,
+    user: request.user
+      ? {
+          id: request.user.id,
+          name: request.user.profile?.displayName ?? request.user.username,
+          username: request.user.username,
+          avatarUrl: request.user.profile?.avatarUrl ?? null,
+        }
+      : null,
+    contactEmail: request.contactEmail,
+    guestName: request.guestName,
+    subject: request.subject,
+    message: request.message,
+    type: request.type,
+    status: request.status,
+    createdAt: request.createdAt.toISOString(),
+    updatedAt: request.updatedAt.toISOString(),
+    resolvedAt: request.resolvedAt ? request.resolvedAt.toISOString() : undefined,
+  });
 }

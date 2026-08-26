@@ -13,20 +13,21 @@ export async function GET(req: NextRequest) {
 
   const { searchParams } = new URL(req.url);
   const status = searchParams.get("status");
+  const type = searchParams.get("type");
   const query = searchParams.get("query")?.trim();
   const page = Math.max(1, parseInt(searchParams.get("page") ?? "1", 10) || 1);
 
   const where: any = {
     ...(status && status !== "ALL" && { status: status as any }),
+    ...(type && type !== "ALL" && { type: type as any }),
     ...(query && {
       OR: [
+        { code: { contains: query, mode: "insensitive" } },
         { subject: { contains: query, mode: "insensitive" } },
+        { contactEmail: { contains: query, mode: "insensitive" } },
+        { guestName: { contains: query, mode: "insensitive" } },
         { user: { username: { contains: query, mode: "insensitive" } } },
-        {
-          user: {
-            profile: { displayName: { contains: query, mode: "insensitive" } },
-          },
-        },
+        { user: { profile: { displayName: { contains: query, mode: "insensitive" } } } },
       ],
     }),
   };
@@ -44,18 +45,24 @@ export async function GET(req: NextRequest) {
 
   const items = requests.map((r) => ({
     id: r.id,
-    user: {
-      id: r.user.id,
-      name: r.user.profile?.displayName ?? r.user.username,
-      username: r.user.username,
-      avatarUrl: r.user.profile?.avatarUrl ?? null,
-    },
+    code: r.code,
+    user: r.user
+      ? {
+          id: r.user.id,
+          name: r.user.profile?.displayName ?? r.user.username,
+          username: r.user.username,
+          avatarUrl: r.user.profile?.avatarUrl ?? null,
+        }
+      : null,
+    contactEmail: r.contactEmail,
+    guestName: r.guestName ?? null,
     subject: r.subject,
     message: r.message,
     type: r.type,
     status: r.status,
-    createdAt: r.createdAt.toLocaleString("vi-VN"),
-    resolvedAt: r.resolvedAt ? r.resolvedAt.toLocaleString("vi-VN") : undefined,
+    createdAt: r.createdAt.toISOString(),
+    updatedAt: r.updatedAt.toISOString(),
+    resolvedAt: r.resolvedAt ? r.resolvedAt.toISOString() : undefined,
   }));
 
   return NextResponse.json({

@@ -26,6 +26,13 @@ const PAGE_SIZE = 10;
 
 export async function POST(req: NextRequest) {
   const session = await getServerSession(authOptions);
+
+  if (session?.user?.role === "ADMIN") {
+    return NextResponse.json(
+      { error: "Tài khoản quản trị viên không thể gửi yêu cầu hỗ trợ" },
+      { status: 403 },
+    );
+  }
   const body = await req.json().catch(() => ({}));
   const {
     subject,
@@ -138,6 +145,7 @@ export async function POST(req: NextRequest) {
 
   const created = await prisma.supportRequest.create({
     data: {
+      code,
       userId,
       contactEmail,
       guestName: userId ? undefined : guestName?.trim() || undefined,
@@ -154,6 +162,7 @@ export async function POST(req: NextRequest) {
       data: {
         recipientId: userId,
         type: "SUPPORT_REQUEST_SUBMITTED",
+        supportRequestId: created.id,
         message: `Yêu cầu hỗ trợ ${created.code} của bạn đã được gửi và đang chờ xử lý.`,
       },
     });

@@ -1,23 +1,24 @@
 "use client";
 
 import { useState } from "react";
-import { X, LifeBuoy, CheckCircle2 } from "lucide-react";
+import { X, CheckCircle2 } from "lucide-react";
 import { clsx } from "clsx";
+import type { SupportRequestType } from "@/lib/support/types";
 
 export function SupportRequestModal({
   defaultSubject,
-  type = "GENERAL",
+  type = "BAN_APPEAL",
   onClose,
 }: {
   defaultSubject?: string;
-  type?: "GENERAL" | "BAN_APPEAL";
+  type?: SupportRequestType;
   onClose: () => void;
 }) {
   const [subject, setSubject] = useState(defaultSubject ?? "");
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [sent, setSent] = useState(false);
+  const [code, setCode] = useState<string | null>(null);
 
   const handleSubmit = async () => {
     if (!subject.trim() || !message.trim()) {
@@ -27,14 +28,14 @@ export function SupportRequestModal({
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch("/api/account/support-request", {
+      const res = await fetch("/api/support/requests", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ subject, message, type }),
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(data.error ?? "Không thể gửi yêu cầu");
-      setSent(true);
+      setCode(data.code);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Không thể gửi yêu cầu");
     } finally {
@@ -48,7 +49,7 @@ export function SupportRequestModal({
       onClick={(e) => e.target === e.currentTarget && onClose()}
     >
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden">
-        {sent ? (
+        {code ? (
           <div className="p-8 text-center">
             <div className="w-12 h-12 rounded-full bg-emerald-50 text-emerald-500 flex items-center justify-center mx-auto mb-3">
               <CheckCircle2 size={24} />
@@ -56,8 +57,15 @@ export function SupportRequestModal({
             <h3 className="text-sm font-bold text-slate-900 mb-1">
               Đã gửi yêu cầu hỗ trợ
             </h3>
+            <p className="text-xs text-slate-500 mb-1">
+              Mã yêu cầu:{" "}
+              <span className="font-mono font-semibold text-slate-700">
+                {code}
+              </span>
+            </p>
             <p className="text-xs text-slate-500 mb-5">
-              Quản trị viên sẽ xem xét và phản hồi trong thời gian sớm nhất.
+              Quản trị viên sẽ xem xét và phản hồi qua email trong thời gian sớm
+              nhất.
             </p>
             <button
               onClick={onClose}
@@ -72,11 +80,9 @@ export function SupportRequestModal({
               <h3 className="text-sm font-bold text-slate-900">
                 Yêu cầu hỗ trợ
               </h3>
-
               <p className="text-xs text-slate-500 mt-1">
                 Trình bày vấn đề để quản trị viên xem xét yêu cầu của bạn.
               </p>
-
               <button
                 onClick={onClose}
                 className="absolute top-5 right-5 p-1.5 hover:bg-slate-100 rounded-lg transition-colors text-slate-400"

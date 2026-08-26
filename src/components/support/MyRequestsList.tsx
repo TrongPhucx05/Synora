@@ -1,5 +1,6 @@
 "use client";
 import { useCallback, useEffect, useState } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
 import { X, LifeBuoy } from "lucide-react";
 import { Pagination } from "@/components/admin/Pagination";
 import { StatusBadge } from "./StatusBadge";
@@ -11,6 +12,8 @@ import type {
 } from "@/lib/support/types";
 
 export function MyRequestsList() {
+  const searchParams = useSearchParams();
+  const router = useRouter();
   const [items, setItems] = useState<MySupportRequestRow[]>([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -33,7 +36,7 @@ export function MyRequestsList() {
     fetchItems();
   }, [fetchItems]);
 
-  const openDetail = async (id: string) => {
+  const openDetail = useCallback(async (id: string) => {
     setDetail(null);
     setDetailLoading(true);
     try {
@@ -43,7 +46,14 @@ export function MyRequestsList() {
     } finally {
       setDetailLoading(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    const requestId = searchParams.get("requestId");
+    if (!requestId) return;
+    openDetail(requestId);
+    router.replace("/support?tab=mine");
+  }, [searchParams, openDetail, router]);
 
   if (loading) {
     return (

@@ -9,8 +9,6 @@ import {
   BookOpen,
   Flag,
   UsersRound,
-  Bell,
-  BarChart3,
   ScrollText,
   ArrowLeft,
   LifeBuoy,
@@ -18,7 +16,7 @@ import {
 import { clsx } from "clsx";
 
 const navItems = [
-  { href: "/admin", icon: LayoutDashboard, label: "Dashboard", exact: true },
+  { href: "/admin", icon: LayoutDashboard, label: "Tổng quan", exact: true },
   { href: "/admin/users", icon: Users, label: "Người dùng" },
   { href: "/admin/content", icon: FileStack, label: "Nội dung" },
   {
@@ -40,8 +38,6 @@ const navItems = [
     countKey: "pendingSupportRequests",
   },
   { href: "/admin/groups", icon: UsersRound, label: "Nhóm" },
-  { href: "/admin/notifications", icon: Bell, label: "Thông báo" },
-  { href: "/admin/statistics", icon: BarChart3, label: "Thống kê" },
   { href: "/admin/audit-log", icon: ScrollText, label: "Nhật ký quản trị" },
 ] as const;
 

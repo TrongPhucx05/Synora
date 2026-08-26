@@ -1,18 +1,41 @@
 "use client";
 import { X, Send } from "lucide-react";
 import { useState } from "react";
-import type { AdminSupportRequestRow } from "@/lib/support/types";
+import { StatusBadge } from "@/components/support/StatusBadge";
+import { STATUS_LABELS, TYPE_LABELS } from "@/lib/support/labels";
+import type {
+  AdminSupportRequestRow,
+  SupportRequestStatus,
+} from "@/lib/support/types";
+
+const TERMINAL_STATUSES: SupportRequestStatus[] = [
+  "RESOLVED",
+  "CLOSED",
+  "REJECTED",
+];
+const STATUS_OPTIONS: SupportRequestStatus[] = [
+  "PENDING",
+  "IN_PROGRESS",
+  "WAITING_FOR_USER",
+  "RESOLVED",
+  "CLOSED",
+  "REJECTED",
+];
 
 export function SupportRequestDetailModal({
   request,
   onClose,
-  onResolve,
+  onUpdate,
 }: {
   request: AdminSupportRequestRow;
   onClose: () => void;
-  onResolve: (reply: string) => void;
+  onUpdate: (status: SupportRequestStatus, reply: string) => void;
 }) {
+  const [status, setStatus] = useState<SupportRequestStatus>(
+    request.status === "PENDING" ? "IN_PROGRESS" : request.status,
+  );
   const [reply, setReply] = useState("");
+  const isTerminal = TERMINAL_STATUSES.includes(request.status);
 
   return (
     <div className="fixed inset-0 bg-slate-900/40 flex items-center justify-center z-50 p-4">
@@ -30,12 +53,42 @@ export function SupportRequestDetailModal({
         </div>
 
         <div className="px-6 py-5 space-y-5">
+          <div className="flex items-center justify-between flex-wrap gap-2">
+            <div>
+              <p className="text-xs text-slate-400">Mã yêu cầu</p>
+              <p className="text-sm font-mono font-semibold text-slate-700">
+                {request.code}
+              </p>
+            </div>
+            <StatusBadge status={request.status} />
+          </div>
+
           <div>
             <p className="text-xs text-slate-400 mb-1">Người gửi</p>
-            <p className="text-sm font-medium text-slate-700">
-              {request.user.name}
+            {request.user ? (
+              <>
+                <p className="text-sm font-medium text-slate-700">
+                  {request.user.name}
+                </p>
+                <p className="text-xs text-slate-400">
+                  @{request.user.username}
+                </p>
+              </>
+            ) : (
+              <p className="text-sm font-medium text-slate-700">
+                {request.guestName || "Khách (chưa đăng nhập)"}
+              </p>
+            )}
+            <p className="text-xs text-slate-400 mt-0.5">
+              {request.contactEmail}
             </p>
-            <p className="text-xs text-slate-400">@{request.user.username}</p>
+          </div>
+
+          <div>
+            <p className="text-xs text-slate-400 mb-1">Loại yêu cầu</p>
+            <p className="text-sm text-slate-700">
+              {TYPE_LABELS[request.type]}
+            </p>
           </div>
 
           <div>
@@ -52,27 +105,50 @@ export function SupportRequestDetailModal({
             </p>
           </div>
 
-          {request.status === "PENDING" ? (
-            <div>
-              <p className="text-xs text-slate-400 mb-1">
-                Phản hồi cho người dùng (sẽ gửi qua thông báo)
-              </p>
-              <textarea
-                value={reply}
-                onChange={(e) => setReply(e.target.value)}
-                rows={3}
-                placeholder="Vd: Chúng tôi đã xem xét và mở lại tài khoản của bạn..."
-                className="w-full text-sm border border-slate-200 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-100 resize-none"
-              />
-            </div>
+          {!isTerminal ? (
+            <>
+              <div>
+                <p className="text-xs text-slate-400 mb-1">
+                  Cập nhật trạng thái
+                </p>
+                <select
+                  value={status}
+                  onChange={(e) =>
+                    setStatus(e.target.value as SupportRequestStatus)
+                  }
+                  className="w-full text-sm border border-slate-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-100"
+                >
+                  {STATUS_OPTIONS.map((s) => (
+                    <option key={s} value={s}>
+                      {STATUS_LABELS[s]}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <p className="text-xs text-slate-400 mb-1">
+                  Phản hồi cho người dùng (sẽ gửi qua email)
+                </p>
+                <textarea
+                  value={reply}
+                  onChange={(e) => setReply(e.target.value)}
+                  rows={3}
+                  placeholder="Vd: Chúng tôi đã xem xét và..."
+                  className="w-full text-sm border border-slate-200 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-100 resize-none"
+                />
+              </div>
+            </>
           ) : (
             <div className="text-xs text-slate-400">
-              Đã xử lý lúc {request.resolvedAt}
+              Đã kết thúc lúc{" "}
+              {request.resolvedAt
+                ? new Date(request.resolvedAt).toLocaleString("vi-VN")
+                : "—"}
             </div>
           )}
         </div>
 
-        {request.status === "PENDING" && (
+        {!isTerminal && (
           <div className="flex items-center justify-end gap-2 px-6 py-4 border-t border-slate-100">
             <button
               onClick={onClose}
@@ -81,10 +157,10 @@ export function SupportRequestDetailModal({
               Đóng
             </button>
             <button
-              onClick={() => onResolve(reply)}
+              onClick={() => onUpdate(status, reply)}
               className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium text-white bg-emerald-500 hover:bg-emerald-600"
             >
-              <Send size={15} /> Gửi phản hồi & Đánh dấu đã xử lý
+              Gửi phản hồi & Cập nhật
             </button>
           </div>
         )}

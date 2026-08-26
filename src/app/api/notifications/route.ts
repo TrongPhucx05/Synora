@@ -81,6 +81,7 @@ export async function GET(req: NextRequest) {
     let href = "/feed";
     let action: { accept: string; decline: string } | null = null;
     let requestId: string | undefined;
+    let supportRequestId: string | undefined;
     const isGroupType = n.type.startsWith("GROUP_");
 
     switch (n.type) {
@@ -168,6 +169,13 @@ export async function GET(req: NextRequest) {
         text = `Yêu cầu hỗ trợ của bạn đã được gửi`;
         href = "/notifications";
         break;
+      case "SUPPORT_REQUEST_UPDATED":
+        text = n.message ?? `Yêu cầu hỗ trợ của bạn đã được cập nhật`;
+        href = n.supportRequestId
+          ? `/support?tab=mine&requestId=${n.supportRequestId}`
+          : "/support?tab=mine";
+        supportRequestId = n.supportRequestId ?? undefined;
+        break;
       case "GROUP_INVITE":
         text = `${actorName} đã mời bạn vào nhóm "${groupName}"`;
         href = n.conversationId ? `/chat?conv=${n.conversationId}` : "/chat";
@@ -196,7 +204,10 @@ export async function GET(req: NextRequest) {
       id: n.id,
       type: n.type,
       text,
-      sub: isGroupType ? undefined : (n.message ?? undefined),
+      sub:
+        isGroupType || n.type === "SUPPORT_REQUEST_UPDATED"
+          ? undefined
+          : (n.message ?? undefined),
       href,
       createdAt: n.createdAt.toISOString(),
       unread: !n.isRead,
@@ -205,6 +216,7 @@ export async function GET(req: NextRequest) {
       avatarUrls: n.actor ? [avatarUrl] : [],
       action,
       requestId,
+      supportRequestId,
       conversationId: n.conversationId ?? undefined,
       actorId: n.actorId ?? undefined,
     };
