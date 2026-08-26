@@ -19,6 +19,8 @@ export async function GET() {
       activeUsers,
       totalDocuments,
       pendingReports,
+      totalGroups,
+      pendingSupportRequests,
       topPostsRaw,
     ] = await Promise.all([
       prisma.user.count(),
@@ -37,6 +39,8 @@ export async function GET() {
         },
       }),
       prisma.report.count({ where: { status: "PENDING" } }),
+      prisma.conversation.count({ where: { isGroup: true } }),
+      prisma.supportRequest.count({ where: { status: "PENDING" } }),
       prisma.post.findMany({
         where: {
           visibility: "PUBLIC",
@@ -106,6 +110,8 @@ export async function GET() {
         totalComments,
         totalDocuments,
         pendingReports,
+        totalGroups,
+        pendingSupportRequests,
       },
       topPosts,
     });

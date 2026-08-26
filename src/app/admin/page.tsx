@@ -1,5 +1,4 @@
 "use client";
-
 import { useEffect, useState } from "react";
 import {
   Users,
@@ -18,11 +17,6 @@ import { TopReportedUsers } from "@/components/admin/dashboard/TopReportedUsers"
 import { RecentActivity } from "@/components/admin/dashboard/RecentActivity";
 import type { DashboardStats, TopPostItem } from "@/lib/admin/dashboard/types";
 
-const PLACEHOLDER = {
-  totalGroups: 156,
-  pendingContent: 9,
-};
-
 export default function AdminDashboardPage() {
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [topPosts, setTopPosts] = useState<TopPostItem[]>([]);
@@ -40,6 +34,8 @@ export default function AdminDashboardPage() {
 
   const fmt = (n: number | undefined) =>
     loading || n === undefined ? "—" : n.toLocaleString("vi-VN");
+
+  const fmtOrZero = (n: number | undefined) => (n ?? 0).toLocaleString("vi-VN");
 
   return (
     <>
@@ -79,9 +75,8 @@ export default function AdminDashboardPage() {
         <StatCard
           icon={UsersRound}
           label="Tổng nhóm"
-          value={PLACEHOLDER.totalGroups}
+          value={fmtOrZero(stats?.totalGroups)}
           colorClass="bg-pink-50 text-pink-600"
-          comingSoon
         />
         <StatCard
           icon={BookOpen}
@@ -98,9 +93,8 @@ export default function AdminDashboardPage() {
         <StatCard
           icon={Clock}
           label="Yêu cầu hỗ trợ chưa xử lý"
-          value={PLACEHOLDER.pendingContent}
+          value={fmtOrZero(stats?.pendingSupportRequests)}
           colorClass="bg-amber-50 text-amber-600"
-          comingSoon
         />
       </div>
 

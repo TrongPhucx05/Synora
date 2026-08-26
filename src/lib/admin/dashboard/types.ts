@@ -12,6 +12,8 @@ export type DashboardStats = {
   totalComments: number;
   totalDocuments: number;
   pendingReports: number;
+  totalGroups: number;
+  pendingSupportRequests: number;
 };
 
 export type TopPostAttachment = {
