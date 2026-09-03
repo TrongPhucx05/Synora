@@ -114,9 +114,9 @@ function mapPostToCard(p: any) {
     time: new Date(p.createdAt).toLocaleDateString("vi-VN"),
     content: p.content,
     tags: p.tags?.map((t: any) => `#${t.tag.name}`) ?? [],
-    likes: p._count.likes,
+    likes: p._count?.likes ?? 0,
     isLikedByMe: Array.isArray(p.likes) && p.likes.length > 0,
-    comments: p._count.comments,
+    comments: p._count?.comments ?? 0,
     images:
       mediaDocs.length > 0 ? mediaDocs.map((d: any) => d.fileUrl) : undefined,
     mediaTypes:
@@ -184,7 +184,7 @@ function TopicPostsView({
         Quay lại chủ đề
       </button>
 
-      <div className="flex items-center gap-3 mb-5 p-4 bg-white rounded-xl border border-surface-200">
+      <div className="flex items-center gap-3 mb-5 p-4 bg-surface rounded-xl border border-surface-200">
         <div className="w-11 h-11 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
           <Hash size={20} className="text-primary" />
         </div>
@@ -233,7 +233,7 @@ function TopicsGrid({
           <button
             key={t.id}
             onClick={() => onSelectTopic(name)}
-            className="flex items-center gap-3 bg-white border border-surface-200 rounded-xl p-4 hover:border-primary/40 hover:bg-primary/5 transition-all text-left group"
+            className="flex items-center gap-3 bg-surface border border-surface-200 rounded-xl p-4 hover:border-primary/40 hover:bg-primary/5 transition-all text-left group"
           >
             <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0 group-hover:bg-primary/20 transition-colors">
               <Hash size={18} className="text-primary" />
@@ -296,7 +296,7 @@ function TrendingTagsView({
           <button
             key={t.name}
             onClick={() => onSelectTopic(t.name)}
-            className="flex items-center gap-3 bg-white border border-surface-200 rounded-xl p-4 hover:border-primary/40 hover:bg-primary/5 transition-all text-left group"
+            className="flex items-center gap-3 bg-surface border border-surface-200 rounded-xl p-4 hover:border-primary/40 hover:bg-primary/5 transition-all text-left group"
           >
             <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0 group-hover:bg-primary/20 transition-colors">
               <Hash size={18} className="text-primary" />
@@ -512,7 +512,7 @@ export function SearchContent() {
                         Xem thêm
                       </button>
                     </div>
-                    <div className="bg-white rounded-xl border border-surface-200 divide-y divide-surface-100 overflow-hidden">
+                    <div className="bg-surface rounded-xl border border-surface-200 divide-y divide-surface-100 overflow-hidden">
                       {group.items.slice(0, 3).map((r) => (
                         <ResultCard key={r.id} r={r} />
                       ))}
@@ -576,7 +576,7 @@ export function SearchContent() {
               </div>
             )
           ) : (
-            <div className="bg-white rounded-xl border border-surface-200 divide-y divide-surface-100 overflow-hidden">
+            <div className="bg-surface rounded-xl border border-surface-200 divide-y divide-surface-100 overflow-hidden">
               {nonPostResults.filter((r) => TYPE_TO_TAB[r.type] === activeTab)
                 .length === 0 ? (
                 <EmptyState query={rawQuery} />

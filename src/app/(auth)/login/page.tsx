@@ -47,7 +47,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary/5 via-white to-indigo-50 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-primary/5 via-surface dark:via-surface to-indigo-50 dark:to-surface-100 flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-6">
           <div className="w-10 h-10 bg-blue-500 rounded-xl flex items-center justify-center mx-auto mb-3">
@@ -61,16 +61,16 @@ export default function LoginPage() {
               <circle cx="9" cy="9" r="2" fill="white" />
             </svg>
           </div>
-          <h1 className="text-xl font-bold text-slate-900">Synora</h1>
-          <p className="text-sm text-slate-400 mt-0.5">
+          <h1 className="text-xl font-bold text-text-primary">Synora</h1>
+          <p className="text-sm text-text-muted mt-0.5">
             Nền tảng học tập cộng đồng
           </p>
         </div>
 
-        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
+        <div className="bg-surface rounded-2xl border border-surface-200 shadow-sm p-6">
           <Link
             href="/"
-            className="inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-700 transition-colors mb-6 group"
+            className="inline-flex items-center gap-1.5 text-sm text-text-muted hover:text-text-secondary transition-colors mb-6 group"
           >
             <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
               <path
@@ -83,22 +83,22 @@ export default function LoginPage() {
             </svg>
             Về trang chủ
           </Link>
-          <h2 className="text-base font-bold text-slate-900 text-center mb-1">
+          <h2 className="text-base font-bold text-text-primary text-center mb-1">
             Đăng nhập
           </h2>
-          <p className="text-sm text-slate-400 text-center mb-5">
+          <p className="text-sm text-text-muted text-center mb-5">
             Chào mừng bạn trở lại!
           </p>
 
           {error && (
-            <div className="mb-4 px-3 py-2.5 bg-red-50 border border-red-100 rounded-lg">
-              <p className="text-xs text-red-500">{error}</p>
+            <div className="mb-4 px-3 py-2.5 bg-red-50 dark:bg-red-500/10 border border-red-100 dark:border-red-500/20 rounded-lg">
+              <p className="text-xs text-red-500 dark:text-red-400">{error}</p>
             </div>
           )}
 
           <div className="flex flex-col gap-4">
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1.5">
+              <label className="block text-sm font-medium text-text-secondary mb-1.5">
                 Email / Tên người dùng
               </label>
               <input
@@ -106,11 +106,11 @@ export default function LoginPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="Email hoặc tên người dùng"
-                className="w-full px-4 py-2.5 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-blue-400 transition-colors"
+                className="w-full px-4 py-2.5 border border-surface-200 rounded-lg text-sm focus:outline-none focus:border-blue-400 transition-colors"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1.5">
+              <label className="block text-sm font-medium text-text-secondary mb-1.5">
                 Mật khẩu
               </label>
               <div className="relative">
@@ -120,11 +120,11 @@ export default function LoginPage() {
                   onChange={(e) => setPassword(e.target.value)}
                   onKeyDown={(e) => e.key === "Enter" && handleLogin()}
                   placeholder="••••••••"
-                  className="w-full px-4 py-2.5 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-blue-400 transition-colors pr-10"
+                  className="w-full px-4 py-2.5 border border-surface-200 rounded-lg text-sm focus:outline-none focus:border-blue-400 transition-colors pr-10"
                 />
                 <button
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-secondary"
                 >
                   {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                 </button>
@@ -132,7 +132,7 @@ export default function LoginPage() {
             </div>
 
             <div className="flex items-center justify-between">
-              <label className="flex items-center gap-2 text-sm text-slate-500 cursor-pointer">
+              <label className="flex items-center gap-2 text-sm text-text-muted cursor-pointer">
                 <input type="checkbox" className="accent-blue-500" /> Ghi nhớ
                 đăng nhập
               </label>
@@ -153,7 +153,7 @@ export default function LoginPage() {
             </button>
           </div>
 
-          <p className="text-center text-sm text-slate-400 mt-4">
+          <p className="text-center text-sm text-text-muted mt-4">
             Chưa có tài khoản?{" "}
             <Link
               href="/register"

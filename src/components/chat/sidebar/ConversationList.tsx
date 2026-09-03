@@ -66,7 +66,7 @@ function ConversationItemMenu({
   return (
     <div
       ref={ref}
-      className="absolute right-0 top-full mt-1 z-20 w-48 bg-white rounded-xl shadow-xl border border-surface-100 py-1 overflow-hidden"
+      className="absolute right-0 top-full mt-1 z-20 w-48 bg-surface rounded-xl shadow-xl border border-surface-100 py-1 overflow-hidden"
     >
       {!isSelf && (
         <button
@@ -182,7 +182,7 @@ export function ConversationList({
   const isSearching = searchQuery.trim().length > 0;
 
   return (
-    <div className="w-[268px] shrink-0 border-r border-surface-200 bg-white flex flex-col">
+    <div className="w-[268px] shrink-0 border-r border-surface-200 bg-surface flex flex-col">
       <div className="px-4 pt-4 pb-3 border-b border-surface-100">
         <h2 className="text-base font-bold text-text-primary mb-3">Tin nhắn</h2>
         <div className="relative">
@@ -195,7 +195,7 @@ export function ConversationList({
             value={searchQuery}
             onChange={(e) => onSearchChange(e.target.value)}
             placeholder="Tìm kiếm..."
-            className="w-full pl-8 pr-3 py-2 bg-surface-100 rounded-lg text-xs placeholder:text-text-muted focus:outline-none border border-transparent focus:border-primary focus:bg-white transition-colors"
+            className="w-full pl-8 pr-3 py-2 bg-surface-100 rounded-lg text-xs placeholder:text-text-muted focus:outline-none border border-transparent focus:border-primary focus:bg-surface transition-colors"
           />
         </div>
       </div>

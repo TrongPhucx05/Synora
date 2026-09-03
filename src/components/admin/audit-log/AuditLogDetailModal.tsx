@@ -23,14 +23,14 @@ export function AuditLogDetailModal({
       className="fixed inset-0 z-[90] flex items-center justify-center bg-black/40 backdrop-blur-sm p-4"
       onClick={(e) => e.target === e.currentTarget && onClose()}
     >
-      <div className="bg-white rounded-2xl shadow-xl w-full max-w-md mx-4 overflow-hidden">
-        <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100">
-          <h3 className="text-sm font-semibold text-slate-900">
+      <div className="bg-surface rounded-2xl shadow-xl w-full max-w-md mx-4 overflow-hidden">
+        <div className="flex items-center justify-between px-5 py-4 border-b border-surface-100">
+          <h3 className="text-sm font-semibold text-text-primary">
             Chi tiết nhật ký
           </h3>
           <button
             onClick={onClose}
-            className="p-1.5 rounded-full hover:bg-slate-100 text-slate-400 transition-colors"
+            className="p-1.5 rounded-full hover:bg-surface-100 text-text-muted transition-colors"
           >
             <X size={16} />
           </button>
@@ -44,10 +44,10 @@ export function AuditLogDetailModal({
               size="lg"
             />
             <div className="min-w-0">
-              <p className="text-sm font-semibold text-slate-900 truncate">
+              <p className="text-sm font-semibold text-text-primary truncate">
                 {entry.actor.name}
               </p>
-              <p className="text-xs text-slate-400 truncate">
+              <p className="text-xs text-text-muted truncate">
                 {entry.actor.username ? `@${entry.actor.username} · ` : ""}Quản
                 trị viên
               </p>
@@ -55,14 +55,14 @@ export function AuditLogDetailModal({
           </div>
 
           <div className="flex flex-col gap-3">
-            <div className="bg-slate-50 rounded-xl px-3.5 py-3">
-              <p className="text-[11px] font-medium text-slate-400 mb-1">
+            <div className="bg-surface-50 rounded-xl px-3.5 py-3">
+              <p className="text-[11px] font-medium text-text-muted mb-1">
                 Thao tác
               </p>
               <span
                 className={clsx(
                   "inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 rounded-full",
-                  ACTION_BADGE[entry.action] ?? "bg-slate-50 text-slate-600",
+                  ACTION_BADGE[entry.action] ?? "bg-surface-50 text-text-secondary",
                 )}
               >
                 <Icon size={11} />
@@ -70,39 +70,39 @@ export function AuditLogDetailModal({
               </span>
             </div>
 
-            <div className="bg-slate-50 rounded-xl px-3.5 py-3">
-              <p className="text-[11px] font-medium text-slate-400 mb-1">
+            <div className="bg-surface-50 rounded-xl px-3.5 py-3">
+              <p className="text-[11px] font-medium text-text-muted mb-1">
                 Đối tượng tác động
               </p>
-              <p className="text-xs text-slate-700">{entry.targetLabel}</p>
+              <p className="text-xs text-text-secondary">{entry.targetLabel}</p>
             </div>
 
             {entry.reasonLabel && (
-              <div className="bg-slate-50 rounded-xl px-3.5 py-3">
-                <p className="text-[11px] font-medium text-slate-400 mb-1">
+              <div className="bg-surface-50 rounded-xl px-3.5 py-3">
+                <p className="text-[11px] font-medium text-text-muted mb-1">
                   Lý do vi phạm
                 </p>
-                <p className="text-xs text-slate-700">{entry.reasonLabel}</p>
+                <p className="text-xs text-text-secondary">{entry.reasonLabel}</p>
               </div>
             )}
 
             {entry.detail && (
-              <div className="bg-slate-50 rounded-xl px-3.5 py-3">
-                <p className="text-[11px] font-medium text-slate-400 mb-1">
+              <div className="bg-surface-50 rounded-xl px-3.5 py-3">
+                <p className="text-[11px] font-medium text-text-muted mb-1">
                   Chi tiết
                 </p>
-                <p className="text-xs text-slate-600 leading-relaxed">
+                <p className="text-xs text-text-secondary leading-relaxed">
                   {entry.detail}
                 </p>
               </div>
             )}
 
             {entry.suspendedUntil && (
-              <div className="bg-slate-50 rounded-xl px-3.5 py-3">
-                <p className="text-[11px] font-medium text-slate-400 mb-1">
+              <div className="bg-surface-50 rounded-xl px-3.5 py-3">
+                <p className="text-[11px] font-medium text-text-muted mb-1">
                   Mở khóa lúc
                 </p>
-                <p className="text-xs text-slate-700">{entry.suspendedUntil}</p>
+                <p className="text-xs text-text-secondary">{entry.suspendedUntil}</p>
               </div>
             )}
 
@@ -121,11 +121,11 @@ export function AuditLogDetailModal({
               </div>
             )}
 
-            <div className="bg-slate-50 rounded-xl px-3.5 py-3">
-              <p className="text-[11px] font-medium text-slate-400 mb-1">
+            <div className="bg-surface-50 rounded-xl px-3.5 py-3">
+              <p className="text-[11px] font-medium text-text-muted mb-1">
                 Thời gian
               </p>
-              <p className="text-xs text-slate-700">{entry.createdAt}</p>
+              <p className="text-xs text-text-secondary">{entry.createdAt}</p>
             </div>
           </div>
         </div>

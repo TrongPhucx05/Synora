@@ -62,18 +62,6 @@ export function NotificationSection() {
           <ToggleSwitch checked={settings.groupUpdates} onChange={() => toggle("groupUpdates")} />
         </SettingsRow>
       </SettingsCard>
-
-      <SettingsCard title="Tài liệu" description="Thông báo liên quan đến tài liệu được chia sẻ">
-        <SettingsRow label="Tài liệu được chia sẻ với bạn">
-          <ToggleSwitch checked={settings.docShares} onChange={() => toggle("docShares")} />
-        </SettingsRow>
-        <SettingsRow label="Bình luận trên tài liệu">
-          <ToggleSwitch checked={settings.docComments} onChange={() => toggle("docComments")} />
-        </SettingsRow>
-        <SettingsRow label="Tài liệu được chỉnh sửa">
-          <ToggleSwitch checked={settings.docEdits} onChange={() => toggle("docEdits")} />
-        </SettingsRow>
-      </SettingsCard>
     </div>
   );
 }

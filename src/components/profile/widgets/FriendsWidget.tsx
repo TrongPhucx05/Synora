@@ -66,7 +66,7 @@ export function FriendsWidget({
 
   if (loading) {
     return (
-      <div className="bg-white border border-surface-200 rounded-2xl p-4">
+      <div className="bg-surface border border-surface-200 rounded-2xl p-4">
         <div className="h-3.5 w-20 bg-surface-100 rounded animate-pulse mb-3" />
         {[1, 2, 3].map((i) => (
           <div key={i} className="flex items-center gap-2.5 mb-3">
@@ -91,7 +91,7 @@ export function FriendsWidget({
         />
       )}
 
-      <div className="bg-white border border-surface-200 rounded-2xl p-4">
+      <div className="bg-surface border border-surface-200 rounded-2xl p-4">
         <div className="flex items-center justify-between mb-2.5">
           <div className="flex items-center gap-2">
             <h3 className="text-xs font-semibold text-text-primary">Bạn bè</h3>

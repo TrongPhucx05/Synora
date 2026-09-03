@@ -6,9 +6,6 @@ import { utapi } from "@/lib/uploadthing-server";
 
 type Params = { params: Promise<{ id: string }> };
 
-// Giải tán nhóm: xóa vĩnh viễn cuộc trò chuyện cho TẤT CẢ thành viên.
-// Chỉ trưởng nhóm được thực hiện. Chỉ gọi từ nút "Giải tán nhóm" trong
-// sidebar thông tin nhóm — KHÔNG liên quan tới nút "Xóa" trong danh sách chat.
 export async function POST(_req: NextRequest, { params }: Params) {
   const session = await getServerSession(authOptions);
   if (!session?.user?.id)

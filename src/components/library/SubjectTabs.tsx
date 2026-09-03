@@ -58,7 +58,7 @@ export default function LevelFilterBar({
               "px-4 py-1.5 rounded-full text-sm font-medium whitespace-nowrap transition-all",
               activeLevel === tab.id
                 ? "bg-primary text-white shadow-sm"
-                : "bg-white border border-surface-200 text-text-secondary hover:border-primary hover:text-primary",
+                : "bg-surface border border-surface-200 text-text-secondary hover:border-primary hover:text-primary",
             )}
           >
             {tab.label}

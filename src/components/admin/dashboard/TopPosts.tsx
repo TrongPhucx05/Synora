@@ -53,10 +53,10 @@ function toFeedPost(item: TopPostItem): Post {
 
 const RANK_STYLES = [
   "bg-amber-100 text-amber-700",
-  "bg-slate-200 text-slate-600",
+  "bg-surface-200 text-text-secondary",
   "bg-orange-100 text-orange-700",
-  "bg-slate-100 text-slate-500",
-  "bg-slate-100 text-slate-500",
+  "bg-surface-100 text-text-muted",
+  "bg-surface-100 text-text-muted",
 ];
 
 export function TopPosts({
@@ -117,9 +117,9 @@ export function TopPosts({
   const emptySlots = Math.max(0, MAX_SLOTS - posts.length);
 
   return (
-    <div className="bg-white border border-slate-200 rounded-2xl p-5 flex flex-col h-full">
+    <div className="bg-surface border border-surface-200 rounded-2xl p-5 flex flex-col h-full">
       <div className="flex items-center justify-between mb-3.5">
-        <h3 className="text-sm font-bold text-slate-900">
+        <h3 className="text-sm font-bold text-text-primary">
           Top 5 bài viết nhiều tương tác
         </h3>
       </div>
@@ -129,23 +129,23 @@ export function TopPosts({
           {[...Array(5)].map((_, i) => (
             <div
               key={i}
-              className="p-3 rounded-xl border border-slate-100 flex items-center gap-3 animate-pulse"
+              className="p-3 rounded-xl border border-surface-100 flex items-center gap-3 animate-pulse"
             >
-              <div className="w-6 h-6 rounded-full bg-slate-100 shrink-0" />
-              <div className="w-9 h-9 rounded-full bg-slate-100 shrink-0" />
+              <div className="w-6 h-6 rounded-full bg-surface-100 shrink-0" />
+              <div className="w-9 h-9 rounded-full bg-surface-100 shrink-0" />
               <div className="flex-1 space-y-2">
-                <div className="h-3 w-2/3 bg-slate-100 rounded" />
-                <div className="h-2.5 w-1/3 bg-slate-100 rounded" />
+                <div className="h-3 w-2/3 bg-surface-100 rounded" />
+                <div className="h-2.5 w-1/3 bg-surface-100 rounded" />
               </div>
             </div>
           ))}
         </div>
       ) : posts.length === 0 ? (
         <div className="flex-1 flex flex-col items-center justify-center gap-2 py-10 text-center">
-          <div className="w-11 h-11 rounded-full bg-slate-50 flex items-center justify-center">
-            <Inbox size={18} className="text-slate-300" />
+          <div className="w-11 h-11 rounded-full bg-surface-50 flex items-center justify-center">
+            <Inbox size={18} className="text-text-muted" />
           </div>
-          <p className="text-xs text-slate-400">
+          <p className="text-xs text-text-muted">
             Chưa có bài viết công khai nào
           </p>
         </div>
@@ -155,7 +155,7 @@ export function TopPosts({
             <div
               key={post.id}
               onClick={() => setViewingPost(post)}
-              className="p-3 rounded-xl border border-slate-100 hover:border-slate-200 hover:bg-slate-50/70 transition-colors cursor-pointer flex items-center gap-3"
+              className="p-3 rounded-xl border border-surface-100 hover:border-surface-200 hover:bg-slate-50/70 transition-colors cursor-pointer flex items-center gap-3"
             >
               <span className={clsxRank(i)} aria-hidden>
                 {i + 1}
@@ -170,29 +170,29 @@ export function TopPosts({
 
               <div className="flex-1 min-w-0">
                 <p
-                  className="text-[13px] font-semibold text-slate-800 leading-tight overflow-hidden text-ellipsis whitespace-nowrap"
+                  className="text-[13px] font-semibold text-text-primary leading-tight overflow-hidden text-ellipsis whitespace-nowrap"
                   title={post.excerpt}
                 >
                   {post.excerpt}
                 </p>
                 <div className="flex items-center gap-2.5 mt-1.5">
-                  <span className="text-[11px] text-slate-400 truncate max-w-[120px]">
+                  <span className="text-[11px] text-text-muted truncate max-w-[120px]">
                     {post.authorName}
                   </span>
-                  <span className="w-px h-3 bg-slate-200 shrink-0" />
-                  <span className="flex items-center gap-1 text-[11px] text-slate-500 font-medium shrink-0">
-                    <ThumbsUp size={11} className="text-slate-400" />
+                  <span className="w-px h-3 bg-surface-200 shrink-0" />
+                  <span className="flex items-center gap-1 text-[11px] text-text-muted font-medium shrink-0">
+                    <ThumbsUp size={11} className="text-text-muted" />
                     {post.likeCount}
                   </span>
-                  <span className="flex items-center gap-1 text-[11px] text-slate-500 font-medium shrink-0">
-                    <MessageSquare size={11} className="text-slate-400" />
+                  <span className="flex items-center gap-1 text-[11px] text-text-muted font-medium shrink-0">
+                    <MessageSquare size={11} className="text-text-muted" />
                     {post.commentCount}
                   </span>
                   <span
-                    className="flex items-center gap-1 text-[11px] text-slate-300 font-medium shrink-0"
+                    className="flex items-center gap-1 text-[11px] text-text-muted font-medium shrink-0"
                     title="Chưa hỗ trợ theo dõi lượt chia sẻ"
                   >
-                    <Share2 size={11} className="text-slate-400" />
+                    <Share2 size={11} className="text-text-muted" />
                   </span>
                 </div>
               </div>
@@ -207,12 +207,12 @@ export function TopPosts({
             Array.from({ length: emptySlots }).map((_, i) => (
               <div
                 key={`empty-${i}`}
-                className="p-3 rounded-xl border border-dashed border-slate-100 flex items-center gap-3"
+                className="p-3 rounded-xl border border-dashed border-surface-100 flex items-center gap-3"
               >
-                <span className="w-6 h-6 rounded-full bg-slate-50 text-slate-300 text-[10px] font-bold flex items-center justify-center shrink-0">
+                <span className="w-6 h-6 rounded-full bg-surface-50 text-text-muted text-[10px] font-bold flex items-center justify-center shrink-0">
                   {posts.length + i + 1}
                 </span>
-                <span className="text-[11px] text-slate-300">
+                <span className="text-[11px] text-text-muted">
                   Chưa có bài viết nổi bật ở vị trí này
                 </span>
               </div>
@@ -246,5 +246,5 @@ export function TopPosts({
 function clsxRank(i: number) {
   const base =
     "w-6 h-6 rounded-full text-[10px] font-bold flex items-center justify-center shrink-0";
-  return `${base} ${RANK_STYLES[i] ?? "bg-slate-100 text-slate-400"}`;
+  return `${base} ${RANK_STYLES[i] ?? "bg-surface-100 text-text-muted"}`;
 }

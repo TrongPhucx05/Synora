@@ -111,10 +111,10 @@ export default function NotificationsPage() {
       <div className="space-y-3">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-xl font-bold tracking-tight text-slate-900">
+            <h1 className="text-xl font-bold tracking-tight text-text-primary">
               Thông báo
             </h1>
-            <p className="text-xs text-slate-400 mt-0.5">30 ngày gần nhất</p>
+            <p className="text-xs text-text-muted mt-0.5">30 ngày gần nhất</p>
           </div>
           <button
             onClick={markAllRead}
@@ -126,7 +126,7 @@ export default function NotificationsPage() {
           </button>
         </div>
 
-        <div className="flex items-center gap-1 bg-white rounded-xl border border-slate-200 p-1 overflow-x-auto">
+        <div className="flex items-center gap-1 bg-surface rounded-xl border border-surface-200 p-1 overflow-x-auto">
           {tabs.map((tab) => (
             <button
               key={tab.id}
@@ -134,7 +134,7 @@ export default function NotificationsPage() {
               className={`relative flex-1 px-3 py-2 rounded-lg text-xs font-semibold transition-all whitespace-nowrap ${
                 activeTab === tab.id
                   ? "bg-blue-500 text-white shadow-sm"
-                  : "text-slate-500 hover:bg-slate-50"
+                  : "text-text-muted hover:bg-surface-50"
               }`}
             >
               {tab.label}
@@ -153,14 +153,14 @@ export default function NotificationsPage() {
           ))}
         </div>
 
-        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden divide-y divide-slate-100 min-h-[300px]">
+        <div className="bg-surface rounded-2xl border border-surface-200 shadow-sm overflow-hidden divide-y divide-surface-100 min-h-[300px]">
           {loading ? (
-            <div className="flex items-center justify-center py-24 gap-2 text-slate-400">
+            <div className="flex items-center justify-center py-24 gap-2 text-text-muted">
               <Loader2 size={18} className="animate-spin" />
               <span className="text-sm">Đang tải...</span>
             </div>
           ) : filteredNotifs.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-24 text-slate-400 gap-3">
+            <div className="flex flex-col items-center justify-center py-24 text-text-muted gap-3">
               <Bell size={36} className="opacity-20" />
               <p className="text-sm">Không có thông báo phù hợp</p>
             </div>

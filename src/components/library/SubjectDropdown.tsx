@@ -43,7 +43,7 @@ export default function SubjectDropdown({ label, options, value, onChange }: Sub
           "flex items-center gap-1.5 px-4 py-1.5 rounded-full text-sm font-medium transition-all",
           value
             ? "bg-primary text-white shadow-sm"
-            : "bg-white border border-surface-200 text-text-secondary hover:border-primary hover:text-primary",
+            : "bg-surface border border-surface-200 text-text-secondary hover:border-primary hover:text-primary",
         )}
       >
         {value ? activeLabel : label}
@@ -53,7 +53,7 @@ export default function SubjectDropdown({ label, options, value, onChange }: Sub
       {open && (
         <div
           role="listbox"
-          className="absolute top-full left-0 mt-2 z-30 w-56 bg-white border border-surface-200 rounded-xl shadow-lg py-1.5 animate-in fade-in zoom-in-95 duration-150 origin-top-left"
+          className="absolute top-full left-0 mt-2 z-30 w-56 bg-surface border border-surface-200 rounded-xl shadow-lg py-1.5 animate-in fade-in zoom-in-95 duration-150 origin-top-left"
         >
           {value && (
             <button

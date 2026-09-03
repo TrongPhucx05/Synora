@@ -55,7 +55,7 @@ export function SavedPostsTab({ username, isOwner }: SavedPostsTabProps) {
 
   if (!isOwner) {
     return (
-      <div className="bg-white border border-surface-200 rounded-2xl p-8 text-center">
+      <div className="bg-surface border border-surface-200 rounded-2xl p-8 text-center">
         <p className="text-text-muted text-sm">
           Mục này chỉ hiển thị với chủ trang.
         </p>
@@ -69,7 +69,7 @@ export function SavedPostsTab({ username, isOwner }: SavedPostsTabProps) {
         {Array.from({ length: 3 }).map((_, i) => (
           <div
             key={i}
-            className="h-32 bg-white border border-surface-200 rounded-2xl animate-pulse"
+            className="h-32 bg-surface border border-surface-200 rounded-2xl animate-pulse"
           />
         ))}
       </div>
@@ -78,7 +78,7 @@ export function SavedPostsTab({ username, isOwner }: SavedPostsTabProps) {
 
   if (posts.length === 0) {
     return (
-      <div className="bg-white border border-surface-200 rounded-2xl p-8 text-center">
+      <div className="bg-surface border border-surface-200 rounded-2xl p-8 text-center">
         <p className="text-text-muted text-sm">Bạn chưa lưu bài viết nào.</p>
       </div>
     );

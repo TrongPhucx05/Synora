@@ -19,7 +19,7 @@ export function StatCard({
   return (
     <div
       className={clsx(
-        "bg-white border border-slate-200 rounded-2xl p-4 flex items-center gap-3.5 transition-opacity",
+        "bg-surface border border-surface-200 rounded-2xl p-4 flex items-center gap-3.5 transition-opacity",
         comingSoon && "opacity-70",
       )}
     >
@@ -34,7 +34,7 @@ export function StatCard({
 
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-1.5">
-          <p className="text-xl font-bold text-slate-900 leading-none truncate">
+          <p className="text-xl font-bold text-text-primary leading-none truncate">
             {value}
           </p>
           {trend && (
@@ -50,9 +50,9 @@ export function StatCard({
           )}
         </div>
         <div className="flex items-center gap-1.5 mt-1">
-          <p className="text-xs text-slate-500 truncate">{label}</p>
+          <p className="text-xs text-text-muted truncate">{label}</p>
           {comingSoon && (
-            <span className="shrink-0 text-[9px] font-medium text-slate-400 bg-slate-100 rounded-full px-1.5 py-[1px]">
+            <span className="shrink-0 text-[9px] font-medium text-text-muted bg-surface-100 rounded-full px-1.5 py-[1px]">
               Sắp có
             </span>
           )}

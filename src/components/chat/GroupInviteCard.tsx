@@ -30,7 +30,7 @@ export function GroupInviteCard({ token }: { token: string }) {
 
   if (loading) {
     return (
-      <div className="flex items-center gap-2 px-4 py-3 rounded-2xl border border-surface-200 bg-white text-xs text-text-muted">
+      <div className="flex items-center gap-2 px-4 py-3 rounded-2xl border border-surface-200 bg-surface text-xs text-text-muted">
         <Loader2 size={13} className="animate-spin" /> Đang tải link mời...
       </div>
     );
@@ -50,7 +50,7 @@ export function GroupInviteCard({ token }: { token: string }) {
   };
 
   return (
-    <div className="w-64 rounded-2xl border border-surface-200 bg-white overflow-hidden shadow-sm">
+    <div className="w-64 rounded-2xl border border-surface-200 bg-surface overflow-hidden shadow-sm">
       <div className="flex items-center gap-3 px-4 py-3">
         <Avatar
           src={preview.avatarUrl}

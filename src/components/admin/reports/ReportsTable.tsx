@@ -82,7 +82,7 @@ function StatusBadge({ status }: { status: AdminReportRow["status"] }) {
       </span>
     );
   return (
-    <span className="text-[11px] font-medium bg-slate-100 text-slate-500 px-2 py-0.5 rounded-full whitespace-nowrap">
+    <span className="text-[11px] font-medium bg-surface-100 text-text-muted px-2 py-0.5 rounded-full whitespace-nowrap">
       Đã bỏ qua
     </span>
   );
@@ -101,17 +101,17 @@ export function ReportsTable({
 }) {
   if (reports.length === 0) {
     return (
-      <div className="bg-white rounded-2xl border border-slate-200 p-10 text-center text-sm text-slate-400">
+      <div className="bg-surface rounded-2xl border border-surface-200 p-10 text-center text-sm text-text-muted">
         Không có báo cáo nào phù hợp
       </div>
     );
   }
 
   return (
-    <div className="bg-white rounded-2xl border border-slate-200 overflow-x-auto">
+    <div className="bg-surface rounded-2xl border border-surface-200 overflow-x-auto">
       <table className="w-full text-sm min-w-[920px]">
         <thead>
-          <tr className="border-b border-slate-100 text-left text-slate-400 text-xs uppercase tracking-wide">
+          <tr className="border-b border-surface-100 text-left text-text-muted text-xs uppercase tracking-wide">
             <th className="px-5 py-3 font-medium">Người báo cáo</th>
             <th className="px-5 py-3 font-medium">Đối tượng</th>
             <th className="px-5 py-3 font-medium">Nội dung</th>
@@ -132,31 +132,31 @@ export function ReportsTable({
               className="border-b border-slate-50 last:border-0 hover:bg-slate-50/60"
             >
               <td className="px-5 py-3">
-                <p className="font-medium text-slate-700 truncate max-w-[140px]">
+                <p className="font-medium text-text-secondary truncate max-w-[140px]">
                   {r.reporter.name}
                 </p>
-                <p className="text-xs text-slate-400 truncate max-w-[140px]">
+                <p className="text-xs text-text-muted truncate max-w-[140px]">
                   @{r.reporter.username}
                 </p>
               </td>
               <td className="px-5 py-3 whitespace-nowrap">
                 <TargetBadge type={r.targetType} />
                 {r.targetAuthor && (
-                  <p className="text-xs text-slate-400 mt-1 truncate max-w-[140px]">
+                  <p className="text-xs text-text-muted mt-1 truncate max-w-[140px]">
                     của @{r.targetAuthor.username}
                   </p>
                 )}
               </td>
               <td className="px-5 py-3 max-w-[220px]">
-                <p className="text-slate-600 truncate">{r.targetPreview}</p>
+                <p className="text-text-secondary truncate">{r.targetPreview}</p>
               </td>
-              <td className="px-5 py-3 text-slate-600 whitespace-nowrap">
+              <td className="px-5 py-3 text-text-secondary whitespace-nowrap">
                 {REASON_LABELS[r.reason]}
               </td>
               <td className="px-5 py-3 whitespace-nowrap">
                 <StatusBadge status={r.status} />
               </td>
-              <td className="px-5 py-3 text-slate-500 whitespace-nowrap">
+              <td className="px-5 py-3 text-text-muted whitespace-nowrap">
                 {r.createdAt}
               </td>
               <td className="px-5 py-3 whitespace-nowrap">
@@ -164,7 +164,7 @@ export function ReportsTable({
                   <button
                     onClick={() => onViewDetail(r)}
                     title="Xem chi tiết"
-                    className="p-1.5 rounded-lg hover:bg-slate-100 text-slate-400 hover:text-slate-600"
+                    className="p-1.5 rounded-lg hover:bg-surface-100 text-text-muted hover:text-text-secondary"
                   >
                     <Eye size={15} />
                   </button>
@@ -173,14 +173,14 @@ export function ReportsTable({
                       <button
                         onClick={() => onQuickResolve(r)}
                         title="Đánh dấu đã xử lý"
-                        className="p-1.5 rounded-lg hover:bg-emerald-50 text-slate-400 hover:text-emerald-500"
+                        className="p-1.5 rounded-lg hover:bg-emerald-50 text-text-muted hover:text-emerald-500"
                       >
                         <CheckCircle2 size={15} />
                       </button>
                       <button
                         onClick={() => onQuickDismiss(r)}
                         title="Bỏ qua báo cáo"
-                        className="p-1.5 rounded-lg hover:bg-slate-100 text-slate-400 hover:text-slate-600"
+                        className="p-1.5 rounded-lg hover:bg-surface-100 text-text-muted hover:text-text-secondary"
                       >
                         <XCircle size={15} />
                       </button>

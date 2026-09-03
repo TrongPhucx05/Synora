@@ -56,11 +56,11 @@ function ResetPasswordForm() {
   };
 
   return (
-    <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
-      <h2 className="text-base font-bold text-slate-900 text-center mb-1">
+    <div className="bg-surface rounded-2xl border border-surface-200 shadow-sm p-6">
+      <h2 className="text-base font-bold text-text-primary text-center mb-1">
         Đặt lại mật khẩu
       </h2>
-      <p className="text-sm text-slate-400 text-center mb-5">
+      <p className="text-sm text-text-muted text-center mb-5">
         Nhập mật khẩu mới cho tài khoản của bạn
       </p>
 
@@ -75,46 +75,46 @@ function ResetPasswordForm() {
           </p>
         </div>
       ) : success ? (
-        <div className="px-3 py-3 bg-emerald-50 border border-emerald-100 rounded-lg">
-          <p className="text-xs text-emerald-700 leading-relaxed">
+        <div className="px-3 py-3 bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-100 dark:border-emerald-500/20 rounded-lg">
+              <p className="text-xs text-emerald-700 dark:text-emerald-400 leading-relaxed">
             Đặt lại mật khẩu thành công! Đang chuyển tới trang đăng nhập...
           </p>
         </div>
       ) : (
         <>
           {error && (
-            <div className="mb-4 px-3 py-2.5 bg-red-50 border border-red-100 rounded-lg">
-              <p className="text-xs text-red-500">{error}</p>
+            <div className="mb-4 px-3 py-2.5 bg-red-50 dark:bg-red-500/10 border border-red-100 dark:border-red-500/20 rounded-lg">
+              <p className="text-xs text-red-500 dark:text-red-400">{error}</p>
             </div>
           )}
           <div className="flex flex-col gap-4">
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1.5">
+              <label className="block text-sm font-medium text-text-secondary mb-1.5">
                 Mật khẩu mới
               </label>
               <div className="relative">
                 <Lock
                   size={16}
-                  className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"
+                  className="absolute left-3.5 top-1/2 -translate-y-1/2 text-text-muted"
                 />
                 <input
                   type={showPassword ? "text" : "password"}
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
                   placeholder="Ít nhất 8 ký tự"
-                  className="w-full pl-10 pr-10 py-2.5 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-blue-400 transition-colors"
+                  className="w-full pl-10 pr-10 py-2.5 border border-surface-200 rounded-lg text-sm focus:outline-none focus:border-blue-400 transition-colors"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword((v) => !v)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-secondary"
                 >
                   {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                 </button>
               </div>
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1.5">
+              <label className="block text-sm font-medium text-text-secondary mb-1.5">
                 Xác nhận mật khẩu mới
               </label>
               <input
@@ -123,7 +123,7 @@ function ResetPasswordForm() {
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
                 placeholder="••••••••"
-                className="w-full px-4 py-2.5 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-blue-400 transition-colors"
+                className="w-full px-4 py-2.5 border border-surface-200 rounded-lg text-sm focus:outline-none focus:border-blue-400 transition-colors"
               />
             </div>
             <button
@@ -142,7 +142,7 @@ function ResetPasswordForm() {
 
 export default function ResetPasswordPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary/5 via-white to-indigo-50 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-primary/5 via-surface dark:via-surface to-indigo-50 dark:to-surface-100 flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-6">
           <div className="w-10 h-10 bg-blue-500 rounded-xl flex items-center justify-center mx-auto mb-3">
@@ -156,7 +156,7 @@ export default function ResetPasswordPage() {
               <circle cx="9" cy="9" r="2" fill="white" />
             </svg>
           </div>
-          <h1 className="text-xl font-bold text-slate-900">Synora</h1>
+          <h1 className="text-xl font-bold text-text-primary">Synora</h1>
         </div>
         <Suspense fallback={null}>
           <ResetPasswordForm />

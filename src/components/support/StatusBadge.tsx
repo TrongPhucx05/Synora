@@ -7,7 +7,7 @@ const STATUS_CLASSES: Record<SupportRequestStatus, string> = {
   IN_PROGRESS: "bg-blue-50 text-blue-600",
   WAITING_FOR_USER: "bg-violet-50 text-violet-600",
   RESOLVED: "bg-emerald-50 text-emerald-600",
-  CLOSED: "bg-slate-100 text-slate-500",
+  CLOSED: "bg-surface-100 text-text-muted",
   REJECTED: "bg-red-50 text-red-600",
 };
 

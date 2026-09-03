@@ -163,7 +163,7 @@ export default function MediaLightbox({
                   onClick={() => setIndex(i)}
                   className={clsx(
                     "w-1.5 h-1.5 rounded-full transition-all",
-                    i === index ? "bg-white scale-125" : "bg-white/40",
+                    i === index ? "bg-surface scale-125" : "bg-white/40",
                   )}
                 />
               ))}
@@ -173,7 +173,7 @@ export default function MediaLightbox({
       </div>
 
       <div
-        className="w-[380px] shrink-0 bg-white flex flex-col"
+        className="w-[380px] shrink-0 bg-surface flex flex-col"
         style={{ height: "100vh" }}
         onClick={(e) => e.stopPropagation()}
       >

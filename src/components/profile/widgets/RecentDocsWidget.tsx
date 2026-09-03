@@ -18,7 +18,7 @@ export function RecentDocsWidget({ docs = [], username }: RecentDocsWidgetProps)
   if (docs.length === 0) return null;
 
   return (
-    <div className="bg-white border border-surface-200 rounded-2xl p-4">
+    <div className="bg-surface border border-surface-200 rounded-2xl p-4">
       <div className="flex items-center justify-between mb-2.5">
         <h3 className="text-xs font-semibold text-text-primary">
           Tài liệu gần đây

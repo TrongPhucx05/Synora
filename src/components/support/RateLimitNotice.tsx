@@ -16,9 +16,9 @@ export function RateLimitNotice({
 
   if (status.allowed) {
     return (
-      <p className="text-xs text-slate-500 whitespace-nowrap">
+      <p className="text-xs text-text-muted whitespace-nowrap">
         Bạn còn{" "}
-        <span className="font-semibold text-slate-700">
+        <span className="font-semibold text-text-secondary">
           {status.remaining}/{status.limit}
         </span>{" "}
         lượt trong 7 ngày

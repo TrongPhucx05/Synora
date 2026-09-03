@@ -30,7 +30,7 @@ export async function GET(req: NextRequest) {
     ...(cursor && { cursor: { id: cursor }, skip: 1 }),
     include: {
       actor: { include: { profile: true } },
-      conversation: { select: { id: true, name: true, isGroup: true } }, // 👈 mới
+      conversation: { select: { id: true, name: true, isGroup: true } },
     },
   });
 

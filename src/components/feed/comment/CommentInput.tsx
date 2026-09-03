@@ -349,7 +349,7 @@ export default function CommentInput({
             </button>
           </div>
         )}
-        <div className="flex items-end gap-2 bg-surface-50 border border-surface-200 rounded-2xl px-3 py-2 focus-within:border-primary focus-within:bg-white transition-all">
+        <div className="flex items-end gap-2 bg-surface-50 border border-surface-200 rounded-2xl px-3 py-2 focus-within:border-primary focus-within:bg-surface transition-all">
           <textarea
             value={text}
             onChange={(e) => setText(e.target.value)}

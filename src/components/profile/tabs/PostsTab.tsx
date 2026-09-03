@@ -80,10 +80,10 @@ export function PostsTab({ username, isOwner, session }: PostsTabProps) {
       <div className="flex flex-col gap-3 mt-3">
         {loading ? (
           Array.from({ length: 3 }).map((_, i) => (
-            <div key={i} className="h-32 bg-white border border-surface-200 rounded-2xl animate-pulse" />
+            <div key={i} className="h-32 bg-surface border border-surface-200 rounded-2xl animate-pulse" />
           ))
         ) : posts.length === 0 ? (
-          <div className="bg-white border border-surface-200 rounded-2xl p-8 text-center">
+          <div className="bg-surface border border-surface-200 rounded-2xl p-8 text-center">
             <p className="text-text-muted text-sm">Chưa có bài đăng nào.</p>
           </div>
         ) : (

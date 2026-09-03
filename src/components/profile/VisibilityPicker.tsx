@@ -36,7 +36,7 @@ export function VisibilityPicker({ value, onChange }: VisibilityPickerProps) {
       </button>
 
       {open && (
-        <div className="absolute top-full mt-1 left-0 bg-white border border-surface-200 rounded-xl shadow-lg z-20 min-w-[160px] overflow-hidden">
+        <div className="absolute top-full mt-1 left-0 bg-surface border border-surface-200 rounded-xl shadow-lg z-20 min-w-[160px] overflow-hidden">
           {VISIBILITY_OPTIONS.map((opt) => (
             <button
               key={opt.value}

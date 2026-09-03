@@ -19,7 +19,7 @@ export function ContentTabs({
   counts: Record<ContentTabKey, number>;
 }) {
   return (
-    <div className="flex items-center gap-1 border-b border-slate-200 mb-5">
+    <div className="flex items-center gap-1 border-b border-surface-200 mb-5">
       {TABS.map((tab) => (
         <button
           key={tab.key}
@@ -28,7 +28,7 @@ export function ContentTabs({
             "relative px-4 py-2.5 text-sm font-medium transition-colors",
             value === tab.key
               ? "text-blue-600"
-              : "text-slate-500 hover:text-slate-700",
+              : "text-text-muted hover:text-text-secondary",
           )}
         >
           {tab.label}
@@ -37,7 +37,7 @@ export function ContentTabs({
               "ml-1.5 text-[11px] rounded-full px-1.5 py-0.5",
               value === tab.key
                 ? "bg-blue-100 text-blue-600"
-                : "bg-slate-100 text-slate-400",
+                : "bg-surface-100 text-text-muted",
             )}
           >
             {counts[tab.key]}

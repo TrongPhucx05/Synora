@@ -118,7 +118,7 @@ function VisibilityPicker({
       </button>
 
       {open && (
-        <div className="absolute top-full mt-1 left-0 bg-white border border-surface-200 rounded-xl shadow-lg z-20 min-w-[160px] overflow-hidden">
+        <div className="absolute top-full mt-1 left-0 bg-surface border border-surface-200 rounded-xl shadow-lg z-20 min-w-[160px] overflow-hidden">
           {VISIBILITY_OPTIONS.map((opt) => (
             <button
               key={opt.value}
@@ -270,7 +270,7 @@ function MediaLightboxPreview({
                 setIndex(i);
               }}
               className={`w-1.5 h-1.5 rounded-full transition-all ${
-                i === index ? "bg-white scale-125" : "bg-white/40"
+                i === index ? "bg-surface scale-125" : "bg-white/40"
               }`}
             />
           ))}
@@ -485,7 +485,7 @@ export default function PostComposer({
 
   return (
     <>
-      <div className="bg-white rounded-2xl border border-surface-200 shadow-sm overflow-visible">
+      <div className="bg-surface rounded-2xl border border-surface-200 shadow-sm overflow-visible">
         <div className="flex items-center gap-3 px-5 pt-4 pb-3">
           <NextLink
             href={

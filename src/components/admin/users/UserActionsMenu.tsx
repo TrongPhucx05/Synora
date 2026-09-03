@@ -56,19 +56,19 @@ export function UserActionsMenu({
     <div
       ref={ref}
       style={{ top: pos.top, left: pos.left }}
-      className="fixed z-50 w-52 bg-white rounded-xl shadow-xl border border-slate-100 py-1 overflow-hidden"
+      className="fixed z-50 w-52 bg-surface rounded-xl shadow-xl border border-surface-100 py-1 overflow-hidden"
     >
       <Link
         href={`/profile/${user.username}`}
         target="_blank"
         onClick={onClose}
-        className="flex items-center gap-2.5 px-3.5 py-2.5 text-xs text-slate-700 hover:bg-slate-50 transition-colors"
+        className="flex items-center gap-2.5 px-3.5 py-2.5 text-xs text-text-secondary hover:bg-surface-50 transition-colors"
       >
-        <User size={13} className="text-slate-400 shrink-0" />
+        <User size={13} className="text-text-muted shrink-0" />
         Xem trang cá nhân
       </Link>
 
-      <div className="h-px bg-slate-100 my-0.5" />
+      <div className="h-px bg-surface-100 my-0.5" />
 
       {isLocked ? (
         <button
@@ -88,7 +88,7 @@ export function UserActionsMenu({
         </button>
       )}
 
-      <div className="h-px bg-slate-100 my-0.5" />
+      <div className="h-px bg-surface-100 my-0.5" />
 
       {isScheduledForDeletion ? (
         <button

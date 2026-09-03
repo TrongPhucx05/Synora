@@ -28,20 +28,20 @@ export function AuditLogTable({
   }
 
   return (
-    <div className="bg-white border border-slate-200 rounded-2xl overflow-hidden">
+    <div className="bg-surface border border-surface-200 rounded-2xl overflow-hidden">
       <table className="w-full text-sm">
         <thead>
-          <tr className="border-b border-slate-100 bg-slate-50">
-            <th className="text-left font-semibold text-slate-500 text-xs px-5 py-3">
+          <tr className="border-b border-surface-100 bg-surface-50">
+            <th className="text-left font-semibold text-text-muted text-xs px-5 py-3">
               Quản trị viên
             </th>
-            <th className="text-left font-semibold text-slate-500 text-xs px-4 py-3">
+            <th className="text-left font-semibold text-text-muted text-xs px-4 py-3">
               Thao tác
             </th>
-            <th className="text-left font-semibold text-slate-500 text-xs px-4 py-3">
+            <th className="text-left font-semibold text-text-muted text-xs px-4 py-3">
               Đối tượng
             </th>
-            <th className="text-left font-semibold text-slate-500 text-xs px-4 py-3">
+            <th className="text-left font-semibold text-text-muted text-xs px-4 py-3">
               Thời gian
             </th>
             <th className="w-12 px-4 py-3" />
@@ -63,10 +63,10 @@ export function AuditLogTable({
                       size="sm"
                     />
                     <div className="min-w-0">
-                      <p className="text-xs font-medium text-slate-800 truncate">
+                      <p className="text-xs font-medium text-text-primary truncate">
                         {e.actor.name}
                       </p>
-                      <p className="text-[11px] text-slate-400 truncate">
+                      <p className="text-[11px] text-text-muted truncate">
                         Quản trị viên
                       </p>
                     </div>
@@ -76,24 +76,24 @@ export function AuditLogTable({
                   <span
                     className={clsx(
                       "inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 rounded-full",
-                      ACTION_BADGE[e.action] ?? "bg-slate-50 text-slate-600",
+                      ACTION_BADGE[e.action] ?? "bg-surface-50 text-text-secondary",
                     )}
                   >
                     <Icon size={11} />
                     {ACTION_LABELS[e.action] ?? e.action}
                   </span>
                 </td>
-                <td className="px-4 py-3 text-xs text-slate-600 max-w-[280px] truncate">
+                <td className="px-4 py-3 text-xs text-text-secondary max-w-[280px] truncate">
                   {e.targetLabel}
                 </td>
-                <td className="px-4 py-3 text-xs text-slate-500 whitespace-nowrap">
+                <td className="px-4 py-3 text-xs text-text-muted whitespace-nowrap">
                   {e.createdAt}
                 </td>
                 <td className="px-4 py-3">
                   <button
                     onClick={() => onViewDetail(e)}
                     title="Xem chi tiết"
-                    className="p-1.5 rounded-lg hover:bg-slate-100 text-slate-400 hover:text-slate-600"
+                    className="p-1.5 rounded-lg hover:bg-surface-100 text-text-muted hover:text-text-secondary"
                   >
                     <Eye size={15} />
                   </button>

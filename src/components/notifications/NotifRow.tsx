@@ -35,87 +35,131 @@ const AVATAR_COLORS = [
 
 const typeConfig: Record<NotifType, { icon: any; bg: string; color: string }> =
   {
-    LIKE: { icon: ThumbsUp, bg: "bg-rose-50", color: "text-rose-500" },
-    COMMENT: { icon: MessageSquare, bg: "bg-blue-50", color: "text-blue-500" },
-    REPLY: { icon: MessageSquare, bg: "bg-blue-50", color: "text-blue-500" },
-    MENTION: { icon: AtSign, bg: "bg-violet-50", color: "text-violet-500" },
+    LIKE: {
+      icon: ThumbsUp,
+      bg: "bg-rose-50 dark:bg-rose-500/15",
+      color: "text-rose-500 dark:text-rose-400",
+    },
+    COMMENT: {
+      icon: MessageSquare,
+      bg: "bg-blue-50 dark:bg-blue-500/15",
+      color: "text-blue-500 dark:text-blue-400",
+    },
+    REPLY: {
+      icon: MessageSquare,
+      bg: "bg-blue-50 dark:bg-blue-500/15",
+      color: "text-blue-500 dark:text-blue-400",
+    },
+    MENTION: {
+      icon: AtSign,
+      bg: "bg-violet-50 dark:bg-violet-500/15",
+      color: "text-violet-500 dark:text-violet-400",
+    },
     FRIEND_REQUEST: {
       icon: UserPlus,
-      bg: "bg-emerald-50",
-      color: "text-emerald-500",
+      bg: "bg-emerald-50 dark:bg-emerald-500/15",
+      color: "text-emerald-500 dark:text-emerald-400",
     },
     FRIEND_ACCEPT: {
       icon: UserCheck,
-      bg: "bg-emerald-50",
-      color: "text-emerald-500",
+      bg: "bg-emerald-50 dark:bg-emerald-500/15",
+      color: "text-emerald-500 dark:text-emerald-400",
     },
     DOCUMENT_APPROVED: {
       icon: FileCheck,
-      bg: "bg-emerald-50",
-      color: "text-emerald-500",
+      bg: "bg-emerald-50 dark:bg-emerald-500/15",
+      color: "text-emerald-500 dark:text-emerald-400",
     },
-    DOCUMENT_REJECTED: { icon: FileX, bg: "bg-red-50", color: "text-red-500" },
-    DOCUMENT_REMOVED: { icon: FileX, bg: "bg-red-50", color: "text-red-500" },
+    DOCUMENT_REJECTED: {
+      icon: FileX,
+      bg: "bg-red-50 dark:bg-red-500/15",
+      color: "text-red-500 dark:text-red-400",
+    },
+    DOCUMENT_REMOVED: {
+      icon: FileX,
+      bg: "bg-red-50 dark:bg-red-500/15",
+      color: "text-red-500 dark:text-red-400",
+    },
     DOCUMENT_REPORTED: {
       icon: FileWarning,
-      bg: "bg-amber-50",
-      color: "text-amber-500",
+      bg: "bg-amber-50 dark:bg-amber-500/15",
+      color: "text-amber-500 dark:text-amber-400",
     },
-    FOLLOW: { icon: UserPlus, bg: "bg-emerald-50", color: "text-emerald-500" },
-    MESSAGE: { icon: MessageSquare, bg: "bg-blue-50", color: "text-blue-500" },
-    POST_REMOVED: { icon: FileX, bg: "bg-red-50", color: "text-red-500" },
+    FOLLOW: {
+      icon: UserPlus,
+      bg: "bg-emerald-50 dark:bg-emerald-500/15",
+      color: "text-emerald-500 dark:text-emerald-400",
+    },
+    MESSAGE: {
+      icon: MessageSquare,
+      bg: "bg-blue-50 dark:bg-blue-500/15",
+      color: "text-blue-500 dark:text-blue-400",
+    },
+    POST_REMOVED: {
+      icon: FileX,
+      bg: "bg-red-50 dark:bg-red-500/15",
+      color: "text-red-500 dark:text-red-400",
+    },
     ACCOUNT_SUSPENDED: {
       icon: ShieldAlert,
-      bg: "bg-amber-50",
-      color: "text-amber-600",
+      bg: "bg-amber-50 dark:bg-amber-500/15",
+      color: "text-amber-600 dark:text-amber-400",
     },
-    ACCOUNT_BANNED: { icon: ShieldX, bg: "bg-red-50", color: "text-red-600" },
+    ACCOUNT_BANNED: {
+      icon: ShieldX,
+      bg: "bg-red-50 dark:bg-red-500/15",
+      color: "text-red-600 dark:text-red-400",
+    },
     ACCOUNT_UNLOCKED: {
       icon: ShieldCheck,
-      bg: "bg-emerald-50",
-      color: "text-emerald-600",
+      bg: "bg-emerald-50 dark:bg-emerald-500/15",
+      color: "text-emerald-600 dark:text-emerald-400",
     },
-    SYSTEM: { icon: Bell, bg: "bg-slate-100", color: "text-slate-500" },
+    SYSTEM: { icon: Bell, bg: "bg-surface-100", color: "text-text-muted" },
     REPORT_SUBMITTED: {
       icon: Flag,
-      bg: "bg-orange-50",
-      color: "text-orange-500",
+      bg: "bg-orange-50 dark:bg-orange-500/15",
+      color: "text-orange-500 dark:text-orange-400",
     },
     REPORT_RESOLVED: {
       icon: ShieldCheck,
-      bg: "bg-emerald-50",
-      color: "text-emerald-600",
+      bg: "bg-emerald-50 dark:bg-emerald-500/15",
+      color: "text-emerald-600 dark:text-emerald-400",
     },
     REPORT_DISMISSED: {
       icon: ShieldAlert,
-      bg: "bg-slate-100",
-      color: "text-slate-500",
+      bg: "bg-surface-100",
+      color: "text-text-muted",
     },
     SUPPORT_REQUEST_SUBMITTED: {
       icon: LifeBuoy,
-      bg: "bg-blue-50",
-      color: "text-blue-500",
+      bg: "bg-blue-50 dark:bg-blue-500/15",
+      color: "text-blue-500 dark:text-blue-400",
     },
     SUPPORT_REQUEST_UPDATED: {
       icon: LifeBuoy,
-      bg: "bg-emerald-50",
-      color: "text-emerald-500",
+      bg: "bg-emerald-50 dark:bg-emerald-500/15",
+      color: "text-emerald-500 dark:text-emerald-400",
     },
-    GROUP_INVITE: { icon: Users, bg: "bg-indigo-50", color: "text-indigo-500" },
+    GROUP_INVITE: {
+      icon: Users,
+      bg: "bg-indigo-50 dark:bg-indigo-500/15",
+      color: "text-indigo-500 dark:text-indigo-400",
+    },
     GROUP_JOIN_REQUEST: {
       icon: UserCog,
-      bg: "bg-amber-50",
-      color: "text-amber-500",
+      bg: "bg-amber-50 dark:bg-amber-500/15",
+      color: "text-amber-500 dark:text-amber-400",
     },
     GROUP_JOIN_APPROVED: {
       icon: UserCheck,
-      bg: "bg-emerald-50",
-      color: "text-emerald-500",
+      bg: "bg-emerald-50 dark:bg-emerald-500/15",
+      color: "text-emerald-500 dark:text-emerald-400",
     },
     GROUP_JOIN_REJECTED: {
       icon: UserPlus,
-      bg: "bg-slate-100",
-      color: "text-slate-500",
+      bg: "bg-surface-100",
+      color: "text-text-muted",
     },
   };
 
@@ -203,7 +247,7 @@ export function NotifRow({
     <Link
       href={notif.href}
       onClick={handleClick}
-      className={`group flex items-start gap-3 rounded-xl cursor-pointer transition-all duration-150 ${compact ? "px-3 py-2.5 hover:bg-slate-50" : "px-4 py-3.5 hover:bg-slate-50/80"} ${notif.unread ? "bg-blue-50/40 hover:bg-blue-50/60" : ""}`}
+      className={`group flex items-start gap-3 rounded-xl cursor-pointer transition-all duration-150 ${compact ? "px-3 py-2.5 hover:bg-surface-50" : "px-4 py-3.5 hover:bg-surface-50"} ${notif.unread ? "bg-blue-50/40 dark:bg-blue-500/10 hover:bg-blue-50/60 dark:hover:bg-blue-500/15" : ""}`}
     >
       <div className="shrink-0 mt-0.5">
         {notif.avatars.length > 0 ? (
@@ -225,15 +269,15 @@ export function NotifRow({
 
       <div className="flex-1 min-w-0">
         <p
-          className={`text-sm leading-snug text-slate-700 ${notif.unread ? "font-medium text-slate-900" : ""}`}
+          className={`text-sm leading-snug text-text-secondary ${notif.unread ? "font-medium text-text-primary" : ""}`}
         >
           {notif.text}
         </p>
         {notif.sub && (
-          <p className="text-xs text-slate-400 mt-0.5 truncate">{notif.sub}</p>
+          <p className="text-xs text-text-muted mt-0.5 truncate">{notif.sub}</p>
         )}
         <p
-          className={`text-[11px] mt-1 ${notif.unread ? "text-blue-500 font-medium" : "text-slate-400"}`}
+          className={`text-[11px] mt-1 ${notif.unread ? "text-blue-500 dark:text-blue-400 font-medium" : "text-text-muted"}`}
         >
           {formatVietnameseTime(notif.createdAt)}
         </p>
@@ -241,13 +285,13 @@ export function NotifRow({
         {notif.action && !compact && (
           <div className="flex items-center gap-2 mt-2.5">
             {status === "accepted" ? (
-              <span className="text-xs text-emerald-600 font-semibold bg-emerald-50 px-3 py-1 rounded-lg">
+              <span className="text-xs text-emerald-600 dark:text-emerald-400 font-semibold bg-emerald-50 dark:bg-emerald-500/15 px-3 py-1 rounded-lg">
                 {notif.type === "GROUP_JOIN_REQUEST"
                   ? "Đã duyệt"
                   : "Đã chấp nhận"}
               </span>
             ) : status === "declined" ? (
-              <span className="text-xs text-slate-400 bg-slate-100 px-3 py-1 rounded-lg">
+              <span className="text-xs text-text-muted bg-surface-100 px-3 py-1 rounded-lg">
                 Đã từ chối
               </span>
             ) : (
@@ -262,7 +306,7 @@ export function NotifRow({
                 <button
                   onClick={(e) => handleRequestAction(e, "reject")}
                   disabled={loading}
-                  className="text-xs font-medium text-slate-500 border border-slate-200 px-3 py-1.5 rounded-lg hover:bg-slate-100 transition-colors disabled:opacity-70"
+                  className="text-xs font-medium text-text-muted border border-surface-200 px-3 py-1.5 rounded-lg hover:bg-surface-100 transition-colors disabled:opacity-70"
                 >
                   {notif.action.decline}
                 </button>

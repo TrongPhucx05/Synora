@@ -228,7 +228,7 @@ export function NewConversationModal({
         className="fixed inset-0 bg-black/50 z-[80] backdrop-blur-sm"
         onClick={onClose}
       />
-      <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[440px] bg-white rounded-2xl shadow-2xl z-[80] flex flex-col overflow-hidden max-h-[80vh]">
+      <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[440px] bg-surface rounded-2xl shadow-2xl z-[80] flex flex-col overflow-hidden max-h-[80vh]">
         <div className="flex items-center justify-between px-5 py-4 border-b border-surface-100">
           <p className="text-sm font-bold text-text-primary">Tạo trò chuyện</p>
           <button
@@ -277,7 +277,7 @@ export function NewConversationModal({
                 value={groupName}
                 onChange={(e) => setGroupName(e.target.value)}
                 placeholder="Nhập tên nhóm..."
-                className="w-full px-3 py-2.5 bg-surface-100 rounded-xl text-sm placeholder:text-text-muted focus:outline-none border border-transparent focus:border-primary focus:bg-white transition-colors"
+                className="w-full px-3 py-2.5 bg-surface-100 rounded-xl text-sm placeholder:text-text-muted focus:outline-none border border-transparent focus:border-primary focus:bg-surface transition-colors"
               />
             </div>
           )}
@@ -319,7 +319,7 @@ export function NewConversationModal({
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Tìm kiếm bạn bè..."
-                className="w-full pl-8 pr-3 py-2 bg-surface-100 rounded-xl text-xs placeholder:text-text-muted focus:outline-none border border-transparent focus:border-primary focus:bg-white transition-colors"
+                className="w-full pl-8 pr-3 py-2 bg-surface-100 rounded-xl text-xs placeholder:text-text-muted focus:outline-none border border-transparent focus:border-primary focus:bg-surface transition-colors"
               />
             </div>
           </div>

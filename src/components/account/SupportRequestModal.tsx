@@ -48,22 +48,22 @@ export function SupportRequestModal({
       className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm"
       onClick={(e) => e.target === e.currentTarget && onClose()}
     >
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden">
+      <div className="bg-surface rounded-2xl shadow-2xl w-full max-w-md overflow-hidden">
         {code ? (
           <div className="p-8 text-center">
             <div className="w-12 h-12 rounded-full bg-emerald-50 text-emerald-500 flex items-center justify-center mx-auto mb-3">
               <CheckCircle2 size={24} />
             </div>
-            <h3 className="text-sm font-bold text-slate-900 mb-1">
+            <h3 className="text-sm font-bold text-text-primary mb-1">
               Đã gửi yêu cầu hỗ trợ
             </h3>
-            <p className="text-xs text-slate-500 mb-1">
+            <p className="text-xs text-text-muted mb-1">
               Mã yêu cầu:{" "}
-              <span className="font-mono font-semibold text-slate-700">
+              <span className="font-mono font-semibold text-text-secondary">
                 {code}
               </span>
             </p>
-            <p className="text-xs text-slate-500 mb-5">
+            <p className="text-xs text-text-muted mb-5">
               Quản trị viên sẽ xem xét và phản hồi qua email trong thời gian sớm
               nhất.
             </p>
@@ -77,15 +77,15 @@ export function SupportRequestModal({
         ) : (
           <>
             <div className="relative px-5 pt-5 pb-4 text-center">
-              <h3 className="text-sm font-bold text-slate-900">
+              <h3 className="text-sm font-bold text-text-primary">
                 Yêu cầu hỗ trợ
               </h3>
-              <p className="text-xs text-slate-500 mt-1">
+              <p className="text-xs text-text-muted mt-1">
                 Trình bày vấn đề để quản trị viên xem xét yêu cầu của bạn.
               </p>
               <button
                 onClick={onClose}
-                className="absolute top-5 right-5 p-1.5 hover:bg-slate-100 rounded-lg transition-colors text-slate-400"
+                className="absolute top-5 right-5 p-1.5 hover:bg-surface-100 rounded-lg transition-colors text-text-muted"
               >
                 <X size={16} />
               </button>
@@ -93,7 +93,7 @@ export function SupportRequestModal({
 
             <div className="px-5 flex flex-col gap-3">
               <div>
-                <label className="text-xs font-medium text-slate-700 mb-1 block">
+                <label className="text-xs font-medium text-text-secondary mb-1 block">
                   Tiêu đề
                 </label>
                 <input
@@ -101,11 +101,11 @@ export function SupportRequestModal({
                   value={subject}
                   onChange={(e) => setSubject(e.target.value)}
                   placeholder="Ví dụ: Khiếu nại về việc khóa tài khoản"
-                  className="w-full text-xs border border-slate-200 rounded-lg px-2.5 py-2 focus:outline-none focus:ring-2 focus:ring-primary/30"
+                  className="w-full text-xs border border-surface-200 rounded-lg px-2.5 py-2 focus:outline-none focus:ring-2 focus:ring-primary/30"
                 />
               </div>
               <div>
-                <label className="text-xs font-medium text-slate-700 mb-1 block">
+                <label className="text-xs font-medium text-text-secondary mb-1 block">
                   Nội dung
                 </label>
                 <textarea
@@ -113,9 +113,9 @@ export function SupportRequestModal({
                   onChange={(e) => setMessage(e.target.value)}
                   rows={5}
                   placeholder="Mô tả chi tiết lý do bạn muốn khiếu nại..."
-                  className="w-full text-xs border border-slate-200 rounded-lg px-2.5 py-2 resize-none focus:outline-none focus:ring-2 focus:ring-primary/30"
+                  className="w-full text-xs border border-surface-200 rounded-lg px-2.5 py-2 resize-none focus:outline-none focus:ring-2 focus:ring-primary/30"
                 />
-                <p className="text-[10px] text-slate-400 mt-1 text-right">
+                <p className="text-[10px] text-text-muted mt-1 text-right">
                   {message.length}/2000
                 </p>
               </div>
@@ -125,11 +125,11 @@ export function SupportRequestModal({
               )}
             </div>
 
-            <div className="flex items-center justify-end gap-2 px-5 py-4 mt-2 bg-slate-50">
+            <div className="flex items-center justify-end gap-2 px-5 py-4 mt-2 bg-surface-50">
               <button
                 onClick={onClose}
                 disabled={loading}
-                className="px-4 py-2 text-xs font-medium text-slate-600 rounded-lg hover:bg-slate-200/60 transition-colors"
+                className="px-4 py-2 text-xs font-medium text-text-secondary rounded-lg hover:bg-slate-200/60 transition-colors"
               >
                 Hủy
               </button>

@@ -12,7 +12,7 @@ function StatusBadge({ status }: { status: AdminPostRow["status"] }) {
       Hiển thị
     </span>
   ) : (
-    <span className="text-[11px] font-medium bg-slate-100 text-slate-500 px-2 py-0.5 rounded-full whitespace-nowrap">
+    <span className="text-[11px] font-medium bg-surface-100 text-text-muted px-2 py-0.5 rounded-full whitespace-nowrap">
       Đã ẩn
     </span>
   );
@@ -98,7 +98,7 @@ function RowMenu({
       <button
         ref={btnRef}
         onClick={() => setOpen((v) => !v)}
-        className="p-1.5 rounded-lg hover:bg-slate-100 text-slate-400 hover:text-slate-600"
+        className="p-1.5 rounded-lg hover:bg-surface-100 text-text-muted hover:text-text-secondary"
       >
         <MoreVertical size={16} />
       </button>
@@ -108,14 +108,14 @@ function RowMenu({
           <div
             ref={menuRef}
             style={style}
-            className="w-[190px] bg-white rounded-xl shadow-xl border border-slate-200 overflow-hidden z-[100] py-1"
+            className="w-[190px] bg-surface rounded-xl shadow-xl border border-surface-200 overflow-hidden z-[100] py-1"
           >
             <button
               onClick={() => {
                 onViewDetail(post);
                 setOpen(false);
               }}
-              className="w-full flex items-center gap-2.5 px-3.5 py-2 text-sm text-slate-600 hover:bg-slate-50"
+              className="w-full flex items-center gap-2.5 px-3.5 py-2 text-sm text-text-secondary hover:bg-surface-50"
             >
               <Eye size={14} /> Xem chi tiết
             </button>
@@ -124,12 +124,12 @@ function RowMenu({
                 onToggleVisibility(post);
                 setOpen(false);
               }}
-              className="w-full flex items-center gap-2.5 px-3.5 py-2 text-sm text-slate-600 hover:bg-slate-50"
+              className="w-full flex items-center gap-2.5 px-3.5 py-2 text-sm text-text-secondary hover:bg-surface-50"
             >
               <EyeOff size={14} />
               {post.status === "VISIBLE" ? "Ẩn bài viết" : "Bỏ ẩn bài viết"}
             </button>
-            <div className="h-px bg-slate-100 my-1" />
+            <div className="h-px bg-surface-100 my-1" />
             <button
               onClick={() => {
                 onDelete(post);
@@ -159,17 +159,17 @@ export function PostsTable({
 }) {
   if (posts.length === 0) {
     return (
-      <div className="bg-white rounded-2xl border border-slate-200 p-10 text-center text-sm text-slate-400">
+      <div className="bg-surface rounded-2xl border border-surface-200 p-10 text-center text-sm text-text-muted">
         Không tìm thấy bài viết nào phù hợp
       </div>
     );
   }
 
   return (
-    <div className="bg-white rounded-2xl border border-slate-200 overflow-x-auto">
+    <div className="bg-surface rounded-2xl border border-surface-200 overflow-x-auto">
       <table className="w-full text-sm min-w-[880px]">
         <thead>
-          <tr className="border-b border-slate-100 text-left text-slate-400 text-xs uppercase tracking-wide">
+          <tr className="border-b border-surface-100 text-left text-text-muted text-xs uppercase tracking-wide">
             <th className="px-5 py-3 font-medium">Tác giả</th>
             <th className="px-5 py-3 font-medium">Nội dung</th>
             <th className="px-5 py-3 font-medium text-center whitespace-nowrap">Bình luận</th>
@@ -187,36 +187,36 @@ export function PostsTable({
                 <div className="flex items-center gap-2.5">
                   <Avatar src={post.author.avatarUrl} name={post.author.name} initials={post.author.initials} color={post.author.color} size="sm" />
                   <div className="min-w-0">
-                    <p className="font-medium text-slate-700 leading-tight truncate max-w-[140px]">
+                    <p className="font-medium text-text-secondary leading-tight truncate max-w-[140px]">
                       {post.author.name}
                     </p>
-                    <p className="text-xs text-slate-400 leading-tight truncate max-w-[140px]">
+                    <p className="text-xs text-text-muted leading-tight truncate max-w-[140px]">
                       @{post.author.username}
                     </p>
                   </div>
                 </div>
               </td>
               <td className="px-5 py-3 max-w-[240px]">
-                <p className="text-slate-600 truncate">{post.excerpt}</p>
+                <p className="text-text-secondary truncate">{post.excerpt}</p>
                 {post.imageCount > 0 && (
-                  <p className="text-xs text-slate-400 whitespace-nowrap">{post.imageCount} ảnh/video</p>
+                  <p className="text-xs text-text-muted whitespace-nowrap">{post.imageCount} ảnh/video</p>
                 )}
               </td>
-              <td className="px-5 py-3 text-center text-slate-600 whitespace-nowrap">{post.commentCount}</td>
-              <td className="px-5 py-3 text-center text-slate-600 whitespace-nowrap">{post.likeCount}</td>
+              <td className="px-5 py-3 text-center text-text-secondary whitespace-nowrap">{post.commentCount}</td>
+              <td className="px-5 py-3 text-center text-text-secondary whitespace-nowrap">{post.likeCount}</td>
               <td className="px-5 py-3 text-center whitespace-nowrap">
                 {post.reportCount > 0 ? (
                   <span className="inline-flex items-center gap-1 text-red-500 font-medium">
                     <Flag size={12} /> {post.reportCount}
                   </span>
                 ) : (
-                  <span className="text-slate-300">—</span>
+                  <span className="text-text-muted">—</span>
                 )}
               </td>
               <td className="px-5 py-3 whitespace-nowrap">
                 <StatusBadge status={post.status} />
               </td>
-              <td className="px-5 py-3 text-slate-500 whitespace-nowrap">{post.createdAt}</td>
+              <td className="px-5 py-3 text-text-muted whitespace-nowrap">{post.createdAt}</td>
               <td className="px-5 py-3 whitespace-nowrap">
                 <RowMenu
                   post={post}

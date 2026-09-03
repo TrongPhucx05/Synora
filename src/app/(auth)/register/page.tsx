@@ -56,7 +56,7 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary/5 via-white to-indigo-50 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-primary/5 via-surface dark:via-surface to-indigo-50 dark:to-surface-100 flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-6">
           <div className="w-10 h-10 bg-blue-500 rounded-xl flex items-center justify-center mx-auto mb-3">
@@ -70,23 +70,18 @@ export default function RegisterPage() {
               <circle cx="9" cy="9" r="2" fill="white" />
             </svg>
           </div>
-          <h1 className="text-xl font-bold text-slate-900">Synora</h1>
-          <p className="text-sm text-slate-400 mt-0.5">
+          <h1 className="text-xl font-bold text-text-primary">Synora</h1>
+          <p className="text-sm text-text-muted mt-0.5">
             Nền tảng học tập cộng đồng
           </p>
         </div>
 
-        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
+        <div className="bg-surface rounded-2xl border border-surface-200 shadow-sm p-6">
           <Link
             href="/"
-            className="inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-700 transition-colors mb-6 group"
+            className="inline-flex items-center gap-1.5 text-sm text-text-muted hover:text-text-secondary transition-colors mb-6 group"
           >
-            <svg
-              width="14"
-              height="14"
-              viewBox="0 0 14 14"
-              fill="none"
-            >
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
               <path
                 d="M9 11L5 7L9 3"
                 stroke="currentColor"
@@ -97,22 +92,22 @@ export default function RegisterPage() {
             </svg>
             Về trang chủ
           </Link>
-          <h2 className="text-base font-bold text-slate-900 text-center mb-1">
+          <h2 className="text-base font-bold text-text-primary text-center mb-1">
             Tạo tài khoản
           </h2>
-          <p className="text-sm text-slate-400 text-center mb-5">
+          <p className="text-sm text-text-muted text-center mb-5">
             Bắt đầu hành trình học tập của bạn
           </p>
 
           {error && (
-            <div className="mb-4 px-3 py-2.5 bg-red-50 border border-red-100 rounded-lg">
-              <p className="text-xs text-red-500">{error}</p>
+            <div className="mb-4 px-3 py-2.5 bg-red-50 dark:bg-red-500/10 border border-red-100 dark:border-red-500/20 rounded-lg">
+              <p className="text-xs text-red-500 dark:text-red-400">{error}</p>
             </div>
           )}
 
           <div className="flex flex-col gap-4">
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1.5">
+              <label className="block text-sm font-medium text-text-secondary mb-1.5">
                 Họ và tên
               </label>
               <input
@@ -120,18 +115,18 @@ export default function RegisterPage() {
                 value={displayName}
                 onChange={(e) => setDisplayName(e.target.value)}
                 placeholder="Nguyễn Văn An"
-                className="w-full px-4 py-2.5 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-blue-400 transition-colors"
+                className="w-full px-4 py-2.5 border border-surface-200 rounded-lg text-sm focus:outline-none focus:border-blue-400 transition-colors"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1.5">
+              <label className="block text-sm font-medium text-text-secondary mb-1.5">
                 Username{" "}
-                <span className="text-slate-400 font-normal">
+                <span className="text-text-muted font-normal">
                   (chữ thường, số, _)
                 </span>
               </label>
               <div className="relative">
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm">
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted text-sm">
                   @
                 </span>
                 <input
@@ -139,12 +134,12 @@ export default function RegisterPage() {
                   value={username}
                   onChange={(e) => setUsername(e.target.value.toLowerCase())}
                   placeholder="nguyenvanan"
-                  className="w-full pl-7 pr-4 py-2.5 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-blue-400 transition-colors"
+                  className="w-full pl-7 pr-4 py-2.5 border border-surface-200 rounded-lg text-sm focus:outline-none focus:border-blue-400 transition-colors"
                 />
               </div>
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1.5">
+              <label className="block text-sm font-medium text-text-secondary mb-1.5">
                 Email
               </label>
               <input
@@ -152,11 +147,11 @@ export default function RegisterPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="email@example.com"
-                className="w-full px-4 py-2.5 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-blue-400 transition-colors"
+                className="w-full px-4 py-2.5 border border-surface-200 rounded-lg text-sm focus:outline-none focus:border-blue-400 transition-colors"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1.5">
+              <label className="block text-sm font-medium text-text-secondary mb-1.5">
                 Mật khẩu
               </label>
               <div className="relative">
@@ -166,12 +161,12 @@ export default function RegisterPage() {
                   onChange={(e) => setPassword(e.target.value)}
                   onKeyDown={(e) => e.key === "Enter" && handleRegister()}
                   placeholder="Ít nhất 8 ký tự"
-                  className="w-full px-4 py-2.5 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-blue-400 transition-colors pr-10"
+                  className="w-full px-4 py-2.5 border border-surface-200 rounded-lg text-sm focus:outline-none focus:border-blue-400 transition-colors pr-10"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-secondary"
                 >
                   {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                 </button>
@@ -187,7 +182,7 @@ export default function RegisterPage() {
             </button>
           </div>
 
-          <p className="text-center text-sm text-slate-400 mt-4">
+          <p className="text-center text-sm text-text-muted mt-4">
             Đã có tài khoản?{" "}
             <Link
               href="/login"

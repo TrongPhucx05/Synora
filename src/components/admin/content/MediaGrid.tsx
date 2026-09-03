@@ -95,7 +95,7 @@ export function MediaGrid({
 
   if (items.length === 0) {
     return (
-      <div className="bg-white rounded-2xl border border-slate-200 p-10 text-center text-sm text-slate-400">
+      <div className="bg-surface rounded-2xl border border-surface-200 p-10 text-center text-sm text-text-muted">
         Không tìm thấy media nào phù hợp
       </div>
     );
@@ -108,7 +108,7 @@ export function MediaGrid({
           <div
             key={m.id}
             onClick={() => setPreviewing(m)}
-            className="group relative h-[220px] rounded-xl overflow-hidden bg-slate-100 border border-slate-200 cursor-pointer"
+            className="group relative h-[220px] rounded-xl overflow-hidden bg-surface-100 border border-surface-200 cursor-pointer"
           >
             {m.type === "VIDEO" ? (
               <video
@@ -133,7 +133,7 @@ export function MediaGrid({
             )}
             {m.status === "HIDDEN" && (
               <div className="absolute inset-0 bg-slate-900/60 flex items-center justify-center pointer-events-none">
-                <span className="text-[11px] font-medium bg-white/90 text-slate-700 px-2 py-0.5 rounded-full">
+                <span className="text-[11px] font-medium bg-white/90 text-text-secondary px-2 py-0.5 rounded-full">
                   Đã ẩn
                 </span>
               </div>

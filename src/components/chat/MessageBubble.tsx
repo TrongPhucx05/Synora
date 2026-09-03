@@ -77,7 +77,7 @@ function ReactionModal({ reactions, onClose }: ReactionModalProps) {
       onClick={onClose}
     >
       <div
-        className="bg-white rounded-2xl shadow-2xl w-80 max-h-[420px] flex flex-col overflow-hidden"
+        className="bg-surface rounded-2xl shadow-2xl w-80 max-h-[420px] flex flex-col overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between px-4 py-3 border-b border-surface-100">
@@ -305,7 +305,7 @@ function AttachmentGrid({
           <button
             key={d.id}
             onClick={() => downloadFile(d.url, d.name)}
-            className="flex items-center gap-3 p-3 bg-white border border-surface-200 rounded-2xl shadow-sm min-w-[200px] hover:bg-surface-50 transition-colors text-left"
+            className="flex items-center gap-3 p-3 bg-surface border border-surface-200 rounded-2xl shadow-sm min-w-[200px] hover:bg-surface-50 transition-colors text-left"
           >
             <div
               className={clsx(
@@ -449,7 +449,7 @@ function MessageActions({
         align={align}
         onClose={() => setEmojiOpen(false)}
       >
-        <div className="bg-white rounded-2xl shadow-xl border border-surface-100 px-2 py-1.5 flex gap-1">
+        <div className="bg-surface rounded-2xl shadow-xl border border-surface-100 px-2 py-1.5 flex gap-1">
           {QUICK_EMOJIS.map((e) => (
             <button
               key={e}
@@ -490,7 +490,7 @@ function MessageActions({
         align={align}
         onClose={() => setMenuOpen(false)}
       >
-        <div className="w-48 bg-white rounded-xl shadow-xl border border-surface-100 py-1 overflow-hidden">
+        <div className="w-48 bg-surface rounded-xl shadow-xl border border-surface-100 py-1 overflow-hidden">
           <button
             onClick={() => {
               onTogglePin();
@@ -613,7 +613,7 @@ function ReactionBar({
           "flex items-center gap-0.5 rounded-full px-2 py-0.5 border shadow-sm transition-all hover:shadow-md",
           reactions.some((r) => r.reactedByMe)
             ? "bg-primary/10 border-primary/30"
-            : "bg-white border-surface-200 hover:bg-surface-50",
+            : "bg-surface border-surface-200 hover:bg-surface-50",
         )}
       >
         <span className="flex -space-x-0.5">
@@ -696,7 +696,7 @@ function AvatarPopup({
   return (
     <div
       ref={ref}
-      className="absolute bottom-full mb-1 left-0 z-50 w-44 bg-white rounded-xl shadow-xl border border-surface-100 py-1 overflow-hidden"
+      className="absolute bottom-full mb-1 left-0 z-50 w-44 bg-surface rounded-xl shadow-xl border border-surface-100 py-1 overflow-hidden"
     >
       <Link
         href={`/profile/${username}`}
@@ -1065,7 +1065,7 @@ export function MessageBubble({
                         "px-4 py-3 rounded-2xl text-sm leading-relaxed",
                         msg.isMe
                           ? "bg-primary text-white rounded-br-sm"
-                          : "bg-white border border-surface-200 text-text-primary rounded-bl-sm shadow-sm",
+                          : "bg-surface border border-surface-200 text-text-primary rounded-bl-sm shadow-sm",
                       )}
                     >
                       {msg.content}

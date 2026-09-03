@@ -30,33 +30,33 @@ export function GroupsTable({
 }) {
   if (groups.length === 0) {
     return (
-      <div className="bg-white border border-slate-200 rounded-2xl py-16 flex items-center justify-center">
-        <p className="text-sm text-slate-400">Không tìm thấy nhóm chat nào</p>
+      <div className="bg-surface border border-surface-200 rounded-2xl py-16 flex items-center justify-center">
+        <p className="text-sm text-text-muted">Không tìm thấy nhóm chat nào</p>
       </div>
     );
   }
 
   return (
-    <div className="bg-white border border-slate-200 rounded-2xl overflow-x-auto">
+    <div className="bg-surface border border-surface-200 rounded-2xl overflow-x-auto">
       <table className="w-full text-sm">
         <thead>
-          <tr className="border-b border-slate-100 bg-slate-50">
-            <th className="text-left font-semibold text-slate-500 text-xs px-5 py-3">
+          <tr className="border-b border-surface-100 bg-surface-50">
+            <th className="text-left font-semibold text-text-muted text-xs px-5 py-3">
               Nhóm
             </th>
-            <th className="text-left font-semibold text-slate-500 text-xs px-4 py-3">
+            <th className="text-left font-semibold text-text-muted text-xs px-4 py-3">
               Trưởng nhóm
             </th>
-            <th className="text-left font-semibold text-slate-500 text-xs px-4 py-3">
+            <th className="text-left font-semibold text-text-muted text-xs px-4 py-3">
               Thành viên
             </th>
-            <th className="text-left font-semibold text-slate-500 text-xs px-4 py-3">
+            <th className="text-left font-semibold text-text-muted text-xs px-4 py-3">
               Báo cáo
             </th>
-            <th className="text-left font-semibold text-slate-500 text-xs px-4 py-3">
+            <th className="text-left font-semibold text-text-muted text-xs px-4 py-3">
               Trạng thái
             </th>
-            <th className="text-left font-semibold text-slate-500 text-xs px-4 py-3">
+            <th className="text-left font-semibold text-text-muted text-xs px-4 py-3">
               Ngày tạo
             </th>
             <th className="w-12 px-4 py-3" />
@@ -76,22 +76,22 @@ export function GroupsTable({
                     size="sm"
                     shape="rounded"
                   />
-                  <p className="text-xs font-medium text-slate-800 truncate max-w-[160px]">
+                  <p className="text-xs font-medium text-text-primary truncate max-w-[160px]">
                     {g.name}
                   </p>
                 </div>
               </td>
               <td className="px-4 py-3">
-                <p className="text-xs font-medium text-slate-700">
+                <p className="text-xs font-medium text-text-secondary">
                   {g.leaderName}
                 </p>
-                <p className="text-[11px] text-slate-400">
+                <p className="text-[11px] text-text-muted">
                   @{g.leaderUsername}
                 </p>
               </td>
               <td className="px-4 py-3">
-                <div className="flex items-center gap-1.5 text-xs text-slate-500">
-                  <UsersIcon size={13} className="text-slate-400" />
+                <div className="flex items-center gap-1.5 text-xs text-text-muted">
+                  <UsersIcon size={13} className="text-text-muted" />
                   {g.acceptedMemberCount}/{g.memberCount}
                   {g.acceptedMemberCount < g.memberCount && (
                     <span className="text-[10px] text-amber-500">
@@ -106,7 +106,7 @@ export function GroupsTable({
                     <Flag size={11} /> {g.reportCount}
                   </span>
                 ) : (
-                  <span className="text-[11px] text-slate-300">—</span>
+                  <span className="text-[11px] text-text-muted">—</span>
                 )}
               </td>
               <td className="px-4 py-3">
@@ -119,7 +119,7 @@ export function GroupsTable({
                   {STATUS_LABEL[g.status]}
                 </span>
               </td>
-              <td className="px-4 py-3 text-xs text-slate-500">
+              <td className="px-4 py-3 text-xs text-text-muted">
                 {g.createdAt}
               </td>
               <td className="px-4 py-3">

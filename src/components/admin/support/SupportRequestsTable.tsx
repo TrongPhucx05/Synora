@@ -13,7 +13,7 @@ export function SupportRequestsTable({
 }) {
   if (requests.length === 0) {
     return (
-      <div className="bg-white rounded-2xl border border-slate-200 p-10 text-center text-sm text-slate-400">
+      <div className="bg-surface rounded-2xl border border-surface-200 p-10 text-center text-sm text-text-muted">
         <LifeBuoy size={22} className="mx-auto mb-2 opacity-40" />
         Không có yêu cầu hỗ trợ nào phù hợp
       </div>
@@ -21,10 +21,10 @@ export function SupportRequestsTable({
   }
 
   return (
-    <div className="bg-white rounded-2xl border border-slate-200 overflow-x-auto">
+    <div className="bg-surface rounded-2xl border border-surface-200 overflow-x-auto">
       <table className="w-full text-sm min-w-[820px]">
         <thead>
-          <tr className="border-b border-slate-100 text-left text-slate-400 text-xs uppercase tracking-wide">
+          <tr className="border-b border-surface-100 text-left text-text-muted text-xs uppercase tracking-wide">
             <th className="px-5 py-3 font-medium">Mã yêu cầu</th>
             <th className="px-5 py-3 font-medium">Người gửi</th>
             <th className="px-5 py-3 font-medium">Tiêu đề</th>
@@ -45,39 +45,39 @@ export function SupportRequestsTable({
               onClick={() => onViewDetail(r)}
             >
               <td className="px-5 py-3">
-                <p className="font-mono text-xs text-slate-500">{r.code}</p>
+                <p className="font-mono text-xs text-text-muted">{r.code}</p>
               </td>
               <td className="px-5 py-3">
                 {r.user ? (
                   <>
-                    <p className="font-medium text-slate-700 truncate max-w-[160px]">
+                    <p className="font-medium text-text-secondary truncate max-w-[160px]">
                       {r.user.name}
                     </p>
-                    <p className="text-xs text-slate-400 truncate max-w-[160px]">
+                    <p className="text-xs text-text-muted truncate max-w-[160px]">
                       @{r.user.username}
                     </p>
                   </>
                 ) : (
                   <>
-                    <p className="font-medium text-slate-700 truncate max-w-[160px]">
+                    <p className="font-medium text-text-secondary truncate max-w-[160px]">
                       {r.guestName || "Khách"}
                     </p>
-                    <p className="text-xs text-slate-400 truncate max-w-[160px]">
+                    <p className="text-xs text-text-muted truncate max-w-[160px]">
                       {r.contactEmail}
                     </p>
                   </>
                 )}
               </td>
               <td className="px-5 py-3 max-w-[280px]">
-                <p className="text-slate-600 truncate">{r.subject}</p>
-                <span className="text-[10px] font-medium bg-slate-100 text-slate-500 px-1.5 py-0.5 rounded-full mt-1 inline-block whitespace-nowrap">
+                <p className="text-text-secondary truncate">{r.subject}</p>
+                <span className="text-[10px] font-medium bg-surface-100 text-text-muted px-1.5 py-0.5 rounded-full mt-1 inline-block whitespace-nowrap">
                   {TYPE_LABELS[r.type]}
                 </span>
               </td>
               <td className="px-5 py-3 whitespace-nowrap">
                 <StatusBadge status={r.status} />
               </td>
-              <td className="px-5 py-3 text-slate-500 whitespace-nowrap">
+              <td className="px-5 py-3 text-text-muted whitespace-nowrap">
                 {new Date(r.createdAt).toLocaleDateString("vi-VN")}
               </td>
               <td className="px-5 py-3 whitespace-nowrap">
@@ -87,7 +87,7 @@ export function SupportRequestsTable({
                     onViewDetail(r);
                   }}
                   title="Xem chi tiết"
-                  className="p-1.5 rounded-lg hover:bg-slate-100 text-slate-400 hover:text-slate-600"
+                  className="p-1.5 rounded-lg hover:bg-surface-100 text-text-muted hover:text-text-secondary"
                 >
                   <Eye size={15} />
                 </button>

@@ -62,7 +62,7 @@ export function TrackRequestPanel({
 
   if (result) {
     return (
-      <div className="bg-white border border-slate-200 rounded-2xl p-5">
+      <div className="bg-surface border border-surface-200 rounded-2xl p-5">
         <SupportRequestDetail request={result} />
         <button
           onClick={() => setResult(null)}
@@ -75,28 +75,28 @@ export function TrackRequestPanel({
   }
 
   return (
-    <div className="bg-white border border-slate-200 rounded-2xl p-5 flex flex-col gap-4">
+    <div className="bg-surface border border-surface-200 rounded-2xl p-5 flex flex-col gap-4">
       <div>
-        <h3 className="text-sm font-bold text-slate-900">Theo dõi yêu cầu</h3>
-        <p className="text-xs text-slate-500 mt-0.5">
+        <h3 className="text-sm font-bold text-text-primary">Theo dõi yêu cầu</h3>
+        <p className="text-xs text-text-muted mt-0.5">
           Nhập mã yêu cầu và email liên hệ đã dùng khi gửi yêu cầu để xem trạng
           thái.
         </p>
       </div>
 
       <div>
-        <label className="text-xs font-medium text-slate-700 mb-1 block">
+        <label className="text-xs font-medium text-text-secondary mb-1 block">
           Mã yêu cầu
         </label>
         <input
           value={code}
           onChange={(e) => setCode(e.target.value)}
           placeholder="SUP-20260819-000123"
-          className="w-full text-xs border border-slate-200 rounded-lg px-2.5 py-2 font-mono focus:outline-none focus:ring-2 focus:ring-primary/30"
+          className="w-full text-xs border border-surface-200 rounded-lg px-2.5 py-2 font-mono focus:outline-none focus:ring-2 focus:ring-primary/30"
         />
       </div>
       <div>
-        <label className="text-xs font-medium text-slate-700 mb-1 block">
+        <label className="text-xs font-medium text-text-secondary mb-1 block">
           Email liên hệ
         </label>
         <input
@@ -104,7 +104,7 @@ export function TrackRequestPanel({
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder="ban@example.com"
-          className="w-full text-xs border border-slate-200 rounded-lg px-2.5 py-2 focus:outline-none focus:ring-2 focus:ring-primary/30"
+          className="w-full text-xs border border-surface-200 rounded-lg px-2.5 py-2 focus:outline-none focus:ring-2 focus:ring-primary/30"
         />
       </div>
 

@@ -233,11 +233,11 @@ export default function FeedPage() {
           <PostComposer onPost={handlePost} currentUser={currentUser} />
         )}
         {loading ? (
-          <div className="text-center text-sm text-slate-400 py-10">
+          <div className="text-center text-sm text-text-muted py-10">
             Đang tải...
           </div>
         ) : [...localPosts, ...mappedPosts].length === 0 ? (
-          <div className="text-center text-sm text-slate-400 py-10">
+          <div className="text-center text-sm text-text-muted py-10">
             Chưa có bài viết nào
           </div>
         ) : (

@@ -101,7 +101,7 @@ function MediaModal({
   return (
     <>
       <div className="fixed inset-0 bg-black/40 z-[60]" onClick={onClose} />
-      <div className="fixed inset-y-0 right-0 w-[380px] bg-white z-[60] flex flex-col shadow-2xl">
+      <div className="fixed inset-y-0 right-0 w-[380px] bg-surface z-[60] flex flex-col shadow-2xl">
         <div className="flex items-center justify-between px-5 py-4 border-b border-surface-100">
           <p className="text-sm font-bold text-text-primary">
             Ảnh &amp; File đã chia sẻ
@@ -279,7 +279,7 @@ function MemberMenu({
   return (
     <div
       ref={ref}
-      className="absolute right-0 top-8 w-48 bg-white rounded-xl shadow-lg border border-surface-200 py-1 z-50 overflow-hidden"
+      className="absolute right-0 top-8 w-48 bg-surface rounded-xl shadow-lg border border-surface-200 py-1 z-50 overflow-hidden"
     >
       <Link
         href={`/profile/${member.username}`}
@@ -396,7 +396,7 @@ function InviteMembersModal({
   return (
     <>
       <div className="fixed inset-0 bg-black/50 z-[70]" onClick={onClose} />
-      <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[380px] max-h-[70vh] bg-white rounded-2xl shadow-2xl z-[70] flex flex-col overflow-hidden">
+      <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[380px] max-h-[70vh] bg-surface rounded-2xl shadow-2xl z-[70] flex flex-col overflow-hidden">
         <div className="flex items-center justify-between px-5 py-4 border-b border-surface-100">
           <p className="text-sm font-bold text-text-primary">Thêm thành viên</p>
           <button
@@ -412,7 +412,7 @@ function InviteMembersModal({
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Tìm bạn bè..."
-            className="w-full px-3 py-2 bg-surface-100 rounded-lg text-xs placeholder:text-text-muted focus:outline-none border border-transparent focus:border-primary focus:bg-white transition-colors"
+            className="w-full px-3 py-2 bg-surface-100 rounded-lg text-xs placeholder:text-text-muted focus:outline-none border border-transparent focus:border-primary focus:bg-surface transition-colors"
           />
         </div>
         <div className="flex-1 overflow-y-auto py-2">
@@ -544,14 +544,15 @@ function MembersModal({
   return (
     <>
       <div className="fixed inset-0 bg-black/40 z-[60]" onClick={onClose} />
-      <div className="fixed inset-y-0 right-0 w-[320px] bg-white z-[60] flex flex-col shadow-2xl">
+      <div className="fixed inset-y-0 right-0 w-[320px] bg-surface z-[60] flex flex-col shadow-2xl">
         <div className="flex items-center justify-between px-5 py-4 border-b border-surface-100">
           <div>
             <p className="text-sm font-bold text-text-primary">
               Thành viên nhóm
             </p>
             <p className="text-xs text-text-muted mt-0.5">
-              {members.filter((m) => m.isAccepted).length}/{members.length} thành viên
+              {members.filter((m) => m.isAccepted).length}/{members.length}{" "}
+              thành viên
               {members.some((m) => !m.isAccepted) &&
                 ` · ${members.filter((m) => !m.isAccepted).length} đang chờ`}
             </p>
@@ -667,7 +668,7 @@ function MembersModal({
             className="fixed inset-0 bg-black/40 z-[70]"
             onClick={() => setConfirmTarget(null)}
           />
-          <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] bg-white rounded-2xl shadow-2xl z-[70] p-6">
+          <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] bg-surface rounded-2xl shadow-2xl z-[70] p-6">
             <p className="text-sm font-bold text-text-primary mb-1">
               {confirmTarget.type === "remove"
                 ? `Xóa ${confirmTarget.member.displayName} khỏi nhóm?`
@@ -736,7 +737,7 @@ function RenameGroupModal({
   return (
     <>
       <div className="fixed inset-0 bg-black/50 z-[70]" onClick={onClose} />
-      <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[320px] bg-white rounded-2xl shadow-2xl z-[70] p-6">
+      <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[320px] bg-surface rounded-2xl shadow-2xl z-[70] p-6">
         <p className="text-sm font-bold text-text-primary mb-4">Đổi tên nhóm</p>
         <input
           autoFocus
@@ -786,7 +787,7 @@ function LeaveChoiceModal({
   return (
     <>
       <div className="fixed inset-0 bg-black/50 z-[70]" onClick={onClose} />
-      <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[320px] bg-white rounded-2xl shadow-2xl z-[70] p-6">
+      <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[320px] bg-surface rounded-2xl shadow-2xl z-[70] p-6">
         <p className="text-sm font-bold text-text-primary mb-1">
           Bạn đang là trưởng nhóm
         </p>
@@ -845,7 +846,7 @@ function TransferLeaderAndLeaveModal({
   return (
     <>
       <div className="fixed inset-0 bg-black/50 z-[70]" onClick={onClose} />
-      <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[340px] max-h-[70vh] bg-white rounded-2xl shadow-2xl z-[70] flex flex-col overflow-hidden">
+      <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[340px] max-h-[70vh] bg-surface rounded-2xl shadow-2xl z-[70] flex flex-col overflow-hidden">
         <div className="px-5 py-4 border-b border-surface-100">
           <p className="text-sm font-bold text-text-primary">
             Chọn người kế nhiệm
@@ -946,7 +947,7 @@ function DisbandGroupModal({
         className="fixed inset-0 bg-black/50 z-[70]"
         onClick={() => !submitting && onClose()}
       />
-      <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] bg-white rounded-2xl shadow-2xl z-[70] p-6">
+      <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] bg-surface rounded-2xl shadow-2xl z-[70] p-6">
         <p className="text-sm font-bold mb-1">Giải tán "{groupName}"?</p>
         <p className="text-xs text-text-muted mb-5">
           Toàn bộ tin nhắn, file và thành viên sẽ bị xoá vĩnh viễn. Hành động
@@ -1008,7 +1009,7 @@ function InviteLinkPanel({
   return (
     <>
       <div className="fixed inset-0 bg-black/40 z-[60]" onClick={onClose} />
-      <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[380px] bg-white rounded-2xl shadow-2xl z-[60] p-6">
+      <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[380px] bg-surface rounded-2xl shadow-2xl z-[60] p-6">
         <div className="flex items-center justify-between mb-1">
           <p className="text-sm font-bold text-text-primary">Link mời nhóm</p>
           <button
@@ -1104,7 +1105,7 @@ function JoinRequestsPanel({
   return (
     <>
       <div className="fixed inset-0 bg-black/40 z-[60]" onClick={onClose} />
-      <div className="fixed inset-y-0 right-0 w-[340px] bg-white z-[60] flex flex-col shadow-2xl">
+      <div className="fixed inset-y-0 right-0 w-[340px] bg-surface z-[60] flex flex-col shadow-2xl">
         <div className="flex items-center justify-between px-5 py-4 border-b border-surface-100">
           <div>
             <p className="text-sm font-bold text-text-primary">
@@ -1365,7 +1366,7 @@ export function InfoSidebar({
 
   return (
     <>
-      <div className="w-[280px] shrink-0 border-l border-surface-200 bg-white flex flex-col overflow-y-auto">
+      <div className="w-[280px] shrink-0 border-l border-surface-200 bg-surface flex flex-col overflow-y-auto">
         <div className="flex items-center justify-between px-4 py-3 border-b border-surface-100 shrink-0">
           <p className="text-sm font-bold text-text-primary">Thông tin</p>
           <button
@@ -1414,7 +1415,7 @@ export function InfoSidebar({
             />
 
             {conv.isGroup && isLeader && avatarMenuOpen && (
-              <div className="absolute left-1/2 -translate-x-1/2 top-[calc(100%+6px)] w-44 bg-white rounded-xl shadow-lg border border-surface-200 py-1 z-50 overflow-hidden">
+              <div className="absolute left-1/2 -translate-x-1/2 top-[calc(100%+6px)] w-44 bg-surface rounded-xl shadow-lg border border-surface-200 py-1 z-50 overflow-hidden">
                 {conv.avatarUrl && (
                   <button
                     onClick={() => {
@@ -1523,15 +1524,16 @@ export function InfoSidebar({
               onClick={() => setMembersOpen(true)}
               className="w-full flex items-center gap-2.5 group"
             >
-              <div className="w-8 h-8 rounded-xl bg-blue-50 flex items-center justify-center shrink-0">
-                <Users size={14} className="text-blue-500" />
+              <div className="w-8 h-8 rounded-xl bg-blue-50 dark:bg-blue-500/15 flex items-center justify-center shrink-0">
+                <Users size={14} className="text-blue-500 dark:text-blue-400" />
               </div>
               <div className="flex-1 text-left">
                 <p className="text-xs font-semibold text-text-primary">
                   Thành viên
                 </p>
                 <p className="text-[11px] text-text-muted">
-                  {members.filter((m) => m.isAccepted).length}/{members.length} người
+                  {members.filter((m) => m.isAccepted).length}/{members.length}{" "}
+                  người
                 </p>
               </div>
               <ChevronRight
@@ -1544,8 +1546,11 @@ export function InfoSidebar({
               onClick={() => setInviteLinkOpen(true)}
               className="w-full flex items-center gap-2.5 group"
             >
-              <div className="w-8 h-8 rounded-xl bg-emerald-50 flex items-center justify-center shrink-0">
-                <Link2 size={14} className="text-emerald-500" />
+              <div className="w-8 h-8 rounded-xl bg-emerald-50 dark:bg-emerald-500/15 flex items-center justify-center shrink-0">
+                <Link2
+                  size={14}
+                  className="text-emerald-500 dark:text-emerald-400"
+                />
               </div>
               <div className="flex-1 text-left">
                 <p className="text-xs font-semibold text-text-primary">
@@ -1566,8 +1571,11 @@ export function InfoSidebar({
                 onClick={() => setJoinRequestsOpen(true)}
                 className="w-full flex items-center gap-2.5 group"
               >
-                <div className="w-8 h-8 rounded-xl bg-amber-50 flex items-center justify-center shrink-0 relative">
-                  <UserPlus size={14} className="text-amber-500" />
+                <div className="w-8 h-8 rounded-xl bg-amber-50 dark:bg-amber-500/15 flex items-center justify-center shrink-0 relative">
+                  <UserPlus
+                    size={14}
+                    className="text-amber-500 dark:text-amber-400"
+                  />
                   {joinRequestCount > 0 && (
                     <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-red-500 text-white text-[9px] font-bold flex items-center justify-center">
                       {joinRequestCount > 9 ? "9+" : joinRequestCount}
@@ -1709,9 +1717,9 @@ export function InfoSidebar({
               onClick={() =>
                 conv.isBlockedByMe ? handleUnblockUser() : setConfirm("block")
               }
-              className="flex items-center gap-2.5 px-3 py-2 rounded-xl hover:bg-red-50 transition-colors group w-full text-left"
+              className="flex items-center gap-2.5 px-3 py-2 rounded-xl hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors group w-full text-left"
             >
-              <div className="w-7 h-7 rounded-lg bg-surface-100 group-hover:bg-red-100 flex items-center justify-center transition-colors shrink-0">
+              <div className="w-7 h-7 rounded-lg bg-surface-100 group-hover:bg-red-100 dark:group-hover:bg-red-500/15 flex items-center justify-center transition-colors shrink-0">
                 <ShieldAlert
                   size={13}
                   className="text-text-muted group-hover:text-red-500 transition-colors"
@@ -1734,9 +1742,9 @@ export function InfoSidebar({
           {conv.isGroup && (
             <button
               onClick={handleLeaveClick}
-              className="flex items-center gap-2.5 px-3 py-2 rounded-xl hover:bg-red-50 transition-colors group w-full text-left"
+              className="flex items-center gap-2.5 px-3 py-2 rounded-xl hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors group w-full text-left"
             >
-              <div className="w-7 h-7 rounded-lg bg-surface-100 group-hover:bg-red-100 flex items-center justify-center transition-colors shrink-0">
+              <div className="w-7 h-7 rounded-lg bg-surface-100 group-hover:bg-red-100 dark:group-hover:bg-red-500/15 flex items-center justify-center transition-colors shrink-0">
                 <LogOut
                   size={13}
                   className="text-text-muted group-hover:text-red-500 transition-colors"
@@ -1755,9 +1763,9 @@ export function InfoSidebar({
           {conv.isGroup && isLeader && (
             <button
               onClick={() => setDisbandOpen(true)}
-              className="flex items-center gap-2.5 px-3 py-2 rounded-xl hover:bg-red-50 transition-colors group w-full text-left"
+              className="flex items-center gap-2.5 px-3 py-2 rounded-xl hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors group w-full text-left"
             >
-              <div className="w-7 h-7 rounded-lg bg-surface-100 group-hover:bg-red-100 flex items-center justify-center transition-colors shrink-0">
+              <div className="w-7 h-7 rounded-lg bg-surface-100 group-hover:bg-red-100 dark:group-hover:bg-red-500/15 flex items-center justify-center transition-colors shrink-0">
                 <ShieldAlert
                   size={13}
                   className="text-text-muted group-hover:text-red-500 transition-colors"
@@ -1775,9 +1783,9 @@ export function InfoSidebar({
           )}
           <button
             onClick={() => setConfirm("report")}
-            className="flex items-center gap-2.5 px-3 py-2 rounded-xl hover:bg-red-50 transition-colors group w-full text-left"
+            className="flex items-center gap-2.5 px-3 py-2 rounded-xl hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors group w-full text-left"
           >
-            <div className="w-7 h-7 rounded-lg bg-surface-100 group-hover:bg-red-100 flex items-center justify-center transition-colors shrink-0">
+            <div className="w-7 h-7 rounded-lg bg-surface-100 group-hover:bg-red-100 dark:group-hover:bg-red-500/15 flex items-center justify-center transition-colors shrink-0">
               <Flag
                 size={13}
                 className="text-text-muted group-hover:text-red-500 transition-colors"
@@ -1886,7 +1894,7 @@ export function InfoSidebar({
             className="fixed inset-0 bg-black/40 z-[70]"
             onClick={() => setConfirm(null)}
           />
-          <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] bg-white rounded-2xl shadow-2xl z-[70] p-6">
+          <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] bg-surface rounded-2xl shadow-2xl z-[70] p-6">
             <p className="text-sm font-bold text-text-primary mb-1">
               {confirm === "block"
                 ? "Chặn người dùng?"

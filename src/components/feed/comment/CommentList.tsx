@@ -30,7 +30,7 @@ export function BlockConfirmDialog({
       className="fixed inset-0 z-[70] flex items-center justify-center bg-black/40 backdrop-blur-sm p-4"
       onClick={(e) => !loading && e.target === e.currentTarget && onCancel()}
     >
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-sm p-5">
+      <div className="bg-surface rounded-2xl shadow-2xl w-full max-w-sm p-5">
         <div className="flex items-center gap-3 mb-3">
           <div className="w-10 h-10 rounded-full bg-red-50 flex items-center justify-center shrink-0">
             <Ban size={18} className="text-red-500" />
@@ -78,7 +78,7 @@ export function DeleteConfirmDialog({
       className="fixed inset-0 z-[70] flex items-center justify-center bg-black/40 backdrop-blur-sm p-4"
       onClick={(e) => e.target === e.currentTarget && onCancel()}
     >
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-sm p-5">
+      <div className="bg-surface rounded-2xl shadow-2xl w-full max-w-sm p-5">
         <div className="flex items-center gap-3 mb-3">
           <div className="w-10 h-10 rounded-full bg-red-50 flex items-center justify-center shrink-0">
             <Trash2 size={18} className="text-red-500" />

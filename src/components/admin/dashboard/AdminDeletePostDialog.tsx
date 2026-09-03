@@ -49,14 +49,14 @@ export function AdminDeletePostDialog({
       className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm"
       onClick={(e) => e.target === e.currentTarget && onCancel()}
     >
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden">
+      <div className="bg-surface rounded-2xl shadow-2xl w-full max-w-md overflow-hidden">
         <div className="flex items-start gap-3 px-5 pt-5 pb-4">
           <div className="w-10 h-10 rounded-xl bg-red-100 text-red-500 flex items-center justify-center shrink-0">
             <AlertTriangle size={19} />
           </div>
           <div>
-            <h3 className="text-sm font-bold text-slate-900">Xóa bài viết?</h3>
-            <p className="text-xs text-slate-500 mt-0.5">
+            <h3 className="text-sm font-bold text-text-primary">Xóa bài viết?</h3>
+            <p className="text-xs text-text-muted mt-0.5">
               Bài viết sẽ bị xóa vĩnh viễn và không thể khôi phục.
             </p>
           </div>
@@ -70,7 +70,7 @@ export function AdminDeletePostDialog({
               "flex-1 text-xs px-3 py-2.5 rounded-xl border font-medium transition-colors",
               mode === "delete-now"
                 ? "border-red-400 bg-red-50 text-red-700"
-                : "border-slate-200 text-slate-500 hover:bg-slate-50",
+                : "border-surface-200 text-text-muted hover:bg-surface-50",
             )}
           >
             Xóa ngay lập tức
@@ -82,7 +82,7 @@ export function AdminDeletePostDialog({
               "flex-1 text-xs px-3 py-2.5 rounded-xl border font-medium transition-colors",
               mode === "schedule-7d"
                 ? "border-amber-400 bg-amber-50 text-amber-700"
-                : "border-slate-200 text-slate-500 hover:bg-slate-50",
+                : "border-surface-200 text-text-muted hover:bg-surface-50",
             )}
           >
             Ẩn ngay, tự xóa sau 7 ngày
@@ -98,10 +98,10 @@ export function AdminDeletePostDialog({
               className="mt-0.5 accent-primary w-4 h-4"
             />
             <span className="text-xs">
-              <span className="flex items-center gap-1.5 font-medium text-slate-800">
+              <span className="flex items-center gap-1.5 font-medium text-text-primary">
                 <Bell size={13} /> Gửi cảnh báo vi phạm cho người dùng
               </span>
-              <span className="text-slate-400">
+              <span className="text-text-muted">
                 Người đăng sẽ nhận thông báo lý do bài viết bị gỡ.
               </span>
             </span>
@@ -115,10 +115,10 @@ export function AdminDeletePostDialog({
               className="mt-0.5 accent-primary w-4 h-4"
             />
             <span className="text-xs">
-              <span className="flex items-center gap-1.5 font-medium text-slate-800">
+              <span className="flex items-center gap-1.5 font-medium text-text-primary">
                 <Flag size={13} /> Gắn cờ vi phạm vào tài khoản
               </span>
-              <span className="text-slate-400">
+              <span className="text-text-muted">
                 Tăng số lần vi phạm, phục vụ theo dõi người dùng tái phạm.
               </span>
             </span>
@@ -126,13 +126,13 @@ export function AdminDeletePostDialog({
 
           {needsReason && (
             <div className="mt-1">
-              <label className="text-xs font-medium text-slate-700 mb-1 block">
+              <label className="text-xs font-medium text-text-secondary mb-1 block">
                 Lý do vi phạm
               </label>
               <select
                 value={reason}
                 onChange={(e) => setReason(e.target.value as ViolationReason)}
-                className="w-full text-xs border border-slate-200 rounded-lg px-2.5 py-2 focus:outline-none focus:ring-2 focus:ring-primary/30"
+                className="w-full text-xs border border-surface-200 rounded-lg px-2.5 py-2 focus:outline-none focus:ring-2 focus:ring-primary/30"
               >
                 {VIOLATION_REASONS.map((r) => (
                   <option key={r} value={r}>
@@ -144,7 +144,7 @@ export function AdminDeletePostDialog({
           )}
 
           <div>
-            <label className="text-xs font-medium text-slate-700 mb-1 block">
+            <label className="text-xs font-medium text-text-secondary mb-1 block">
               Ghi chú{" "}
               {needsReason
                 ? "(hiển thị cho người dùng)"
@@ -155,16 +155,16 @@ export function AdminDeletePostDialog({
               onChange={(e) => setNote(e.target.value)}
               rows={2}
               placeholder="Ví dụ: nội dung chứa thông tin sai lệch về..."
-              className="w-full text-xs border border-slate-200 rounded-lg px-2.5 py-2 resize-none focus:outline-none focus:ring-2 focus:ring-primary/30"
+              className="w-full text-xs border border-surface-200 rounded-lg px-2.5 py-2 resize-none focus:outline-none focus:ring-2 focus:ring-primary/30"
             />
           </div>
         </div>
 
-        <div className="flex items-center justify-end gap-2 px-5 py-4 mt-3 bg-slate-50">
+        <div className="flex items-center justify-end gap-2 px-5 py-4 mt-3 bg-surface-50">
           <button
             onClick={onCancel}
             disabled={loading}
-            className="px-4 py-2 text-xs font-medium text-slate-600 rounded-lg hover:bg-slate-200/60 transition-colors"
+            className="px-4 py-2 text-xs font-medium text-text-secondary rounded-lg hover:bg-slate-200/60 transition-colors"
           >
             Hủy
           </button>

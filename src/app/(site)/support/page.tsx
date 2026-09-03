@@ -35,7 +35,7 @@ function AdminRequestsPreview() {
 
   if (loading) {
     return (
-      <div className="text-center text-sm text-slate-400 py-10">
+      <div className="text-center text-sm text-text-muted py-10">
         Đang tải...
       </div>
     );
@@ -43,7 +43,7 @@ function AdminRequestsPreview() {
 
   if (items.length === 0) {
     return (
-      <div className="bg-white border border-slate-200 rounded-2xl p-10 text-center text-sm text-slate-400">
+      <div className="bg-surface border border-surface-200 rounded-2xl p-10 text-center text-sm text-text-muted">
         <LifeBuoy size={22} className="mx-auto mb-2 opacity-40" />
         Chưa có yêu cầu hỗ trợ nào
       </div>
@@ -52,7 +52,7 @@ function AdminRequestsPreview() {
 
   return (
     <>
-      <div className="bg-white border border-slate-200 rounded-2xl overflow-hidden">
+      <div className="bg-surface border border-surface-200 rounded-2xl overflow-hidden">
         {items.map((r) => (
           <button
             key={r.id}
@@ -60,11 +60,11 @@ function AdminRequestsPreview() {
             className="w-full flex items-center justify-between gap-3 px-4 py-3 border-b border-slate-50 last:border-0 hover:bg-slate-50/60 text-left"
           >
             <div className="min-w-0">
-              <p className="text-xs font-mono text-slate-400">{r.code}</p>
-              <p className="text-sm font-medium text-slate-700 truncate">
+              <p className="text-xs font-mono text-text-muted">{r.code}</p>
+              <p className="text-sm font-medium text-text-secondary truncate">
                 {r.subject}
               </p>
-              <p className="text-[11px] text-slate-400">
+              <p className="text-[11px] text-text-muted">
                 {r.user ? `@${r.user.username}` : r.guestName || r.contactEmail}{" "}
                 · {TYPE_LABELS[r.type]}
               </p>
@@ -81,48 +81,48 @@ function AdminRequestsPreview() {
           className="fixed inset-0 bg-slate-900/40 flex items-center justify-center z-50 p-4"
           onClick={(e) => e.target === e.currentTarget && setDetail(null)}
         >
-          <div className="bg-white rounded-2xl shadow-xl w-full max-w-[480px] max-h-[85vh] overflow-y-auto">
-            <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100">
-              <h2 className="text-base font-semibold text-slate-900">
+          <div className="bg-surface rounded-2xl shadow-xl w-full max-w-[480px] max-h-[85vh] overflow-y-auto">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-surface-100">
+              <h2 className="text-base font-semibold text-text-primary">
                 Xem nhanh yêu cầu
               </h2>
               <button
                 onClick={() => setDetail(null)}
-                className="p-1 rounded-lg hover:bg-slate-100 text-slate-400"
+                className="p-1 rounded-lg hover:bg-surface-100 text-text-muted"
               >
                 <X size={18} />
               </button>
             </div>
             <div className="px-6 py-5 space-y-4">
               <div className="flex items-center justify-between">
-                <p className="text-sm font-mono text-slate-500">
+                <p className="text-sm font-mono text-text-muted">
                   {detail.code}
                 </p>
                 <StatusBadge status={detail.status} />
               </div>
               <div>
-                <p className="text-xs text-slate-400 mb-1">Người gửi</p>
-                <p className="text-sm text-slate-700">
+                <p className="text-xs text-text-muted mb-1">Người gửi</p>
+                <p className="text-sm text-text-secondary">
                   {detail.user
                     ? `${detail.user.name} (@${detail.user.username})`
                     : detail.guestName || "Khách"}
                 </p>
-                <p className="text-xs text-slate-400">{detail.contactEmail}</p>
+                <p className="text-xs text-text-muted">{detail.contactEmail}</p>
               </div>
               <div>
-                <p className="text-xs text-slate-400 mb-1">Tiêu đề</p>
-                <p className="text-sm font-medium text-slate-700">
+                <p className="text-xs text-text-muted mb-1">Tiêu đề</p>
+                <p className="text-sm font-medium text-text-secondary">
                   {detail.subject}
                 </p>
               </div>
               <div>
-                <p className="text-xs text-slate-400 mb-1">Nội dung</p>
-                <p className="text-sm text-slate-600 bg-slate-50 rounded-lg p-3 whitespace-pre-wrap max-h-40 overflow-y-auto">
+                <p className="text-xs text-text-muted mb-1">Nội dung</p>
+                <p className="text-sm text-text-secondary bg-surface-50 rounded-lg p-3 whitespace-pre-wrap max-h-40 overflow-y-auto">
                   {detail.message}
                 </p>
               </div>
             </div>
-            <div className="flex justify-end px-6 py-4 border-t border-slate-100">
+            <div className="flex justify-end px-6 py-4 border-t border-surface-100">
               <button
                 onClick={() =>
                   router.push(`/admin/support-requests?requestId=${detail.id}`)
@@ -151,10 +151,10 @@ export default function SupportPage() {
   if (isAdmin) {
     return (
       <div className="max-w-2xl mx-auto px-4 py-8">
-        <h1 className="text-lg font-bold text-slate-900 mb-1">
+        <h1 className="text-lg font-bold text-text-primary mb-1">
           Yêu cầu hỗ trợ
         </h1>
-        <p className="text-sm text-slate-500 mb-6">
+        <p className="text-sm text-text-muted mb-6">
           Danh sách yêu cầu hỗ trợ từ người dùng. Click vào 1 yêu cầu để xem
           nhanh, sau đó chuyển sang trang quản lý để phản hồi.
         </p>
@@ -173,11 +173,11 @@ export default function SupportPage() {
 
   return (
     <div className="max-w-2xl mx-auto px-4 py-8">
-      <h1 className="text-lg font-bold text-slate-900 mb-1">Trợ giúp</h1>
-      <p className="text-sm text-slate-500 mb-6">
+      <h1 className="text-lg font-bold text-text-primary mb-1">Trợ giúp</h1>
+      <p className="text-sm text-text-muted mb-6">
         Gửi yêu cầu hỗ trợ, báo cáo vấn đề hoặc góp ý cho đội ngũ Synora.
       </p>
-      <div className="flex gap-1 border-b border-slate-200 mb-5">
+      <div className="flex gap-1 border-b border-surface-200 mb-5">
         {tabs.map((t) => (
           <button
             key={t.key}
@@ -186,7 +186,7 @@ export default function SupportPage() {
               "px-3 py-2 text-xs font-semibold border-b-2 -mb-px transition-colors",
               tab === t.key
                 ? "border-primary text-primary"
-                : "border-transparent text-slate-400 hover:text-slate-600",
+                : "border-transparent text-text-muted hover:text-text-secondary",
             )}
           >
             {t.label}

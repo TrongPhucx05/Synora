@@ -68,7 +68,7 @@ function EditVisibilityPicker({
         <ChevronDown size={11} />
       </button>
       {open && (
-        <div className="absolute top-full mt-1 left-0 bg-white border border-surface-200 rounded-xl shadow-lg z-30 min-w-[160px] overflow-hidden">
+        <div className="absolute top-full mt-1 left-0 bg-surface border border-surface-200 rounded-xl shadow-lg z-30 min-w-[160px] overflow-hidden">
           {EDIT_VISIBILITY_OPTIONS.map((opt) => (
             <button
               key={opt.value}
@@ -307,7 +307,7 @@ export default function EditPostComposer({
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4"
       onClick={(e) => e.target === e.currentTarget && onClose()}
     >
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg flex flex-col overflow-hidden max-h-[90vh]">
+      <div className="bg-surface rounded-2xl shadow-2xl w-full max-w-lg flex flex-col overflow-hidden max-h-[90vh]">
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-4 border-b border-surface-100 shrink-0">
           <div className="flex items-center gap-3">

@@ -158,7 +158,7 @@ function DocCard({
 
   return (
     <>
-      <div className="bg-white border border-surface-200 rounded-2xl p-3 hover:shadow-sm transition-shadow group">
+      <div className="bg-surface border border-surface-200 rounded-2xl p-3 hover:shadow-sm transition-shadow group">
         <div className="flex items-start gap-2.5">
           <div
             className={clsx(
@@ -182,7 +182,7 @@ function DocCard({
                     <MoreHorizontal size={13} />
                   </button>
                   {menuOpen && (
-                    <div className="absolute right-0 top-full mt-1 z-20 w-36 bg-white border border-surface-200 rounded-xl shadow-lg py-1 animate-in fade-in zoom-in-95 duration-150 origin-top-right">
+                    <div className="absolute right-0 top-full mt-1 z-20 w-36 bg-surface border border-surface-200 rounded-xl shadow-lg py-1 animate-in fade-in zoom-in-95 duration-150 origin-top-right">
                       <button
                         onClick={handleToggleSave}
                         className="w-full flex items-center gap-2 px-3 py-1.5 text-xs text-text-secondary hover:bg-surface-50 hover:text-text-primary transition-colors"
@@ -253,7 +253,7 @@ function DocCard({
       </div>
       {showDeleteConfirm && (
         <div className="fixed inset-0 z-[90] flex items-center justify-center bg-black/40 backdrop-blur-sm">
-          <div className="bg-white rounded-2xl shadow-xl p-6 w-80 mx-4 animate-in fade-in zoom-in-95 duration-150">
+          <div className="bg-surface rounded-2xl shadow-xl p-6 w-80 mx-4 animate-in fade-in zoom-in-95 duration-150">
             <div className="flex items-center justify-center w-11 h-11 rounded-full bg-red-100 mx-auto mb-4">
               <Trash2 size={20} className="text-red-500" />
             </div>
@@ -435,7 +435,7 @@ function LoadingSkeleton() {
       {[1, 2, 3, 4].map((i) => (
         <div
           key={i}
-          className="h-24 bg-white border border-surface-200 rounded-2xl animate-pulse"
+          className="h-24 bg-surface border border-surface-200 rounded-2xl animate-pulse"
         />
       ))}
     </div>
@@ -444,7 +444,7 @@ function LoadingSkeleton() {
 
 function EmptyDoc({ message }: { message: string }) {
   return (
-    <div className="bg-white border border-surface-200 rounded-2xl p-8 text-center">
+    <div className="bg-surface border border-surface-200 rounded-2xl p-8 text-center">
       <p className="text-text-muted text-sm">{message}</p>
     </div>
   );
@@ -465,7 +465,7 @@ export function DocumentsTab({
 
   return (
     <div className="flex flex-col gap-3">
-      <div className="bg-white border border-surface-200 rounded-2xl px-1">
+      <div className="bg-surface border border-surface-200 rounded-2xl px-1">
         <div className="flex">
           {tabs.map((tab) => (
             <button

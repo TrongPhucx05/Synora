@@ -9,10 +9,10 @@ export default async function TrackSupportRequestPage({
 
   return (
     <div className="max-w-lg mx-auto px-4 py-8">
-      <h1 className="text-lg font-bold text-slate-900 mb-1">
+      <h1 className="text-lg font-bold text-text-primary mb-1">
         Theo dõi yêu cầu hỗ trợ
       </h1>
-      <p className="text-sm text-slate-500 mb-6">
+      <p className="text-sm text-text-muted mb-6">
         Kiểm tra trạng thái yêu cầu hỗ trợ bạn đã gửi.
       </p>
       <TrackRequestPanel initialCode={code} initialToken={token} />

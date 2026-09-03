@@ -57,7 +57,7 @@ export function MyRequestsList() {
 
   if (loading) {
     return (
-      <div className="text-center text-sm text-slate-400 py-10">
+      <div className="text-center text-sm text-text-muted py-10">
         Đang tải...
       </div>
     );
@@ -65,7 +65,7 @@ export function MyRequestsList() {
 
   if (items.length === 0) {
     return (
-      <div className="bg-white border border-slate-200 rounded-2xl p-10 text-center text-sm text-slate-400">
+      <div className="bg-surface border border-surface-200 rounded-2xl p-10 text-center text-sm text-text-muted">
         <LifeBuoy size={22} className="mx-auto mb-2 opacity-40" />
         Bạn chưa gửi yêu cầu hỗ trợ nào
       </div>
@@ -74,25 +74,25 @@ export function MyRequestsList() {
 
   return (
     <>
-      <div className="bg-white border border-slate-200 rounded-2xl overflow-hidden">
+      <div className="bg-surface border border-surface-200 rounded-2xl overflow-hidden">
         {items.map((r) => (
           <button
             key={r.id}
             onClick={() => openDetail(r.id)}
-            className="w-full flex items-center justify-between gap-3 px-4 py-3 border-b border-slate-50 last:border-0 hover:bg-slate-50/60 text-left"
+            className="w-full flex items-center justify-between gap-3 px-4 py-3 border-b border-surface-100 last:border-0 hover:bg-surface-50 text-left"
           >
             <div className="min-w-0">
-              <p className="text-xs font-mono text-slate-400">{r.code}</p>
-              <p className="text-sm font-medium text-slate-700 truncate">
+              <p className="text-xs font-mono text-text-muted">{r.code}</p>
+              <p className="text-sm font-medium text-text-secondary truncate">
                 {r.subject}
               </p>
-              <p className="text-[11px] text-slate-400">
+              <p className="text-[11px] text-text-muted">
                 {TYPE_LABELS[r.type]}
               </p>
             </div>
             <div className="flex flex-col items-end gap-1 shrink-0">
               <StatusBadge status={r.status} />
-              <span className="text-[11px] text-slate-400">
+              <span className="text-[11px] text-text-muted">
                 {new Date(r.createdAt).toLocaleDateString("vi-VN")}
               </span>
             </div>
@@ -104,24 +104,24 @@ export function MyRequestsList() {
 
       {(detail || detailLoading) && (
         <div
-          className="fixed inset-0 bg-slate-900/40 flex items-center justify-center z-50 p-4"
+          className="fixed inset-0 bg-slate-900/40 dark:bg-black/25 flex items-center justify-center z-50 p-4"
           onClick={(e) => e.target === e.currentTarget && setDetail(null)}
         >
-          <div className="bg-white rounded-2xl shadow-xl w-full max-w-[560px] max-h-[85vh] overflow-y-auto">
-            <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100">
-              <h2 className="text-base font-semibold text-slate-900">
+          <div className="bg-surface rounded-2xl shadow-xl w-full max-w-[560px] max-h-[85vh] overflow-y-auto">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-surface-100">
+              <h2 className="text-base font-semibold text-text-primary">
                 Chi tiết yêu cầu
               </h2>
               <button
                 onClick={() => setDetail(null)}
-                className="p-1 rounded-lg hover:bg-slate-100 text-slate-400"
+                className="p-1 rounded-lg hover:bg-surface-100 text-text-muted"
               >
                 <X size={18} />
               </button>
             </div>
             <div className="px-6 py-5">
               {detailLoading && !detail ? (
-                <p className="text-sm text-slate-400 text-center py-6">
+                <p className="text-sm text-text-muted text-center py-6">
                   Đang tải...
                 </p>
               ) : detail ? (

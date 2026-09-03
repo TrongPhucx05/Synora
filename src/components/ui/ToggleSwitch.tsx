@@ -20,7 +20,7 @@ export const ToggleSwitch = ({ checked, onChange, disabled }: ToggleSwitchProps)
   >
     <span
       className={clsx(
-        "absolute top-0.5 w-4 h-4 rounded-full bg-white shadow-sm transition-transform duration-200",
+        "absolute top-0.5 w-4 h-4 rounded-full bg-surface shadow-sm transition-transform duration-200",
         checked ? "left-[22px]" : "left-[2px]",
       )}
     />

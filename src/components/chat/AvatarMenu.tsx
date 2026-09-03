@@ -76,7 +76,7 @@ export function AvatarMenu() {
       </button>
 
       {open && (
-        <div className="absolute left-full bottom-0 ml-2 w-64 bg-white rounded-2xl shadow-xl border border-surface-200 overflow-hidden z-50">
+        <div className="absolute left-full bottom-0 ml-2 w-64 bg-surface rounded-2xl shadow-xl border border-surface-200 overflow-hidden z-50">
           {panel === "main" && (
             <>
               <div className="px-4 py-3.5 border-b border-surface-100 flex items-center gap-3">

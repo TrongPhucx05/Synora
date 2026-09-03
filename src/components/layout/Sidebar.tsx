@@ -32,7 +32,7 @@ export default function Sidebar() {
     : navItems;
 
   return (
-    <aside className="fixed left-0 top-14 h-[calc(100vh-56px)] w-[330px] bg-white border-r border-surface-200 flex flex-col overflow-y-auto z-20">
+    <aside className="fixed left-0 top-14 h-[calc(100vh-56px)] w-[330px] bg-surface border-r border-surface-200 flex flex-col overflow-y-auto z-20">
       <nav className="flex flex-col gap-0.5 p-3">
         {visibleNavItems.map((item) => {
           const isActive =

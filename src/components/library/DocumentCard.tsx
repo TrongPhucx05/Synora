@@ -179,7 +179,7 @@ export default function DocumentCard({
 
   return (
     <>
-      <div className="bg-white rounded-xl border border-surface-200 shadow-card hover:border-primary/30 hover:shadow-md transition-all p-4 flex flex-col h-full">
+      <div className="bg-surface rounded-xl border border-surface-200 shadow-card hover:border-primary/30 hover:shadow-md transition-all p-4 flex flex-col h-full">
         <div className="flex items-start justify-between mb-3">
           <div
             className={clsx(
@@ -201,7 +201,7 @@ export default function DocumentCard({
               </button>
 
               {menuOpen && (
-                <div className="absolute right-0 top-full mt-1 z-20 w-44 bg-white border border-surface-200 rounded-xl shadow-lg py-1 animate-in fade-in zoom-in-95 duration-150 origin-top-right">
+                <div className="absolute right-0 top-full mt-1 z-20 w-44 bg-surface border border-surface-200 rounded-xl shadow-lg py-1 animate-in fade-in zoom-in-95 duration-150 origin-top-right">
                   {isAdmin ? (
                     <button
                       onClick={() => {
@@ -362,7 +362,7 @@ export default function DocumentCard({
 
       {showDeleteConfirm && (
         <div className="fixed inset-0 z-[90] flex items-center justify-center bg-black/40 backdrop-blur-sm">
-          <div className="bg-white rounded-2xl shadow-xl p-6 w-80 mx-4 animate-in fade-in zoom-in-95 duration-150">
+          <div className="bg-surface rounded-2xl shadow-xl p-6 w-80 mx-4 animate-in fade-in zoom-in-95 duration-150">
             <div className="flex items-center justify-center w-11 h-11 rounded-full bg-red-100 mx-auto mb-4">
               <Trash2 size={20} className="text-red-500" />
             </div>
@@ -405,7 +405,7 @@ export default function DocumentCard({
 
       {showAdminDeleteConfirm && (
         <div className="fixed inset-0 z-[90] flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
-          <div className="bg-white rounded-2xl shadow-xl p-6 w-full max-w-sm animate-in fade-in zoom-in-95 duration-150">
+          <div className="bg-surface rounded-2xl shadow-xl p-6 w-full max-w-sm animate-in fade-in zoom-in-95 duration-150">
             <div className="flex items-center justify-center w-11 h-11 rounded-full bg-red-100 mx-auto mb-4">
               <Trash2 size={20} className="text-red-500" />
             </div>
@@ -431,7 +431,7 @@ export default function DocumentCard({
                   onChange={(e) =>
                     setAdminReason(e.target.value as ViolationReason)
                   }
-                  className="w-full px-3 py-2.5 bg-white border border-surface-200 rounded-xl text-sm appearance-none focus:outline-none focus:border-primary"
+                  className="w-full px-3 py-2.5 bg-surface border border-surface-200 rounded-xl text-sm appearance-none focus:outline-none focus:border-primary"
                 >
                   <option value="">Chọn lý do...</option>
                   {VIOLATION_REASONS.map((r) => (

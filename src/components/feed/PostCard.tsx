@@ -246,7 +246,7 @@ export default function PostCard({
 
   return (
     <>
-      <div className="bg-white rounded-xl border border-surface-200 shadow-card card-hover p-4">
+      <div className="bg-surface rounded-xl border border-surface-200 shadow-card card-hover p-4">
         <div className="flex items-start justify-between mb-3">
           <NextLink
             href={

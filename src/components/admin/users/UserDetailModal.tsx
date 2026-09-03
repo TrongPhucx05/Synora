@@ -62,8 +62,8 @@ export function UserDetailModal({
       className="fixed inset-0 z-[90] flex items-center justify-center bg-black/40 backdrop-blur-sm p-4"
       onClick={(e) => e.target === e.currentTarget && onClose()}
     >
-      <div className="bg-white rounded-2xl shadow-xl w-full max-w-lg max-h-[85vh] flex flex-col animate-in fade-in zoom-in-95 duration-150">
-        <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100 shrink-0">
+      <div className="bg-surface rounded-2xl shadow-xl w-full max-w-lg max-h-[85vh] flex flex-col animate-in fade-in zoom-in-95 duration-150">
+        <div className="flex items-center justify-between px-5 py-4 border-b border-surface-100 shrink-0">
           <div className="flex items-center gap-3">
             <Avatar
               src={user.avatarUrl ?? undefined}
@@ -72,19 +72,19 @@ export function UserDetailModal({
               shape="circle"
             />
             <div>
-              <p className="text-sm font-bold text-slate-900">{user.name}</p>
-              <p className="text-xs text-slate-400">@{user.username}</p>
+              <p className="text-sm font-bold text-text-primary">{user.name}</p>
+              <p className="text-xs text-text-muted">@{user.username}</p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 hover:bg-slate-100 rounded-lg transition-colors text-slate-400 hover:text-slate-700"
+            className="p-1.5 hover:bg-surface-100 rounded-lg transition-colors text-text-muted hover:text-text-secondary"
           >
             <X size={16} />
           </button>
         </div>
 
-        <div className="flex gap-1.5 px-5 py-3 border-b border-slate-100 shrink-0">
+        <div className="flex gap-1.5 px-5 py-3 border-b border-surface-100 shrink-0">
           {tabs.map((t) => (
             <button
               key={t.key}
@@ -93,7 +93,7 @@ export function UserDetailModal({
                 "flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition-colors",
                 tab === t.key
                   ? "bg-blue-500/10 text-blue-600"
-                  : "bg-slate-100 text-slate-500 hover:bg-slate-200",
+                  : "bg-surface-100 text-text-muted hover:bg-surface-200",
               )}
             >
               <t.icon size={12} />
@@ -126,32 +126,32 @@ export function UserDetailModal({
               {violations === null ? (
                 <SkeletonList />
               ) : violations.length === 0 ? (
-                <p className="text-xs text-slate-400 text-center py-8">
+                <p className="text-xs text-text-muted text-center py-8">
                   Chưa có vi phạm nào
                 </p>
               ) : (
                 violations.map((v) => (
                   <div
                     key={v.id}
-                    className="flex items-start justify-between gap-3 bg-slate-50 rounded-xl px-3.5 py-2.5"
+                    className="flex items-start justify-between gap-3 bg-surface-50 rounded-xl px-3.5 py-2.5"
                   >
                     <div className="min-w-0">
-                      <p className="text-xs font-medium text-slate-800">
+                      <p className="text-xs font-medium text-text-primary">
                         {v.action}
                       </p>
-                      <p className="text-[11px] text-slate-500 mt-0.5">
+                      <p className="text-[11px] text-text-muted mt-0.5">
                         {v.reason}
                       </p>
                       {v.note && (
-                        <p className="text-[11px] text-slate-400 mt-0.5 italic">
+                        <p className="text-[11px] text-text-muted mt-0.5 italic">
                           "{v.note}"
                         </p>
                       )}
-                      <p className="text-[10px] text-slate-400 mt-1">
+                      <p className="text-[10px] text-text-muted mt-1">
                         Bởi admin @{v.adminUsername}
                       </p>
                     </div>
-                    <span className="text-[11px] text-slate-400 shrink-0">
+                    <span className="text-[11px] text-text-muted shrink-0">
                       {v.date}
                     </span>
                   </div>
@@ -165,30 +165,30 @@ export function UserDetailModal({
               {reports === null ? (
                 <SkeletonList />
               ) : reports.length === 0 ? (
-                <p className="text-xs text-slate-400 text-center py-8">
+                <p className="text-xs text-text-muted text-center py-8">
                   Chưa từng bị báo cáo
                 </p>
               ) : (
                 reports.map((r) => (
                   <div
                     key={r.id}
-                    className="flex items-start justify-between gap-3 bg-slate-50 rounded-xl px-3.5 py-2.5"
+                    className="flex items-start justify-between gap-3 bg-surface-50 rounded-xl px-3.5 py-2.5"
                   >
                     <div className="min-w-0">
-                      <p className="text-xs font-medium text-slate-800">
+                      <p className="text-xs font-medium text-text-primary">
                         {r.reason}
                       </p>
                       {r.description && (
-                        <p className="text-[11px] text-slate-500 mt-0.5">
+                        <p className="text-[11px] text-text-muted mt-0.5">
                           {r.description}
                         </p>
                       )}
-                      <p className="text-[10px] text-slate-400 mt-1">
+                      <p className="text-[10px] text-text-muted mt-1">
                         Báo cáo bởi {r.reporter} ·{" "}
                         {r.isResolved ? "Đã xử lý" : "Chưa xử lý"}
                       </p>
                     </div>
-                    <span className="text-[11px] text-slate-400 shrink-0">
+                    <span className="text-[11px] text-text-muted shrink-0">
                       {r.date}
                     </span>
                   </div>
@@ -205,8 +205,8 @@ export function UserDetailModal({
 function DetailRow({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex items-center justify-between gap-4 py-2 border-b border-slate-50 last:border-b-0">
-      <p className="text-xs text-slate-500">{label}</p>
-      <p className="text-xs font-medium text-slate-800">{value}</p>
+      <p className="text-xs text-text-muted">{label}</p>
+      <p className="text-xs font-medium text-text-primary">{value}</p>
     </div>
   );
 }
@@ -215,7 +215,7 @@ function SkeletonList() {
   return (
     <div className="flex flex-col gap-2.5 animate-pulse">
       {[...Array(3)].map((_, i) => (
-        <div key={i} className="h-14 bg-slate-50 rounded-xl" />
+        <div key={i} className="h-14 bg-surface-50 rounded-xl" />
       ))}
     </div>
   );

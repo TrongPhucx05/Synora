@@ -27,13 +27,13 @@ export default function Navbar() {
   }, []);
 
   return (
-    <header className="h-14 bg-white border-b border-slate-200 flex items-center justify-between px-6 sticky top-0 z-20">
-      <div className="flex items-center gap-2 bg-slate-100 rounded-full px-3.5 py-1.5 w-[320px]">
-        <Search size={14} className="text-slate-400 shrink-0" />
+    <header className="h-14 bg-surface border-b border-surface-200 flex items-center justify-between px-6 sticky top-0 z-20">
+      <div className="flex items-center gap-2 bg-surface-100 rounded-full px-3.5 py-1.5 w-[320px]">
+        <Search size={14} className="text-text-muted shrink-0" />
         <input
           type="text"
           placeholder="Tìm kiếm người dùng, bài viết, nhóm..."
-          className="flex-1 bg-transparent text-sm text-slate-700 placeholder:text-slate-400 focus:outline-none"
+          className="flex-1 bg-transparent text-sm text-text-secondary placeholder:text-text-muted focus:outline-none"
         />
       </div>
 
@@ -52,12 +52,12 @@ export default function Navbar() {
           </button>
 
           {menuOpen && (
-            <div className="absolute top-full right-0 mt-2 w-[200px] bg-white rounded-2xl shadow-xl border border-slate-200 overflow-hidden z-50">
-              <div className="px-4 py-3 border-b border-slate-100">
-                <p className="text-sm font-semibold text-slate-900 truncate">
+            <div className="absolute top-full right-0 mt-2 w-[200px] bg-surface rounded-2xl shadow-xl border border-surface-200 overflow-hidden z-50">
+              <div className="px-4 py-3 border-b border-surface-100">
+                <p className="text-sm font-semibold text-text-primary truncate">
                   {displayName}
                 </p>
-                <p className="text-[11px] text-slate-400 truncate">
+                <p className="text-[11px] text-text-muted truncate">
                   {session?.user?.email}
                 </p>
               </div>

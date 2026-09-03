@@ -126,7 +126,7 @@ export function PrivacySection() {
 
   return (
     <div className="flex flex-col gap-5">
-      <div className="bg-white border border-surface-200 rounded-2xl p-5 flex items-center justify-between gap-4">
+      <div className="bg-surface border border-surface-200 rounded-2xl p-5 flex items-center justify-between gap-4">
         <div className="min-w-0">
           <h3 className="text-sm font-bold text-text-primary">
             Trạng thái hoạt động
@@ -277,7 +277,7 @@ export function PrivacySection() {
         </div>
       </SettingsCard>
 
-      <div className="bg-white border border-surface-200 rounded-2xl p-5 flex items-center justify-between gap-4">
+      <div className="bg-surface border border-surface-200 rounded-2xl p-5 flex items-center justify-between gap-4">
         <div className="min-w-0">
           <h3 className="text-sm font-bold text-text-primary">
             Chỉ bạn bè mới được nhắn tin
@@ -298,7 +298,7 @@ export function PrivacySection() {
         />
       </div>
 
-      <div className="bg-white border border-surface-200 rounded-2xl p-5 flex items-center justify-between gap-4">
+      <div className="bg-surface border border-surface-200 rounded-2xl p-5 flex items-center justify-between gap-4">
         <div className="min-w-0">
           <h3 className="text-sm font-bold text-text-primary">
             Hiển thị danh sách bạn bè

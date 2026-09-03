@@ -48,7 +48,7 @@ export default function StatsWidget({ refreshKey = 0 }: StatsWidgetProps) {
   }, [refreshKey]);
 
   return (
-    <div className="bg-white rounded-xl border border-surface-200 shadow-card p-4">
+    <div className="bg-surface rounded-xl border border-surface-200 shadow-card p-4">
       <h3 className="text-sm font-semibold text-text-primary mb-3">
         Thống kê thư viện
       </h3>

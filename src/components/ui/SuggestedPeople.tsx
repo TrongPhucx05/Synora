@@ -290,7 +290,7 @@ function UserRow({
               top: menuPos.top,
               right: menuPos.right,
             }}
-            className="bg-white border border-surface-200 rounded-xl shadow-lg overflow-hidden z-[100] min-w-[140px] py-1"
+            className="bg-surface border border-surface-200 rounded-xl shadow-lg overflow-hidden z-[100] min-w-[140px] py-1"
           >
             <button
               onClick={(e) => handleRequestAction(e, "accept")}
@@ -354,7 +354,7 @@ export default function SuggestedPeople({ variant = "feed" }: Props) {
   return (
     <div
       className={clsx(
-        "bg-white rounded-xl border border-surface-200 p-4",
+        "bg-surface rounded-xl border border-surface-200 p-4",
         variant === "feed" && "shadow-card",
       )}
     >

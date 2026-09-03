@@ -62,7 +62,7 @@ export default function LibraryFilters({
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Tìm tài liệu theo tên, môn học, tác giả..."
-            className="w-full pl-9 pr-9 py-2.5 bg-white border border-surface-200 rounded-xl text-sm placeholder:text-text-muted focus:outline-none focus:border-primary transition-colors shadow-sm"
+            className="w-full pl-9 pr-9 py-2.5 bg-surface border border-surface-200 rounded-xl text-sm placeholder:text-text-muted focus:outline-none focus:border-primary transition-colors shadow-sm"
           />
           {query && (
             <button
@@ -122,7 +122,7 @@ export default function LibraryFilters({
               className={clsx(
                 "px-3 py-1.5 rounded-md text-xs font-medium transition-all whitespace-nowrap",
                 activeSort === opt.key
-                  ? "bg-white text-primary shadow-sm"
+                  ? "bg-surface text-primary shadow-sm"
                   : "text-text-muted hover:text-text-secondary",
               )}
             >

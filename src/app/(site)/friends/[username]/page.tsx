@@ -72,7 +72,7 @@ function ConfirmDialog({
       className="fixed inset-0 z-[90] flex items-center justify-center bg-black/40 backdrop-blur-sm p-4"
       onClick={(e) => e.target === e.currentTarget && onCancel()}
     >
-      <div className="bg-white rounded-2xl shadow-xl p-6 w-80 mx-4 animate-in fade-in zoom-in-95 duration-150">
+      <div className="bg-surface rounded-2xl shadow-xl p-6 w-80 mx-4 animate-in fade-in zoom-in-95 duration-150">
         <div className="flex items-center justify-center w-11 h-11 rounded-full bg-red-100 mx-auto mb-4">
           {icon}
         </div>
@@ -352,7 +352,7 @@ export default function FriendsPage() {
         <div className="mb-6 flex items-center gap-3">
           <NextLink
             href={`/profile/${username}`}
-            className="w-8 h-8 rounded-full bg-white border border-surface-200 flex items-center justify-center hover:bg-surface-100 transition-colors shrink-0"
+            className="w-8 h-8 rounded-full bg-surface border border-surface-200 flex items-center justify-center hover:bg-surface-100 transition-colors shrink-0"
           >
             <ArrowLeft size={14} className="text-text-secondary" />
           </NextLink>
@@ -364,7 +364,7 @@ export default function FriendsPage() {
           </div>
         </div>
 
-        <div className="bg-white border border-surface-200 rounded-2xl overflow-hidden">
+        <div className="bg-surface border border-surface-200 rounded-2xl overflow-hidden">
           {!loading && showHiddenState ? (
             <div className="p-4">
               <HiddenState />

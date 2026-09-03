@@ -48,7 +48,7 @@ export default function TrendingTopics({ variant = "feed" }: Props) {
 
   return (
     <div
-      className={`bg-white rounded-xl border border-surface-200 p-4 ${
+      className={`bg-surface rounded-xl border border-surface-200 p-4 ${
         variant === "feed" ? "shadow-card" : ""
       }`}
     >

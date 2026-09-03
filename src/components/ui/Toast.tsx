@@ -55,7 +55,7 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
         <div
           key={toast.id}
           className={clsx(
-            "fixed bottom-6 left-1/2 -translate-x-1/2 z-[100] flex items-center gap-2 bg-white border shadow-lg text-xs font-medium px-4 py-2.5 rounded-full max-w-sm text-center animate-in fade-in slide-in-from-bottom-2 duration-200 pointer-events-none",
+            "fixed bottom-6 left-1/2 -translate-x-1/2 z-[100] flex items-center gap-2 bg-surface border shadow-lg text-xs font-medium px-4 py-2.5 rounded-full max-w-sm text-center animate-in fade-in slide-in-from-bottom-2 duration-200 pointer-events-none",
             VARIANT_CLASSES[toast.variant],
           )}
         >

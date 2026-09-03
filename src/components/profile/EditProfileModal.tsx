@@ -146,7 +146,7 @@ export function EditProfileModal({
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4"
       onClick={(e) => e.target === e.currentTarget && onClose()}
     >
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg flex flex-col overflow-hidden max-h-[90vh]">
+      <div className="bg-surface rounded-2xl shadow-2xl w-full max-w-lg flex flex-col overflow-hidden max-h-[90vh]">
         <div className="flex items-center justify-between px-5 py-4 border-b border-surface-100 shrink-0">
           <h2 className="text-sm font-bold text-text-primary">
             Chỉnh sửa trang cá nhân
@@ -312,7 +312,7 @@ function Field({
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
         maxLength={maxLength}
-        className="w-full px-3 py-2 text-sm text-text-primary bg-surface-50 border border-surface-200 rounded-xl focus:outline-none focus:border-primary focus:bg-white transition-colors placeholder:text-text-muted"
+        className="w-full px-3 py-2 text-sm text-text-primary bg-surface-50 border border-surface-200 rounded-xl focus:outline-none focus:border-primary focus:bg-surface transition-colors placeholder:text-text-muted"
       />
       {maxLength && value.length > maxLength * 0.8 && (
         <p
@@ -351,7 +351,7 @@ function TextareaField({
         placeholder={placeholder}
         maxLength={maxLength}
         rows={3}
-        className="w-full px-3 py-2 text-sm text-text-primary bg-surface-50 border border-surface-200 rounded-xl focus:outline-none focus:border-primary focus:bg-white transition-colors resize-none placeholder:text-text-muted"
+        className="w-full px-3 py-2 text-sm text-text-primary bg-surface-50 border border-surface-200 rounded-xl focus:outline-none focus:border-primary focus:bg-surface transition-colors resize-none placeholder:text-text-muted"
       />
       {maxLength && value.length > maxLength * 0.8 && (
         <p

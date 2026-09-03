@@ -43,7 +43,7 @@ export function SuggestionsWidget({ username }: SuggestionsWidgetProps) {
 
   if (loading) {
     return (
-      <div className="bg-white border border-surface-200 rounded-2xl p-4">
+      <div className="bg-surface border border-surface-200 rounded-2xl p-4">
         <div className="h-4 w-28 bg-surface-100 rounded animate-pulse mb-3" />
         {[1, 2].map((i) => (
           <div key={i} className="flex items-center gap-2 mb-2">
@@ -61,7 +61,7 @@ export function SuggestionsWidget({ username }: SuggestionsWidgetProps) {
   if (communities.length === 0) return null;
 
   return (
-    <div className="bg-white border border-surface-200 rounded-2xl p-4">
+    <div className="bg-surface border border-surface-200 rounded-2xl p-4">
       <div className="flex items-center justify-between mb-2.5">
         <h3 className="text-xs font-semibold text-text-primary">Nhóm của bạn</h3>
         <NextLink

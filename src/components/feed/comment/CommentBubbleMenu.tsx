@@ -151,7 +151,7 @@ export default function CommentBubbleMenu({
         <MoreHorizontal size={13} />
       </button>
       {open && (
-        <div className="absolute right-0 top-7 bg-white border border-surface-200 rounded-xl shadow-lg z-30 min-w-[180px] overflow-hidden py-1">
+        <div className="absolute right-0 top-7 bg-surface border border-surface-200 rounded-xl shadow-lg z-30 min-w-[180px] overflow-hidden py-1">
           {items.map((item, i) =>
             item === null ? (
               <div key={i} className="my-1 border-t border-surface-100" />

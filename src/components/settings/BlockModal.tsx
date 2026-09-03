@@ -64,7 +64,7 @@ export function BlockedItemMenu({
         top: pos?.top ?? -9999,
         left: pos?.left ?? -9999,
       }}
-      className="z-[110] w-44 bg-white rounded-xl shadow-lg border border-surface-100 py-1 overflow-hidden"
+      className="z-[110] w-44 bg-surface rounded-xl shadow-lg border border-surface-100 py-1 overflow-hidden"
     >
       <Link
         href={`/profile/${user.username}`}
@@ -123,7 +123,7 @@ export function BlockedUsersModal({
       className="fixed inset-0 z-[90] flex items-center justify-center bg-black/40 backdrop-blur-sm p-4"
       onClick={(e) => e.target === e.currentTarget && onClose()}
     >
-      <div className="bg-white rounded-2xl shadow-xl w-full max-w-md max-h-[80vh] flex flex-col animate-in fade-in zoom-in-95 duration-150">
+      <div className="bg-surface rounded-2xl shadow-xl w-full max-w-md max-h-[80vh] flex flex-col animate-in fade-in zoom-in-95 duration-150">
         <div className="flex items-center justify-between px-5 py-4 border-b border-surface-100 shrink-0">
           <div>
             <h3 className="text-sm font-bold text-text-primary">

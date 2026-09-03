@@ -55,16 +55,16 @@ export function LockUserModal({
       className="fixed inset-0 z-[95] flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm"
       onClick={(e) => e.target === e.currentTarget && onCancel()}
     >
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden max-h-[90vh] flex flex-col">
+      <div className="bg-surface rounded-2xl shadow-2xl w-full max-w-md overflow-hidden max-h-[90vh] flex flex-col">
         <div className="flex items-start gap-3 px-5 pt-5 pb-4 shrink-0">
           <div className="w-10 h-10 rounded-xl bg-red-100 text-red-500 flex items-center justify-center shrink-0">
             <AlertTriangle size={19} />
           </div>
           <div>
-            <h3 className="text-sm font-bold text-slate-900">
+            <h3 className="text-sm font-bold text-text-primary">
               Khóa tài khoản {userName}
             </h3>
-            <p className="text-xs text-slate-500 mt-0.5">
+            <p className="text-xs text-text-muted mt-0.5">
               Chọn hình thức khóa và lý do vi phạm.
             </p>
           </div>
@@ -78,7 +78,7 @@ export function LockUserModal({
                 "flex items-center gap-2 justify-center px-3 py-2.5 rounded-xl text-xs font-semibold border transition-colors",
                 type === "SUSPEND"
                   ? "border-amber-300 bg-amber-50 text-amber-700"
-                  : "border-slate-200 text-slate-500 hover:bg-slate-50",
+                  : "border-surface-200 text-text-muted hover:bg-surface-50",
               )}
             >
               <Clock size={14} /> Tạm khóa
@@ -89,7 +89,7 @@ export function LockUserModal({
                 "flex items-center gap-2 justify-center px-3 py-2.5 rounded-xl text-xs font-semibold border transition-colors",
                 type === "BAN"
                   ? "border-red-300 bg-red-50 text-red-600"
-                  : "border-slate-200 text-slate-500 hover:bg-slate-50",
+                  : "border-surface-200 text-text-muted hover:bg-surface-50",
               )}
             >
               <Ban size={14} /> Vĩnh viễn
@@ -98,7 +98,7 @@ export function LockUserModal({
 
           {type === "SUSPEND" && (
             <div>
-              <label className="text-xs font-medium text-slate-700 mb-1.5 block">
+              <label className="text-xs font-medium text-text-secondary mb-1.5 block">
                 Thời gian khóa
               </label>
               <div className="flex flex-wrap gap-1.5 mb-2">
@@ -113,14 +113,14 @@ export function LockUserModal({
                       "px-2.5 py-1.5 rounded-full text-[11px] font-medium border transition-colors",
                       presetHours === p.hours
                         ? "bg-primary text-white border-primary"
-                        : "border-slate-200 text-slate-600 hover:bg-slate-50",
+                        : "border-surface-200 text-text-secondary hover:bg-surface-50",
                     )}
                   >
                     {p.label}
                   </button>
                 ))}
               </div>
-              <label className="text-[11px] text-slate-400 mb-1 block">
+              <label className="text-[11px] text-text-muted mb-1 block">
                 Hoặc chọn thời điểm mở khóa cụ thể
               </label>
               <input
@@ -131,19 +131,19 @@ export function LockUserModal({
                   setCustomDate(e.target.value);
                   setPresetHours(null);
                 }}
-                className="w-full text-xs border border-slate-200 rounded-lg px-2.5 py-2 focus:outline-none focus:ring-2 focus:ring-primary/30"
+                className="w-full text-xs border border-surface-200 rounded-lg px-2.5 py-2 focus:outline-none focus:ring-2 focus:ring-primary/30"
               />
             </div>
           )}
 
           <div>
-            <label className="text-xs font-medium text-slate-700 mb-1 block">
+            <label className="text-xs font-medium text-text-secondary mb-1 block">
               Lý do vi phạm
             </label>
             <select
               value={reason}
               onChange={(e) => setReason(e.target.value as LockReason)}
-              className="w-full text-xs border border-slate-200 rounded-lg px-2.5 py-2 focus:outline-none focus:ring-2 focus:ring-primary/30"
+              className="w-full text-xs border border-surface-200 rounded-lg px-2.5 py-2 focus:outline-none focus:ring-2 focus:ring-primary/30"
             >
               {LOCK_REASONS.map((r) => (
                 <option key={r} value={r}>
@@ -154,7 +154,7 @@ export function LockUserModal({
           </div>
 
           <div>
-            <label className="text-xs font-medium text-slate-700 mb-1 block">
+            <label className="text-xs font-medium text-text-secondary mb-1 block">
               Ghi chú (hiển thị cho người dùng)
             </label>
             <textarea
@@ -162,7 +162,7 @@ export function LockUserModal({
               onChange={(e) => setNote(e.target.value)}
               rows={2}
               placeholder="Ví dụ: bạn đã đăng nhiều tài liệu trùng lặp trong thời gian ngắn"
-              className="w-full text-xs border border-slate-200 rounded-lg px-2.5 py-2 resize-none focus:outline-none focus:ring-2 focus:ring-primary/30"
+              className="w-full text-xs border border-surface-200 rounded-lg px-2.5 py-2 resize-none focus:outline-none focus:ring-2 focus:ring-primary/30"
             />
           </div>
 
@@ -173,17 +173,17 @@ export function LockUserModal({
               onChange={(e) => setNotifyUser(e.target.checked)}
               className="mt-0.5 accent-primary w-4 h-4"
             />
-            <span className="text-xs text-slate-600">
+            <span className="text-xs text-text-secondary">
               Gửi thông báo lý do khóa cho người dùng
             </span>
           </label>
         </div>
 
-        <div className="flex items-center justify-end gap-2 px-5 py-4 mt-1 bg-slate-50 shrink-0">
+        <div className="flex items-center justify-end gap-2 px-5 py-4 mt-1 bg-surface-50 shrink-0">
           <button
             onClick={onCancel}
             disabled={loading}
-            className="px-4 py-2 text-xs font-medium text-slate-600 rounded-lg hover:bg-slate-200/60 transition-colors"
+            className="px-4 py-2 text-xs font-medium text-text-secondary rounded-lg hover:bg-slate-200/60 transition-colors"
           >
             Hủy
           </button>

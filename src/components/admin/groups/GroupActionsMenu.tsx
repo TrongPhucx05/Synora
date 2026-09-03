@@ -65,7 +65,7 @@ export function GroupActionsMenu({
       <button
         ref={triggerRef}
         onClick={() => setOpen((v) => !v)}
-        className="p-1.5 rounded-full hover:bg-slate-100 text-slate-400 transition-colors"
+        className="p-1.5 rounded-full hover:bg-surface-100 text-text-muted transition-colors"
       >
         <MoreVertical size={15} />
       </button>
@@ -76,20 +76,20 @@ export function GroupActionsMenu({
           <div
             ref={menuRef}
             style={style}
-            className="z-[100] w-56 bg-white rounded-xl shadow-xl border border-slate-100 py-1 overflow-hidden"
+            className="z-[100] w-56 bg-surface rounded-xl shadow-xl border border-surface-100 py-1 overflow-hidden"
           >
             <button
               onClick={() => {
                 setOpen(false);
                 onViewDetail();
               }}
-              className="w-full flex items-center gap-2.5 px-3.5 py-2.5 text-xs text-slate-700 hover:bg-slate-50 transition-colors"
+              className="w-full flex items-center gap-2.5 px-3.5 py-2.5 text-xs text-text-secondary hover:bg-surface-50 transition-colors"
             >
-              <Eye size={13} className="text-slate-400 shrink-0" />
+              <Eye size={13} className="text-text-muted shrink-0" />
               Xem chi tiết
             </button>
 
-            <div className="h-px bg-slate-100 my-0.5" />
+            <div className="h-px bg-surface-100 my-0.5" />
 
             {isDisabled ? (
               <button

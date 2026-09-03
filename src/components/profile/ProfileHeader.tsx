@@ -128,7 +128,7 @@ export function ProfileHeader({
 
   return (
     <div className="relative mb-16">
-      <div className="h-40 rounded-2xl overflow-hidden relative bg-slate-200">
+      <div className="h-40 rounded-2xl overflow-hidden relative bg-surface-200">
         {coverUrl ? (
           <img
             src={coverUrl}
@@ -164,7 +164,7 @@ export function ProfileHeader({
           {isOwner && (
             <button
               onClick={() => setShowEditModal(true)}
-              className="absolute bottom-1 right-1 w-6 h-6 bg-white border border-surface-200 rounded-full flex items-center justify-center hover:bg-surface-100 transition-colors shadow-sm"
+              className="absolute bottom-1 right-1 w-6 h-6 bg-surface border border-surface-200 rounded-full flex items-center justify-center hover:bg-surface-100 transition-colors shadow-sm"
             >
               <Camera size={11} className="text-text-secondary" />
             </button>
@@ -174,7 +174,7 @@ export function ProfileHeader({
 
       <div className="absolute -bottom-10 right-0 flex items-center gap-2">
         {!isAdmin && (
-          <button className="flex items-center gap-1.5 border border-surface-200 bg-white text-text-secondary text-xs font-medium px-3 py-1.5 rounded-lg hover:bg-surface-50 transition-colors">
+          <button className="flex items-center gap-1.5 border border-surface-200 bg-surface text-text-secondary text-xs font-medium px-3 py-1.5 rounded-lg hover:bg-surface-50 transition-colors">
             <Share2 size={13} /> Chia sẻ
           </button>
         )}
@@ -182,7 +182,7 @@ export function ProfileHeader({
         {isOwner ? (
           <button
             onClick={() => setShowEditModal(true)}
-            className="flex items-center gap-1.5 border border-surface-200 bg-white text-text-secondary text-xs font-medium px-3 py-1.5 rounded-lg hover:bg-surface-50 transition-colors"
+            className="flex items-center gap-1.5 border border-surface-200 bg-surface text-text-secondary text-xs font-medium px-3 py-1.5 rounded-lg hover:bg-surface-50 transition-colors"
           >
             <Pencil size={13} /> Chỉnh sửa
           </button>
@@ -201,7 +201,7 @@ export function ProfileHeader({
                   }}
                   disabled={isAdmin}
                   className={clsx(
-                    "flex items-center gap-1.5 border border-surface-200 bg-white text-text-secondary text-xs font-medium px-3 py-1.5 rounded-lg transition-colors",
+                    "flex items-center gap-1.5 border border-surface-200 bg-surface text-text-secondary text-xs font-medium px-3 py-1.5 rounded-lg transition-colors",
                     isAdmin
                       ? "opacity-40 cursor-not-allowed"
                       : "hover:bg-surface-50",
@@ -221,7 +221,7 @@ export function ProfileHeader({
                     Trả lời <ChevronDown size={13} />
                   </button>
                   {showReplyMenu && (
-                    <div className="absolute right-0 top-full mt-1.5 bg-white border border-surface-200 rounded-xl shadow-lg overflow-hidden z-20 min-w-[140px]">
+                    <div className="absolute right-0 top-full mt-1.5 bg-surface border border-surface-200 rounded-xl shadow-lg overflow-hidden z-20 min-w-[140px]">
                       <button
                         onClick={() => handleRequestAction("accept")}
                         className="w-full flex items-center gap-2 px-3 py-2.5 text-xs font-medium text-text-primary hover:bg-surface-50 transition-colors"

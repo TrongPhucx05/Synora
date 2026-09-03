@@ -50,7 +50,7 @@ export function ReportModal({
       className="fixed inset-0 z-[70] flex items-center justify-center bg-black/40 backdrop-blur-sm p-4"
       onClick={(e) => e.target === e.currentTarget && onClose()}
     >
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-sm p-5">
+      <div className="bg-surface rounded-2xl shadow-2xl w-full max-w-sm p-5">
         <div className="flex items-start justify-between mb-3">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-full bg-orange-50 flex items-center justify-center shrink-0">

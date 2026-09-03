@@ -73,15 +73,15 @@ function SearchDropdown({
 
   if (!hasQuery) {
     return (
-      <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-2xl shadow-xl border border-slate-200 overflow-hidden z-50">
+      <div className="absolute top-full left-0 right-0 mt-2 bg-surface rounded-2xl shadow-xl border border-surface-200 overflow-hidden z-50">
         {history.length === 0 ? (
-          <div className="px-4 py-6 text-center text-xs text-slate-400">
+          <div className="px-4 py-6 text-center text-xs text-text-muted">
             Chưa có lịch sử tìm kiếm
           </div>
         ) : (
           <>
             <div className="flex items-center justify-between px-4 pt-3 pb-1">
-              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
+              <p className="text-[10px] font-bold text-text-muted uppercase tracking-wider flex items-center gap-1.5">
                 <Clock size={10} /> Tìm kiếm gần đây
               </p>
               <button
@@ -89,7 +89,7 @@ function SearchDropdown({
                   e.preventDefault();
                   onClearHistory();
                 }}
-                className="text-[10px] text-slate-400 hover:text-slate-600 transition-colors"
+                className="text-[10px] text-text-muted hover:text-text-secondary transition-colors"
               >
                 Xóa tất cả
               </button>
@@ -98,11 +98,11 @@ function SearchDropdown({
               {history.map((h) => (
                 <div
                   key={h}
-                  className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-slate-50 group/item transition-colors"
+                  className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-surface-50 group/item transition-colors"
                 >
-                  <Clock size={13} className="text-slate-300 shrink-0" />
+                  <Clock size={13} className="text-text-muted shrink-0" />
                   <button
-                    className="flex-1 text-left text-sm text-slate-700 truncate"
+                    className="flex-1 text-left text-sm text-text-secondary truncate"
                     onClick={() => {
                       onSelectHistory(h);
                       onSelect();
@@ -116,7 +116,7 @@ function SearchDropdown({
                       e.stopPropagation();
                       onRemoveHistory(h);
                     }}
-                    className="opacity-0 group-hover/item:opacity-100 transition-opacity p-0.5 rounded hover:bg-slate-200 text-slate-400 shrink-0"
+                    className="opacity-0 group-hover/item:opacity-100 transition-opacity p-0.5 rounded hover:bg-surface-200 text-text-muted shrink-0"
                   >
                     <X size={11} />
                   </button>
@@ -130,20 +130,20 @@ function SearchDropdown({
   }
 
   return (
-    <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-2xl shadow-xl border border-slate-200 overflow-hidden z-50">
+    <div className="absolute top-full left-0 right-0 mt-2 bg-surface rounded-2xl shadow-xl border border-surface-200 overflow-hidden z-50">
       <Link
         href={`/search?q=${encodeURIComponent(query)}`}
         onClick={onSelect}
-        className="flex items-center gap-3 px-4 py-3 hover:bg-slate-50 transition-colors border-b border-slate-100"
+        className="flex items-center gap-3 px-4 py-3 hover:bg-surface-50 transition-colors border-b border-surface-100"
       >
-        <Search size={14} className="text-slate-400 shrink-0" />
-        <span className="flex-1 text-sm text-slate-800 font-medium truncate">
+        <Search size={14} className="text-text-muted shrink-0" />
+        <span className="flex-1 text-sm text-text-primary font-medium truncate">
           {query}
         </span>
-        <span className="text-[10px] text-slate-400 shrink-0">Tìm kiếm</span>
+        <span className="text-[10px] text-text-muted shrink-0">Tìm kiếm</span>
       </Link>
       <div className="px-2 py-1.5">
-        <p className="text-[10px] font-semibold text-slate-400 px-2 mb-1 uppercase tracking-wider">
+        <p className="text-[10px] font-semibold text-text-muted px-2 mb-1 uppercase tracking-wider">
           Tìm theo danh mục
         </p>
         {CATEGORY_TABS.map(({ label, tab, isTopic }) => {
@@ -154,15 +154,15 @@ function SearchDropdown({
               key={tab}
               href={`/search?q=${encodeURIComponent(searchQ)}&tab=${tab}`}
               onClick={onSelect}
-              className="flex items-center justify-between px-3 py-2 rounded-xl hover:bg-slate-50 group/cat transition-colors"
+              className="flex items-center justify-between px-3 py-2 rounded-xl hover:bg-surface-50 group/cat transition-colors"
             >
-              <span className="text-sm text-slate-600">
+              <span className="text-sm text-text-secondary">
                 {label}{" "}
-                <span className="text-slate-400 font-normal">
+                <span className="text-text-muted font-normal">
                   {displaySuffix}
                 </span>
               </span>
-              <span className="text-[10px] text-slate-300 opacity-0 group-hover/cat:opacity-100 transition-opacity shrink-0">
+              <span className="text-[10px] text-text-muted opacity-0 group-hover/cat:opacity-100 transition-opacity shrink-0">
                 ↵
               </span>
             </Link>
@@ -326,9 +326,12 @@ export default function Navbar({
   };
 
   return (
-    <header className="fixed top-0 left-0 right-0 h-14 bg-white border-b border-slate-200 flex items-center z-30">
+    <header className="fixed top-0 left-0 right-0 h-14 bg-surface border-b border-surface-200 flex items-center z-30">
       <div className="w-[330px] shrink-0 px-4">
-        <Link href="/feed" className="inline-flex flex-none w-fit items-center gap-2">
+        <Link
+          href="/feed"
+          className="inline-flex flex-none w-fit items-center gap-2"
+        >
           <div className="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center">
             <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
               <path
@@ -340,7 +343,7 @@ export default function Navbar({
               <circle cx="9" cy="9" r="2" fill="white" />
             </svg>
           </div>
-          <span className="text-lg font-bold text-slate-900 tracking-tight">
+          <span className="text-lg font-bold text-text-primary tracking-tight">
             Synora
           </span>
         </Link>
@@ -351,7 +354,7 @@ export default function Navbar({
           <div className="relative">
             <Search
               size={15}
-              className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"
+              className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted pointer-events-none"
             />
             <input
               type="text"
@@ -360,16 +363,16 @@ export default function Navbar({
               onFocus={() => setSearchFocused(true)}
               onKeyDown={handleSearchKeyDown}
               placeholder="Tìm kiếm tài liệu, bài viết, nhóm học tập..."
-              className={`w-full pl-9 pr-8 py-2 bg-slate-100 border rounded-full text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none transition-colors ${
+              className={`w-full pl-9 pr-8 py-2 bg-surface-100 border rounded-full text-sm text-text-primary placeholder:text-text-muted focus:outline-none transition-colors ${
                 searchFocused
-                  ? "border-blue-400 bg-white shadow-sm shadow-blue-100"
-                  : "border-slate-200 hover:border-slate-300"
+                  ? "border-blue-400 bg-surface shadow-sm shadow-blue-100"
+                  : "border-surface-200 hover:border-surface-200"
               }`}
             />
             {searchQuery && (
               <button
                 onClick={() => setSearchQuery("")}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-secondary transition-colors"
               >
                 <X size={13} />
               </button>
@@ -392,7 +395,7 @@ export default function Navbar({
         {isLoggedIn && !isAdmin && (
           <Link
             href="/chat"
-            className="relative p-2.5 rounded-full hover:bg-slate-100 text-slate-600 hover:text-blue-500 transition-colors block"
+            className="relative p-2.5 rounded-full hover:bg-surface-100 text-text-secondary hover:text-blue-500 transition-colors block"
             title="Tin nhắn"
           >
             <MessageCircle size={18} />
@@ -412,8 +415,8 @@ export default function Navbar({
               onClick={handleBellOpen}
               className={`relative p-2.5 rounded-full cursor-pointer transition-colors ${
                 bellOpen
-                  ? "bg-blue-50 text-blue-500"
-                  : "hover:bg-slate-100 text-slate-600 hover:text-blue-500"
+                  ? "bg-blue-50 dark:bg-blue-500/15 text-blue-500 dark:text-blue-400"
+                  : "hover:bg-surface-100 text-text-secondary hover:text-blue-500"
               }`}
               title="Thông báo"
             >
@@ -428,10 +431,10 @@ export default function Navbar({
             </button>
 
             {bellOpen && (
-              <div className="absolute top-full right-0 mt-2 w-[380px] bg-white rounded-2xl shadow-xl border border-slate-200 overflow-hidden z-50">
-                <div className="flex items-center justify-between px-4 py-3 border-b border-slate-200">
+              <div className="absolute top-full right-0 mt-2 w-[380px] bg-surface rounded-2xl shadow-xl border border-surface-200 overflow-hidden z-50">
+                <div className="flex items-center justify-between px-4 py-3 border-b border-surface-200">
                   <div className="flex items-center gap-2">
-                    <span className="text-sm font-bold text-slate-900">
+                    <span className="text-sm font-bold text-text-primary">
                       Thông báo
                     </span>
                     {totalUnread > 0 && (
@@ -450,20 +453,20 @@ export default function Navbar({
                     </Link>
                     <button
                       onClick={() => setBellOpen(false)}
-                      className="p-1 rounded-lg hover:bg-slate-100 transition-colors"
+                      className="p-1 rounded-lg hover:bg-surface-100 transition-colors"
                     >
-                      <X size={14} className="text-slate-400" />
+                      <X size={14} className="text-text-muted" />
                     </button>
                   </div>
                 </div>
                 <div className="max-h-[400px] overflow-y-auto py-1">
                   {bellLoading ? (
-                    <div className="flex items-center justify-center py-10 gap-2 text-slate-400">
+                    <div className="flex items-center justify-center py-10 gap-2 text-text-muted">
                       <Loader2 size={16} className="animate-spin" />
                       <span className="text-xs">Đang tải...</span>
                     </div>
                   ) : notifs.length === 0 ? (
-                    <p className="text-center text-xs text-slate-400 py-10">
+                    <p className="text-center text-xs text-text-muted py-10">
                       Không có thông báo nào trong 30 ngày qua
                     </p>
                   ) : (
@@ -485,7 +488,7 @@ export default function Navbar({
         )}
 
         {status === "loading" ? (
-          <div className="w-8 h-8 rounded-full bg-slate-200 animate-pulse" />
+          <div className="w-8 h-8 rounded-full bg-surface-200 animate-pulse" />
         ) : isLoggedIn ? (
           <div ref={avatarRef} className="relative">
             <button
@@ -501,8 +504,8 @@ export default function Navbar({
             </button>
 
             {avatarOpen && (
-              <div className="absolute top-full right-0 mt-2 w-[220px] bg-white rounded-2xl shadow-xl border border-slate-200 overflow-hidden z-50">
-                <div className="flex items-center gap-3 px-4 py-3 border-b border-slate-100">
+              <div className="absolute top-full right-0 mt-2 w-[220px] bg-surface rounded-2xl shadow-xl border border-surface-200 overflow-hidden z-50">
+                <div className="flex items-center gap-3 px-4 py-3 border-b border-surface-100">
                   <Avatar
                     src={avatarUrl}
                     name={displayName}
@@ -510,10 +513,10 @@ export default function Navbar({
                     size="md"
                   />
                   <div className="min-w-0">
-                    <p className="text-sm font-semibold text-slate-900 truncate">
+                    <p className="text-sm font-semibold text-text-primary truncate">
                       {displayName}
                     </p>
-                    <p className="text-[11px] text-slate-400 truncate">
+                    <p className="text-[11px] text-text-muted truncate">
                       {email}
                     </p>
                   </div>
@@ -523,12 +526,15 @@ export default function Navbar({
                     <Link
                       href="/admin"
                       onClick={() => setAvatarOpen(false)}
-                      className="flex items-center gap-2.5 px-3 py-2 rounded-xl hover:bg-slate-50 transition-colors"
+                      className="flex items-center gap-2.5 px-3 py-2 rounded-xl hover:bg-surface-50 transition-colors"
                     >
-                      <div className="w-7 h-7 rounded-lg bg-blue-50 flex items-center justify-center shrink-0">
-                        <Shield size={13} className="text-blue-500" />
+                      <div className="w-7 h-7 rounded-lg bg-blue-50 dark:bg-blue-500/15 flex items-center justify-center shrink-0">
+                        <Shield
+                          size={13}
+                          className="text-blue-500 dark:text-blue-400"
+                        />
                       </div>
-                      <span className="text-sm text-slate-700">
+                      <span className="text-sm text-text-secondary">
                         Trang quản trị
                       </span>
                     </Link>
@@ -537,39 +543,50 @@ export default function Navbar({
                       <Link
                         href={`/profile/${session?.user?.username}`}
                         onClick={() => setAvatarOpen(false)}
-                        className="flex items-center gap-2.5 px-3 py-2 rounded-xl hover:bg-slate-50 transition-colors"
+                        className="flex items-center gap-2.5 px-3 py-2 rounded-xl hover:bg-surface-50 transition-colors"
                       >
-                        <div className="w-7 h-7 rounded-lg bg-blue-50 flex items-center justify-center shrink-0">
-                          <User size={13} className="text-blue-500" />
+                        <div className="w-7 h-7 rounded-lg bg-blue-50 dark:bg-blue-500/15 flex items-center justify-center shrink-0">
+                          <User
+                            size={13}
+                            className="text-blue-500 dark:text-blue-400"
+                          />
                         </div>
-                        <span className="text-sm text-slate-700">
+                        <span className="text-sm text-text-secondary">
                           Trang cá nhân
                         </span>
                       </Link>
                       <Link
                         href="/settings"
                         onClick={() => setAvatarOpen(false)}
-                        className="flex items-center gap-2.5 px-3 py-2 rounded-xl hover:bg-slate-50 transition-colors"
+                        className="flex items-center gap-2.5 px-3 py-2 rounded-xl hover:bg-surface-50 transition-colors"
                       >
-                        <div className="w-7 h-7 rounded-lg bg-emerald-50 flex items-center justify-center shrink-0">
-                          <Settings size={13} className="text-emerald-500" />
+                        <div className="w-7 h-7 rounded-lg bg-emerald-50 dark:bg-emerald-500/15 flex items-center justify-center shrink-0">
+                          <Settings
+                            size={13}
+                            className="text-emerald-500 dark:text-emerald-400"
+                          />
                         </div>
-                        <span className="text-sm text-slate-700">Cài đặt</span>
+                        <span className="text-sm text-text-secondary">
+                          Cài đặt
+                        </span>
                       </Link>
                     </>
                   )}
-                  <div className="my-1 border-t border-slate-100" />
+                  <div className="my-1 border-t border-surface-100" />
                   <button
                     onClick={() => {
                       setAvatarOpen(false);
                       signOut({ callbackUrl: "/login" });
                     }}
-                    className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl hover:bg-red-50 transition-colors"
+                    className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors"
                   >
-                    <div className="w-7 h-7 rounded-lg bg-red-50 flex items-center justify-center shrink-0">
-                      <LogOut size={13} className="text-red-500" />
+                    <div className="w-7 h-7 rounded-lg bg-red-50 dark:bg-red-500/15 flex items-center justify-center shrink-0">
+                      <LogOut
+                        size={13}
+                        className="text-red-500 dark:text-red-400"
+                      />
                     </div>
-                    <span className="text-sm text-red-500 font-medium">
+                    <span className="text-sm text-red-500 dark:text-red-400 font-medium">
                       Đăng xuất
                     </span>
                   </button>
@@ -581,7 +598,7 @@ export default function Navbar({
           <div className="flex items-center gap-2">
             <Link
               href="/login"
-              className="px-4 py-1.5 text-sm font-semibold text-slate-700 border border-slate-300 hover:border-slate-400 hover:bg-slate-50 rounded-full transition-colors"
+              className="px-4 py-1.5 text-sm font-semibold text-text-secondary border border-surface-200 hover:border-surface-200 hover:bg-surface-50 rounded-full transition-colors"
             >
               Đăng nhập
             </Link>

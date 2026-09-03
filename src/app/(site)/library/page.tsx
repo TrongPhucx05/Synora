@@ -165,7 +165,7 @@ export default function LibraryPage() {
             {Array.from({ length: 6 }).map((_, i) => (
               <div
                 key={i}
-                className="bg-white rounded-xl border border-surface-200 p-4 h-48 animate-pulse"
+                className="bg-surface rounded-xl border border-surface-200 p-4 h-48 animate-pulse"
               >
                 <div className="h-10 w-10 bg-surface-100 rounded-lg mb-3" />
                 <div className="h-4 bg-surface-100 rounded w-3/4 mb-2" />

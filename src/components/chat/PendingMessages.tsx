@@ -71,7 +71,7 @@ function PendingItemMenu({
   return (
     <div
       ref={ref}
-      className="absolute right-0 top-full mt-1 z-20 w-44 bg-white rounded-xl shadow-xl border border-surface-100 py-1 overflow-hidden"
+      className="absolute right-0 top-full mt-1 z-20 w-44 bg-surface rounded-xl shadow-xl border border-surface-100 py-1 overflow-hidden"
     >
       {!isGroup && (
         <Link
@@ -132,7 +132,7 @@ function ArchivedItemMenu({
   return (
     <div
       ref={ref}
-      className="absolute right-0 top-full mt-1 z-20 w-48 bg-white rounded-xl shadow-xl border border-surface-100 py-1 overflow-hidden"
+      className="absolute right-0 top-full mt-1 z-20 w-48 bg-surface rounded-xl shadow-xl border border-surface-100 py-1 overflow-hidden"
     >
       {!conv.isSelf && (
         <button
@@ -407,7 +407,7 @@ export function PendingMessages({
 
       {open && (
         <div
-          className="fixed inset-y-0 left-0 z-50 flex flex-col bg-white shadow-2xl border-r border-surface-200 animate-slide-in-left"
+          className="fixed inset-y-0 left-0 z-50 flex flex-col bg-surface shadow-2xl border-r border-surface-200 animate-slide-in-left"
           style={{ width: "320px" }}
           role="dialog"
           aria-modal="true"

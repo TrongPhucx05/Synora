@@ -187,7 +187,7 @@ export default function UploadDocumentModal({ onClose, onSuccess }: Props) {
     >
       <div
         ref={modalRef}
-        className="relative flex flex-col bg-white shadow-2xl w-full max-w-lg rounded-2xl animate-in fade-in zoom-in-95 duration-200 max-sm:fixed max-sm:inset-0 max-sm:max-w-none max-sm:rounded-none overflow-hidden"
+        className="relative flex flex-col bg-surface shadow-2xl w-full max-w-lg rounded-2xl animate-in fade-in zoom-in-95 duration-200 max-sm:fixed max-sm:inset-0 max-sm:max-w-none max-sm:rounded-none overflow-hidden"
       >
         <div className="flex items-center justify-between px-5 py-4 border-b border-surface-200 shrink-0">
           <h2 className="text-sm font-semibold text-text-primary">
@@ -243,7 +243,7 @@ export default function UploadDocumentModal({ onClose, onSuccess }: Props) {
                   }}
                   placeholder="Nhập tiêu đề tài liệu..."
                   className={clsx(
-                    "w-full px-3 py-2.5 bg-white border rounded-xl text-sm placeholder:text-text-muted focus:outline-none transition-colors",
+                    "w-full px-3 py-2.5 bg-surface border rounded-xl text-sm placeholder:text-text-muted focus:outline-none transition-colors",
                     errors.title
                       ? "border-red-400"
                       : "border-surface-200 focus:border-primary",
@@ -267,7 +267,7 @@ export default function UploadDocumentModal({ onClose, onSuccess }: Props) {
                       setSubjectId("");
                       setMajor("");
                     }}
-                    className="w-full px-3 py-2.5 bg-white border border-surface-200 rounded-xl text-sm appearance-none focus:outline-none focus:border-primary transition-colors"
+                    className="w-full px-3 py-2.5 bg-surface border border-surface-200 rounded-xl text-sm appearance-none focus:outline-none focus:border-primary transition-colors"
                   >
                     <option value="">Chọn cấp học...</option>
                     {levelOptions.map((l) => (
@@ -306,7 +306,7 @@ export default function UploadDocumentModal({ onClose, onSuccess }: Props) {
                             setSubjectId("");
                           }
                         }}
-                        className="w-full px-3 py-2.5 bg-white border border-surface-200 rounded-xl text-sm appearance-none focus:outline-none focus:border-primary"
+                        className="w-full px-3 py-2.5 bg-surface border border-surface-200 rounded-xl text-sm appearance-none focus:outline-none focus:border-primary"
                       >
                         <option value="">Chọn lớp...</option>
                         {ACADEMIC_GRADES.map((g) => (
@@ -332,7 +332,7 @@ export default function UploadDocumentModal({ onClose, onSuccess }: Props) {
                       <select
                         value={subjectId}
                         onChange={(e) => setSubjectId(e.target.value)}
-                        className="w-full px-3 py-2.5 bg-white border border-surface-200 rounded-xl text-sm appearance-none focus:outline-none focus:border-primary"
+                        className="w-full px-3 py-2.5 bg-surface border border-surface-200 rounded-xl text-sm appearance-none focus:outline-none focus:border-primary"
                       >
                         <option value="">Chọn môn...</option>
                         {getFilteredSubjects(grade).map((s) => (
@@ -364,7 +364,7 @@ export default function UploadDocumentModal({ onClose, onSuccess }: Props) {
                     <select
                       value={major}
                       onChange={(e) => setMajor(e.target.value)}
-                      className="w-full px-3 py-2.5 bg-white border border-surface-200 rounded-xl text-sm appearance-none focus:outline-none focus:border-primary"
+                      className="w-full px-3 py-2.5 bg-surface border border-surface-200 rounded-xl text-sm appearance-none focus:outline-none focus:border-primary"
                     >
                       <option value="">Chọn khối ngành...</option>
                       {UNIVERSITY_MAJORS.map((m) => (
@@ -469,7 +469,7 @@ export default function UploadDocumentModal({ onClose, onSuccess }: Props) {
                   onChange={(e) => setDescription(e.target.value)}
                   placeholder="Mô tả ngắn về nội dung tài liệu..."
                   rows={3}
-                  className="w-full px-3 py-2.5 bg-white border border-surface-200 rounded-xl text-sm placeholder:text-text-muted focus:outline-none focus:border-primary transition-colors resize-none"
+                  className="w-full px-3 py-2.5 bg-surface border border-surface-200 rounded-xl text-sm placeholder:text-text-muted focus:outline-none focus:border-primary transition-colors resize-none"
                 />
               </div>
 

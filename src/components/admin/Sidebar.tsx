@@ -70,7 +70,7 @@ export default function Sidebar() {
   }, []);
 
   return (
-    <aside className="fixed left-0 top-0 h-screen w-[260px] bg-slate-900 text-slate-300 flex flex-col z-30">
+    <aside className="fixed left-0 top-0 h-screen w-[260px] bg-slate-900 text-text-muted flex flex-col z-30">
       <div className="flex items-center gap-2.5 px-5 py-5">
         <div className="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center shrink-0">
           <svg width="16" height="16" viewBox="0 0 18 18" fill="none">
@@ -85,7 +85,7 @@ export default function Sidebar() {
         </div>
         <div>
           <p className="text-sm font-bold text-white leading-tight">Synora</p>
-          <p className="text-[10px] text-slate-400 leading-tight">
+          <p className="text-[10px] text-text-muted leading-tight">
             Admin Panel
           </p>
         </div>
@@ -107,7 +107,7 @@ export default function Sidebar() {
                 "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors",
                 isActive
                   ? "bg-blue-500/15 text-blue-400"
-                  : "text-slate-400 hover:bg-white/5 hover:text-slate-100",
+                  : "text-text-muted hover:bg-white/5 hover:text-slate-100",
               )}
             >
               <item.icon size={17} className="shrink-0" />
@@ -125,7 +125,7 @@ export default function Sidebar() {
       <div className="px-3 py-4 border-t border-white/10">
         <Link
           href="/feed"
-          className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:bg-white/5 hover:text-slate-100 transition-colors"
+          className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-text-muted hover:bg-white/5 hover:text-slate-100 transition-colors"
         >
           <ArrowLeft size={17} className="shrink-0" />
           Về trang chính

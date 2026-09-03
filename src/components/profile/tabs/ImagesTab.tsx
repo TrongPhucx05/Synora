@@ -48,7 +48,7 @@ export function ImagesTab({ username }: { username: string }) {
     return (
       <div className="grid grid-cols-3 gap-2">
         {[1, 2, 3, 4, 5, 6].map((i) => (
-          <div key={i} className="aspect-square bg-white border border-surface-200 rounded-2xl animate-pulse" />
+          <div key={i} className="aspect-square bg-surface border border-surface-200 rounded-2xl animate-pulse" />
         ))}
       </div>
     );
@@ -56,7 +56,7 @@ export function ImagesTab({ username }: { username: string }) {
 
   if (images.length === 0) {
     return (
-      <div className="bg-white border border-surface-200 rounded-2xl p-8 text-center">
+      <div className="bg-surface border border-surface-200 rounded-2xl p-8 text-center">
         <p className="text-text-muted text-sm">Chưa có hình ảnh nào.</p>
       </div>
     );

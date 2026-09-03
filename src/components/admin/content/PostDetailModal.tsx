@@ -44,19 +44,19 @@ export function PostDetailModal({
           </h2>
           <button
             onClick={onClose}
-            className="w-8 h-8 rounded-full bg-white/90 hover:bg-white flex items-center justify-center text-slate-600 shadow shrink-0"
+            className="w-8 h-8 rounded-full bg-white/90 hover:bg-surface flex items-center justify-center text-text-secondary shadow shrink-0"
           >
             <X size={16} />
           </button>
         </div>
 
         {loading && (
-          <div className="bg-white rounded-xl p-10 text-center text-sm text-slate-400">
+          <div className="bg-surface rounded-xl p-10 text-center text-sm text-text-muted">
             Đang tải bài viết...
           </div>
         )}
         {error && (
-          <div className="bg-white rounded-xl p-10 text-center text-sm text-red-500">
+          <div className="bg-surface rounded-xl p-10 text-center text-sm text-red-500">
             {error}
           </div>
         )}

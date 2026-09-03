@@ -55,7 +55,7 @@ export function ConfirmDialog({
       className="fixed inset-0 z-[90] flex items-center justify-center bg-black/40 backdrop-blur-sm p-4"
       onClick={(e) => e.target === e.currentTarget && !loading && onCancel()}
     >
-      <div className="bg-white rounded-2xl shadow-xl p-6 w-80 mx-4 animate-in fade-in zoom-in-95 duration-150">
+      <div className="bg-surface rounded-2xl shadow-xl p-6 w-80 mx-4 animate-in fade-in zoom-in-95 duration-150">
         <div
           className={clsx(
             "flex items-center justify-center w-11 h-11 rounded-full mx-auto mb-4",

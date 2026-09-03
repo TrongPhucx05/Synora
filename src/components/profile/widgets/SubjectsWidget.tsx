@@ -6,7 +6,7 @@ export function SubjectsWidget({ subjects }: SubjectsWidgetProps) {
   if (!subjects || subjects.length === 0) return null;
 
   return (
-    <div className="bg-white border border-surface-200 rounded-2xl p-4">
+    <div className="bg-surface border border-surface-200 rounded-2xl p-4">
       <h3 className="text-xs font-semibold text-text-primary mb-2.5">Môn học</h3>
       <div className="flex flex-wrap gap-1.5">
         {subjects.map((s) => (

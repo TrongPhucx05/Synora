@@ -38,7 +38,7 @@ export function SearchTabs({ activeTab, tabCounts, onTabChange, sort, onSortChan
   const currentSortLabel = SORT_OPTIONS.find((o) => o.key === sort)?.label ?? "Sắp xếp";
 
   return (
-    <div className="sticky top-14 z-20 bg-white border-b border-surface-200">
+    <div className="sticky top-14 z-20 bg-surface border-b border-surface-200">
       <div className="max-w-6xl mx-auto px-6">
         <div className="flex items-center justify-between">
           <div className="flex items-center overflow-x-auto scrollbar-hide">
@@ -81,7 +81,7 @@ export function SearchTabs({ activeTab, tabCounts, onTabChange, sort, onSortChan
                 />
               </button>
               {dropdownOpen && (
-                <div className="absolute right-0 top-full mt-1.5 w-44 bg-white border border-surface-200 rounded-xl shadow-lg overflow-hidden z-30 py-1">
+                <div className="absolute right-0 top-full mt-1.5 w-44 bg-surface border border-surface-200 rounded-xl shadow-lg overflow-hidden z-30 py-1">
                   {SORT_OPTIONS.map(({ key, label }) => (
                     <button
                       key={key}

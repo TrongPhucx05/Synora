@@ -1287,7 +1287,7 @@ export default function ChatPage() {
 
   return (
     <div className="flex h-screen overflow-hidden">
-      <div className="w-[52px] shrink-0 bg-white border-r border-surface-200 flex flex-col items-center py-3 gap-2 z-20">
+      <div className="w-[52px] shrink-0 bg-surface border-r border-surface-200 flex flex-col items-center py-3 gap-2 z-20">
         <Link
           href="/feed"
           className="w-9 h-9 rounded-xl bg-surface-100 hover:bg-primary/10 flex items-center justify-center text-text-muted hover:text-primary transition-colors"
@@ -1397,7 +1397,7 @@ export default function ChatPage() {
         onReport={handleReportConv}
       />
 
-      <div className="flex-1 flex flex-col bg-white min-w-0 relative">
+      <div className="flex-1 flex flex-col bg-surface min-w-0 relative">
         {!currentConv ? (
           <div className="flex-1 flex items-center justify-center text-text-muted text-sm">
             {convLoading ? "Đang tải..." : "Chọn một cuộc trò chuyện"}
@@ -1701,7 +1701,7 @@ export default function ChatPage() {
             />
 
             {currentConv.isPending ? (
-              <div className="px-4 py-4 border-t border-surface-200 bg-white shrink-0 flex items-center justify-center gap-2">
+              <div className="px-4 py-4 border-t border-surface-200 bg-surface shrink-0 flex items-center justify-center gap-2">
                 {!currentConv.isGroup && (
                   <button
                     onClick={handlePendingBlock}
@@ -1727,7 +1727,7 @@ export default function ChatPage() {
                 </button>
               </div>
             ) : currentConv.isArchived ? (
-              <div className="px-4 py-4 border-t border-surface-200 bg-white shrink-0 flex items-center justify-center gap-3">
+              <div className="px-4 py-4 border-t border-surface-200 bg-surface shrink-0 flex items-center justify-center gap-3">
                 <p className="text-xs text-text-muted">
                   Cuộc trò chuyện đang được lưu trữ
                 </p>
@@ -1758,14 +1758,14 @@ export default function ChatPage() {
                 </button>
               </div>
             ) : currentConv.isDisabled ? (
-              <div className="px-4 py-4 border-t border-surface-200 bg-white shrink-0 flex items-center justify-center gap-3">
+              <div className="px-4 py-4 border-t border-surface-200 bg-surface shrink-0 flex items-center justify-center gap-3">
                 <p className="text-xs text-text-muted">
                   Nhóm này đã bị quản trị viên vô hiệu hóa. Bạn vẫn có thể xem
                   lịch sử nhưng không thể gửi tin nhắn mới.
                 </p>
               </div>
             ) : currentConv.isBlockedByMe || currentConv.hasBlockedMe ? (
-              <div className="px-4 py-4 border-t border-surface-200 bg-white shrink-0 flex items-center justify-center gap-3">
+              <div className="px-4 py-4 border-t border-surface-200 bg-surface shrink-0 flex items-center justify-center gap-3">
                 <p className="text-xs text-text-muted">
                   {currentConv.isBlockedByMe
                     ? "Bạn đã chặn người dùng này"
@@ -1823,7 +1823,7 @@ export default function ChatPage() {
                   </div>
                 )}
 
-                <div className="px-4 py-3 border-t border-surface-200 bg-white shrink-0">
+                <div className="px-4 py-3 border-t border-surface-200 bg-surface shrink-0">
                   <div className="flex items-center gap-2">
                     <button
                       onClick={() => docInputRef.current?.click()}
@@ -1839,7 +1839,7 @@ export default function ChatPage() {
                     >
                       <ImageIcon size={17} />
                     </button>
-                    <div className="flex-1 flex items-center gap-2 bg-surface-100 rounded-full px-4 py-2 border border-transparent focus-within:border-primary focus-within:bg-white transition-colors">
+                    <div className="flex-1 flex items-center gap-2 bg-surface-100 rounded-full px-4 py-2 border border-transparent focus-within:border-primary focus-within:bg-surface transition-colors">
                       <Smile size={16} className="text-text-muted shrink-0" />
                       <input
                         ref={inputRef}

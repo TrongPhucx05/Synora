@@ -11,7 +11,7 @@ export function SettingsCard({
   children: ReactNode;
 }) {
   return (
-    <div className="bg-white border border-surface-200 rounded-2xl p-5">
+    <div className="bg-surface border border-surface-200 rounded-2xl p-5">
       <div className="mb-4">
         <h3 className="text-sm font-bold text-text-primary">{title}</h3>
         {description && (

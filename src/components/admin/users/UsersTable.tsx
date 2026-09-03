@@ -21,7 +21,7 @@ export type AdminUserRow = {
 };
 
 const ROLE_BADGE: Record<AdminUserRow["role"], string> = {
-  USER: "bg-slate-100 text-slate-600",
+  USER: "bg-surface-100 text-text-secondary",
   ADMIN: "bg-blue-50 text-blue-600",
 };
 
@@ -60,14 +60,14 @@ export function UsersTable({
 
   if (users.length === 0) {
     return (
-      <div className="bg-white border border-slate-200 rounded-2xl py-16 flex items-center justify-center">
-        <p className="text-sm text-slate-400">Không tìm thấy người dùng nào</p>
+      <div className="bg-surface border border-surface-200 rounded-2xl py-16 flex items-center justify-center">
+        <p className="text-sm text-text-muted">Không tìm thấy người dùng nào</p>
       </div>
     );
   }
 
   return (
-    <div className="bg-white border border-slate-200 rounded-2xl overflow-hidden">
+    <div className="bg-surface border border-surface-200 rounded-2xl overflow-hidden">
       <div className="overflow-x-auto">
         <table className="w-full text-sm table-fixed min-w-[640px]">
           <colgroup>
@@ -78,17 +78,17 @@ export function UsersTable({
             <col className="w-[12%]" />
           </colgroup>
           <thead>
-            <tr className="border-b border-slate-100 bg-slate-50">
-              <th className="text-left font-semibold text-slate-500 text-xs px-5 py-3">
+            <tr className="border-b border-surface-100 bg-surface-50">
+              <th className="text-left font-semibold text-text-muted text-xs px-5 py-3">
                 Người dùng
               </th>
-              <th className="text-left font-semibold text-slate-500 text-xs px-3 py-3">
+              <th className="text-left font-semibold text-text-muted text-xs px-3 py-3">
                 Vai trò
               </th>
-              <th className="text-left font-semibold text-slate-500 text-xs px-3 py-3">
+              <th className="text-left font-semibold text-text-muted text-xs px-3 py-3">
                 Trạng thái
               </th>
-              <th className="text-left font-semibold text-slate-500 text-xs px-3 py-3">
+              <th className="text-left font-semibold text-text-muted text-xs px-3 py-3">
                 Ngày tham gia
               </th>
               <th className="w-12 px-4 py-3" />
@@ -112,10 +112,10 @@ export function UsersTable({
                       shape="circle"
                     />
                     <div className="min-w-0">
-                      <p className="text-xs font-medium text-slate-800 truncate">
+                      <p className="text-xs font-medium text-text-primary truncate">
                         {u.name}
                       </p>
-                      <p className="text-[11px] text-slate-400 truncate">
+                      <p className="text-[11px] text-text-muted truncate">
                         @{u.username}
                       </p>
                     </div>
@@ -141,7 +141,7 @@ export function UsersTable({
                     {STATUS_LABEL[u.status]}
                   </span>
                   {u.status === "SUSPENDED" && u.suspendedUntil && (
-                    <p className="text-[10px] text-slate-400 mt-1 truncate">
+                    <p className="text-[10px] text-text-muted mt-1 truncate">
                       Đến {formatDateTime(u.suspendedUntil)}
                     </p>
                   )}
@@ -151,7 +151,7 @@ export function UsersTable({
                     </p>
                   )}
                 </td>
-                <td className="px-3 py-3 text-xs text-slate-500 whitespace-nowrap">
+                <td className="px-3 py-3 text-xs text-text-muted whitespace-nowrap">
                   {u.joinedAt}
                 </td>
                 <td className="px-4 py-3 text-center">
@@ -163,7 +163,7 @@ export function UsersTable({
                           : { id: u.id, el: e.currentTarget },
                       )
                     }
-                    className="p-1.5 rounded-full hover:bg-slate-100 text-slate-400 transition-colors"
+                    className="p-1.5 rounded-full hover:bg-surface-100 text-text-muted transition-colors"
                   >
                     <MoreVertical size={15} />
                   </button>

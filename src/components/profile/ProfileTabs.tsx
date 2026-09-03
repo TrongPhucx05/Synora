@@ -11,7 +11,7 @@ interface ProfileTabsProps {
 
 export function ProfileTabs({ activeTab, onChange }: ProfileTabsProps) {
   return (
-    <div className="bg-white border border-surface-200 rounded-2xl mb-3 px-1">
+    <div className="bg-surface border border-surface-200 rounded-2xl mb-3 px-1">
       <div className="flex">
         {PROFILE_TABS.map((tab) => (
           <button

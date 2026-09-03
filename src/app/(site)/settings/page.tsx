@@ -32,7 +32,7 @@ export default function SettingsPage() {
         </div>
 
         <div className="flex flex-col md:flex-row gap-6 items-start">
-          <aside className="w-full md:w-72 shrink-0 bg-white border border-surface-200 rounded-2xl p-3 md:sticky md:top-6">
+          <aside className="w-full md:w-72 shrink-0 bg-surface border border-surface-200 rounded-2xl p-3 md:sticky md:top-6">
             <SettingsSidebar active={activeTab} onSelect={setActiveTab} />
           </aside>
 
