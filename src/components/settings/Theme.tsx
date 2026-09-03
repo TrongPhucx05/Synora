@@ -1,14 +1,17 @@
 "use client";
-import { useState } from "react";
 import { Sun, Moon, Monitor, Check } from "lucide-react";
+import { useState } from "react";
 import { SettingsCard } from "./SettingsCard";
 import { clsx } from "clsx";
+import { useTheme } from "@/components/providers/ThemeProvider";
+import { useToast } from "@/components/ui/Toast";
+import type { Theme } from "@/lib/theme/constants";
 
-type Theme = "light" | "dark" | "system";
 type Language = "vi" | "en";
 
 export function AppearanceSection() {
-  const [theme, setTheme] = useState<Theme>("system");
+  const { theme, setTheme, loading } = useTheme();
+  const { showToast } = useToast();
   const [language, setLanguage] = useState<Language>("vi");
 
   const themeOptions: { value: Theme; label: string; icon: typeof Sun }[] = [
@@ -27,9 +30,14 @@ export function AppearanceSection() {
             return (
               <button
                 key={opt.value}
-                onClick={() => setTheme(opt.value)}
+                disabled={loading}
+                onClick={() => {
+                  setTheme(opt.value).catch(() =>
+                    showToast("Không thể cập nhật giao diện", "error"),
+                  );
+                }}
                 className={clsx(
-                  "relative flex flex-col items-center gap-2 px-3 py-4 rounded-xl border transition-colors",
+                  "relative flex flex-col items-center gap-2 px-3 py-4 rounded-xl border transition-colors disabled:opacity-50",
                   isActive ? "border-primary bg-primary/5" : "border-surface-200 hover:bg-surface-50",
                 )}
               >

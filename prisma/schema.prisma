@@ -155,6 +155,12 @@ enum SupportRequestType {
   OTHER
 }
 
+enum Theme {
+  LIGHT
+  DARK
+  SYSTEM
+}
+
 model FriendRequest {
   id         String              @id @default(cuid())
   senderId   String
@@ -267,6 +273,7 @@ model Profile {
   messageFromFriendsOnly  Boolean                 @default(false)
   showFriendsList         Boolean                 @default(true)
   showActivityStatus      Boolean                 @default(true)
+  theme Theme @default(SYSTEM)
 
   updatedAt DateTime @updatedAt
 

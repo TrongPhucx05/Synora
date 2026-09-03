@@ -22,5 +22,7 @@ export function setCachedValue<T>(key: string, value: T) {
 export function subscribe<T>(key: string, listener: Listener<T>) {
   const set = getListeners<T>(key);
   set.add(listener);
-  return () => set.delete(listener);
+  return () => {
+    set.delete(listener);
+  };
 }
