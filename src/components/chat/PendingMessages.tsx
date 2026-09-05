@@ -102,7 +102,7 @@ function PendingItemMenu({
       <div className="h-px bg-surface-100 my-0.5" />
       <button
         onClick={onReport}
-        className="w-full flex items-center gap-2.5 px-3.5 py-2.5 text-xs text-red-500 hover:bg-red-50 transition-colors"
+        className="w-full flex items-center gap-2.5 px-3.5 py-2.5 text-xs text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/20 transition-colors"
       >
         <Flag size={13} className="shrink-0" />
         Báo cáo
@@ -172,7 +172,7 @@ function ArchivedItemMenu({
           <div className="h-px bg-surface-100 my-0.5" />
           <button
             onClick={onReport}
-            className="w-full flex items-center gap-2.5 px-3.5 py-2.5 text-xs text-red-500 hover:bg-red-50 transition-colors"
+            className="w-full flex items-center gap-2.5 px-3.5 py-2.5 text-xs text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/20 transition-colors"
           >
             <Flag size={13} className="shrink-0" />
             Báo cáo
@@ -751,11 +751,11 @@ export function PendingMessages({
             confirmAction.type === "unarchive" ? (
               <Archive size={20} className="text-primary" />
             ) : (
-              <Trash2 size={20} className="text-red-500" />
+              <Trash2 size={20} className="text-red-500 dark:text-red-400" />
             )
           }
           iconBgClass={
-            confirmAction.type === "unarchive" ? "bg-primary/10" : "bg-red-100"
+            confirmAction.type === "unarchive" ? "bg-primary/10" : "bg-red-100 dark:bg-red-500/20"
           }
           title={
             confirmAction.type === "unarchive"

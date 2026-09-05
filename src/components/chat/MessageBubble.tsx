@@ -282,7 +282,7 @@ function AttachmentGrid({
                     preload="metadata"
                   />
                   <div className="absolute inset-0 flex items-center justify-center bg-black/25">
-                    <div className="w-8 h-8 rounded-full bg-black/50 flex items-center justify-center">
+                    <div className="w-8 h-8 rounded-full bg-black/50 dark:bg-black/35 flex items-center justify-center">
                       <Play size={14} className="text-white ml-0.5" />
                     </div>
                   </div>
@@ -343,7 +343,7 @@ function MediaLightbox({
 
   return (
     <div
-      className="fixed inset-0 z-[80] bg-black/90 flex items-center justify-center"
+      className="fixed inset-0 z-[80] bg-black/90 dark:bg-black/70 flex items-center justify-center"
       onClick={onClose}
     >
       <div className="absolute top-4 right-4 flex items-center gap-2 z-10">
@@ -562,7 +562,7 @@ function MessageActions({
               onReport();
               setMenuOpen(false);
             }}
-            className="w-full flex items-center gap-2.5 px-3.5 py-2.5 text-sm text-red-500 hover:bg-red-50 transition-colors"
+            className="w-full flex items-center gap-2.5 px-3.5 py-2.5 text-sm text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/20 transition-colors"
           >
             <Flag size={14} className="shrink-0" />
             Báo cáo
@@ -722,7 +722,7 @@ function AvatarPopup({
           onBlock(userId, username);
           onClose();
         }}
-        className="w-full flex items-center gap-2.5 px-3 py-2.5 text-xs text-red-500 hover:bg-red-50 transition-colors"
+        className="w-full flex items-center gap-2.5 px-3 py-2.5 text-xs text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/20 transition-colors"
       >
         <BanIcon size={13} className="shrink-0" />
         Chặn
@@ -1120,7 +1120,7 @@ export function MessageBubble({
 
       {recallDialogOpen && (
         <ConfirmDialog
-          icon={<Undo2 size={20} className="text-red-500" />}
+          icon={<Undo2 size={20} className="text-red-500 dark:text-red-400" />}
           title="Thu hồi tin nhắn?"
           description="Mọi người trong cuộc trò chuyện sẽ không còn thấy nội dung gốc."
           confirmLabel="Thu hồi"

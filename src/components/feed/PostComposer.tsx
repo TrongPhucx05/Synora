@@ -191,7 +191,7 @@ function MediaLightboxPreview({
 
   return (
     <div
-      className="fixed inset-0 z-50 bg-black/90 flex flex-col items-center justify-center"
+      className="fixed inset-0 z-50 bg-black/90 dark:bg-black/70 flex flex-col items-center justify-center"
       onClick={onClose}
       onKeyDown={handleKey}
       tabIndex={-1}
@@ -205,7 +205,7 @@ function MediaLightboxPreview({
       </button>
 
       {files.length > 1 && (
-        <div className="absolute top-4 left-1/2 -translate-x-1/2 bg-black/50 text-white text-xs px-3 py-1 rounded-full">
+        <div className="absolute top-4 left-1/2 -translate-x-1/2 bg-black/50 dark:bg-black/35 text-white text-xs px-3 py-1 rounded-full">
           {index + 1} / {files.length}
         </div>
       )}
@@ -256,7 +256,7 @@ function MediaLightboxPreview({
         </button>
       )}
 
-      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-black/50 text-white text-xs px-3 py-1 rounded-full max-w-xs truncate">
+      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-black/50 dark:bg-black/35 text-white text-xs px-3 py-1 rounded-full max-w-xs truncate">
         {current.name} · {current.size}
       </div>
 
@@ -305,8 +305,8 @@ function MediaPreview({
             muted
             preload="metadata"
           />
-          <div className="absolute inset-0 flex items-center justify-center bg-black/25 group-hover:bg-black/40 transition-colors">
-            <div className="w-9 h-9 rounded-full bg-black/50 flex items-center justify-center">
+          <div className="absolute inset-0 flex items-center justify-center bg-black/25 group-hover:bg-black/40 dark:bg-black/25 transition-colors">
+            <div className="w-9 h-9 rounded-full bg-black/50 dark:bg-black/35 flex items-center justify-center">
               <Play size={16} className="text-white ml-0.5" />
             </div>
           </div>
@@ -332,13 +332,13 @@ function MediaPreview({
           e.stopPropagation();
           onRemove();
         }}
-        className="absolute top-1 right-1 bg-black/60 hover:bg-black/80 text-white rounded-full p-0.5 opacity-0 group-hover:opacity-100 transition-opacity z-10"
+        className="absolute top-1 right-1 bg-black/60 dark:bg-black/45 hover:bg-black/80 text-white rounded-full p-0.5 opacity-0 group-hover:opacity-100 transition-opacity z-10"
         aria-label="Xóa"
       >
         <X size={11} />
       </button>
 
-      <span className="absolute bottom-1 left-1 bg-black/50 text-white text-[10px] px-1 rounded pointer-events-none">
+      <span className="absolute bottom-1 left-1 bg-black/50 dark:bg-black/35 text-white text-[10px] px-1 rounded pointer-events-none">
         {attached.size}
       </span>
     </div>
@@ -520,7 +520,7 @@ export default function PostComposer({
           {charCount > charLimit * 0.8 && (
             <div
               className={`text-xs text-right mb-1 ${
-                isOverLimit ? "text-red-500 font-semibold" : "text-text-muted"
+                isOverLimit ? "text-red-500 dark:text-red-400 font-semibold" : "text-text-muted"
               }`}
             >
               {charCount}/{charLimit}

@@ -14,7 +14,7 @@ const ICONS = [
     key: "totalDocuments",
     label: "tài liệu",
     icon: FileText,
-    iconClass: "text-red-600 bg-red-50",
+    iconClass: "text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-500/15",
   },
   {
     key: "totalContributors",
@@ -26,7 +26,7 @@ const ICONS = [
     key: "totalDownloads",
     label: "lượt tải",
     icon: Download,
-    iconClass: "text-green-600 bg-green-50",
+    iconClass: "text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-500/15",
   },
 ];
 

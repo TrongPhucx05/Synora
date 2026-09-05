@@ -71,11 +71,11 @@ export function GroupInviteCard({ token }: { token: string }) {
         {status === "member" ||
         status === "already_member" ||
         status === "joined" ? (
-          <div className="flex items-center justify-center gap-1.5 py-2 text-xs font-semibold text-emerald-600 bg-emerald-50 rounded-xl">
+          <div className="flex items-center justify-center gap-1.5 py-2 text-xs font-semibold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-500/15 rounded-xl">
             <Check size={13} /> Đã tham gia
           </div>
         ) : status === "requested" || status === "already_requested" ? (
-          <div className="flex items-center justify-center gap-1.5 py-2 text-xs font-semibold text-amber-600 bg-amber-50 rounded-xl">
+          <div className="flex items-center justify-center gap-1.5 py-2 text-xs font-semibold text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-500/15 rounded-xl">
             <Clock size={13} /> Đang chờ duyệt
           </div>
         ) : status === "cooldown" ? (

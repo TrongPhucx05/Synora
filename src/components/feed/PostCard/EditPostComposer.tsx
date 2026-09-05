@@ -304,7 +304,7 @@ export default function EditPostComposer({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 dark:bg-black/35 backdrop-blur-sm p-4"
       onClick={(e) => e.target === e.currentTarget && onClose()}
     >
       <div className="bg-surface rounded-2xl shadow-2xl w-full max-w-lg flex flex-col overflow-hidden max-h-[90vh]">
@@ -342,7 +342,7 @@ export default function EditPostComposer({
             />
             {content.length > charLimit * 0.8 && (
               <p
-                className={`text-xs text-right mb-1 ${isOverLimit ? "text-red-500 font-semibold" : "text-text-muted"}`}
+                className={`text-xs text-right mb-1 ${isOverLimit ? "text-red-500 dark:text-red-400 font-semibold" : "text-text-muted"}`}
               >
                 {content.length}/{charLimit}
               </p>
@@ -378,11 +378,11 @@ export default function EditPostComposer({
                       e.stopPropagation();
                       removeExistingMedia(m.id);
                     }}
-                    className="absolute top-1 right-1 bg-black/60 hover:bg-black/80 text-white rounded-full p-0.5 opacity-0 group-hover:opacity-100 transition-opacity z-10"
+                    className="absolute top-1 right-1 bg-black/60 dark:bg-black/45 hover:bg-black/80 text-white rounded-full p-0.5 opacity-0 group-hover:opacity-100 transition-opacity z-10"
                   >
                     <X size={11} />
                   </button>
-                  <span className="absolute bottom-1 left-1 bg-black/50 text-white text-[10px] px-1 rounded pointer-events-none">
+                  <span className="absolute bottom-1 left-1 bg-black/50 dark:bg-black/35 text-white text-[10px] px-1 rounded pointer-events-none">
                     Hiện có
                   </span>
                 </div>
@@ -441,7 +441,7 @@ export default function EditPostComposer({
         {/* Footer */}
         <div className="border-t border-surface-100 shrink-0">
           {uploadError && (
-            <p className="text-xs text-red-500 px-5 pt-3">{uploadError}</p>
+            <p className="text-xs text-red-500 dark:text-red-400 px-5 pt-3">{uploadError}</p>
           )}
           <div className="flex items-center justify-between px-4 py-3">
             <div className="flex items-center gap-1">

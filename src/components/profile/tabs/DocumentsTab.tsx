@@ -202,7 +202,7 @@ function DocCard({
                               setShowDeleteConfirm(true);
                               setMenuOpen(false);
                             }}
-                            className="w-full flex items-center gap-2 px-3 py-1.5 text-xs text-red-500 hover:bg-red-50 transition-colors"
+                            className="w-full flex items-center gap-2 px-3 py-1.5 text-xs text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/20 transition-colors"
                           >
                             <Trash2 size={12} />
                             Xóa tài liệu
@@ -211,7 +211,7 @@ function DocCard({
                       )}
                       <button
                         onClick={() => setMenuOpen(false)}
-                        className="w-full flex items-center gap-2 px-3 py-1.5 text-xs text-red-500 hover:bg-red-50 transition-colors"
+                        className="w-full flex items-center gap-2 px-3 py-1.5 text-xs text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/20 transition-colors"
                       >
                         <Flag size={12} />
                         Báo cáo
@@ -252,10 +252,10 @@ function DocCard({
         </div>
       </div>
       {showDeleteConfirm && (
-        <div className="fixed inset-0 z-[90] flex items-center justify-center bg-black/40 backdrop-blur-sm">
+        <div className="fixed inset-0 z-[90] flex items-center justify-center bg-black/40 dark:bg-black/25 backdrop-blur-sm">
           <div className="bg-surface rounded-2xl shadow-xl p-6 w-80 mx-4 animate-in fade-in zoom-in-95 duration-150">
-            <div className="flex items-center justify-center w-11 h-11 rounded-full bg-red-100 mx-auto mb-4">
-              <Trash2 size={20} className="text-red-500" />
+            <div className="flex items-center justify-center w-11 h-11 rounded-full bg-red-100 dark:bg-red-500/20 mx-auto mb-4">
+              <Trash2 size={20} className="text-red-500 dark:text-red-400" />
             </div>
             <h3 className="text-sm font-semibold text-text-primary text-center mb-1">
               Xóa tài liệu?

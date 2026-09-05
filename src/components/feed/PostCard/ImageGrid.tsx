@@ -41,7 +41,7 @@ function MediaThumb({
       )}
       {isVideo && (
         <div className="absolute inset-0 flex items-center justify-center bg-black/20 group-hover:bg-black/35 transition-colors pointer-events-none">
-          <div className="w-10 h-10 rounded-full bg-black/50 flex items-center justify-center">
+          <div className="w-10 h-10 rounded-full bg-black/50 dark:bg-black/35 flex items-center justify-center">
             <svg viewBox="0 0 24 24" fill="white" className="w-5 h-5 ml-0.5">
               <path d="M8 5v14l11-7z" />
             </svg>
@@ -130,7 +130,7 @@ export default function ImageGrid({
         className="w-full h-[120px]"
         overlay={
           extraCount > 0 ? (
-            <div className="absolute inset-0 bg-black/50 flex items-center justify-center text-white font-bold text-xl pointer-events-none">
+            <div className="absolute inset-0 bg-black/50 dark:bg-black/35 flex items-center justify-center text-white font-bold text-xl pointer-events-none">
               +{extraCount}
             </div>
           ) : undefined

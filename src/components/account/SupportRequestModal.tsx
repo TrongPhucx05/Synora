@@ -45,13 +45,13 @@ export function SupportRequestModal({
 
   return (
     <div
-      className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm"
+      className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/40 dark:bg-black/25 backdrop-blur-sm"
       onClick={(e) => e.target === e.currentTarget && onClose()}
     >
       <div className="bg-surface rounded-2xl shadow-2xl w-full max-w-md overflow-hidden">
         {code ? (
           <div className="p-8 text-center">
-            <div className="w-12 h-12 rounded-full bg-emerald-50 text-emerald-500 flex items-center justify-center mx-auto mb-3">
+            <div className="w-12 h-12 rounded-full bg-emerald-50 dark:bg-emerald-500/15 text-emerald-500 dark:text-emerald-400 flex items-center justify-center mx-auto mb-3">
               <CheckCircle2 size={24} />
             </div>
             <h3 className="text-sm font-bold text-text-primary mb-1">
@@ -121,7 +121,7 @@ export function SupportRequestModal({
               </div>
 
               {error && (
-                <p className="text-[11px] text-red-500 -mt-1">{error}</p>
+                <p className="text-[11px] text-red-500 dark:text-red-400 -mt-1">{error}</p>
               )}
             </div>
 
@@ -129,7 +129,7 @@ export function SupportRequestModal({
               <button
                 onClick={onClose}
                 disabled={loading}
-                className="px-4 py-2 text-xs font-medium text-text-secondary rounded-lg hover:bg-slate-200/60 transition-colors"
+                className="px-4 py-2 text-xs font-medium text-text-secondary rounded-lg hover:bg-surface-200 transition-colors"
               >
                 Hủy
               </button>

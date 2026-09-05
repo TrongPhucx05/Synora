@@ -46,7 +46,7 @@ export function DocumentCard({ r }: { r: SearchResult }) {
               </span>
             )}
             {rating && (
-              <span className="flex items-center gap-1 text-[11px] text-amber-500">
+              <span className="flex items-center gap-1 text-[11px] text-amber-500 dark:text-amber-400">
                 <Star size={11} className="fill-amber-400" /> {rating.value}
               </span>
             )}

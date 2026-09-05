@@ -91,7 +91,7 @@ export function AvatarMenu() {
                   <p className="text-sm font-bold text-text-primary truncate">
                     {displayName}
                   </p>
-                  <p className="text-xs text-green-500 mt-0.5 font-medium">
+                  <p className="text-xs text-green-500 dark:text-green-400 mt-0.5 font-medium">
                     ● Đang hoạt động
                   </p>
                 </div>
@@ -124,7 +124,7 @@ export function AvatarMenu() {
               <div className="border-t border-surface-100 py-1">
                 <button
                   onClick={() => signOut({ callbackUrl: "/login" })}
-                  className="w-full flex items-center gap-2.5 px-4 py-2.5 text-xs text-red-500 hover:bg-red-50 transition-colors"
+                  className="w-full flex items-center gap-2.5 px-4 py-2.5 text-xs text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/20 transition-colors"
                 >
                   <LogOut size={14} className="shrink-0" />
                   Đăng xuất
@@ -145,7 +145,7 @@ export function AvatarMenu() {
               </div>
               <div className="py-2">
                 <div className="flex items-center gap-3 px-4 py-3 hover:bg-surface-50 transition-colors">
-                  <div className="w-8 h-8 rounded-xl bg-green-50 flex items-center justify-center shrink-0">
+                  <div className="w-8 h-8 rounded-xl bg-green-50 dark:bg-green-500/15 flex items-center justify-center shrink-0">
                     <span className="w-2 h-2 rounded-full bg-green-500" />
                   </div>
                   <div className="flex-1 min-w-0">
@@ -175,13 +175,13 @@ export function AvatarMenu() {
                   {
                     label: "Âm thanh",
                     desc: "Phát âm khi có tin nhắn",
-                    icon: <Bell size={13} className="text-amber-500" />,
+                    icon: <Bell size={13} className="text-amber-500 dark:text-amber-400" />,
                     val: true,
                   },
                   {
                     label: "Xem trước tin nhắn",
                     desc: "Hiện nội dung ở thông báo",
-                    icon: <MessageSquare size={13} className="text-teal-500" />,
+                    icon: <MessageSquare size={13} className="text-teal-500 dark:text-teal-400" />,
                     val: false,
                   },
                 ].map((item, i) => (

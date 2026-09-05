@@ -282,8 +282,8 @@ export function AccountSection() {
       >
         {deletionRequest ? (
           <>
-            <div className="flex items-start gap-3 bg-amber-50 border border-amber-100 rounded-xl p-3.5">
-              <Clock size={16} className="text-amber-500 shrink-0 mt-0.5" />
+            <div className="flex items-start gap-3 bg-amber-50 dark:bg-amber-500/15 border border-amber-100 rounded-xl p-3.5">
+              <Clock size={16} className="text-amber-500 dark:text-amber-400 shrink-0 mt-0.5" />
               <p className="text-xs text-amber-700 leading-relaxed">
                 Tài khoản của bạn sẽ bị xóa vĩnh viễn vào ngày{" "}
                 <span className="font-semibold">
@@ -304,12 +304,12 @@ export function AccountSection() {
           </>
         ) : (
           <>
-            <div className="flex items-start gap-3 bg-red-50 border border-red-100 rounded-xl p-3.5">
+            <div className="flex items-start gap-3 bg-red-50 dark:bg-red-500/15 border border-red-100 rounded-xl p-3.5">
               <AlertTriangle
                 size={16}
-                className="text-red-500 shrink-0 mt-0.5"
+                className="text-red-500 dark:text-red-400 shrink-0 mt-0.5"
               />
-              <p className="text-xs text-red-600 leading-relaxed">
+              <p className="text-xs text-red-600 dark:text-red-400 leading-relaxed">
                 Sau khi gửi yêu cầu, tài khoản sẽ bị xóa vĩnh viễn sau{" "}
                 {DELETION_GRACE_DAYS} ngày. Trong thời gian này bạn vẫn có thể
                 đăng nhập và hủy yêu cầu bất cứ lúc nào.
@@ -317,7 +317,7 @@ export function AccountSection() {
             </div>
             <button
               onClick={() => setDeleteOpen(true)}
-              className="self-start flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-semibold bg-red-50 text-red-500 hover:bg-red-100 transition-colors"
+              className="self-start flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-semibold bg-red-50 dark:bg-red-500/15 text-red-500 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-500/25 transition-colors"
             >
               <Trash2 size={13} />
               Xóa tài khoản của tôi
@@ -328,8 +328,8 @@ export function AccountSection() {
 
       {deleteOpen && (
         <ConfirmDialog
-          icon={<Trash2 size={20} className="text-red-500" />}
-          iconBgClass="bg-red-100"
+          icon={<Trash2 size={20} className="text-red-500 dark:text-red-400" />}
+          iconBgClass="bg-red-100 dark:bg-red-500/20"
           title="Gửi yêu cầu xóa tài khoản?"
           description={
             <>

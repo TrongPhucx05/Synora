@@ -29,11 +29,11 @@ const ICONS: Record<ToastVariant, React.ReactNode> = {
 
 const VARIANT_CLASSES: Record<ToastVariant, string> = {
   default: "border-surface-200 text-text-primary [&_svg]:text-text-secondary",
-  success: "border-emerald-100 text-text-primary [&_svg]:text-emerald-500",
-  error: "border-red-100 text-text-primary [&_svg]:text-red-500",
+  success: "border-emerald-100 text-text-primary [&_svg]:text-emerald-500 dark:text-emerald-400",
+  error: "border-red-100 text-text-primary [&_svg]:text-red-500 dark:text-red-400",
   save: "border-primary/20 text-text-primary [&_svg]:text-primary",
   unsave: "border-surface-200 text-text-primary [&_svg]:text-text-secondary",
-  delete: "border-red-100 text-text-primary [&_svg]:text-red-500",
+  delete: "border-red-100 text-text-primary [&_svg]:text-red-500 dark:text-red-400",
 };
 
 export function ToastProvider({ children }: { children: React.ReactNode }) {

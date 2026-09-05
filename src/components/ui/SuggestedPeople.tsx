@@ -222,7 +222,7 @@ function UserRow({
               }}
               disabled={loading}
               className={clsx(
-                "flex items-center gap-1 text-[10px] font-semibold bg-surface-100 text-text-secondary border border-surface-200 hover:bg-red-50 hover:text-red-500 hover:border-red-200 transition-all disabled:opacity-70",
+                "flex items-center gap-1 text-[10px] font-semibold bg-surface-100 text-text-secondary border border-surface-200 hover:bg-red-50 dark:hover:bg-red-500/20 hover:text-red-500 hover:border-red-200 transition-all disabled:opacity-70",
                 variant === "feed"
                   ? "px-2 py-1 rounded-full"
                   : "px-2 py-1 rounded-md",
@@ -257,7 +257,7 @@ function UserRow({
             onClick={handleFriendAction}
             disabled={loading}
             className={clsx(
-              "flex items-center gap-1 text-[10px] font-semibold bg-surface-50 text-text-muted border border-surface-200 hover:bg-red-50 hover:text-red-500 hover:border-red-200 transition-all disabled:opacity-70",
+              "flex items-center gap-1 text-[10px] font-semibold bg-surface-50 text-text-muted border border-surface-200 hover:bg-red-50 dark:hover:bg-red-500/20 hover:text-red-500 hover:border-red-200 transition-all disabled:opacity-70",
               variant === "feed"
                 ? "px-2.5 py-1.5 rounded-full"
                 : "px-2 py-1 rounded-md",
@@ -300,7 +300,7 @@ function UserRow({
             </button>
             <button
               onClick={(e) => handleRequestAction(e, "reject")}
-              className="w-full flex items-center gap-2 px-3.5 py-2.5 text-xs font-medium text-red-500 hover:bg-red-50 transition-colors"
+              className="w-full flex items-center gap-2 px-3.5 py-2.5 text-xs font-medium text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/20 transition-colors"
             >
               <span className="text-sm leading-none">✕</span> Từ chối
             </button>

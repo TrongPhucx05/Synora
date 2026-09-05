@@ -166,7 +166,7 @@ export default function EditDocumentModal({ doc, onClose, onSuccess }: Props) {
     <div
       role="dialog"
       aria-modal="true"
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-in fade-in duration-200"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 dark:bg-black/35 backdrop-blur-sm animate-in fade-in duration-200"
       onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
     >
       <div
@@ -185,8 +185,8 @@ export default function EditDocumentModal({ doc, onClose, onSuccess }: Props) {
 
         {saveState === "success" ? (
           <div className="flex flex-col items-center justify-center gap-4 px-8 py-16 text-center">
-            <div className="w-14 h-14 rounded-full bg-green-50 flex items-center justify-center">
-              <CheckCircle size={28} className="text-green-500" />
+            <div className="w-14 h-14 rounded-full bg-green-50 dark:bg-green-500/15 flex items-center justify-center">
+              <CheckCircle size={28} className="text-green-500 dark:text-green-400" />
             </div>
             <div>
               <p className="text-sm font-semibold text-text-primary mb-1">Cập nhật thành công!</p>
@@ -198,7 +198,7 @@ export default function EditDocumentModal({ doc, onClose, onSuccess }: Props) {
             <div className="flex-1 overflow-y-auto px-5 py-5 flex flex-col gap-4">
               <div className="flex flex-col gap-1.5">
                 <label className="text-xs font-semibold text-text-primary">
-                  Tiêu đề <span className="text-red-500">*</span>
+                  Tiêu đề <span className="text-red-500 dark:text-red-400">*</span>
                 </label>
                 <input
                   type="text"
@@ -213,7 +213,7 @@ export default function EditDocumentModal({ doc, onClose, onSuccess }: Props) {
                     errors.title ? "border-red-400" : "border-surface-200 focus:border-primary",
                   )}
                 />
-                {errors.title && <p className="text-[11px] text-red-500">{errors.title}</p>}
+                {errors.title && <p className="text-[11px] text-red-500 dark:text-red-400">{errors.title}</p>}
               </div>
 
               <div className="flex flex-col gap-1.5">
@@ -321,15 +321,15 @@ export default function EditDocumentModal({ doc, onClose, onSuccess }: Props) {
                       : errors.file
                         ? "border-red-300 bg-red-50/40"
                         : newFile
-                          ? "border-green-400 bg-green-50/40"
+                          ? "border-green-400 dark:border-green-500/60 bg-green-50/40 dark:bg-green-500/10"
                           : "border-surface-200 bg-surface-50 hover:border-primary/50 hover:bg-primary/5",
                   )}
                 >
                   <div className={clsx(
                     "w-9 h-9 rounded-lg flex items-center justify-center",
-                    newFile ? "bg-green-100" : "bg-surface-100",
+                    newFile ? "bg-green-100 dark:bg-green-500/20" : "bg-surface-100",
                   )}>
-                    <FileText size={18} className={newFile ? "text-green-600" : "text-text-muted"} />
+                    <FileText size={18} className={newFile ? "text-green-600 dark:text-green-400" : "text-text-muted"} />
                   </div>
                   <p className="text-xs font-semibold text-text-primary text-center">{currentFileName}</p>
                   <p className="text-[11px] text-text-muted">
@@ -348,7 +348,7 @@ export default function EditDocumentModal({ doc, onClose, onSuccess }: Props) {
                   className="hidden"
                   onChange={(e) => { const f = e.target.files?.[0]; if (f) handleFile(f); }}
                 />
-                {errors.file && <p className="text-[11px] text-red-500">{errors.file}</p>}
+                {errors.file && <p className="text-[11px] text-red-500 dark:text-red-400">{errors.file}</p>}
               </div>
 
               <div className="flex flex-col gap-1.5">
@@ -365,7 +365,7 @@ export default function EditDocumentModal({ doc, onClose, onSuccess }: Props) {
               </div>
 
               {errorMsg && (
-                <p className="text-xs text-red-500 bg-red-50 px-3 py-2 rounded-lg">{errorMsg}</p>
+                <p className="text-xs text-red-500 dark:text-red-400 bg-red-50 dark:bg-red-500/15 px-3 py-2 rounded-lg">{errorMsg}</p>
               )}
             </div>
 

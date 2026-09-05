@@ -13,7 +13,7 @@ export function PostCard({ r }: { r: SearchResult }) {
           {r.title}
         </h3>
         {r.badge && (
-          <span className="shrink-0 text-[10px] font-bold bg-amber-100 text-amber-600 px-2 py-0.5 rounded-full">
+          <span className="shrink-0 text-[10px] font-bold bg-amber-100 dark:bg-amber-500/20 text-amber-600 dark:text-amber-400 px-2 py-0.5 rounded-full">
             {r.badge}
           </span>
         )}

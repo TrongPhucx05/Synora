@@ -143,7 +143,7 @@ export function EditProfileModal({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 dark:bg-black/35 backdrop-blur-sm p-4"
       onClick={(e) => e.target === e.currentTarget && onClose()}
     >
       <div className="bg-surface rounded-2xl shadow-2xl w-full max-w-lg flex flex-col overflow-hidden max-h-[90vh]">
@@ -171,7 +171,7 @@ export function EditProfileModal({
               <div className="w-full h-full bg-[repeating-linear-gradient(45deg,#e2e5ec,#e2e5ec_10px,#eaecf2_10px,#eaecf2_20px)]" />
             )}
             <label className="absolute inset-0 flex items-center justify-center bg-black/20 hover:bg-black/30 transition-colors cursor-pointer group">
-              <div className="flex items-center gap-1.5 bg-black/40 text-white text-xs font-medium px-3 py-1.5 rounded-full backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity">
+              <div className="flex items-center gap-1.5 bg-black/40 dark:bg-black/25 text-white text-xs font-medium px-3 py-1.5 rounded-full backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity">
                 <Camera size={12} /> Đổi ảnh bìa
               </div>
               <input
@@ -196,7 +196,7 @@ export function EditProfileModal({
                     {ini}
                   </div>
                 )}
-                <label className="absolute inset-0 rounded-full flex items-center justify-center bg-black/30 hover:bg-black/40 transition-colors cursor-pointer opacity-0 hover:opacity-100">
+                <label className="absolute inset-0 rounded-full flex items-center justify-center bg-black/30 hover:bg-black/40 dark:bg-black/25 transition-colors cursor-pointer opacity-0 hover:opacity-100">
                   <Camera size={16} className="text-white" />
                   <input
                     ref={avatarInputRef}
@@ -259,7 +259,7 @@ export function EditProfileModal({
         </div>
 
         <div className="px-5 py-4 border-t border-surface-100 shrink-0 flex items-center justify-between gap-3">
-          {error && <p className="text-xs text-red-500 flex-1">{error}</p>}
+          {error && <p className="text-xs text-red-500 dark:text-red-400 flex-1">{error}</p>}
           {!error && <div className="flex-1" />}
           <button
             onClick={onClose}
@@ -316,7 +316,7 @@ function Field({
       />
       {maxLength && value.length > maxLength * 0.8 && (
         <p
-          className={`text-[11px] text-right ${value.length >= maxLength ? "text-red-500" : "text-text-muted"}`}
+          className={`text-[11px] text-right ${value.length >= maxLength ? "text-red-500 dark:text-red-400" : "text-text-muted"}`}
         >
           {value.length}/{maxLength}
         </p>
@@ -355,7 +355,7 @@ function TextareaField({
       />
       {maxLength && value.length > maxLength * 0.8 && (
         <p
-          className={`text-[11px] text-right ${value.length >= maxLength ? "text-red-500" : "text-text-muted"}`}
+          className={`text-[11px] text-right ${value.length >= maxLength ? "text-red-500 dark:text-red-400" : "text-text-muted"}`}
         >
           {value.length}/{maxLength}
         </p>

@@ -231,9 +231,9 @@ export function ProfileHeader({
                       </button>
                       <button
                         onClick={() => handleRequestAction("reject")}
-                        className="w-full flex items-center gap-2 px-3 py-2.5 text-xs font-medium text-red-500 hover:bg-red-50 transition-colors"
+                        className="w-full flex items-center gap-2 px-3 py-2.5 text-xs font-medium text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/20 transition-colors"
                       >
-                        <span className="text-red-500">✕</span> Từ chối
+                        <span className="text-red-500 dark:text-red-400">✕</span> Từ chối
                       </button>
                     </div>
                   )}
@@ -264,9 +264,9 @@ export function ProfileHeader({
                         "flex items-center gap-1.5 text-xs font-semibold px-4 py-1.5 rounded-lg transition-colors disabled:opacity-70",
                         isAdmin && "opacity-40 cursor-not-allowed",
                         status === "friends"
-                          ? "bg-surface-100 text-text-secondary border border-surface-200 hover:bg-red-50 hover:text-red-500 hover:border-red-200"
+                          ? "bg-surface-100 text-text-secondary border border-surface-200 hover:bg-red-50 dark:hover:bg-red-500/20 hover:text-red-500 hover:border-red-200"
                           : status === "pending"
-                            ? "bg-surface-50 text-text-muted border border-surface-200 hover:bg-red-50 hover:text-red-500 hover:border-red-200"
+                            ? "bg-surface-50 text-text-muted border border-surface-200 hover:bg-red-50 dark:hover:bg-red-500/20 hover:text-red-500 hover:border-red-200"
                             : "bg-primary text-white hover:bg-primary-700",
                       )}
                     >

@@ -43,8 +43,8 @@ interface PillBadgeProps {
 
 const pillClasses: Record<BadgeVariant, string> = {
   unread:  "bg-primary/10 text-primary",
-  pending: "bg-amber-100 text-amber-600",
-  blocked: "bg-red-50 text-red-400",
+  pending: "bg-amber-100 dark:bg-amber-500/20 text-amber-600 dark:text-amber-400",
+  blocked: "bg-red-50 dark:bg-red-500/15 text-red-400",
   default: "bg-primary/10 text-primary",
 };
 

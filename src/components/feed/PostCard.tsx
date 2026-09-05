@@ -429,8 +429,8 @@ export default function PostCard({
 
       {showDeleteConfirm && (
         <ConfirmDialog
-          icon={<Trash2 size={20} className="text-red-500" />}
-          iconBgClass="bg-red-100"
+          icon={<Trash2 size={20} className="text-red-500 dark:text-red-400" />}
+          iconBgClass="bg-red-100 dark:bg-red-500/20"
           title="Xóa bài viết?"
           description="Bài viết sẽ bị xóa vĩnh viễn và không thể khôi phục."
           confirmLabel="Xóa"

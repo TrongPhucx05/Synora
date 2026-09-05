@@ -36,7 +36,7 @@ export function RecentDocsWidget({ docs = [], username }: RecentDocsWidgetProps)
             key={doc.id}
             className="flex items-center gap-2 px-2 py-2 rounded-xl hover:bg-surface-50 group transition-colors"
           >
-            <div className="w-7 h-7 bg-red-50 rounded-lg flex items-center justify-center shrink-0">
+            <div className="w-7 h-7 bg-red-50 dark:bg-red-500/15 rounded-lg flex items-center justify-center shrink-0">
               <BookOpen size={12} className="text-red-400" />
             </div>
             <div className="flex-1 min-w-0">

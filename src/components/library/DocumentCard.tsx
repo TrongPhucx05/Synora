@@ -208,7 +208,7 @@ export default function DocumentCard({
                         setShowAdminDeleteConfirm(true);
                         setMenuOpen(false);
                       }}
-                      className="w-full flex items-center gap-2.5 px-3.5 py-2 text-sm text-red-500 hover:bg-red-50 transition-colors"
+                      className="w-full flex items-center gap-2.5 px-3.5 py-2 text-sm text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/20 transition-colors"
                     >
                       <Trash2 size={14} />
                       Xóa tài liệu
@@ -245,7 +245,7 @@ export default function DocumentCard({
                               setShowDeleteConfirm(true);
                               setMenuOpen(false);
                             }}
-                            className="w-full flex items-center gap-2.5 px-3.5 py-2 text-sm text-red-500 hover:bg-red-50 transition-colors"
+                            className="w-full flex items-center gap-2.5 px-3.5 py-2 text-sm text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/20 transition-colors"
                           >
                             <Trash2 size={14} />
                             Xóa tài liệu
@@ -259,7 +259,7 @@ export default function DocumentCard({
                               setShowReportModal(true);
                               setMenuOpen(false);
                             }}
-                            className="w-full flex items-center gap-2.5 px-3.5 py-2 text-sm text-red-500 hover:bg-red-50 transition-colors"
+                            className="w-full flex items-center gap-2.5 px-3.5 py-2 text-sm text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/20 transition-colors"
                           >
                             <Flag size={14} />
                             Báo cáo
@@ -361,10 +361,10 @@ export default function DocumentCard({
       )}
 
       {showDeleteConfirm && (
-        <div className="fixed inset-0 z-[90] flex items-center justify-center bg-black/40 backdrop-blur-sm">
+        <div className="fixed inset-0 z-[90] flex items-center justify-center bg-black/40 dark:bg-black/25 backdrop-blur-sm">
           <div className="bg-surface rounded-2xl shadow-xl p-6 w-80 mx-4 animate-in fade-in zoom-in-95 duration-150">
-            <div className="flex items-center justify-center w-11 h-11 rounded-full bg-red-100 mx-auto mb-4">
-              <Trash2 size={20} className="text-red-500" />
+            <div className="flex items-center justify-center w-11 h-11 rounded-full bg-red-100 dark:bg-red-500/20 mx-auto mb-4">
+              <Trash2 size={20} className="text-red-500 dark:text-red-400" />
             </div>
             <h3 className="text-sm font-semibold text-text-primary text-center mb-1">
               Xóa tài liệu?
@@ -404,10 +404,10 @@ export default function DocumentCard({
       )}
 
       {showAdminDeleteConfirm && (
-        <div className="fixed inset-0 z-[90] flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
+        <div className="fixed inset-0 z-[90] flex items-center justify-center bg-black/40 dark:bg-black/25 backdrop-blur-sm p-4">
           <div className="bg-surface rounded-2xl shadow-xl p-6 w-full max-w-sm animate-in fade-in zoom-in-95 duration-150">
-            <div className="flex items-center justify-center w-11 h-11 rounded-full bg-red-100 mx-auto mb-4">
-              <Trash2 size={20} className="text-red-500" />
+            <div className="flex items-center justify-center w-11 h-11 rounded-full bg-red-100 dark:bg-red-500/20 mx-auto mb-4">
+              <Trash2 size={20} className="text-red-500 dark:text-red-400" />
             </div>
             <h3 className="text-sm font-semibold text-text-primary text-center mb-1">
               Xóa tài liệu vi phạm?
@@ -423,7 +423,7 @@ export default function DocumentCard({
 
             <div className="flex flex-col gap-1.5 mb-3">
               <label className="text-xs font-semibold text-text-primary">
-                Lý do vi phạm <span className="text-red-500">*</span>
+                Lý do vi phạm <span className="text-red-500 dark:text-red-400">*</span>
               </label>
               <div className="relative">
                 <select

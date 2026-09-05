@@ -48,7 +48,7 @@ export function ForwardMessageModal({
 
   return (
     <>
-      <div className="fixed inset-0 bg-black/50 z-[80] backdrop-blur-sm" onClick={onClose} />
+      <div className="fixed inset-0 bg-black/50 dark:bg-black/35 z-[80] backdrop-blur-sm" onClick={onClose} />
       <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] bg-surface rounded-2xl shadow-2xl z-[80] flex flex-col overflow-hidden max-h-[70vh]">
         <div className="flex items-center justify-between px-5 py-4 border-b border-surface-100">
           <p className="text-sm font-bold text-text-primary flex items-center gap-2">
@@ -111,7 +111,7 @@ export function ForwardMessageModal({
           )}
         </div>
 
-        {error && <p className="px-5 pb-2 text-xs text-red-500">{error}</p>}
+        {error && <p className="px-5 pb-2 text-xs text-red-500 dark:text-red-400">{error}</p>}
 
         <div className="px-5 py-4 border-t border-surface-100 flex justify-end gap-2">
           <button

@@ -225,7 +225,7 @@ export function NewConversationModal({
   return (
     <>
       <div
-        className="fixed inset-0 bg-black/50 z-[80] backdrop-blur-sm"
+        className="fixed inset-0 bg-black/50 dark:bg-black/35 z-[80] backdrop-blur-sm"
         onClick={onClose}
       />
       <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[440px] bg-surface rounded-2xl shadow-2xl z-[80] flex flex-col overflow-hidden max-h-[80vh]">
@@ -349,7 +349,7 @@ export function NewConversationModal({
 
         {error && (
           <div className="px-5 pt-2">
-            <p className="text-xs text-red-500">{error}</p>
+            <p className="text-xs text-red-500 dark:text-red-400">{error}</p>
           </div>
         )}
 

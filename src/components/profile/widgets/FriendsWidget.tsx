@@ -150,7 +150,7 @@ export function FriendsWidget({
                 {isOwner && (
                   <button
                     onClick={() => setConfirmFriend(f)}
-                    className="shrink-0 p-1.5 rounded-full transition-colors text-primary bg-primary/10 hover:bg-red-50 hover:text-red-500"
+                    className="shrink-0 p-1.5 rounded-full transition-colors text-primary bg-primary/10 hover:bg-red-50 dark:hover:bg-red-500/20 hover:text-red-500"
                     title="Hủy kết bạn"
                   >
                     <UserCheck size={13} />

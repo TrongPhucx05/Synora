@@ -180,7 +180,7 @@ export default function UploadDocumentModal({ onClose, onSuccess }: Props) {
       role="dialog"
       aria-modal="true"
       aria-label="Tải lên tài liệu"
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-in fade-in duration-200 sm:p-6"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 dark:bg-black/35 backdrop-blur-sm animate-in fade-in duration-200 sm:p-6"
       onClick={(e) => {
         if (e.target === e.currentTarget) onClose();
       }}
@@ -204,8 +204,8 @@ export default function UploadDocumentModal({ onClose, onSuccess }: Props) {
 
         {uploadState === "success" ? (
           <div className="flex flex-col items-center justify-center gap-4 px-8 py-16 text-center">
-            <div className="w-14 h-14 rounded-full bg-green-50 flex items-center justify-center">
-              <CheckCircle size={28} className="text-green-500" />
+            <div className="w-14 h-14 rounded-full bg-green-50 dark:bg-green-500/15 flex items-center justify-center">
+              <CheckCircle size={28} className="text-green-500 dark:text-green-400" />
             </div>
             <div>
               <p className="text-sm font-semibold text-text-primary mb-1">
@@ -227,7 +227,7 @@ export default function UploadDocumentModal({ onClose, onSuccess }: Props) {
             <div className="flex-1 overflow-y-auto px-5 py-5 flex flex-col gap-4">
               <div className="flex flex-col gap-1.5">
                 <label className="text-xs font-semibold text-text-primary">
-                  Tiêu đề <span className="text-red-500">*</span>
+                  Tiêu đề <span className="text-red-500 dark:text-red-400">*</span>
                 </label>
                 <input
                   ref={firstFieldRef}
@@ -250,7 +250,7 @@ export default function UploadDocumentModal({ onClose, onSuccess }: Props) {
                   )}
                 />
                 {errors.title && (
-                  <p className="text-[11px] text-red-500">{errors.title}</p>
+                  <p className="text-[11px] text-red-500 dark:text-red-400">{errors.title}</p>
                 )}
               </div>
 
@@ -282,7 +282,7 @@ export default function UploadDocumentModal({ onClose, onSuccess }: Props) {
                   />
                 </div>
                 {errors.level && (
-                  <p className="text-[11px] text-red-500">{errors.level}</p>
+                  <p className="text-[11px] text-red-500 dark:text-red-400">{errors.level}</p>
                 )}
               </div>
 
@@ -321,7 +321,7 @@ export default function UploadDocumentModal({ onClose, onSuccess }: Props) {
                       />
                     </div>
                     {errors.grade && (
-                      <p className="text-[11px] text-red-500">{errors.grade}</p>
+                      <p className="text-[11px] text-red-500 dark:text-red-400">{errors.grade}</p>
                     )}
                   </div>
                   <div className="flex-1 flex flex-col gap-1.5">
@@ -347,7 +347,7 @@ export default function UploadDocumentModal({ onClose, onSuccess }: Props) {
                       />
                     </div>
                     {errors.subject && (
-                      <p className="text-[11px] text-red-500">
+                      <p className="text-[11px] text-red-500 dark:text-red-400">
                         {errors.subject}
                       </p>
                     )}
@@ -379,14 +379,14 @@ export default function UploadDocumentModal({ onClose, onSuccess }: Props) {
                     />
                   </div>
                   {errors.major && (
-                    <p className="text-[11px] text-red-500">{errors.major}</p>
+                    <p className="text-[11px] text-red-500 dark:text-red-400">{errors.major}</p>
                   )}
                 </div>
               )}
 
               <div className="flex flex-col gap-1.5">
                 <label className="text-xs font-semibold text-text-primary">
-                  File <span className="text-red-500">*</span>
+                  File <span className="text-red-500 dark:text-red-400">*</span>
                   <span className="text-text-muted font-normal ml-1">
                     (PDF, DOCX, PPTX)
                   </span>
@@ -411,14 +411,14 @@ export default function UploadDocumentModal({ onClose, onSuccess }: Props) {
                       : errors.file
                         ? "border-red-300 bg-red-50/40"
                         : file
-                          ? "border-green-400 bg-green-50/40"
+                          ? "border-green-400 dark:border-green-500/60 bg-green-50/40 dark:bg-green-500/10"
                           : "border-surface-200 bg-surface-50 hover:border-primary/50 hover:bg-primary/5",
                   )}
                 >
                   {file ? (
                     <>
-                      <div className="w-9 h-9 rounded-lg bg-green-100 flex items-center justify-center">
-                        <FileText size={18} className="text-green-600" />
+                      <div className="w-9 h-9 rounded-lg bg-green-100 dark:bg-green-500/20 flex items-center justify-center">
+                        <FileText size={18} className="text-green-600 dark:text-green-400" />
                       </div>
                       <p className="text-xs font-semibold text-text-primary text-center">
                         {file.name}
@@ -453,7 +453,7 @@ export default function UploadDocumentModal({ onClose, onSuccess }: Props) {
                   }}
                 />
                 {errors.file && (
-                  <p className="text-[11px] text-red-500">{errors.file}</p>
+                  <p className="text-[11px] text-red-500 dark:text-red-400">{errors.file}</p>
                 )}
               </div>
 
@@ -474,7 +474,7 @@ export default function UploadDocumentModal({ onClose, onSuccess }: Props) {
               </div>
 
               {errorMsg && (
-                <p className="text-xs text-red-500 bg-red-50 px-3 py-2 rounded-lg">
+                <p className="text-xs text-red-500 dark:text-red-400 bg-red-50 dark:bg-red-500/15 px-3 py-2 rounded-lg">
                   {errorMsg}
                 </p>
               )}

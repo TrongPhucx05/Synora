@@ -32,9 +32,9 @@ export function ConfirmDialog({
   onCancel,
 }: ConfirmDialogProps) {
   const resolvedIcon = icon ?? (
-    <UserMinus size={20} className={iconColorClass ?? "text-red-500"} />
+    <UserMinus size={20} className={iconColorClass ?? "text-red-500 dark:text-red-400"} />
   );
-  const resolvedIconBg = iconBgClass ?? "bg-red-100";
+  const resolvedIconBg = iconBgClass ?? "bg-red-100 dark:bg-red-500/20";
   const resolvedTitle = title ?? "Hủy kết bạn?";
   const resolvedDescription = description ?? (
     <>
@@ -52,7 +52,7 @@ export function ConfirmDialog({
 
   return (
     <div
-      className="fixed inset-0 z-[90] flex items-center justify-center bg-black/40 backdrop-blur-sm p-4"
+      className="fixed inset-0 z-[90] flex items-center justify-center bg-black/40 dark:bg-black/25 backdrop-blur-sm p-4"
       onClick={(e) => e.target === e.currentTarget && !loading && onCancel()}
     >
       <div className="bg-surface rounded-2xl shadow-xl p-6 w-80 mx-4 animate-in fade-in zoom-in-95 duration-150">

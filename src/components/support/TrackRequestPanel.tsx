@@ -108,7 +108,7 @@ export function TrackRequestPanel({
         />
       </div>
 
-      {error && <p className="text-[11px] text-red-500">{error}</p>}
+      {error && <p className="text-[11px] text-red-500 dark:text-red-400">{error}</p>}
 
       <button
         onClick={handleSearch}

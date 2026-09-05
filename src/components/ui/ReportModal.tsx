@@ -47,14 +47,14 @@ export function ReportModal({
 
   return (
     <div
-      className="fixed inset-0 z-[70] flex items-center justify-center bg-black/40 backdrop-blur-sm p-4"
+      className="fixed inset-0 z-[70] flex items-center justify-center bg-black/40 dark:bg-black/25 backdrop-blur-sm p-4"
       onClick={(e) => e.target === e.currentTarget && onClose()}
     >
       <div className="bg-surface rounded-2xl shadow-2xl w-full max-w-sm p-5">
         <div className="flex items-start justify-between mb-3">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-orange-50 flex items-center justify-center shrink-0">
-              <Flag size={18} className="text-orange-500" />
+            <div className="w-10 h-10 rounded-full bg-orange-50 dark:bg-orange-500/15 flex items-center justify-center shrink-0">
+              <Flag size={18} className="text-orange-500 dark:text-orange-400" />
             </div>
             <div>
               <p className="text-sm font-semibold text-text-primary">{title}</p>
@@ -80,7 +80,7 @@ export function ReportModal({
                 className={clsx(
                   "text-left px-3 py-2 rounded-xl text-sm border transition-colors",
                   reason === key
-                    ? "border-orange-400 bg-orange-50 text-orange-700"
+                    ? "border-orange-400 bg-orange-50 dark:bg-orange-500/15 text-orange-700"
                     : "border-surface-200 text-text-secondary hover:bg-surface-50",
                 )}
               >
@@ -98,7 +98,7 @@ export function ReportModal({
           className="w-full mt-3 text-sm border border-surface-200 rounded-xl p-3 resize-none focus:outline-none focus:ring-2 focus:ring-orange-100"
         />
 
-        {error && <p className="text-xs text-red-500 mt-2">{error}</p>}
+        {error && <p className="text-xs text-red-500 dark:text-red-400 mt-2">{error}</p>}
 
         <div className="flex gap-2 mt-4">
           <button

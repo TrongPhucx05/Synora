@@ -107,8 +107,8 @@ export function CommentMediaThumb({
             className="w-full max-h-52 object-cover group-hover:brightness-90 transition"
           />
         )}
-        <div className="absolute inset-0 flex items-center justify-center bg-black/20 group-hover:bg-black/40 transition-colors">
-          <div className="w-12 h-12 rounded-full bg-black/50 flex items-center justify-center shadow-lg">
+        <div className="absolute inset-0 flex items-center justify-center bg-black/20 group-hover:bg-black/40 dark:bg-black/25 transition-colors">
+          <div className="w-12 h-12 rounded-full bg-black/50 dark:bg-black/35 flex items-center justify-center shadow-lg">
             {isVideo ? (
               <svg viewBox="0 0 24 24" fill="white" className="w-6 h-6 ml-0.5">
                 <path d="M8 5v14l11-7z" />
@@ -130,7 +130,7 @@ export function CommentMediaThumb({
         </div>
         {fileName && (
           <div className="absolute bottom-2 left-2 right-2 pointer-events-none">
-            <p className="text-white text-[11px] truncate bg-black/50 px-2 py-0.5 rounded">
+            <p className="text-white text-[11px] truncate bg-black/50 dark:bg-black/35 px-2 py-0.5 rounded">
               {fileName}
             </p>
           </div>
@@ -319,7 +319,7 @@ export default function CommentInput({
                   className="h-full w-full object-cover opacity-80"
                 />
                 <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="w-7 h-7 rounded-full bg-black/60 flex items-center justify-center">
+                  <div className="w-7 h-7 rounded-full bg-black/60 dark:bg-black/45 flex items-center justify-center">
                     <svg
                       viewBox="0 0 24 24"
                       fill="white"
@@ -416,7 +416,7 @@ export default function CommentInput({
           </p>
         )}
         {uploadError && (
-          <p className="text-[11px] text-red-500 mt-1 ml-1">{uploadError}</p>
+          <p className="text-[11px] text-red-500 dark:text-red-400 mt-1 ml-1">{uploadError}</p>
         )}
       </div>
     </div>

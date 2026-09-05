@@ -447,7 +447,7 @@ export default function Navbar({
                     <Link
                       href="/notifications"
                       onClick={() => setBellOpen(false)}
-                      className="text-[11px] font-semibold text-blue-500 hover:text-blue-600 transition-colors"
+                      className="text-[11px] font-semibold text-blue-500 dark:text-blue-400 hover:text-blue-600 transition-colors"
                     >
                       Xem tất cả
                     </Link>

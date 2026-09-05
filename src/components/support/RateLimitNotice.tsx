@@ -28,7 +28,7 @@ export function RateLimitNotice({
 
   if (status.reason === "COOLDOWN") {
     return (
-      <div className="flex items-start gap-2 text-xs text-amber-600 bg-amber-50 border border-amber-100 rounded-lg px-3 py-2">
+      <div className="flex items-start gap-2 text-xs text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-500/15 border border-amber-100 rounded-lg px-3 py-2">
         <Clock size={14} className="mt-0.5 shrink-0" />
         <span>
           Bạn vừa gửi một yêu cầu. Vui lòng đợi{" "}
@@ -40,7 +40,7 @@ export function RateLimitNotice({
   }
 
   return (
-    <div className="flex items-start gap-2 text-xs text-red-600 bg-red-50 border border-red-100 rounded-lg px-3 py-2">
+    <div className="flex items-start gap-2 text-xs text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-500/15 border border-red-100 rounded-lg px-3 py-2">
       <AlertTriangle size={14} className="mt-0.5 shrink-0" />
       <span>
         Bạn đã sử dụng hết {status.limit} lượt yêu cầu trong 7 ngày. Vui lòng
