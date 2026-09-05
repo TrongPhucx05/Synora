@@ -119,7 +119,7 @@ export default function NotificationsPage() {
           <button
             onClick={markAllRead}
             disabled={totalUnread === 0}
-            className="flex items-center gap-1.5 text-xs font-semibold text-blue-500 bg-blue-50 hover:bg-blue-100 px-3 py-2 rounded-xl disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+            className="flex items-center gap-1.5 text-xs font-semibold text-blue-500 dark:text-blue-400 bg-blue-50 dark:bg-blue-500/15 hover:bg-blue-100 dark:hover:bg-blue-500/25 px-3 py-2 rounded-xl disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
           >
             <CheckCheck size={13} />
             Đọc tất cả
@@ -173,7 +173,7 @@ export default function NotificationsPage() {
                 <div className="flex justify-center p-3">
                   <button
                     onClick={loadMore}
-                    className="px-5 py-2 text-sm font-semibold text-blue-500 border border-blue-200 rounded-xl hover:bg-blue-50 transition-colors"
+                    className="px-5 py-2 text-sm font-semibold text-blue-500 dark:text-blue-400 border border-blue-200 rounded-xl hover:bg-blue-50 dark:hover:bg-blue-500/20 transition-colors"
                   >
                     Xem thêm
                   </button>

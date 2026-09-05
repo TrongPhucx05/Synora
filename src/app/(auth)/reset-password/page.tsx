@@ -65,8 +65,8 @@ function ResetPasswordForm() {
       </p>
 
       {invalid ? (
-        <div className="px-3 py-2.5 bg-red-50 border border-red-100 rounded-lg">
-          <p className="text-xs text-red-500">
+        <div className="px-3 py-2.5 bg-red-50 dark:bg-red-500/15 border border-red-100 rounded-lg">
+          <p className="text-xs text-red-500 dark:text-red-400">
             Link không hợp lệ. Vui lòng yêu cầu lại từ trang{" "}
             <Link href="/forgot-password" className="underline font-medium">
               Quên mật khẩu

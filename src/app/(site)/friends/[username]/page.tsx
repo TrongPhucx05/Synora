@@ -69,11 +69,11 @@ function ConfirmDialog({
 }) {
   return (
     <div
-      className="fixed inset-0 z-[90] flex items-center justify-center bg-black/40 backdrop-blur-sm p-4"
+      className="fixed inset-0 z-[90] flex items-center justify-center bg-black/40 dark:bg-black/25 backdrop-blur-sm p-4"
       onClick={(e) => e.target === e.currentTarget && onCancel()}
     >
       <div className="bg-surface rounded-2xl shadow-xl p-6 w-80 mx-4 animate-in fade-in zoom-in-95 duration-150">
-        <div className="flex items-center justify-center w-11 h-11 rounded-full bg-red-100 mx-auto mb-4">
+        <div className="flex items-center justify-center w-11 h-11 rounded-full bg-red-100 dark:bg-red-500/20 mx-auto mb-4">
           {icon}
         </div>
         <h3 className="text-sm font-semibold text-text-primary text-center mb-1">
@@ -317,7 +317,7 @@ export default function FriendsPage() {
 
       {confirm?.type === "unfriend" && (
         <ConfirmDialog
-          icon={<UserMinus size={20} className="text-red-500" />}
+          icon={<UserMinus size={20} className="text-red-500 dark:text-red-400" />}
           title="Hủy kết bạn?"
           description={`Bạn sẽ không còn là bạn bè với ${confirm.person.displayName} nữa.`}
           confirmLabel="Hủy kết bạn"
@@ -328,7 +328,7 @@ export default function FriendsPage() {
 
       {confirm?.type === "reject" && (
         <ConfirmDialog
-          icon={<UserX size={20} className="text-red-500" />}
+          icon={<UserX size={20} className="text-red-500 dark:text-red-400" />}
           title="Từ chối yêu cầu?"
           description={`Từ chối lời mời kết bạn từ ${confirm.person.displayName}.`}
           confirmLabel="Từ chối"
@@ -339,7 +339,7 @@ export default function FriendsPage() {
 
       {confirm?.type === "cancel" && (
         <ConfirmDialog
-          icon={<Clock size={20} className="text-red-500" />}
+          icon={<Clock size={20} className="text-red-500 dark:text-red-400" />}
           title="Thu hồi lời mời?"
           description={`Thu hồi lời mời kết bạn đã gửi đến ${confirm.person.displayName}.`}
           confirmLabel="Thu hồi"

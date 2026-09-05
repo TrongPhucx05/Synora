@@ -57,7 +57,7 @@ function AdminRequestsPreview() {
           <button
             key={r.id}
             onClick={() => setDetail(r)}
-            className="w-full flex items-center justify-between gap-3 px-4 py-3 border-b border-slate-50 last:border-0 hover:bg-slate-50/60 text-left"
+            className="w-full flex items-center justify-between gap-3 px-4 py-3 border-b border-surface-100 last:border-0 hover:bg-surface-50 text-left"
           >
             <div className="min-w-0">
               <p className="text-xs font-mono text-text-muted">{r.code}</p>
@@ -78,7 +78,7 @@ function AdminRequestsPreview() {
 
       {detail && (
         <div
-          className="fixed inset-0 bg-slate-900/40 flex items-center justify-center z-50 p-4"
+          className="fixed inset-0 bg-slate-900/40 dark:bg-black/25 flex items-center justify-center z-50 p-4"
           onClick={(e) => e.target === e.currentTarget && setDetail(null)}
         >
           <div className="bg-surface rounded-2xl shadow-xl w-full max-w-[480px] max-h-[85vh] overflow-y-auto">

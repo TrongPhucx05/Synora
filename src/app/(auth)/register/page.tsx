@@ -186,7 +186,7 @@ export default function RegisterPage() {
             Đã có tài khoản?{" "}
             <Link
               href="/login"
-              className="text-blue-500 font-semibold hover:underline"
+              className="text-blue-500 dark:text-blue-400 font-semibold hover:underline"
             >
               Đăng nhập
             </Link>

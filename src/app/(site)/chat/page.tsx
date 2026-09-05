@@ -1714,7 +1714,7 @@ export default function ChatPage() {
                 <button
                   onClick={handlePendingDelete}
                   disabled={pendingActionLoading}
-                  className="flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-semibold bg-red-50 text-red-500 hover:bg-red-100 transition-colors disabled:opacity-50"
+                  className="flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-semibold bg-red-50 dark:bg-red-500/15 text-red-500 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-500/25 transition-colors disabled:opacity-50"
                 >
                   Từ chối
                 </button>
@@ -1812,7 +1812,7 @@ export default function ChatPage() {
                             )}
                             <button
                               onClick={() => removePendingFile(f.id)}
-                              className="absolute top-0.5 right-0.5 bg-black/60 text-white rounded-full p-0.5"
+                              className="absolute top-0.5 right-0.5 bg-black/60 dark:bg-black/45 text-white rounded-full p-0.5"
                             >
                               <X size={10} />
                             </button>
@@ -1921,13 +1921,13 @@ export default function ChatPage() {
         <ConfirmDialog
           icon={
             confirmAction.type === "delete" ? (
-              <Trash2 size={20} className="text-red-500" />
+              <Trash2 size={20} className="text-red-500 dark:text-red-400" />
             ) : (
               <Archive size={20} className="text-primary" />
             )
           }
           iconBgClass={
-            confirmAction.type === "delete" ? "bg-red-100" : "bg-primary/10"
+            confirmAction.type === "delete" ? "bg-red-100 dark:bg-red-500/20" : "bg-primary/10"
           }
           title={
             confirmAction.type === "delete"
@@ -1964,8 +1964,8 @@ export default function ChatPage() {
       )}
       {blockTarget && (
         <ConfirmDialog
-          icon={<Ban size={20} className="text-red-500" />}
-          iconBgClass="bg-red-100"
+          icon={<Ban size={20} className="text-red-500 dark:text-red-400" />}
+          iconBgClass="bg-red-100 dark:bg-red-500/20"
           title={`Chặn ${blockTarget.username}?`}
           description="Người này sẽ không thể nhắn tin, xem trang cá nhân hoặc kết bạn với bạn nữa."
           confirmLabel="Chặn"

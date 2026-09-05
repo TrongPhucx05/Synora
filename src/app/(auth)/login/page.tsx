@@ -138,7 +138,7 @@ export default function LoginPage() {
               </label>
               <Link
                 href="/forgot-password"
-                className="text-sm text-blue-500 hover:underline"
+                className="text-sm text-blue-500 dark:text-blue-400 hover:underline"
               >
                 Quên mật khẩu?
               </Link>
@@ -157,7 +157,7 @@ export default function LoginPage() {
             Chưa có tài khoản?{" "}
             <Link
               href="/register"
-              className="text-blue-500 font-semibold hover:underline"
+              className="text-blue-500 dark:text-blue-400 font-semibold hover:underline"
             >
               Đăng ký ngay
             </Link>
