@@ -6,7 +6,7 @@ export function StatCard({
   label,
   value,
   trend,
-  colorClass = "bg-blue-50 text-blue-600",
+  colorClass = "bg-blue-50 dark:bg-blue-500/15 text-blue-600 dark:text-blue-400",
   comingSoon = false,
 }: {
   icon: LucideIcon;
@@ -41,7 +41,7 @@ export function StatCard({
             <span
               className={clsx(
                 "text-[10px] font-semibold shrink-0",
-                trend.positive ? "text-emerald-600" : "text-red-500",
+                trend.positive ? "text-emerald-600 dark:text-emerald-400" : "text-red-500 dark:text-red-400",
               )}
             >
               {trend.positive ? "+" : ""}

@@ -34,7 +34,7 @@ export function PostDetailModal({
 
   return (
     <div
-      className="fixed inset-0 z-[95] flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm"
+      className="fixed inset-0 z-[95] flex items-center justify-center p-4 bg-black/40 dark:bg-black/25 backdrop-blur-sm"
       onClick={(e) => e.target === e.currentTarget && onClose()}
     >
       <div className="bg-transparent w-full max-w-lg max-h-[90vh] overflow-y-auto rounded-2xl">
@@ -44,7 +44,7 @@ export function PostDetailModal({
           </h2>
           <button
             onClick={onClose}
-            className="w-8 h-8 rounded-full bg-white/90 hover:bg-surface flex items-center justify-center text-text-secondary shadow shrink-0"
+            className="w-8 h-8 rounded-full bg-white/90 dark:bg-surface hover:bg-surface dark:hover:bg-surface-100 flex items-center justify-center text-text-secondary shadow shrink-0"
           >
             <X size={16} />
           </button>
@@ -56,7 +56,7 @@ export function PostDetailModal({
           </div>
         )}
         {error && (
-          <div className="bg-surface rounded-xl p-10 text-center text-sm text-red-500">
+          <div className="bg-surface rounded-xl p-10 text-center text-sm text-red-500 dark:text-red-400">
             {error}
           </div>
         )}

@@ -38,12 +38,12 @@ export function DeleteDocumentDialog({
   }, [dropdownOpen]);
 
   return (
-    <div className="fixed inset-0 z-[90] flex items-center justify-center bg-slate-900/40 p-4">
+    <div className="fixed inset-0 z-[90] flex items-center justify-center bg-slate-900/40 dark:bg-black/25 p-4">
       <div className="bg-surface rounded-2xl shadow-xl w-full max-w-sm p-6">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-full bg-red-100 flex items-center justify-center">
-              <Trash2 size={17} className="text-red-500" />
+            <div className="w-9 h-9 rounded-full bg-red-100 dark:bg-red-500/20 flex items-center justify-center">
+              <Trash2 size={17} className="text-red-500 dark:text-red-400" />
             </div>
             <h3 className="text-sm font-semibold text-text-primary">
               Xóa tài liệu vi phạm
@@ -64,7 +64,7 @@ export function DeleteDocumentDialog({
 
         <div className="flex flex-col gap-1.5 mb-3 relative" ref={dropdownRef}>
           <label className="text-xs font-semibold text-text-secondary">
-            Lý do vi phạm <span className="text-red-500">*</span>
+            Lý do vi phạm <span className="text-red-500 dark:text-red-400">*</span>
           </label>
           <button
             type="button"
@@ -100,7 +100,7 @@ export function DeleteDocumentDialog({
                   className={clsx(
                     "w-full flex items-center justify-between px-3.5 py-2 text-sm text-left transition-colors",
                     reason === r
-                      ? "bg-blue-50 text-blue-600 font-medium"
+                      ? "bg-blue-50 dark:bg-blue-500/15 text-blue-600 dark:text-blue-400 font-medium"
                       : "text-text-secondary hover:bg-surface-50",
                   )}
                 >

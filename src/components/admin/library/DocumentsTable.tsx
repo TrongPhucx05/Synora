@@ -63,7 +63,7 @@ export function DocumentsTable({
           {documents.map((doc) => (
             <tr
               key={doc.id}
-              className="border-b border-slate-50 last:border-0 hover:bg-slate-50/60"
+              className="border-b border-surface-100 last:border-0 hover:bg-surface-50"
             >
               <td className="px-5 py-3">
                 <div className="flex items-center gap-2.5">
@@ -104,7 +104,7 @@ export function DocumentsTable({
               </td>
               <td className="px-5 py-3 text-center whitespace-nowrap">
                 {doc.reportCount > 0 ? (
-                  <span className="inline-flex items-center gap-1 text-red-500 font-medium">
+                  <span className="inline-flex items-center gap-1 text-red-500 dark:text-red-400 font-medium">
                     <Flag size={12} /> {doc.reportCount}
                   </span>
                 ) : (
@@ -113,7 +113,7 @@ export function DocumentsTable({
               </td>
               <td className="px-5 py-3 whitespace-nowrap">
                 {doc.status === "VISIBLE" ? (
-                  <span className="text-[11px] font-medium bg-emerald-50 text-emerald-600 px-2 py-0.5 rounded-full whitespace-nowrap">
+                  <span className="text-[11px] font-medium bg-emerald-50 dark:bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 px-2 py-0.5 rounded-full whitespace-nowrap">
                     Hiển thị
                   </span>
                 ) : (
@@ -155,7 +155,7 @@ export function DocumentsTable({
                   <button
                     onClick={() => onDelete(doc)}
                     title="Xóa vĩnh viễn"
-                    className="p-1.5 rounded-lg hover:bg-red-50 text-text-muted hover:text-red-500"
+                    className="p-1.5 rounded-lg hover:bg-red-50 dark:hover:bg-red-500/20 text-text-muted hover:text-red-500"
                   >
                     <Trash2 size={15} />
                   </button>

@@ -110,8 +110,8 @@ export default function AdminGroupsPage() {
       <GroupFilters value={filters} onChange={setFilters} />
 
       {loading ? (
-        <div className="bg-white border border-slate-200 rounded-2xl py-16 flex items-center justify-center">
-          <p className="text-sm text-slate-400">Đang tải...</p>
+        <div className="bg-surface border border-surface-200 rounded-2xl py-16 flex items-center justify-center">
+          <p className="text-sm text-text-muted">Đang tải...</p>
         </div>
       ) : (
         <>
@@ -137,19 +137,19 @@ export default function AdminGroupsPage() {
         <ConfirmDialog
           icon={
             confirmState.type === "enable" ? (
-              <CheckCircle2 size={20} className="text-emerald-500" />
+              <CheckCircle2 size={20} className="text-emerald-500 dark:text-emerald-400" />
             ) : confirmState.type === "disable" ? (
-              <Ban size={20} className="text-amber-500" />
+              <Ban size={20} className="text-amber-500 dark:text-amber-400" />
             ) : (
-              <Trash2 size={20} className="text-red-500" />
+              <Trash2 size={20} className="text-red-500 dark:text-red-400" />
             )
           }
           iconBgClass={
             confirmState.type === "enable"
-              ? "bg-emerald-100"
+              ? "bg-emerald-100 dark:bg-emerald-500/20"
               : confirmState.type === "disable"
-                ? "bg-amber-100"
-                : "bg-red-100"
+                ? "bg-amber-100 dark:bg-amber-500/20"
+                : "bg-red-100 dark:bg-red-500/20"
           }
           title={
             confirmState.type === "enable"
@@ -161,7 +161,7 @@ export default function AdminGroupsPage() {
           description={
             <>
               Áp dụng cho{" "}
-              <span className="font-medium text-slate-700">
+              <span className="font-medium text-text-secondary">
                 {confirmState.group.name}
               </span>
               {confirmState.type === "delete" &&

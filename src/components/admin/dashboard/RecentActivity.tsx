@@ -38,7 +38,7 @@ export function RecentActivity() {
         </h3>
         <Link
           href="/admin/audit-log"
-          className="text-xs font-medium text-blue-600 hover:underline"
+          className="text-xs font-medium text-blue-600 dark:text-blue-400 hover:underline"
         >
           Xem tất cả
         </Link>
@@ -63,10 +63,10 @@ export function RecentActivity() {
             return (
               <div
                 key={e.id}
-                className="flex items-center gap-3 py-2.5 border-b border-slate-50 last:border-b-0"
+                className="flex items-center gap-3 py-2.5 border-b border-surface-100 last:border-b-0"
               >
                 <Icon size={14} className="text-text-muted shrink-0" />
-                <span className="text-xs font-semibold text-blue-600 shrink-0">
+                <span className="text-xs font-semibold text-blue-600 dark:text-blue-400 shrink-0">
                   {e.actor.name}
                 </span>
                 <span className="text-xs text-text-secondary truncate flex-1">

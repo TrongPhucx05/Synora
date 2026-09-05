@@ -49,25 +49,25 @@ export default function AdminDashboardPage() {
           icon={Users}
           label="Tổng người dùng"
           value={fmt(stats?.totalUsers)}
-          colorClass="bg-blue-50 text-blue-600"
+          colorClass="bg-blue-50 dark:bg-blue-500/15 text-blue-600 dark:text-blue-400"
         />
         <StatCard
           icon={Activity}
           label="Đang hoạt động (24h)"
           value={fmt(stats?.activeUsers)}
-          colorClass="bg-emerald-50 text-emerald-600"
+          colorClass="bg-emerald-50 dark:bg-emerald-500/15 text-emerald-600 dark:text-emerald-400"
         />
         <StatCard
           icon={FileText}
           label="Tổng bài viết"
           value={fmt(stats?.totalPosts)}
-          colorClass="bg-violet-50 text-violet-600"
+          colorClass="bg-violet-50 dark:bg-violet-500/15 text-violet-600 dark:text-violet-400"
         />
         <StatCard
           icon={MessageSquare}
           label="Tổng bình luận"
           value={fmt(stats?.totalComments)}
-          colorClass="bg-cyan-50 text-cyan-600"
+          colorClass="bg-cyan-50 dark:bg-cyan-500/15 text-cyan-600 dark:text-cyan-400"
         />
       </div>
 
@@ -76,25 +76,25 @@ export default function AdminDashboardPage() {
           icon={UsersRound}
           label="Tổng nhóm"
           value={fmtOrZero(stats?.totalGroups)}
-          colorClass="bg-pink-50 text-pink-600"
+          colorClass="bg-pink-50 dark:bg-pink-500/15 text-pink-600 dark:text-pink-400"
         />
         <StatCard
           icon={BookOpen}
           label="Tổng tài liệu"
           value={fmt(stats?.totalDocuments)}
-          colorClass="bg-indigo-50 text-indigo-600"
+          colorClass="bg-indigo-50 dark:bg-indigo-500/15 text-indigo-600 dark:text-indigo-400"
         />
         <StatCard
           icon={Flag}
           label="Báo cáo chưa xử lý"
           value={fmt(stats?.pendingReports)}
-          colorClass="bg-red-50 text-red-600"
+          colorClass="bg-red-50 dark:bg-red-500/15 text-red-600 dark:text-red-400"
         />
         <StatCard
           icon={Clock}
           label="Yêu cầu hỗ trợ chưa xử lý"
           value={fmtOrZero(stats?.pendingSupportRequests)}
-          colorClass="bg-amber-50 text-amber-600"
+          colorClass="bg-amber-50 dark:bg-amber-500/15 text-amber-600 dark:text-amber-400"
         />
       </div>
 

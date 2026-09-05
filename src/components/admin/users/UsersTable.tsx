@@ -22,13 +22,13 @@ export type AdminUserRow = {
 
 const ROLE_BADGE: Record<AdminUserRow["role"], string> = {
   USER: "bg-surface-100 text-text-secondary",
-  ADMIN: "bg-blue-50 text-blue-600",
+  ADMIN: "bg-blue-50 dark:bg-blue-500/15 text-blue-600 dark:text-blue-400",
 };
 
 const STATUS_BADGE: Record<AdminUserRow["status"], string> = {
-  ACTIVE: "bg-emerald-50 text-emerald-600",
-  SUSPENDED: "bg-amber-50 text-amber-600",
-  BANNED: "bg-red-50 text-red-600",
+  ACTIVE: "bg-emerald-50 dark:bg-emerald-500/15 text-emerald-600 dark:text-emerald-400",
+  SUSPENDED: "bg-amber-50 dark:bg-amber-500/15 text-amber-600 dark:text-amber-400",
+  BANNED: "bg-red-50 dark:bg-red-500/15 text-red-600 dark:text-red-400",
 };
 
 const STATUS_LABEL: Record<AdminUserRow["status"], string> = {
@@ -98,7 +98,7 @@ export function UsersTable({
             {users.map((u) => (
               <tr
                 key={u.id}
-                className="border-b border-slate-50 last:border-b-0 hover:bg-slate-50/50 transition-colors"
+                className="border-b border-surface-100 last:border-b-0 hover:bg-surface-50 transition-colors"
               >
                 <td className="px-5 py-3">
                   <button
@@ -146,7 +146,7 @@ export function UsersTable({
                     </p>
                   )}
                   {u.scheduledDeleteAt && (
-                    <p className="text-[10px] text-red-500 mt-1 truncate">
+                    <p className="text-[10px] text-red-500 dark:text-red-400 mt-1 truncate">
                       Sẽ xóa {formatDateTime(u.scheduledDeleteAt)}
                     </p>
                   )}

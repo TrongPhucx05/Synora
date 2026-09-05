@@ -22,7 +22,7 @@ function MediaLightbox({
 }) {
   return (
     <div
-      className="fixed inset-0 z-[95] bg-black/90 flex items-center justify-center"
+      className="fixed inset-0 z-[95] bg-black/90 dark:bg-black/70 flex items-center justify-center"
       onClick={onClose}
     >
       <div className="absolute top-4 right-4 flex items-center gap-2 z-10">
@@ -126,13 +126,13 @@ export function MediaGrid({
             )}
             {m.type === "VIDEO" && (
               <div className="absolute inset-0 flex items-center justify-center bg-black/20 group-hover:bg-black/35 transition-colors pointer-events-none">
-                <div className="w-10 h-10 rounded-full bg-black/50 flex items-center justify-center">
+                <div className="w-10 h-10 rounded-full bg-black/50 dark:bg-black/35 flex items-center justify-center">
                   <PlayCircle size={22} className="text-white" />
                 </div>
               </div>
             )}
             {m.status === "HIDDEN" && (
-              <div className="absolute inset-0 bg-slate-900/60 flex items-center justify-center pointer-events-none">
+              <div className="absolute inset-0 bg-slate-900/60 dark:bg-black/45 flex items-center justify-center pointer-events-none">
                 <span className="text-[11px] font-medium bg-white/90 text-text-secondary px-2 py-0.5 rounded-full">
                   Đã ẩn
                 </span>

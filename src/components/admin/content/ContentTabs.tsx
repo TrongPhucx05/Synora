@@ -27,7 +27,7 @@ export function ContentTabs({
           className={clsx(
             "relative px-4 py-2.5 text-sm font-medium transition-colors",
             value === tab.key
-              ? "text-blue-600"
+              ? "text-blue-600 dark:text-blue-400"
               : "text-text-muted hover:text-text-secondary",
           )}
         >
@@ -36,7 +36,7 @@ export function ContentTabs({
             className={clsx(
               "ml-1.5 text-[11px] rounded-full px-1.5 py-0.5",
               value === tab.key
-                ? "bg-blue-100 text-blue-600"
+                ? "bg-blue-100 dark:bg-blue-500/20 text-blue-600 dark:text-blue-400"
                 : "bg-surface-100 text-text-muted",
             )}
           >

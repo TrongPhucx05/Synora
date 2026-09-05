@@ -21,12 +21,12 @@ export function DeleteAccountModal({
 
   return (
     <div
-      className="fixed inset-0 z-[95] flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm"
+      className="fixed inset-0 z-[95] flex items-center justify-center p-4 bg-black/40 dark:bg-black/25 backdrop-blur-sm"
       onClick={(e) => e.target === e.currentTarget && onCancel()}
     >
       <div className="bg-surface rounded-2xl shadow-2xl w-full max-w-md overflow-hidden">
         <div className="flex items-start gap-3 px-5 pt-5 pb-4">
-          <div className="w-10 h-10 rounded-xl bg-red-100 text-red-500 flex items-center justify-center shrink-0">
+          <div className="w-10 h-10 rounded-xl bg-red-100 dark:bg-red-500/20 text-red-500 dark:text-red-400 flex items-center justify-center shrink-0">
             <Trash2 size={19} />
           </div>
           <div>
@@ -41,10 +41,10 @@ export function DeleteAccountModal({
         </div>
 
         <div className="px-5 flex flex-col gap-4">
-          <div className="flex items-start gap-2.5 bg-amber-50 border border-amber-100 rounded-xl p-3">
+          <div className="flex items-start gap-2.5 bg-amber-50 dark:bg-amber-500/15 border border-amber-100 rounded-xl p-3">
             <AlertTriangle
               size={15}
-              className="text-amber-500 shrink-0 mt-0.5"
+              className="text-amber-500 dark:text-amber-400 shrink-0 mt-0.5"
             />
             <p className="text-[11px] text-amber-700 leading-relaxed">
               Toàn bộ bài viết, tài liệu, bình luận và tin nhắn của người dùng
@@ -82,7 +82,7 @@ export function DeleteAccountModal({
           <button
             onClick={onCancel}
             disabled={loading}
-            className="px-4 py-2 text-xs font-medium text-text-secondary rounded-lg hover:bg-slate-200/60 transition-colors"
+            className="px-4 py-2 text-xs font-medium text-text-secondary rounded-lg hover:bg-surface-200 transition-colors"
           >
             Hủy
           </button>

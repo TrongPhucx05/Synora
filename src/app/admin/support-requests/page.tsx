@@ -97,7 +97,7 @@ export default function AdminSupportRequestsPage() {
       />
       <SupportRequestFilters value={filters} onChange={setFilters} />
       {loading ? (
-        <div className="bg-white rounded-2xl border border-slate-200 p-10 text-center text-sm text-slate-400">
+        <div className="bg-surface rounded-2xl border border-surface-200 p-10 text-center text-sm text-text-muted">
           Đang tải...
         </div>
       ) : (

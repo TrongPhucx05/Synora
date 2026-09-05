@@ -8,7 +8,7 @@ import { clsx } from "clsx";
 
 function StatusBadge({ status }: { status: AdminPostRow["status"] }) {
   return status === "VISIBLE" ? (
-    <span className="text-[11px] font-medium bg-emerald-50 text-emerald-600 px-2 py-0.5 rounded-full whitespace-nowrap">
+    <span className="text-[11px] font-medium bg-emerald-50 dark:bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 px-2 py-0.5 rounded-full whitespace-nowrap">
       Hiển thị
     </span>
   ) : (
@@ -135,7 +135,7 @@ function RowMenu({
                 onDelete(post);
                 setOpen(false);
               }}
-              className="w-full flex items-center gap-2.5 px-3.5 py-2 text-sm text-red-500 hover:bg-red-50"
+              className="w-full flex items-center gap-2.5 px-3.5 py-2 text-sm text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/20"
             >
               <Trash2 size={14} /> Xóa vĩnh viễn
             </button>
@@ -182,7 +182,7 @@ export function PostsTable({
         </thead>
         <tbody>
           {posts.map((post) => (
-            <tr key={post.id} className="border-b border-slate-50 last:border-0 hover:bg-slate-50/60">
+            <tr key={post.id} className="border-b border-surface-100 last:border-0 hover:bg-surface-50">
               <td className="px-5 py-3">
                 <div className="flex items-center gap-2.5">
                   <Avatar src={post.author.avatarUrl} name={post.author.name} initials={post.author.initials} color={post.author.color} size="sm" />
@@ -206,7 +206,7 @@ export function PostsTable({
               <td className="px-5 py-3 text-center text-text-secondary whitespace-nowrap">{post.likeCount}</td>
               <td className="px-5 py-3 text-center whitespace-nowrap">
                 {post.reportCount > 0 ? (
-                  <span className="inline-flex items-center gap-1 text-red-500 font-medium">
+                  <span className="inline-flex items-center gap-1 text-red-500 dark:text-red-400 font-medium">
                     <Flag size={12} /> {post.reportCount}
                   </span>
                 ) : (

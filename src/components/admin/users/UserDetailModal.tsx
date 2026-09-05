@@ -59,7 +59,7 @@ export function UserDetailModal({
 
   return (
     <div
-      className="fixed inset-0 z-[90] flex items-center justify-center bg-black/40 backdrop-blur-sm p-4"
+      className="fixed inset-0 z-[90] flex items-center justify-center bg-black/40 dark:bg-black/25 backdrop-blur-sm p-4"
       onClick={(e) => e.target === e.currentTarget && onClose()}
     >
       <div className="bg-surface rounded-2xl shadow-xl w-full max-w-lg max-h-[85vh] flex flex-col animate-in fade-in zoom-in-95 duration-150">
@@ -92,7 +92,7 @@ export function UserDetailModal({
               className={clsx(
                 "flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition-colors",
                 tab === t.key
-                  ? "bg-blue-500/10 text-blue-600"
+                  ? "bg-blue-500/10 text-blue-600 dark:text-blue-400"
                   : "bg-surface-100 text-text-muted hover:bg-surface-200",
               )}
             >
@@ -204,7 +204,7 @@ export function UserDetailModal({
 
 function DetailRow({ label, value }: { label: string; value: string }) {
   return (
-    <div className="flex items-center justify-between gap-4 py-2 border-b border-slate-50 last:border-b-0">
+    <div className="flex items-center justify-between gap-4 py-2 border-b border-surface-100 last:border-b-0">
       <p className="text-xs text-text-muted">{label}</p>
       <p className="text-xs font-medium text-text-primary">{value}</p>
     </div>

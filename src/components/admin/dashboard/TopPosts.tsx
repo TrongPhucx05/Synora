@@ -52,9 +52,9 @@ function toFeedPost(item: TopPostItem): Post {
 }
 
 const RANK_STYLES = [
-  "bg-amber-100 text-amber-700",
+  "bg-amber-100 dark:bg-amber-500/20 text-amber-700",
   "bg-surface-200 text-text-secondary",
-  "bg-orange-100 text-orange-700",
+  "bg-orange-100 dark:bg-orange-500/20 text-orange-700",
   "bg-surface-100 text-text-muted",
   "bg-surface-100 text-text-muted",
 ];
@@ -155,7 +155,7 @@ export function TopPosts({
             <div
               key={post.id}
               onClick={() => setViewingPost(post)}
-              className="p-3 rounded-xl border border-surface-100 hover:border-surface-200 hover:bg-slate-50/70 transition-colors cursor-pointer flex items-center gap-3"
+              className="p-3 rounded-xl border border-surface-100 hover:border-surface-200 hover:bg-surface-50 transition-colors cursor-pointer flex items-center gap-3"
             >
               <span className={clsxRank(i)} aria-hidden>
                 {i + 1}

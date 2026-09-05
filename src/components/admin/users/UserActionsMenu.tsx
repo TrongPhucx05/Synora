@@ -73,7 +73,7 @@ export function UserActionsMenu({
       {isLocked ? (
         <button
           onClick={onUnlock}
-          className="w-full flex items-center gap-2.5 px-3.5 py-2.5 text-xs text-emerald-600 hover:bg-emerald-50 transition-colors"
+          className="w-full flex items-center gap-2.5 px-3.5 py-2.5 text-xs text-emerald-600 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-500/20 transition-colors"
         >
           <Unlock size={13} className="shrink-0" />
           Mở khóa tài khoản
@@ -81,7 +81,7 @@ export function UserActionsMenu({
       ) : (
         <button
           onClick={onLock}
-          className="w-full flex items-center gap-2.5 px-3.5 py-2.5 text-xs text-red-500 hover:bg-red-50 transition-colors"
+          className="w-full flex items-center gap-2.5 px-3.5 py-2.5 text-xs text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/20 transition-colors"
         >
           <Lock size={13} className="shrink-0" />
           Khóa tài khoản
@@ -93,7 +93,7 @@ export function UserActionsMenu({
       {isScheduledForDeletion ? (
         <button
           onClick={onCancelDeleteRequest}
-          className="w-full flex items-center gap-2.5 px-3.5 py-2.5 text-xs text-emerald-600 hover:bg-emerald-50 transition-colors"
+          className="w-full flex items-center gap-2.5 px-3.5 py-2.5 text-xs text-emerald-600 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-500/20 transition-colors"
         >
           <RotateCcw size={13} className="shrink-0" />
           Hủy lịch xóa tài khoản
@@ -101,7 +101,7 @@ export function UserActionsMenu({
       ) : (
         <button
           onClick={onDeleteRequest}
-          className="w-full flex items-center gap-2.5 px-3.5 py-2.5 text-xs text-red-500 hover:bg-red-50 transition-colors"
+          className="w-full flex items-center gap-2.5 px-3.5 py-2.5 text-xs text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/20 transition-colors"
         >
           <Trash2 size={13} className="shrink-0" />
           Xóa tài khoản

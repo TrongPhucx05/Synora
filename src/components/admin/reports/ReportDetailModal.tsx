@@ -35,7 +35,7 @@ export function ReportDetailModal({
   const [note, setNote] = useState(report.resolutionNote ?? "");
 
   return (
-    <div className="fixed inset-0 bg-slate-900/40 flex items-center justify-center z-50 p-4">
+    <div className="fixed inset-0 bg-slate-900/40 dark:bg-black/25 flex items-center justify-center z-50 p-4">
       <div className="bg-surface rounded-2xl shadow-xl w-full max-w-[560px] max-h-[85vh] overflow-y-auto">
         <div className="flex items-center justify-between px-6 py-4 border-b border-surface-100">
           <h2 className="text-base font-semibold text-text-primary">
@@ -89,7 +89,7 @@ export function ReportDetailModal({
             )}
             <a
               href={TARGET_LINKS[report.targetType]}
-              className="inline-flex items-center gap-1.5 text-xs font-medium text-blue-500 hover:text-blue-600 mt-2"
+              className="inline-flex items-center gap-1.5 text-xs font-medium text-blue-500 dark:text-blue-400 hover:text-blue-600 mt-2"
             >
               <ExternalLink size={12} /> {TARGET_LINK_LABELS[report.targetType]}
             </a>

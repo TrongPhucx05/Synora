@@ -33,7 +33,7 @@ export function GroupDetailModal({
 
   return (
     <div
-      className="fixed inset-0 z-[90] flex items-center justify-center bg-black/40 backdrop-blur-sm p-4"
+      className="fixed inset-0 z-[90] flex items-center justify-center bg-black/40 dark:bg-black/25 backdrop-blur-sm p-4"
       onClick={(e) => e.target === e.currentTarget && onClose()}
     >
       <div className="bg-surface rounded-2xl shadow-xl w-full max-w-md mx-4 overflow-hidden max-h-[85vh] flex flex-col">
@@ -103,8 +103,8 @@ export function GroupDetailModal({
             className={clsx(
               "text-xs font-medium px-3.5 py-2.5 rounded-xl text-center mb-5",
               group.status === "ACTIVE"
-                ? "bg-emerald-50 text-emerald-600"
-                : "bg-red-50 text-red-600",
+                ? "bg-emerald-50 dark:bg-emerald-500/15 text-emerald-600 dark:text-emerald-400"
+                : "bg-red-50 dark:bg-red-500/15 text-red-600 dark:text-red-400",
             )}
           >
             {group.status === "ACTIVE"
@@ -141,7 +141,7 @@ export function GroupDetailModal({
                         {m.displayName}
                       </p>
                       {m.isLeader && (
-                        <Crown size={12} className="text-amber-500 shrink-0" />
+                        <Crown size={12} className="text-amber-500 dark:text-amber-400 shrink-0" />
                       )}
                     </div>
                     <p className="text-[11px] text-text-muted">@{m.username}</p>
@@ -150,8 +150,8 @@ export function GroupDetailModal({
                     className={clsx(
                       "text-[10px] font-semibold px-2 py-0.5 rounded-full shrink-0",
                       m.isAccepted
-                        ? "bg-emerald-50 text-emerald-600"
-                        : "bg-amber-50 text-amber-600",
+                        ? "bg-emerald-50 dark:bg-emerald-500/15 text-emerald-600 dark:text-emerald-400"
+                        : "bg-amber-50 dark:bg-amber-500/15 text-amber-600 dark:text-amber-400",
                     )}
                   >
                     {m.isAccepted ? "Đã tham gia" : "Đang chờ"}

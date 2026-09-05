@@ -73,7 +73,7 @@ export function TopReportedUsers() {
                   @{u.username}
                 </p>
               </div>
-              <span className="flex items-center gap-1 text-[11px] font-semibold text-red-500 bg-red-50 px-2 py-0.5 rounded-full shrink-0">
+              <span className="flex items-center gap-1 text-[11px] font-semibold text-red-500 dark:text-red-400 bg-red-50 dark:bg-red-500/15 px-2 py-0.5 rounded-full shrink-0">
                 {u.reportCount} báo cáo
               </span>
             </div>

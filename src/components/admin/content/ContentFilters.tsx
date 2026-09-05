@@ -46,7 +46,7 @@ export function ContentFilters({
           type="checkbox"
           checked={value.onlyReported}
           onChange={(e) => onChange({ ...value, onlyReported: e.target.checked })}
-          className="rounded border-surface-200 text-blue-500 focus:ring-blue-400"
+          className="rounded border-surface-200 text-blue-500 dark:text-blue-400 focus:ring-blue-400"
         />
         Chỉ hiện nội dung bị báo cáo
       </label>

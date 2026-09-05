@@ -1,8 +1,9 @@
 "use client";
 import { useState, useRef, useEffect } from "react";
 import { useSession, signOut } from "next-auth/react";
-import { Search, LogOut, ShieldCheck } from "lucide-react";
+import { LogOut, ShieldCheck } from "lucide-react";
 import Avatar from "@/components/ui/Avatar";
+import { ThemeToggle } from "@/components/ui/ThemeToggle";
 
 const ROLE_LABELS: Record<string, string> = {
   ADMIN: "Administrator",
@@ -28,17 +29,9 @@ export default function Navbar() {
 
   return (
     <header className="h-14 bg-surface border-b border-surface-200 flex items-center justify-between px-6 sticky top-0 z-20">
-      <div className="flex items-center gap-2 bg-surface-100 rounded-full px-3.5 py-1.5 w-[320px]">
-        <Search size={14} className="text-text-muted shrink-0" />
-        <input
-          type="text"
-          placeholder="Tìm kiếm người dùng, bài viết, nhóm..."
-          className="flex-1 bg-transparent text-sm text-text-secondary placeholder:text-text-muted focus:outline-none"
-        />
-      </div>
-
+      <ThemeToggle />
       <div className="flex items-center gap-3">
-    <div ref={ref} className="relative">
+        <div ref={ref} className="relative">
           <button
             onClick={() => setMenuOpen((v) => !v)}
             className="flex items-center gap-2 hover:opacity-80 transition-opacity"
@@ -63,10 +56,10 @@ export default function Navbar() {
               </div>
               <button
                 onClick={() => signOut({ callbackUrl: "/login" })}
-                className="w-full flex items-center gap-2.5 px-4 py-2.5 hover:bg-red-50 transition-colors"
+                className="w-full flex items-center gap-2.5 px-4 py-2.5 hover:bg-red-50 dark:hover:bg-red-500/20 transition-colors"
               >
-                <LogOut size={14} className="text-red-500" />
-                <span className="text-sm text-red-500 font-medium">
+                <LogOut size={14} className="text-red-500 dark:text-red-400" />
+                <span className="text-sm text-red-500 dark:text-red-400 font-medium">
                   Đăng xuất
                 </span>
               </button>

@@ -47,7 +47,7 @@ export function CommentsTable({
                 </span>
               )}
               {c.reportCount > 0 && (
-                <span className="inline-flex items-center gap-1 text-[11px] text-red-500 font-medium">
+                <span className="inline-flex items-center gap-1 text-[11px] text-red-500 dark:text-red-400 font-medium">
                   <Flag size={11} /> {c.reportCount} báo cáo
                 </span>
               )}
@@ -72,7 +72,7 @@ export function CommentsTable({
             <button
               onClick={() => onDelete(c)}
               title="Xóa vĩnh viễn"
-              className="p-1.5 rounded-lg hover:bg-red-50 text-text-muted hover:text-red-500"
+              className="p-1.5 rounded-lg hover:bg-red-50 dark:hover:bg-red-500/20 text-text-muted hover:text-red-500"
             >
               <Trash2 size={15} />
             </button>

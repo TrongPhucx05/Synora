@@ -38,7 +38,7 @@ export function SupportRequestDetailModal({
   const isTerminal = TERMINAL_STATUSES.includes(request.status);
 
   return (
-    <div className="fixed inset-0 bg-slate-900/40 flex items-center justify-center z-50 p-4">
+    <div className="fixed inset-0 bg-slate-900/40 dark:bg-black/25 flex items-center justify-center z-50 p-4">
       <div className="bg-surface rounded-2xl shadow-xl w-full max-w-[560px] max-h-[85vh] overflow-y-auto">
         <div className="flex items-center justify-between px-6 py-4 border-b border-surface-100">
           <h2 className="text-base font-semibold text-text-primary">

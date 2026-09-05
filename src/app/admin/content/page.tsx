@@ -235,8 +235,8 @@ export default function AdminContentPage() {
       />
 
       {loading ? (
-        <div className="bg-white border border-slate-200 rounded-2xl py-16 flex items-center justify-center">
-          <p className="text-sm text-slate-400">Đang tải...</p>
+        <div className="bg-surface border border-surface-200 rounded-2xl py-16 flex items-center justify-center">
+          <p className="text-sm text-text-muted">Đang tải...</p>
         </div>
       ) : (
         <>
@@ -318,19 +318,19 @@ export default function AdminContentPage() {
         <ConfirmDialog
           icon={
             isDelete ? (
-              <Trash2 size={20} className="text-red-500" />
+              <Trash2 size={20} className="text-red-500 dark:text-red-400" />
             ) : isUnhide ? (
-              <Eye size={20} className="text-emerald-500" />
+              <Eye size={20} className="text-emerald-500 dark:text-emerald-400" />
             ) : (
-              <EyeOff size={20} className="text-amber-500" />
+              <EyeOff size={20} className="text-amber-500 dark:text-amber-400" />
             )
           }
           iconBgClass={
             isDelete
-              ? "bg-red-100"
+              ? "bg-red-100 dark:bg-red-500/20"
               : isUnhide
-                ? "bg-emerald-100"
-                : "bg-amber-100"
+                ? "bg-emerald-100 dark:bg-emerald-500/20"
+                : "bg-amber-100 dark:bg-amber-500/20"
           }
           title={
             isDelete

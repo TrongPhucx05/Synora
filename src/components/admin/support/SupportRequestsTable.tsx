@@ -41,7 +41,7 @@ export function SupportRequestsTable({
           {requests.map((r) => (
             <tr
               key={r.id}
-              className="border-b border-slate-50 last:border-0 hover:bg-slate-50/60 cursor-pointer"
+              className="border-b border-surface-100 last:border-0 hover:bg-surface-50 cursor-pointer"
               onClick={() => onViewDetail(r)}
             >
               <td className="px-5 py-3">

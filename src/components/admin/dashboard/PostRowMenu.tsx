@@ -63,7 +63,7 @@ export function PostRowMenu({
               }}
               className={clsx(
                 "w-full flex items-center gap-2.5 px-3.5 py-2 text-xs hover:bg-surface-50 transition-colors",
-                item.danger ? "text-red-500" : "text-text-secondary",
+                item.danger ? "text-red-500 dark:text-red-400" : "text-text-secondary",
               )}
             >
               {item.icon}

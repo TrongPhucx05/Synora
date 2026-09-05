@@ -101,7 +101,7 @@ export default function AdminReportsPage() {
       <ReportFilters value={filters} onChange={setFilters} />
 
       {loading ? (
-        <div className="bg-white rounded-2xl border border-slate-200 p-10 text-center text-sm text-slate-400">
+        <div className="bg-surface rounded-2xl border border-surface-200 p-10 text-center text-sm text-text-muted">
           Đang tải...
         </div>
       ) : (
@@ -133,13 +133,13 @@ export default function AdminReportsPage() {
         <ConfirmDialog
           icon={
             confirmState.kind === "resolve" ? (
-              <CheckCircle2 size={20} className="text-emerald-500" />
+              <CheckCircle2 size={20} className="text-emerald-500 dark:text-emerald-400" />
             ) : (
-              <XCircle size={20} className="text-slate-500" />
+              <XCircle size={20} className="text-text-muted" />
             )
           }
           iconBgClass={
-            confirmState.kind === "resolve" ? "bg-emerald-100" : "bg-slate-100"
+            confirmState.kind === "resolve" ? "bg-emerald-100 dark:bg-emerald-500/20" : "bg-surface-100"
           }
           title={
             confirmState.kind === "resolve"

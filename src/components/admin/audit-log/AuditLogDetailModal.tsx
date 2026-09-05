@@ -20,7 +20,7 @@ export function AuditLogDetailModal({
 
   return (
     <div
-      className="fixed inset-0 z-[90] flex items-center justify-center bg-black/40 backdrop-blur-sm p-4"
+      className="fixed inset-0 z-[90] flex items-center justify-center bg-black/40 dark:bg-black/25 backdrop-blur-sm p-4"
       onClick={(e) => e.target === e.currentTarget && onClose()}
     >
       <div className="bg-surface rounded-2xl shadow-xl w-full max-w-md mx-4 overflow-hidden">
@@ -109,12 +109,12 @@ export function AuditLogDetailModal({
             {(entry.notifiedUser || entry.flaggedUser) && (
               <div className="flex gap-2 flex-wrap">
                 {entry.notifiedUser && (
-                  <span className="inline-flex items-center gap-1 text-[11px] font-medium text-blue-600 bg-blue-50 px-2 py-1 rounded-full">
+                  <span className="inline-flex items-center gap-1 text-[11px] font-medium text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-500/15 px-2 py-1 rounded-full">
                     <Bell size={11} /> Đã thông báo người dùng
                   </span>
                 )}
                 {entry.flaggedUser && (
-                  <span className="inline-flex items-center gap-1 text-[11px] font-medium text-red-600 bg-red-50 px-2 py-1 rounded-full">
+                  <span className="inline-flex items-center gap-1 text-[11px] font-medium text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-500/15 px-2 py-1 rounded-full">
                     <Flag size={11} /> Đã ghi nhận vi phạm
                   </span>
                 )}

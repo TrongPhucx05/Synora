@@ -161,8 +161,8 @@ export default function AdminUsersPage() {
       <UserFilters value={filters} onChange={setFilters} />
 
       {loading ? (
-        <div className="bg-white border border-slate-200 rounded-2xl py-16 flex items-center justify-center">
-          <p className="text-sm text-slate-400">Đang tải...</p>
+        <div className="bg-surface border border-surface-200 rounded-2xl py-16 flex items-center justify-center">
+          <p className="text-sm text-text-muted">Đang tải...</p>
         </div>
       ) : (
         <>

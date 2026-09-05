@@ -53,7 +53,7 @@ export function AuditLogTable({
             return (
               <tr
                 key={e.id}
-                className="border-b border-slate-50 last:border-b-0 hover:bg-slate-50/50"
+                className="border-b border-surface-100 last:border-b-0 hover:bg-surface-50"
               >
                 <td className="px-5 py-3">
                   <div className="flex items-center gap-2.5">

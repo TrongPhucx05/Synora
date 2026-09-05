@@ -6,8 +6,8 @@ import { GroupActionsMenu } from "./GroupActionsMenu";
 import type { AdminGroupRow } from "@/lib/admin/groups/types";
 
 const STATUS_BADGE: Record<AdminGroupRow["status"], string> = {
-  ACTIVE: "bg-emerald-50 text-emerald-600",
-  DISABLED: "bg-red-50 text-red-600",
+  ACTIVE: "bg-emerald-50 dark:bg-emerald-500/15 text-emerald-600 dark:text-emerald-400",
+  DISABLED: "bg-red-50 dark:bg-red-500/15 text-red-600 dark:text-red-400",
 };
 
 const STATUS_LABEL: Record<AdminGroupRow["status"], string> = {
@@ -66,7 +66,7 @@ export function GroupsTable({
           {groups.map((g) => (
             <tr
               key={g.id}
-              className="border-b border-slate-50 last:border-b-0 hover:bg-slate-50/50"
+              className="border-b border-surface-100 last:border-b-0 hover:bg-surface-50"
             >
               <td className="px-5 py-3">
                 <div className="flex items-center gap-2.5">
@@ -94,7 +94,7 @@ export function GroupsTable({
                   <UsersIcon size={13} className="text-text-muted" />
                   {g.acceptedMemberCount}/{g.memberCount}
                   {g.acceptedMemberCount < g.memberCount && (
-                    <span className="text-[10px] text-amber-500">
+                    <span className="text-[10px] text-amber-500 dark:text-amber-400">
                       ({g.memberCount - g.acceptedMemberCount} chờ)
                     </span>
                   )}
@@ -102,7 +102,7 @@ export function GroupsTable({
               </td>
               <td className="px-4 py-3">
                 {g.reportCount > 0 ? (
-                  <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-amber-600 bg-amber-50 px-2 py-0.5 rounded-full">
+                  <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-500/15 px-2 py-0.5 rounded-full">
                     <Flag size={11} /> {g.reportCount}
                   </span>
                 ) : (

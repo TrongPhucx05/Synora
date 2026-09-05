@@ -46,12 +46,12 @@ export function AdminDeletePostDialog({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 dark:bg-black/25 backdrop-blur-sm"
       onClick={(e) => e.target === e.currentTarget && onCancel()}
     >
       <div className="bg-surface rounded-2xl shadow-2xl w-full max-w-md overflow-hidden">
         <div className="flex items-start gap-3 px-5 pt-5 pb-4">
-          <div className="w-10 h-10 rounded-xl bg-red-100 text-red-500 flex items-center justify-center shrink-0">
+          <div className="w-10 h-10 rounded-xl bg-red-100 dark:bg-red-500/20 text-red-500 dark:text-red-400 flex items-center justify-center shrink-0">
             <AlertTriangle size={19} />
           </div>
           <div>
@@ -69,7 +69,7 @@ export function AdminDeletePostDialog({
             className={clsx(
               "flex-1 text-xs px-3 py-2.5 rounded-xl border font-medium transition-colors",
               mode === "delete-now"
-                ? "border-red-400 bg-red-50 text-red-700"
+                ? "border-red-400 bg-red-50 dark:bg-red-500/15 text-red-700"
                 : "border-surface-200 text-text-muted hover:bg-surface-50",
             )}
           >
@@ -81,7 +81,7 @@ export function AdminDeletePostDialog({
             className={clsx(
               "flex-1 text-xs px-3 py-2.5 rounded-xl border font-medium transition-colors",
               mode === "schedule-7d"
-                ? "border-amber-400 bg-amber-50 text-amber-700"
+                ? "border-amber-400 bg-amber-50 dark:bg-amber-500/15 text-amber-700"
                 : "border-surface-200 text-text-muted hover:bg-surface-50",
             )}
           >
@@ -164,7 +164,7 @@ export function AdminDeletePostDialog({
           <button
             onClick={onCancel}
             disabled={loading}
-            className="px-4 py-2 text-xs font-medium text-text-secondary rounded-lg hover:bg-slate-200/60 transition-colors"
+            className="px-4 py-2 text-xs font-medium text-text-secondary rounded-lg hover:bg-surface-200 transition-colors"
           >
             Hủy
           </button>

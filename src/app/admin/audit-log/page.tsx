@@ -68,15 +68,15 @@ export default function AdminAuditLogPage() {
       <AuditLogFilters value={filters} onChange={setFilters} />
 
       {showRangeHint && (
-        <p className="text-xs text-slate-400 -mt-3 mb-4">
+        <p className="text-xs text-text-muted -mt-3 mb-4">
           Đang hiển thị {rangeDays} ngày gần nhất. Chọn khoảng ngày ở trên để
           xem xa hơn.
         </p>
       )}
 
       {loading ? (
-        <div className="bg-white border border-slate-200 rounded-2xl py-16 flex items-center justify-center">
-          <p className="text-sm text-slate-400">Đang tải...</p>
+        <div className="bg-surface border border-surface-200 rounded-2xl py-16 flex items-center justify-center">
+          <p className="text-sm text-text-muted">Đang tải...</p>
         </div>
       ) : (
         <>

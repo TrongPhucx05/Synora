@@ -24,32 +24,32 @@ const TARGET_CONFIG: Record<
   USER: {
     label: "Người dùng",
     icon: User,
-    className: "bg-orange-50 text-orange-600",
+    className: "bg-orange-50 dark:bg-orange-500/15 text-orange-600 dark:text-orange-400",
   },
   POST: {
     label: "Bài viết",
     icon: FileText,
-    className: "bg-blue-50 text-blue-600",
+    className: "bg-blue-50 dark:bg-blue-500/15 text-blue-600 dark:text-blue-400",
   },
   COMMENT: {
     label: "Bình luận",
     icon: MessageSquare,
-    className: "bg-purple-50 text-purple-600",
+    className: "bg-purple-50 dark:bg-purple-500/15 text-purple-600 dark:text-purple-400",
   },
   MESSAGE: {
     label: "Tin nhắn",
     icon: Mail,
-    className: "bg-cyan-50 text-cyan-600",
+    className: "bg-cyan-50 dark:bg-cyan-500/15 text-cyan-600 dark:text-cyan-400",
   },
   DOCUMENT: {
     label: "Tài liệu",
     icon: BookOpen,
-    className: "bg-emerald-50 text-emerald-600",
+    className: "bg-emerald-50 dark:bg-emerald-500/15 text-emerald-600 dark:text-emerald-400",
   },
   GROUP: {
     label: "Nhóm chat",
     icon: Users,
-    className: "bg-indigo-50 text-indigo-600",
+    className: "bg-indigo-50 dark:bg-indigo-500/15 text-indigo-600 dark:text-indigo-400",
   },
 };
 
@@ -71,13 +71,13 @@ function TargetBadge({ type }: { type: ReportTargetType }) {
 function StatusBadge({ status }: { status: AdminReportRow["status"] }) {
   if (status === "PENDING")
     return (
-      <span className="text-[11px] font-medium bg-amber-50 text-amber-600 px-2 py-0.5 rounded-full whitespace-nowrap">
+      <span className="text-[11px] font-medium bg-amber-50 dark:bg-amber-500/15 text-amber-600 dark:text-amber-400 px-2 py-0.5 rounded-full whitespace-nowrap">
         Chưa xử lý
       </span>
     );
   if (status === "RESOLVED")
     return (
-      <span className="text-[11px] font-medium bg-emerald-50 text-emerald-600 px-2 py-0.5 rounded-full whitespace-nowrap">
+      <span className="text-[11px] font-medium bg-emerald-50 dark:bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 px-2 py-0.5 rounded-full whitespace-nowrap">
         Đã xử lý
       </span>
     );
@@ -129,7 +129,7 @@ export function ReportsTable({
           {reports.map((r) => (
             <tr
               key={r.id}
-              className="border-b border-slate-50 last:border-0 hover:bg-slate-50/60"
+              className="border-b border-surface-100 last:border-0 hover:bg-surface-50"
             >
               <td className="px-5 py-3">
                 <p className="font-medium text-text-secondary truncate max-w-[140px]">
@@ -173,7 +173,7 @@ export function ReportsTable({
                       <button
                         onClick={() => onQuickResolve(r)}
                         title="Đánh dấu đã xử lý"
-                        className="p-1.5 rounded-lg hover:bg-emerald-50 text-text-muted hover:text-emerald-500"
+                        className="p-1.5 rounded-lg hover:bg-emerald-50 dark:hover:bg-emerald-500/20 text-text-muted hover:text-emerald-500"
                       >
                         <CheckCircle2 size={15} />
                       </button>
