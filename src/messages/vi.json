@@ -1,0 +1,139 @@
+{
+  "nav": {
+    "home": "Trang chủ",
+    "library": "Tài liệu",
+    "chat": "Nhắn tin",
+    "notifications": "Thông báo",
+    "support": "Trợ giúp"
+  },
+  "settings": {
+    "theme": {
+      "title": "Theme",
+      "description": "Tùy chỉnh giao diện sáng/tối theo sở thích",
+      "light": "Sáng",
+      "dark": "Tối",
+      "system": "Theo hệ thống",
+      "updateError": "Không thể cập nhật giao diện"
+    },
+    "language": {
+      "title": "Ngôn ngữ",
+      "description": "Chọn ngôn ngữ hiển thị cho toàn bộ ứng dụng",
+      "vi": "Tiếng Việt",
+      "en": "English",
+      "updateError": "Không thể cập nhật ngôn ngữ"
+    }
+  },
+  "common": {
+    "user": "Người dùng",
+    "cancel": "Hủy",
+    "delete": "Xóa",
+    "save": "Lưu",
+    "saving": "Đang lưu...",
+    "close": "Đóng",
+    "report": "Báo cáo",
+    "block": "Chặn",
+    "blocking": "Đang chặn...",
+    "preview": "Xem trước",
+    "download": "Tải xuống",
+    "loading": "Đang tải...",
+    "blockUserSuccess": "Đã chặn người dùng",
+    "blockUserError": "Không thể chặn người dùng"
+  },
+  "post": {
+    "empty": "Chưa có bài viết nào",
+    "justNow": "Vừa xong",
+    "share": "Chia sẻ",
+    "visibility": {
+      "public": "Công khai",
+      "friends": "Bạn bè",
+      "private": "Riêng tư"
+    },
+    "deleteTitle": "Xóa bài viết?",
+    "deleteDescription": "Bài viết sẽ bị xóa vĩnh viễn và không thể khôi phục.",
+    "likeAction": "thích bài viết",
+    "saveAction": "lưu bài viết",
+    "saved": "Đã lưu bài viết",
+    "unsaved": "Đã bỏ lưu bài viết",
+    "menu": {
+      "save": "Lưu bài viết",
+      "unsave": "Bỏ lưu bài viết",
+      "edit": "Chỉnh sửa bài viết",
+      "delete": "Xóa bài viết",
+      "block": "Chặn {name}",
+      "report": "Báo cáo"
+    },
+    "composer": {
+      "placeholder": "Bạn đang nghĩ gì? Chia sẻ tài liệu, hỏi bài, hay rủ học nhóm...",
+      "attach": "Đính kèm file",
+      "addImage": "Thêm ảnh",
+      "addVideo": "Thêm video",
+      "posting": "Đang đăng...",
+      "postBtn": "Đăng bài",
+      "removeFile": "Xóa file",
+      "visibility": {
+        "public": "Mọi người",
+        "friends": "Bạn bè",
+        "private": "Chỉ mình tôi"
+      }
+    },
+    "edit": {
+      "title": "Chỉnh sửa bài viết",
+      "placeholder": "Nội dung bài viết...",
+      "existing": "Hiện có",
+      "attach": "Đính kèm",
+      "image": "Ảnh",
+      "video": "Video",
+      "saveFailed": "Lưu thất bại, thử lại nhé",
+      "uploadDocFailed": "Tải tài liệu thất bại. Định dạng file có thể không được hỗ trợ.",
+      "fileTooLarge": "\"{name}\" vượt quá {limit}MB"
+    },
+    "comments": {
+      "sort": {
+        "default": "Tất cả",
+        "newest": "Mới nhất",
+        "oldest": "Cũ nhất"
+      },
+      "loginToComment": "Đăng nhập để bình luận",
+      "adminCannotComment": "Tài khoản người quản trị không thể bình luận",
+      "commentAction": "bình luận"
+    }
+  },
+  "comment": {
+    "empty": "Chưa có bình luận nào. Hãy là người đầu tiên!",
+    "edited": "đã chỉnh sửa",
+    "hiddenByAuthor": "Bình luận đã bị ẩn",
+    "yourHidden": "Bình luận của bạn đã bị ẩn",
+    "like": "Thích",
+    "likeAction": "thích bình luận",
+    "reply": "Trả lời",
+    "replyAction": "trả lời bình luận",
+    "replyPlaceholder": "Trả lời {name}...",
+    "showMoreReplies": "Xem thêm {count} câu trả lời",
+    "collapse": "Thu gọn",
+    "menu": {
+      "edit": "Chỉnh sửa",
+      "delete": "Xóa bình luận",
+      "show": "Hiện bình luận",
+      "hide": "Ẩn bình luận",
+      "block": "Chặn {name}",
+      "report": "Báo cáo"
+    },
+    "deleteTitle": "Xóa bình luận?",
+    "deleteDescription": "Bình luận sẽ bị xóa vĩnh viễn và không thể khôi phục.",
+    "blockTitle": "Chặn {name}?",
+    "blockDescription": "Bạn sẽ không thấy bài viết, bình luận hoặc tin nhắn từ người này nữa.",
+    "input": {
+      "placeholder": "Viết bình luận...",
+      "attach": "Đính kèm tệp",
+      "previewFile": "Xem trước",
+      "image": "ảnh",
+      "emoji": "Emoji",
+      "uploading": "Đang tải lên...",
+      "uploadFailed": "Tải lên thất bại, thử lại nhé",
+      "imageTooLarge": "Ảnh tối đa {limit}MB",
+      "videoTooLarge": "Video tối đa {limit}MB",
+      "docTooLarge": "Tài liệu tối đa {limit}MB",
+      "noPreviewUrl": "Không có URL tải"
+    }
+  }
+}

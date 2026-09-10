@@ -1,0 +1,139 @@
+{
+  "nav": {
+    "home": "Home",
+    "library": "Library",
+    "chat": "Messages",
+    "notifications": "Notifications",
+    "support": "Support"
+  },
+  "settings": {
+    "theme": {
+      "title": "Theme",
+      "description": "Customize the light/dark interface to your preference",
+      "light": "Light",
+      "dark": "Dark",
+      "system": "System",
+      "updateError": "Couldn't update the theme"
+    },
+    "language": {
+      "title": "Language",
+      "description": "Choose the display language for the whole app",
+      "vi": "Tiếng Việt",
+      "en": "English",
+      "updateError": "Couldn't update the language"
+    }
+  },
+  "common": {
+    "user": "User",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "save": "Save",
+    "saving": "Saving...",
+    "close": "Close",
+    "report": "Report",
+    "block": "Block",
+    "blocking": "Blocking...",
+    "preview": "Preview",
+    "download": "Download",
+    "loading": "Loading...",
+    "blockUserSuccess": "User blocked",
+    "blockUserError": "Couldn't block this user"
+  },
+  "post": {
+    "empty": "No posts yet",
+    "justNow": "Just now",
+    "share": "Share",
+    "visibility": {
+      "public": "Public",
+      "friends": "Friends",
+      "private": "Private"
+    },
+    "deleteTitle": "Delete this post?",
+    "deleteDescription": "This post will be permanently deleted and cannot be recovered.",
+    "likeAction": "like this post",
+    "saveAction": "save this post",
+    "saved": "Post saved",
+    "unsaved": "Post unsaved",
+    "menu": {
+      "save": "Save post",
+      "unsave": "Unsave post",
+      "edit": "Edit post",
+      "delete": "Delete post",
+      "block": "Block {name}",
+      "report": "Report"
+    },
+    "composer": {
+      "placeholder": "What's on your mind? Share materials, ask a question, or start a study group...",
+      "attach": "Attach file",
+      "addImage": "Add photo",
+      "addVideo": "Add video",
+      "posting": "Posting...",
+      "postBtn": "Post",
+      "removeFile": "Remove file",
+      "visibility": {
+        "public": "Everyone",
+        "friends": "Friends",
+        "private": "Only me"
+      }
+    },
+    "edit": {
+      "title": "Edit post",
+      "placeholder": "Post content...",
+      "existing": "Existing",
+      "attach": "Attach",
+      "image": "Image",
+      "video": "Video",
+      "saveFailed": "Couldn't save, please try again",
+      "uploadDocFailed": "Couldn't upload the document. This file format may not be supported.",
+      "fileTooLarge": "\"{name}\" exceeds {limit}MB"
+    },
+    "comments": {
+      "sort": {
+        "default": "All",
+        "newest": "Newest",
+        "oldest": "Oldest"
+      },
+      "loginToComment": "Log in to comment",
+      "adminCannotComment": "Admin accounts can't comment",
+      "commentAction": "comment"
+    }
+  },
+  "comment": {
+    "empty": "No comments yet. Be the first!",
+    "edited": "edited",
+    "hiddenByAuthor": "Comment hidden",
+    "yourHidden": "Your comment has been hidden",
+    "like": "Like",
+    "likeAction": "like this comment",
+    "reply": "Reply",
+    "replyAction": "reply to this comment",
+    "replyPlaceholder": "Reply to {name}...",
+    "showMoreReplies": "Show {count} more replies",
+    "collapse": "Collapse",
+    "menu": {
+      "edit": "Edit",
+      "delete": "Delete comment",
+      "show": "Unhide comment",
+      "hide": "Hide comment",
+      "block": "Block {name}",
+      "report": "Report"
+    },
+    "deleteTitle": "Delete this comment?",
+    "deleteDescription": "This comment will be permanently deleted and cannot be recovered.",
+    "blockTitle": "Block {name}?",
+    "blockDescription": "You won't see posts, comments, or messages from this person anymore.",
+    "input": {
+      "placeholder": "Write a comment...",
+      "attach": "Attach file",
+      "previewFile": "Preview",
+      "image": "image",
+      "emoji": "Emoji",
+      "uploading": "Uploading...",
+      "uploadFailed": "Upload failed, please try again",
+      "imageTooLarge": "Images up to {limit}MB",
+      "videoTooLarge": "Videos up to {limit}MB",
+      "docTooLarge": "Documents up to {limit}MB",
+      "noPreviewUrl": "No download URL"
+    }
+  }
+}
