@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import { clsx } from "clsx";
 import NextLink from "next/link";
+import { useTranslations } from "next-intl";
 import { ThumbsUp, EyeOff, Trash2, Ban } from "lucide-react";
 import Avatar from "@/components/ui/Avatar";
 import type { Comment, CommentSort } from "@/lib/feed/types";
@@ -25,6 +26,8 @@ export function BlockConfirmDialog({
   onConfirm: () => void;
   onCancel: () => void;
 }) {
+  const t = useTranslations("comment");
+  const tc = useTranslations("common");
   return (
     <div
       className="fixed inset-0 z-[70] flex items-center justify-center bg-black/40 dark:bg-black/25 backdrop-blur-sm p-4"
@@ -37,11 +40,10 @@ export function BlockConfirmDialog({
           </div>
           <div>
             <p className="text-sm font-semibold text-text-primary">
-              Chặn {name}?
+              {t("blockTitle", { name })}
             </p>
             <p className="text-xs text-text-secondary mt-0.5">
-              Bạn sẽ không thấy bài viết, bình luận hoặc tin nhắn từ người này
-              nữa.
+              {t("blockDescription")}
             </p>
           </div>
         </div>
@@ -51,14 +53,14 @@ export function BlockConfirmDialog({
             disabled={loading}
             className="flex-1 py-2 rounded-xl bg-red-500 text-sm text-white font-medium hover:bg-red-600 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
           >
-            {loading ? "Đang chặn..." : "Chặn"}
+            {loading ? tc("blocking") : tc("block")}
           </button>
           <button
             onClick={onCancel}
             disabled={loading}
             className="flex-1 py-2 rounded-xl border border-surface-200 text-sm text-text-secondary hover:bg-surface-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            Hủy
+            {tc("cancel")}
           </button>
         </div>
       </div>
@@ -73,6 +75,8 @@ export function DeleteConfirmDialog({
   onConfirm: () => void;
   onCancel: () => void;
 }) {
+  const t = useTranslations("comment");
+  const tc = useTranslations("common");
   return (
     <div
       className="fixed inset-0 z-[70] flex items-center justify-center bg-black/40 dark:bg-black/25 backdrop-blur-sm p-4"
@@ -85,10 +89,10 @@ export function DeleteConfirmDialog({
           </div>
           <div>
             <p className="text-sm font-semibold text-text-primary">
-              Xóa bình luận?
+              {t("deleteTitle")}
             </p>
             <p className="text-xs text-text-secondary mt-0.5">
-              Bình luận sẽ bị xóa vĩnh viễn và không thể khôi phục.
+              {t("deleteDescription")}
             </p>
           </div>
         </div>
@@ -97,13 +101,13 @@ export function DeleteConfirmDialog({
             onClick={onCancel}
             className="flex-1 py-2 rounded-xl border border-surface-200 text-sm text-text-secondary hover:bg-surface-50 transition-colors"
           >
-            Hủy
+            {tc("cancel")}
           </button>
           <button
             onClick={onConfirm}
             className="flex-1 py-2 rounded-xl bg-red-500 text-sm text-white font-medium hover:bg-red-600 transition-colors"
           >
-            Xóa
+            {tc("delete")}
           </button>
         </div>
       </div>
@@ -180,6 +184,8 @@ export default function CommentList({
   } | null>(null);
   const commentRefs = useRef<Record<string, HTMLDivElement | null>>({});
   const REPLIES_PREVIEW = 2;
+  const t = useTranslations("comment");
+  const tc = useTranslations("common");
 
   useEffect(() => {
     if (!targetCommentId || comments.length === 0) return;
@@ -218,7 +224,7 @@ export default function CommentList({
     setBlockLoading(true);
     try {
       await blockUser(blockingTarget.id);
-      showToast("Đã chặn người dùng", "success");
+      showToast(tc("blockUserSuccess"), "success");
       const removed = comments.reduce((acc, c) => {
         let count = 0;
         if (c.authorId === blockingTarget.id && !c.hidden) count += 1;
@@ -230,10 +236,7 @@ export default function CommentList({
       onCountChange?.(-removed);
       onUserBlocked?.(blockingTarget.id);
     } catch (e) {
-      showToast(
-        e instanceof Error ? e.message : "Không thể chặn người dùng",
-        "error",
-      );
+      showToast(e instanceof Error ? e.message : tc("blockUserError"), "error");
     } finally {
       setBlockLoading(false);
       setBlockingTarget(null);
@@ -244,7 +247,7 @@ export default function CommentList({
     <>
       {comments.length === 0 && (
         <p className="text-center text-sm text-text-secondary py-10">
-          Chưa có bình luận nào. Hãy là người đầu tiên!
+          {t("empty")}
         </p>
       )}
       {comments
@@ -270,7 +273,7 @@ export default function CommentList({
               <div className="flex items-center gap-1 mb-1 ml-1">
                 <EyeOff size={11} className="text-text-muted" />
                 <span className="text-[10px] text-text-muted italic">
-                  Bình luận đã bị ẩn
+                  {t("hiddenByAuthor")}
                 </span>
               </div>
             )}
@@ -280,7 +283,7 @@ export default function CommentList({
                 <div className="flex items-center gap-1 mb-1 ml-1">
                   <EyeOff size={11} className="text-text-muted" />
                   <span className="text-[10px] text-text-muted italic">
-                    Bình luận của bạn đã bị ẩn
+                    {t("yourHidden")}
                   </span>
                 </div>
               )}
@@ -312,7 +315,7 @@ export default function CommentList({
                     </span>
                     {c.editedAt && (
                       <span className="text-[10px] text-text-secondary ml-1">
-                        · đã chỉnh sửa
+                        · {t("edited")}
                       </span>
                     )}
                     <p className="text-sm text-text-primary leading-relaxed mt-0.5">
@@ -467,7 +470,7 @@ export default function CommentList({
                         <button
                           onClick={() => {
                             if (!currentUserId) {
-                              onAuthRequired?.("thích bình luận");
+                              onAuthRequired?.(t("likeAction"));
                               return;
                             }
                             onLike(c.id);
@@ -480,14 +483,14 @@ export default function CommentList({
                           )}
                         >
                           <ThumbsUp size={11} />
-                          <span>{c.likes > 0 ? c.likes : "Thích"}</span>
+                          <span>{c.likes > 0 ? c.likes : t("like")}</span>
                         </button>
                       )}
                       {!c.hidden && !isAdmin && (
                         <button
                           onClick={() => {
                             if (!currentUserId) {
-                              onAuthRequired?.("trả lời bình luận");
+                              onAuthRequired?.(t("replyAction"));
                               return;
                             }
                             if (disabled) return;
@@ -500,7 +503,7 @@ export default function CommentList({
                               : "text-text-secondary hover:text-text-secondary",
                           )}
                         >
-                          Trả lời
+                          {t("reply")}
                         </button>
                       )}
                     </div>
@@ -521,7 +524,8 @@ export default function CommentList({
                       }}
                       className={clsx(
                         "flex gap-2 items-start group/reply transition-colors duration-700 rounded-xl",
-                        highlightedId === r.id && "bg-blue-50 dark:bg-blue-500/15",
+                        highlightedId === r.id &&
+                          "bg-blue-50 dark:bg-blue-500/15",
                       )}
                     >
                       <NextLink
@@ -606,7 +610,7 @@ export default function CommentList({
                             <button
                               onClick={() => {
                                 if (!currentUserId) {
-                                  onAuthRequired?.("thích bình luận");
+                                  onAuthRequired?.(t("likeAction"));
                                   return;
                                 }
                                 if (disabled) return;
@@ -620,21 +624,21 @@ export default function CommentList({
                               )}
                             >
                               <ThumbsUp size={11} />
-                              <span>{r.likes > 0 ? r.likes : "Thích"}</span>
+                              <span>{r.likes > 0 ? r.likes : t("like")}</span>
                             </button>
                           )}
                           {!c.hidden && !isAdmin && (
                             <button
                               onClick={() => {
                                 if (!currentUserId) {
-                                  onAuthRequired?.("trả lời bình luận");
+                                  onAuthRequired?.(t("replyAction"));
                                   return;
                                 }
                                 onToggleReply(c.id, c.author.name);
                               }}
                               className="text-[11px] font-medium text-text-secondary hover:text-text-secondary px-2 py-0.5 rounded transition-colors"
                             >
-                              Trả lời
+                              {t("reply")}
                             </button>
                           )}
                         </div>
@@ -653,8 +657,9 @@ export default function CommentList({
                         }
                         className="text-[11px] font-medium text-primary hover:underline text-left mt-0.5"
                       >
-                        Xem thêm {c.replies.length - REPLIES_PREVIEW} câu trả
-                        lời
+                        {t("showMoreReplies", {
+                          count: c.replies.length - REPLIES_PREVIEW,
+                        })}
                       </button>
                     )}
                   {expandedReplies.has(c.id) &&
@@ -669,7 +674,7 @@ export default function CommentList({
                         }
                         className="text-[11px] font-medium text-text-secondary hover:underline text-left mt-0.5"
                       >
-                        Thu gọn
+                        {t("collapse")}
                       </button>
                     )}
                 </div>

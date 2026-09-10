@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import { clsx } from "clsx";
 import { Send } from "lucide-react";
 import { useSession } from "next-auth/react";
+import { useTranslations } from "next-intl";
 import Avatar from "@/components/ui/Avatar";
 
 export default function ReplyInput({
@@ -23,6 +24,7 @@ export default function ReplyInput({
   const [text, setText] = useState(mention);
   const inputRef = useRef<HTMLInputElement>(null);
   const { data: session } = useSession();
+  const t = useTranslations("comment");
 
   const initials = (session?.user?.name ?? "U")
     .split(" ")
@@ -74,7 +76,7 @@ export default function ReplyInput({
             }
             if (e.key === "Escape") onCancel();
           }}
-          placeholder={`Trả lời ${replyTo}...`}
+          placeholder={t("replyPlaceholder", { name: replyTo })}
           className="flex-1 text-xs bg-transparent outline-none text-text-primary placeholder:text-text-secondary disabled:opacity-60"
         />
         <button

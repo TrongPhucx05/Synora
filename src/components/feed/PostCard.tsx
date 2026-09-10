@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import NextLink from "next/link";
 import { useSession } from "next-auth/react";
+import { useTranslations } from "next-intl";
 import Avatar from "@/components/ui/Avatar";
 import { useToast } from "@/components/ui/Toast";
 import AuthGuardModal from "@/components/ui/AuthGuardModal";
@@ -48,6 +49,7 @@ export default function PostCard({
   targetCommentId?: string | null;
 }) {
   const { data: session } = useSession();
+  const t = useTranslations();
   const [sessionAvatarUrl, setSessionAvatarUrl] = useState<
     string | null | undefined
   >(undefined);
@@ -87,7 +89,7 @@ export default function PostCard({
   const handleLike = async () => {
     if (isAdmin) return;
     if (!session?.user) {
-      setAuthModal("thích bài viết");
+      setAuthModal(t("post.likeAction"));
       return;
     }
     const nextLiked = !liked;
@@ -104,7 +106,7 @@ export default function PostCard({
   const handleSave = async () => {
     if (isAdmin) return;
     if (!session?.user) {
-      setAuthModal("lưu bài viết");
+      setAuthModal(t("post.saveAction"));
       return;
     }
     const res = await fetch(`/api/posts/${post.id}/save`, { method: "POST" });
@@ -112,7 +114,7 @@ export default function PostCard({
       const data = await res.json();
       setSaved(data.saved);
       showToast(
-        data.saved ? "Đã lưu bài viết" : "Đã bỏ lưu bài viết",
+        data.saved ? t("post.saved") : t("post.unsaved"),
         data.saved ? "save" : "unsave",
       );
       onSaveToggle?.(post.id, data.saved);
@@ -186,12 +188,12 @@ export default function PostCard({
     setBlockLoading(true);
     try {
       await blockUser(blockTarget.id);
-      showToast("Đã chặn người dùng", "success");
+      showToast(t("common.blockUserSuccess"), "success");
       setDeleted(true);
       onDeleted?.(post.id);
     } catch (e) {
       showToast(
-        e instanceof Error ? e.message : "Không thể chặn người dùng",
+        e instanceof Error ? e.message : t("common.blockUserError"),
         "error",
       );
     } finally {
@@ -273,15 +275,15 @@ export default function PostCard({
                     <span className="text-[10px] text-text-secondary flex items-center gap-0.5">
                       {currentVisibility === "PRIVATE" ? (
                         <>
-                          <LockIcon size={10} /> Riêng tư
+                          <LockIcon size={10} /> {t("post.visibility.private")}
                         </>
                       ) : currentVisibility === "FRIENDS_ONLY" ? (
                         <>
-                          <UsersIcon size={10} /> Bạn bè
+                          <UsersIcon size={10} /> {t("post.visibility.friends")}
                         </>
                       ) : (
                         <>
-                          <Globe size={10} /> Công khai
+                          <Globe size={10} /> {t("post.visibility.public")}
                         </>
                       )}
                     </span>
@@ -351,7 +353,7 @@ export default function PostCard({
           {!isAdmin && (
             <button className="flex items-center gap-1.5 px-3 py-1.5 text-sm text-text-secondary rounded-lg hover:bg-surface-100 transition-colors">
               <Share2 size={15} />
-              Chia sẻ
+              {t("post.share")}
             </button>
           )}
         </div>
@@ -431,9 +433,9 @@ export default function PostCard({
         <ConfirmDialog
           icon={<Trash2 size={20} className="text-red-500 dark:text-red-400" />}
           iconBgClass="bg-red-100 dark:bg-red-500/20"
-          title="Xóa bài viết?"
-          description="Bài viết sẽ bị xóa vĩnh viễn và không thể khôi phục."
-          confirmLabel="Xóa"
+          title={t("post.deleteTitle")}
+          description={t("post.deleteDescription")}
+          confirmLabel={t("common.delete")}
           confirmVariant="danger"
           onConfirm={handleDelete}
           onCancel={() => setShowDeleteConfirm(false)}

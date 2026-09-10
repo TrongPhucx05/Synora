@@ -2,6 +2,7 @@
 
 import { Eye, Download } from "lucide-react";
 import { clsx } from "clsx";
+import { useTranslations } from "next-intl";
 import {
   fileTypeColors,
   MEDIA_IMAGE_TYPES,
@@ -16,6 +17,7 @@ export default function AttachmentRow({
   attachment: Attachment;
   className?: string;
 }) {
+  const t = useTranslations("common");
   const isMedia =
     MEDIA_IMAGE_TYPES.has(attachment.type) ||
     MEDIA_VIDEO_TYPES.has(attachment.type);
@@ -82,12 +84,12 @@ export default function AttachmentRow({
           className="flex items-center gap-1 px-2 py-1.5 text-[11px] font-semibold text-primary hover:bg-primary/10 rounded-md transition-colors disabled:opacity-40"
         >
           <Eye size={12} />
-          Xem trước
+          {t("preview")}
         </button>
         <button
           onClick={handleDownload}
           disabled={!attachment.url}
-          aria-label="Tải xuống"
+          aria-label={t("download")}
           className="p-1.5 text-primary hover:bg-primary/10 rounded-md transition-colors disabled:opacity-40"
         >
           <Download size={14} />

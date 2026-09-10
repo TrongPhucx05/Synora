@@ -13,6 +13,7 @@ import {
   Users as UsersIcon,
   Lock as LockIcon,
 } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useUploadThing } from "@/lib/uploadthing";
 import {
   isImageType,
@@ -27,15 +28,25 @@ import {
 } from "@/components/feed/PostComposer";
 import type { Post, EditVisibility, ExistingMedia } from "@/lib/feed/types";
 
-const EDIT_VISIBILITY_OPTIONS: {
-  value: EditVisibility;
-  label: string;
-  icon: React.ReactNode;
-}[] = [
-  { value: "PUBLIC", label: "Mọi người", icon: <Globe size={13} /> },
-  { value: "FRIENDS_ONLY", label: "Bạn bè", icon: <UsersIcon size={13} /> },
-  { value: "PRIVATE", label: "Chỉ mình tôi", icon: <LockIcon size={13} /> },
-];
+function getEditVisibilityOptions(t: ReturnType<typeof useTranslations>) {
+  return [
+    {
+      value: "PUBLIC" as EditVisibility,
+      label: t("post.composer.visibility.public"),
+      icon: <Globe size={13} />,
+    },
+    {
+      value: "FRIENDS_ONLY" as EditVisibility,
+      label: t("post.composer.visibility.friends"),
+      icon: <UsersIcon size={13} />,
+    },
+    {
+      value: "PRIVATE" as EditVisibility,
+      label: t("post.composer.visibility.private"),
+      icon: <LockIcon size={13} />,
+    },
+  ];
+}
 
 function EditVisibilityPicker({
   value,
@@ -46,7 +57,9 @@ function EditVisibilityPicker({
 }) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
-  const current = EDIT_VISIBILITY_OPTIONS.find((o) => o.value === value)!;
+  const t = useTranslations();
+  const options = getEditVisibilityOptions(t);
+  const current = options.find((o) => o.value === value)!;
 
   useEffect(() => {
     const handler = (e: MouseEvent) => {
@@ -69,7 +82,7 @@ function EditVisibilityPicker({
       </button>
       {open && (
         <div className="absolute top-full mt-1 left-0 bg-surface border border-surface-200 rounded-xl shadow-lg z-30 min-w-[160px] overflow-hidden">
-          {EDIT_VISIBILITY_OPTIONS.map((opt) => (
+          {options.map((opt) => (
             <button
               key={opt.value}
               onClick={() => {
@@ -146,6 +159,8 @@ export default function EditPostComposer({
     (f) => !isImageType(f.type) && !isVideoType(f.type),
   );
 
+  const t = useTranslations();
+
   const processFiles = (files: File[]): ComposerAttachedFile[] =>
     files.map((f) => {
       const type = getFileType(f);
@@ -169,7 +184,9 @@ export default function EditPostComposer({
     for (const f of files) {
       const sizeMB = f.size / (1024 * 1024);
       if (sizeMB > MAX_DOC_MB) {
-        setUploadError(`"${f.name}" vượt quá ${MAX_DOC_MB}MB`);
+        setUploadError(
+          t("post.edit.fileTooLarge", { name: f.name, limit: MAX_DOC_MB }),
+        );
         if (fileInputRef.current) fileInputRef.current.value = "";
         return;
       }
@@ -188,12 +205,16 @@ export default function EditPostComposer({
       const type = getFileType(f);
       const sizeMB = f.size / (1024 * 1024);
       if (isImageType(type) && sizeMB > MAX_IMG_MB) {
-        setUploadError(`"${f.name}" vượt quá ${MAX_IMG_MB}MB`);
+        setUploadError(
+          t("post.edit.fileTooLarge", { name: f.name, limit: MAX_IMG_MB }),
+        );
         if (imageVideoInputRef.current) imageVideoInputRef.current.value = "";
         return;
       }
       if (isVideoType(type) && sizeMB > MAX_VID_MB) {
-        setUploadError(`"${f.name}" vượt quá ${MAX_VID_MB}MB`);
+        setUploadError(
+          t("post.edit.fileTooLarge", { name: f.name, limit: MAX_VID_MB }),
+        );
         if (imageVideoInputRef.current) imageVideoInputRef.current.value = "";
         return;
       }
@@ -255,9 +276,7 @@ export default function EditPostComposer({
             size: newDocFiles[i].file.size,
           }));
         } catch (uploadErr) {
-          setUploadError(
-            "Tải tài liệu thất bại. Định dạng file có thể không được hỗ trợ.",
-          );
+          setUploadError(t("post.edit.uploadDocFailed"));
           setSaving(false);
           return;
         }
@@ -284,7 +303,7 @@ export default function EditPostComposer({
       onSave({ content: updatedPost.content, updatedPost });
     } catch (err) {
       console.error("handleSave error:", err);
-      setUploadError("Lưu thất bại, thử lại nhé");
+      setUploadError(t("post.edit.saveFailed"));
     } finally {
       setSaving(false);
     }
@@ -312,7 +331,7 @@ export default function EditPostComposer({
         <div className="flex items-center justify-between px-5 py-4 border-b border-surface-100 shrink-0">
           <div className="flex items-center gap-3">
             <h2 className="text-sm font-bold text-text-primary">
-              Chỉnh sửa bài viết
+              {t("post.edit.title")}
             </h2>
             <EditVisibilityPicker value={visibility} onChange={setVisibility} />
           </div>
@@ -336,7 +355,7 @@ export default function EditPostComposer({
                 el.style.height = "auto";
                 el.style.height = `${el.scrollHeight}px`;
               }}
-              placeholder="Nội dung bài viết..."
+              placeholder={t("post.edit.placeholder")}
               className="w-full resize-none text-sm text-text-primary placeholder:text-text-muted outline-none leading-relaxed min-h-[100px] max-h-[300px] bg-transparent"
               rows={4}
             />
@@ -383,7 +402,7 @@ export default function EditPostComposer({
                     <X size={11} />
                   </button>
                   <span className="absolute bottom-1 left-1 bg-black/50 dark:bg-black/35 text-white text-[10px] px-1 rounded pointer-events-none">
-                    Hiện có
+                    {t("post.edit.existing")}
                   </span>
                 </div>
               ))}
@@ -441,7 +460,9 @@ export default function EditPostComposer({
         {/* Footer */}
         <div className="border-t border-surface-100 shrink-0">
           {uploadError && (
-            <p className="text-xs text-red-500 dark:text-red-400 px-5 pt-3">{uploadError}</p>
+            <p className="text-xs text-red-500 dark:text-red-400 px-5 pt-3">
+              {uploadError}
+            </p>
           )}
           <div className="flex items-center justify-between px-4 py-3">
             <div className="flex items-center gap-1">
@@ -463,12 +484,12 @@ export default function EditPostComposer({
               />
               <ActionButton
                 icon={<Paperclip size={18} />}
-                label="Đính kèm"
+                label={t("post.edit.attach")}
                 onClick={() => fileInputRef.current?.click()}
               />
               <ActionButton
                 icon={<ImageIcon size={18} />}
-                label="Ảnh"
+                label={t("post.edit.image")}
                 onClick={() => {
                   if (imageVideoInputRef.current) {
                     imageVideoInputRef.current.accept = "image/*";
@@ -482,7 +503,7 @@ export default function EditPostComposer({
               />
               <ActionButton
                 icon={<Video size={18} />}
-                label="Video"
+                label={t("post.edit.video")}
                 onClick={() => {
                   if (imageVideoInputRef.current) {
                     imageVideoInputRef.current.accept = "video/*";
@@ -500,7 +521,7 @@ export default function EditPostComposer({
                 onClick={onClose}
                 className="px-4 py-2 text-sm text-text-secondary border border-surface-200 rounded-xl hover:bg-surface-50 transition-colors"
               >
-                Huỷ
+                {t("common.cancel")}
               </button>
               <button
                 onClick={handleSave}
@@ -509,10 +530,11 @@ export default function EditPostComposer({
               >
                 {saving ? (
                   <>
-                    <Loader2 size={14} className="animate-spin" /> Đang lưu...
+                    <Loader2 size={14} className="animate-spin" />{" "}
+                    {t("common.saving")}
                   </>
                 ) : (
-                  <>Lưu</>
+                  <>{t("common.save")}</>
                 )}
               </button>
             </div>

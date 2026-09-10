@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import NextLink from "next/link";
 import { useSession } from "next-auth/react";
+import { useTranslations } from "next-intl";
 import Avatar from "@/components/ui/Avatar";
 import AuthGuardModal from "@/components/ui/AuthGuardModal";
 import { useComments } from "@/lib/feed/hooks";
@@ -54,6 +55,7 @@ export default function MediaLightbox({
 }) {
   const [index, setIndex] = useState(initialIndex);
   const { data: session, status } = useSession();
+  const t = useTranslations("post");
   const [sort, setSort] = useState<CommentSort>("default");
   const [authModal, setAuthModal] = useState<string | null>(null);
 
@@ -210,15 +212,15 @@ export default function MediaLightbox({
                   <span className="text-[10px] text-text-secondary flex items-center gap-0.5">
                     {post.visibility === "PRIVATE" ? (
                       <>
-                        <LockIcon size={10} /> Riêng tư
+                        <LockIcon size={10} /> {t("visibility.private")}
                       </>
                     ) : post.visibility === "FRIENDS_ONLY" ? (
                       <>
-                        <UsersIcon size={10} /> Bạn bè
+                        <UsersIcon size={10} /> {t("visibility.friends")}
                       </>
                     ) : (
                       <>
-                        <Globe size={10} /> Công khai
+                        <Globe size={10} /> {t("visibility.public")}
                       </>
                     )}
                   </span>
@@ -275,7 +277,7 @@ export default function MediaLightbox({
           {!isAdmin && (
             <button className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm text-text-secondary hover:bg-surface-100 transition-colors ml-auto">
               <Share2 size={15} />
-              <span>Chia sẻ</span>
+              <span>{t("share")}</span>
             </button>
           )}
         </div>
@@ -293,10 +295,10 @@ export default function MediaLightbox({
               )}
             >
               {s === "default"
-                ? "Tất cả"
+                ? t("comments.sort.default")
                 : s === "newest"
-                  ? "Mới nhất"
-                  : "Cũ nhất"}
+                  ? t("comments.sort.newest")
+                  : t("comments.sort.oldest")}
             </button>
           ))}
         </div>
@@ -330,7 +332,7 @@ export default function MediaLightbox({
         <div className="border-t border-surface-100 px-4 py-3 shrink-0">
           {isAdmin ? (
             <p className="w-full py-2.5 text-center text-xs font-medium text-text-secondary bg-surface-50 rounded-2xl">
-              Tài khoản quản trị không thể bình luận
+              {t("comments.adminCannotComment")}
             </p>
           ) : status === "authenticated" ? (
             <CommentInput
@@ -341,10 +343,10 @@ export default function MediaLightbox({
             />
           ) : (
             <button
-              onClick={() => setAuthModal("bình luận")}
+              onClick={() => setAuthModal(t("comments.commentAction"))}
               className="w-full py-2.5 text-xs font-medium text-text-secondary border border-surface-200 rounded-2xl hover:bg-surface-50 transition-colors"
             >
-              Đăng nhập để bình luận
+              {t("comments.loginToComment")}
             </button>
           )}
         </div>

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { clsx } from "clsx";
+import { useTranslations } from "next-intl";
 
 export default function EditCommentInput({
   initialText,
@@ -14,6 +15,7 @@ export default function EditCommentInput({
 }) {
   const [text, setText] = useState(initialText);
   const canSave = text.trim().length > 0 && text.trim() !== initialText.trim();
+  const t = useTranslations("common");
 
   return (
     <div className="mt-1">
@@ -44,7 +46,7 @@ export default function EditCommentInput({
           onClick={onCancel}
           className="px-3 py-1 text-xs text-text-secondary rounded-lg hover:bg-surface-100 transition-colors"
         >
-          Hủy
+          {t("cancel")}
         </button>
         <button
           onClick={() => canSave && onSave(text.trim())}
@@ -56,7 +58,7 @@ export default function EditCommentInput({
               : "bg-surface-100 text-text-secondary cursor-not-allowed",
           )}
         >
-          Lưu
+          {t("save")}
         </button>
       </div>
     </div>

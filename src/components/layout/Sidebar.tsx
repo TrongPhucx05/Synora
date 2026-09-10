@@ -2,6 +2,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useSession } from "next-auth/react";
+import { useTranslations } from "next-intl";
 import {
   Home,
   BookOpen,
@@ -13,20 +14,22 @@ import { clsx } from "clsx";
 import { useUnreadNotifCount } from "@/lib/notifications/hooks";
 import { useUnreadChatCount } from "@/lib/chat/hooks";
 
-const navItems = [
-  { href: "/feed", icon: Home, label: "Trang chủ" },
-  { href: "/library", icon: BookOpen, label: "Tài liệu" },
-  { href: "/chat", icon: MessageCircle, label: "Nhắn tin" },
-  { href: "/notifications", icon: Bell, label: "Thông báo" },
-  { href: "/support", icon: HelpCircle, label: "Trợ giúp" },
-];
-
 export default function Sidebar() {
   const pathname = usePathname();
   const { data: session } = useSession();
   const isAdmin = session?.user?.role === "ADMIN";
   const { count: unreadCount } = useUnreadNotifCount();
   const { count: chatUnread } = useUnreadChatCount(true);
+  const t = useTranslations("nav");
+
+  const navItems = [
+    { href: "/feed", icon: Home, label: t("home") },
+    { href: "/library", icon: BookOpen, label: t("library") },
+    { href: "/chat", icon: MessageCircle, label: t("chat") },
+    { href: "/notifications", icon: Bell, label: t("notifications") },
+    { href: "/support", icon: HelpCircle, label: t("support") },
+  ];
+
   const visibleNavItems = isAdmin
     ? navItems.filter((i) => i.href !== "/chat" && i.href !== "/notifications")
     : navItems;

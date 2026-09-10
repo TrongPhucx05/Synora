@@ -16,6 +16,7 @@ import {
   ChevronRight,
   ZoomIn,
 } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useUploadThing } from "@/lib/uploadthing";
 import NextLink from "next/link";
 import Avatar from "@/components/ui/Avatar";
@@ -55,15 +56,29 @@ interface PostComposerProps {
 
 type Visibility = "public" | "friends" | "private";
 
-const VISIBILITY_OPTIONS: {
+function getVisibilityOptions(t: ReturnType<typeof useTranslations>): {
   value: Visibility;
   label: string;
   icon: React.ReactNode;
-}[] = [
-  { value: "public", label: "Mọi người", icon: <Globe size={14} /> },
-  { value: "friends", label: "Bạn bè", icon: <Users size={14} /> },
-  { value: "private", label: "Chỉ mình tôi", icon: <Lock size={14} /> },
-];
+}[] {
+  return [
+    {
+      value: "public",
+      label: t("post.composer.visibility.public"),
+      icon: <Globe size={14} />,
+    },
+    {
+      value: "friends",
+      label: t("post.composer.visibility.friends"),
+      icon: <Users size={14} />,
+    },
+    {
+      value: "private",
+      label: t("post.composer.visibility.private"),
+      icon: <Lock size={14} />,
+    },
+  ];
+}
 
 function formatFileSize(bytes: number): string {
   if (bytes < 1024) return `${bytes} B`;
@@ -99,12 +114,15 @@ function getFileIcon(type: string) {
 function VisibilityPicker({
   value,
   onChange,
+  t,
 }: {
   value: Visibility;
   onChange: (v: Visibility) => void;
+  t: ReturnType<typeof useTranslations>;
 }) {
   const [open, setOpen] = useState(false);
-  const current = VISIBILITY_OPTIONS.find((o) => o.value === value)!;
+  const options = getVisibilityOptions(t);
+  const current = options.find((o) => o.value === value)!;
 
   return (
     <div className="relative">
@@ -119,7 +137,7 @@ function VisibilityPicker({
 
       {open && (
         <div className="absolute top-full mt-1 left-0 bg-surface border border-surface-200 rounded-xl shadow-lg z-20 min-w-[160px] overflow-hidden">
-          {VISIBILITY_OPTIONS.map((opt) => (
+          {options.map((opt) => (
             <button
               key={opt.value}
               onClick={() => {
@@ -149,6 +167,7 @@ function FileChip({
   attached: AttachedFile;
   onRemove: () => void;
 }) {
+  const t = useTranslations();
   return (
     <div className="flex items-center gap-2 bg-surface-50 border border-surface-200 rounded-lg px-3 py-2 text-sm">
       {getFileIcon(attached.type)}
@@ -159,7 +178,7 @@ function FileChip({
       <button
         onClick={onRemove}
         className="text-text-muted hover:text-text-secondary transition-colors ml-1"
-        aria-label="Xóa file"
+        aria-label={t("post.composer.removeFile")}
       >
         <X size={13} />
       </button>
@@ -176,6 +195,7 @@ function MediaLightboxPreview({
   initialIndex: number;
   onClose: () => void;
 }) {
+  const t = useTranslations();
   const [index, setIndex] = useState(initialIndex);
   const current = files[index];
   const isVideo = isVideoType(current.type);
@@ -199,7 +219,7 @@ function MediaLightboxPreview({
       <button
         onClick={onClose}
         className="absolute top-4 right-4 w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition z-10"
-        aria-label="Đóng"
+        aria-label={t("common.close")}
       >
         <X size={18} />
       </button>
@@ -289,6 +309,7 @@ function MediaPreview({
   onRemove: () => void;
   onClick: () => void;
 }) {
+  const t = useTranslations();
   const isVideo = isVideoType(attached.type);
 
   return (
@@ -333,7 +354,7 @@ function MediaPreview({
           onRemove();
         }}
         className="absolute top-1 right-1 bg-black/60 dark:bg-black/45 hover:bg-black/80 text-white rounded-full p-0.5 opacity-0 group-hover:opacity-100 transition-opacity z-10"
-        aria-label="Xóa"
+        aria-label={t("post.composer.removeFile")}
       >
         <X size={11} />
       </button>
@@ -349,7 +370,8 @@ export default function PostComposer({
   onPost,
   currentUser,
 }: PostComposerProps) {
-  const name = currentUser?.name ?? "Người dùng";
+  const t = useTranslations();
+  const name = currentUser?.name ?? t("common.user");
   const initials = currentUser?.initials ?? "U";
   const [content, setContent] = useState("");
   const [attachedFiles, setAttachedFiles] = useState<AttachedFile[]>([]);
@@ -503,7 +525,11 @@ export default function PostComposer({
             <span className="text-sm font-semibold text-text-primary">
               {name}
             </span>
-            <VisibilityPicker value={visibility} onChange={setVisibility} />
+            <VisibilityPicker
+              value={visibility}
+              onChange={setVisibility}
+              t={t}
+            />
           </div>
         </div>
 
@@ -512,7 +538,7 @@ export default function PostComposer({
             ref={textareaRef}
             value={content}
             onChange={handleTextareaChange}
-            placeholder="Bạn đang nghĩ gì? Chia sẻ tài liệu, hỏi bài, hay rủ học nhóm..."
+            placeholder={t("post.composer.placeholder")}
             className="w-full resize-none text-sm text-text-primary placeholder:text-text-muted outline-none leading-relaxed min-h-[80px] max-h-[320px] bg-transparent"
             rows={3}
           />
@@ -520,7 +546,9 @@ export default function PostComposer({
           {charCount > charLimit * 0.8 && (
             <div
               className={`text-xs text-right mb-1 ${
-                isOverLimit ? "text-red-500 dark:text-red-400 font-semibold" : "text-text-muted"
+                isOverLimit
+                  ? "text-red-500 dark:text-red-400 font-semibold"
+                  : "text-text-muted"
               }`}
             >
               {charCount}/{charLimit}
@@ -576,12 +604,12 @@ export default function PostComposer({
 
             <ActionButton
               icon={<Paperclip size={18} />}
-              label="Đính kèm file"
+              label={t("post.composer.attach")}
               onClick={() => fileInputRef.current?.click()}
             />
             <ActionButton
               icon={<ImageIcon size={18} />}
-              label="Thêm ảnh"
+              label={t("post.composer.addImage")}
               onClick={() => {
                 if (imageVideoInputRef.current) {
                   imageVideoInputRef.current.accept = "image/*";
@@ -595,7 +623,7 @@ export default function PostComposer({
             />
             <ActionButton
               icon={<Video size={18} />}
-              label="Thêm video"
+              label={t("post.composer.addVideo")}
               onClick={() => {
                 if (imageVideoInputRef.current) {
                   imageVideoInputRef.current.accept = "video/*";
@@ -621,10 +649,10 @@ export default function PostComposer({
             {isSubmitting ? (
               <>
                 <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                Đang đăng...
+                {t("post.composer.posting")}
               </>
             ) : (
-              <>Đăng bài</>
+              <>{t("post.composer.postBtn")}</>
             )}
           </button>
         </div>

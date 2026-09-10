@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { clsx } from "clsx";
+import { useTranslations } from "next-intl";
 import {
   MoreHorizontal,
   Bookmark,
@@ -35,6 +36,7 @@ export default function PostMoreMenu({
 }) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
+  const t = useTranslations("post");
 
   useEffect(() => {
     const handler = (e: MouseEvent) => {
@@ -57,7 +59,7 @@ export default function PostMoreMenu({
   const items: Item[] = [
     {
       icon: isSaved ? <BookmarkCheck size={15} /> : <Bookmark size={15} />,
-      label: isSaved ? "Bỏ lưu bài viết" : "Lưu bài viết",
+      label: isSaved ? t("menu.unsave") : t("menu.save"),
       onClick: () => {
         onSave();
         setOpen(false);
@@ -68,7 +70,7 @@ export default function PostMoreMenu({
           null,
           {
             icon: <Pencil size={15} />,
-            label: "Chỉnh sửa bài viết",
+            label: t("menu.edit"),
             onClick: () => {
               onEdit();
               setOpen(false);
@@ -76,7 +78,7 @@ export default function PostMoreMenu({
           } as Item,
           {
             icon: <Trash2 size={15} />,
-            label: "Xóa bài viết",
+            label: t("menu.delete"),
             danger: true,
             onClick: () => {
               onDelete();
@@ -88,7 +90,7 @@ export default function PostMoreMenu({
           null,
           {
             icon: <Ban size={15} />,
-            label: `Chặn ${authorName.split(" ").pop()}`,
+            label: t("menu.block", { name: authorName.split(" ").pop() }),
             onClick: () => {
               onBlock();
               setOpen(false);
@@ -96,7 +98,7 @@ export default function PostMoreMenu({
           } as Item,
           {
             icon: <Flag size={15} />,
-            label: "Báo cáo",
+            label: t("menu.report"),
             danger: true,
             onClick: () => {
               onReport();
@@ -125,7 +127,9 @@ export default function PostMoreMenu({
                 onClick={item.onClick}
                 className={clsx(
                   "w-full flex items-center gap-2.5 px-3.5 py-2 text-sm hover:bg-surface-50 transition-colors",
-                  item.danger ? "text-red-500 dark:text-red-400" : "text-text-primary",
+                  item.danger
+                    ? "text-red-500 dark:text-red-400"
+                    : "text-text-primary",
                 )}
               >
                 {item.icon}

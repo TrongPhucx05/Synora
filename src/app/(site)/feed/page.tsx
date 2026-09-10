@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useSession } from "next-auth/react";
 import { useSearchParams, useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import PostComposer from "@/components/feed/PostComposer";
 import type { AttachedFile } from "@/components/feed/PostComposer";
 import PostCard from "@/components/feed/PostCard";
@@ -11,6 +12,7 @@ import SuggestedPeople from "@/components/ui/SuggestedPeople";
 
 export default function FeedPage() {
   const { data: session } = useSession();
+  const t = useTranslations();
   const isAdmin = session?.user?.role === "ADMIN";
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -21,7 +23,7 @@ export default function FeedPage() {
   const [loading, setLoading] = useState(true);
 
   const currentUser = {
-    name: session?.user?.name ?? "Người dùng",
+    name: session?.user?.name ?? t("common.user"),
     username: session?.user?.username ?? "",
     initials: (session?.user?.name ?? "U")
       .split(" ")
@@ -109,7 +111,7 @@ export default function FeedPage() {
         username: currentUser.username,
         avatarUrl: currentUser.image,
       },
-      time: "Vừa xong",
+      time: t("post.justNow"),
       content,
       tags,
       visibility: visibility.toUpperCase() as
@@ -234,11 +236,11 @@ export default function FeedPage() {
         )}
         {loading ? (
           <div className="text-center text-sm text-text-muted py-10">
-            Đang tải...
+            {t("common.loading")}
           </div>
         ) : [...localPosts, ...mappedPosts].length === 0 ? (
           <div className="text-center text-sm text-text-muted py-10">
-            Chưa có bài viết nào
+            {t("post.empty")}
           </div>
         ) : (
           (() => {

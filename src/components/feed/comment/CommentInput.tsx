@@ -12,6 +12,7 @@ import {
   X,
 } from "lucide-react";
 import { useSession } from "next-auth/react";
+import { useTranslations } from "next-intl";
 import { useUploadThing } from "@/lib/uploadthing";
 import Avatar from "@/components/ui/Avatar";
 import {
@@ -39,6 +40,7 @@ export function CommentFileBadge({
   url?: string;
 }) {
   const ext = type ?? getFileExt(name);
+  const t = useTranslations("comment");
   return (
     <div className="flex items-center gap-2 mt-2 p-2 bg-surface-50 rounded-lg border border-surface-200 max-w-[260px]">
       <div
@@ -59,7 +61,7 @@ export function CommentFileBadge({
           target="_blank"
           rel="noopener noreferrer"
           className="p-1.5 rounded-lg hover:bg-surface-200 text-text-secondary transition-colors shrink-0"
-          title="Xem trước"
+          title={t("input.previewFile")}
           onClick={(e) => e.stopPropagation()}
         >
           <Eye size={14} />
@@ -67,7 +69,7 @@ export function CommentFileBadge({
       ) : (
         <div
           className="p-1.5 text-text-secondary shrink-0"
-          title="Không có URL tải"
+          title={t("input.noPreviewUrl")}
         >
           <FileText size={14} />
         </div>
@@ -185,6 +187,7 @@ export default function CommentInput({
   const { data: session } = useSession();
   const { startUpload: uploadMedia } = useUploadThing("commentMedia");
   const { startUpload: uploadDoc } = useUploadThing("commentDocument");
+  const t = useTranslations("comment");
 
   const initials = (session?.user?.name ?? "U")
     .split(" ")
@@ -204,17 +207,17 @@ export default function CommentInput({
     const sizeMB = file.size / (1024 * 1024);
     setUploadError(null);
     if (isImg && sizeMB > MAX_IMAGE_MB) {
-      setUploadError(`Ảnh tối đa ${MAX_IMAGE_MB}MB`);
+      setUploadError(t("input.imageTooLarge", { limit: MAX_IMAGE_MB }));
       if (fileRef.current) fileRef.current.value = "";
       return;
     }
     if (isVid && sizeMB > MAX_VIDEO_MB) {
-      setUploadError(`Video tối đa ${MAX_VIDEO_MB}MB`);
+      setUploadError(t("input.videoTooLarge", { limit: MAX_VIDEO_MB }));
       if (fileRef.current) fileRef.current.value = "";
       return;
     }
     if (!isImg && !isVid && sizeMB > MAX_DOC_MB) {
-      setUploadError(`Tài liệu tối đa ${MAX_DOC_MB}MB`);
+      setUploadError(t("input.docTooLarge", { limit: MAX_DOC_MB }));
       if (fileRef.current) fileRef.current.value = "";
       return;
     }
@@ -277,7 +280,7 @@ export default function CommentInput({
       setText("");
       setAttachment(null);
     } catch (err: any) {
-      setUploadError(err.message ?? "Tải lên thất bại, thử lại nhé");
+      setUploadError(err.message ?? t("input.uploadFailed"));
     } finally {
       setUploading(false);
     }
@@ -360,7 +363,7 @@ export default function CommentInput({
                 handleSubmit();
               }
             }}
-            placeholder="Viết bình luận..."
+            placeholder={t("input.placeholder")}
             rows={1}
             className="flex-1 resize-none text-sm text-text-primary placeholder:text-text-secondary outline-none bg-transparent leading-relaxed max-h-28 disabled:opacity-60"
             style={{ height: "auto" }}
@@ -382,13 +385,13 @@ export default function CommentInput({
               onClick={() => fileRef.current?.click()}
               disabled={uploading || disabled}
               className="p-1 text-text-secondary hover:text-primary transition-colors disabled:opacity-40"
-              title="Đính kèm tệp"
+              title={t("input.previewFile")}
             >
               <Paperclip size={16} />
             </button>
             <button
               className="p-1 text-text-secondary hover:text-amber-500 transition-colors"
-              title="Emoji"
+              title={t("input.emoji")}
             >
               <Smile size={16} />
             </button>
@@ -412,7 +415,7 @@ export default function CommentInput({
         </div>
         {uploading && (
           <p className="text-[11px] text-text-secondary mt-1 ml-1">
-            Đang tải lên...
+            {t("input.uploading")}
           </p>
         )}
         {uploadError && (

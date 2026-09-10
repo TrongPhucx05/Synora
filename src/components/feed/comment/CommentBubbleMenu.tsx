@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import { useTranslations } from "next-intl";
 import { clsx } from "clsx";
 import {
   MoreHorizontal,
@@ -34,6 +35,7 @@ export default function CommentBubbleMenu({
 }) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
+  const t = useTranslations("comment");
 
   useEffect(() => {
     const handler = (e: MouseEvent) => {
@@ -56,7 +58,7 @@ export default function CommentBubbleMenu({
       ? [
           {
             icon: <Pencil size={14} />,
-            label: "Chỉnh sửa",
+            label: t("menu.edit"),
             onClick: () => {
               onEdit?.();
               setOpen(false);
@@ -64,7 +66,7 @@ export default function CommentBubbleMenu({
           },
           {
             icon: <Trash2 size={14} />,
-            label: "Xóa bình luận",
+            label: t("menu.delete"),
             danger: true,
             onClick: () => {
               onDelete?.();
@@ -76,7 +78,7 @@ export default function CommentBubbleMenu({
         ? [
             {
               icon: <Trash2 size={14} />,
-              label: "Xóa bình luận",
+              label: t("menu.delete"),
               danger: true,
               onClick: () => {
                 onDelete?.();
@@ -88,7 +90,7 @@ export default function CommentBubbleMenu({
           ? [
               {
                 icon: <Trash2 size={14} />,
-                label: "Xóa bình luận",
+                label: t("menu.delete"),
                 danger: true,
                 onClick: () => {
                   onDelete?.();
@@ -97,7 +99,7 @@ export default function CommentBubbleMenu({
               },
               {
                 icon: isHidden ? <Eye size={14} /> : <EyeOff size={14} />,
-                label: isHidden ? "Hiện bình luận" : "Ẩn bình luận",
+                label: isHidden ? t("menu.show") : t("menu.hide"),
                 onClick: () => {
                   onHide?.();
                   setOpen(false);
@@ -106,7 +108,8 @@ export default function CommentBubbleMenu({
               null,
               {
                 icon: <Ban size={14} />,
-                label: `Chặn ${authorName.split(" ").pop()}`,
+                label: t("menu.block",
+                { name: authorName.split(" ").pop() }),
                 onClick: () => {
                   onBlock?.();
                   setOpen(false);
@@ -114,7 +117,7 @@ export default function CommentBubbleMenu({
               },
               {
                 icon: <Flag size={14} />,
-                label: "Báo cáo",
+                label: t("menu.report"),
                 danger: true,
                 onClick: () => {
                   onReport?.();
@@ -125,7 +128,7 @@ export default function CommentBubbleMenu({
           : [
               {
                 icon: <Ban size={14} />,
-                label: `Chặn ${authorName}`,
+                label: t("menu.block", { name: authorName }),
                 onClick: () => {
                   onBlock?.();
                   setOpen(false);
@@ -133,7 +136,7 @@ export default function CommentBubbleMenu({
               },
               {
                 icon: <Flag size={14} />,
-                label: "Báo cáo",
+                label: t("menu.report"),
                 danger: true,
                 onClick: () => {
                   onReport?.();
