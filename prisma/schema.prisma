@@ -161,6 +161,11 @@ enum Theme {
   SYSTEM
 }
 
+enum Language {
+  VI
+  EN
+}
+
 model FriendRequest {
   id         String              @id @default(cuid())
   senderId   String
@@ -274,6 +279,7 @@ model Profile {
   showFriendsList         Boolean                 @default(true)
   showActivityStatus      Boolean                 @default(true)
   theme Theme @default(SYSTEM)
+  language Language @default(VI)
 
   updatedAt DateTime @updatedAt
 
