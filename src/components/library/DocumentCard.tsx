@@ -13,6 +13,7 @@ import {
   ChevronDown,
 } from "lucide-react";
 import clsx from "clsx";
+import { useTranslations } from "next-intl";
 import { FILE_TYPE_COLORS } from "@/lib/library/data";
 import type { Document } from "@/lib/library/types";
 import EditDocumentModal from "@/components/library/EditDocumentModal";
@@ -62,6 +63,8 @@ export default function DocumentCard({
   const { showToast } = useToast();
   const menuRef = useRef<HTMLDivElement>(null);
   const isOwner = !!currentUserId && currentUserId === doc.uploader?.id;
+  const t = useTranslations("library.card");
+  const tc = useTranslations("common");
 
   useEffect(() => {
     const handler = (e: MouseEvent) => {
@@ -76,7 +79,7 @@ export default function DocumentCard({
     onToggleSave(doc.id);
     setMenuOpen(false);
     showToast(
-      isSaved ? "Đã bỏ lưu tài liệu" : "Đã lưu tài liệu",
+      isSaved ? t("unsavedToast") : t("savedToast"),
       isSaved ? "unsave" : "save",
     );
   };
@@ -89,14 +92,14 @@ export default function DocumentCard({
       });
       if (res.ok) {
         setShowDeleteConfirm(false);
-        showToast("Đã xóa tài liệu", "delete");
+        showToast(t("deletedToast"), "delete");
         setTimeout(() => onDeleted?.(doc.id), 500);
       } else {
         const data = await res.json();
-        showToast(data.error ?? "Xóa thất bại", "error");
+        showToast(data.error ?? t("deleteFailed"), "error");
       }
     } catch {
-      showToast("Lỗi kết nối, vui lòng thử lại", "error");
+      showToast(t("connectionError"), "error");
     } finally {
       setIsDeleting(false);
     }
@@ -116,14 +119,14 @@ export default function DocumentCard({
       });
       if (res.ok) {
         setShowAdminDeleteConfirm(false);
-        showToast("Đã xóa tài liệu vi phạm và gửi thông báo", "delete");
+        showToast(t("adminDeletedToast"), "delete");
         setTimeout(() => onDeleted?.(doc.id), 400);
       } else {
         const data = await res.json();
-        showToast(data.error ?? "Xóa thất bại", "error");
+        showToast(data.error ?? t("deleteFailed"), "error");
       }
     } catch {
-      showToast("Lỗi kết nối, vui lòng thử lại", "error");
+      showToast(t("connectionError"), "error");
     } finally {
       setIsAdminDeleting(false);
     }
@@ -194,7 +197,7 @@ export default function DocumentCard({
             <div ref={menuRef} className="relative">
               <button
                 onClick={() => setMenuOpen((p) => !p)}
-                aria-label="Tùy chọn"
+                aria-label={t("options")}
                 className="p-1.5 rounded-lg text-text-muted hover:text-text-primary hover:bg-surface-100 transition-colors"
               >
                 <MoreHorizontal size={15} />
@@ -211,7 +214,7 @@ export default function DocumentCard({
                       className="w-full flex items-center gap-2.5 px-3.5 py-2 text-sm text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/20 transition-colors"
                     >
                       <Trash2 size={14} />
-                      Xóa tài liệu
+                      {t("delete")}
                     </button>
                   ) : (
                     <>
@@ -224,7 +227,7 @@ export default function DocumentCard({
                         ) : (
                           <Bookmark size={14} />
                         )}
-                        {isSaved ? "Bỏ lưu" : "Lưu tài liệu"}
+                        {isSaved ? t("unsave") : t("save")}
                       </button>
 
                       {isOwner ? (
@@ -238,7 +241,7 @@ export default function DocumentCard({
                             className="w-full flex items-center gap-2.5 px-3.5 py-2 text-sm text-text-secondary hover:bg-surface-50 hover:text-text-primary transition-colors"
                           >
                             <Pencil size={14} />
-                            Chỉnh sửa
+                            {t("edit")}
                           </button>
                           <button
                             onClick={() => {
@@ -248,7 +251,7 @@ export default function DocumentCard({
                             className="w-full flex items-center gap-2.5 px-3.5 py-2 text-sm text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/20 transition-colors"
                           >
                             <Trash2 size={14} />
-                            Xóa tài liệu
+                            {t("delete")}
                           </button>
                         </>
                       ) : (
@@ -262,7 +265,7 @@ export default function DocumentCard({
                             className="w-full flex items-center gap-2.5 px-3.5 py-2 text-sm text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/20 transition-colors"
                           >
                             <Flag size={14} />
-                            Báo cáo
+                            {t("report")}
                           </button>
                         </>
                       )}
@@ -327,11 +330,11 @@ export default function DocumentCard({
               className="flex items-center gap-1 px-2 py-1.5 text-[11px] font-semibold text-primary hover:bg-primary/10 rounded-md transition-colors"
             >
               <Eye size={12} />
-              Xem trước
+              {t("preview")}
             </button>
             <button
               onClick={handleDownload}
-              aria-label="Tải xuống"
+              aria-label={t("download")}
               className="p-1.5 text-primary hover:bg-primary/10 rounded-md transition-colors"
             >
               <Download size={14} />
@@ -355,7 +358,7 @@ export default function DocumentCard({
         <ReportModal
           targetType="DOCUMENT"
           targetId={doc.id}
-          title="Báo cáo tài liệu"
+          title={t("reportTitle")}
           onClose={() => setShowReportModal(false)}
         />
       )}
@@ -367,14 +370,10 @@ export default function DocumentCard({
               <Trash2 size={20} className="text-red-500 dark:text-red-400" />
             </div>
             <h3 className="text-sm font-semibold text-text-primary text-center mb-1">
-              Xóa tài liệu?
+              {t("deleteConfirmTitle")}
             </h3>
             <p className="text-xs text-text-muted text-center mb-5 leading-relaxed">
-              Tài liệu{" "}
-              <span className="font-medium text-text-secondary">
-                "{doc.title}"
-              </span>{" "}
-              sẽ bị xóa vĩnh viễn và không thể khôi phục.
+              {t("deleteConfirmDesc", { title: doc.title })}
             </p>
             <div className="flex gap-2">
               <button
@@ -385,10 +384,10 @@ export default function DocumentCard({
                 {isDeleting ? (
                   <>
                     <span className="w-3.5 h-3.5 border-2 border-white/40 border-t-white rounded-full animate-spin" />
-                    Đang xóa...
+                    {t("deleting")}
                   </>
                 ) : (
-                  "Xóa"
+                  tc("delete")
                 )}
               </button>
               <button
@@ -396,7 +395,7 @@ export default function DocumentCard({
                 disabled={isDeleting}
                 className="flex-1 py-2 text-sm font-medium text-text-secondary bg-surface-100 hover:bg-surface-200 rounded-xl transition-colors disabled:opacity-50"
               >
-                Hủy
+                {tc("cancel")}
               </button>
             </div>
           </div>
@@ -410,20 +409,16 @@ export default function DocumentCard({
               <Trash2 size={20} className="text-red-500 dark:text-red-400" />
             </div>
             <h3 className="text-sm font-semibold text-text-primary text-center mb-1">
-              Xóa tài liệu vi phạm?
+              {t("adminDeleteConfirmTitle")}
             </h3>
             <p className="text-xs text-text-muted text-center mb-4 leading-relaxed">
-              Tài liệu{" "}
-              <span className="font-medium text-text-secondary">
-                "{doc.title}"
-              </span>{" "}
-              sẽ bị xóa vĩnh viễn. Người đăng tải sẽ nhận được thông báo kèm lý
-              do.
+              {t("adminDeleteConfirmDesc", { title: doc.title })}
             </p>
 
             <div className="flex flex-col gap-1.5 mb-3">
               <label className="text-xs font-semibold text-text-primary">
-                Lý do vi phạm <span className="text-red-500 dark:text-red-400">*</span>
+                {t("violationReasonLabel")}{" "}
+                <span className="text-red-500 dark:text-red-400">*</span>
               </label>
               <div className="relative">
                 <select
@@ -433,7 +428,7 @@ export default function DocumentCard({
                   }
                   className="w-full px-3 py-2.5 bg-surface border border-surface-200 rounded-xl text-sm appearance-none focus:outline-none focus:border-primary"
                 >
-                  <option value="">Chọn lý do...</option>
+                  <option value="">{t("chooseReasonPlaceholder")}</option>
                   {VIOLATION_REASONS.map((r) => (
                     <option key={r} value={r}>
                       {VIOLATION_REASON_LABELS[r]}
@@ -451,7 +446,7 @@ export default function DocumentCard({
               value={adminNote}
               onChange={(e) => setAdminNote(e.target.value)}
               rows={2}
-              placeholder="Ghi chú thêm cho người dùng (tùy chọn)"
+              placeholder={t("adminNotePlaceholder")}
               className="w-full text-sm border border-surface-200 rounded-xl p-3 mb-4 resize-none focus:outline-none focus:border-primary"
             />
 
@@ -464,10 +459,10 @@ export default function DocumentCard({
                 {isAdminDeleting ? (
                   <>
                     <span className="w-3.5 h-3.5 border-2 border-white/40 border-t-white rounded-full animate-spin" />
-                    Đang xóa...
+                    {t("deleting")}
                   </>
                 ) : (
-                  "Xóa & gửi thông báo"
+                  t("deleteAndNotify")
                 )}
               </button>
               <button
@@ -475,7 +470,7 @@ export default function DocumentCard({
                 disabled={isAdminDeleting}
                 className="flex-1 py-2 text-sm font-medium text-text-secondary bg-surface-100 hover:bg-surface-200 rounded-xl transition-colors disabled:opacity-50"
               >
-                Hủy
+                {tc("cancel")}
               </button>
             </div>
           </div>

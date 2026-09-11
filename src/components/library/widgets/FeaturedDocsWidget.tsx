@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { Download } from "lucide-react";
 import clsx from "clsx";
+import { useTranslations } from "next-intl";
 import { FILE_TYPE_COLORS } from "@/lib/library/data";
 import type { FeaturedDoc } from "@/lib/library/types";
 
@@ -14,6 +15,7 @@ export default function FeaturedDocsWidget({
   refreshKey = 0,
 }: FeaturedDocsWidgetProps) {
   const [docs, setDocs] = useState<FeaturedDoc[]>([]);
+  const t = useTranslations("library.widgets");
 
   useEffect(() => {
     fetch("/api/library/documents?sort=mostDownloaded", {
@@ -43,7 +45,7 @@ export default function FeaturedDocsWidget({
   return (
     <div className="bg-surface rounded-xl border border-surface-200 shadow-card p-4">
       <h3 className="text-sm font-semibold text-text-primary mb-3">
-        Tài liệu nổi bật
+        {t("featuredTitle")}
       </h3>
       <div className="flex flex-col gap-2">
         {docs.map((doc) => {
@@ -71,16 +73,14 @@ export default function FeaturedDocsWidget({
                   {doc.title}
                 </p>
                 <p className="text-[10px] text-text-muted flex items-center gap-1">
-                  <Download size={9} /> {dlCount} lượt tải
+                  <Download size={9} /> {dlCount} {t("downloadsSuffix")}
                 </p>
               </div>
             </div>
           );
         })}
         {docs.length === 0 && (
-          <p className="text-xs text-text-muted py-2">
-            Chưa có tài liệu nào được tải xuống.
-          </p>
+          <p className="text-xs text-text-muted py-2">{t("featuredEmpty")}</p>
         )}
       </div>
     </div>

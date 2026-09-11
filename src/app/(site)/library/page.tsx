@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
+import { useTranslations } from "next-intl";
 import type {
   SortKey,
   LevelKey,
@@ -16,10 +17,11 @@ import UploadDocumentModal from "@/components/library/UploadDocumentModal";
 
 export default function LibraryPage() {
   const { data: session } = useSession();
+  const t = useTranslations("library");
   const isLoggedIn = !!session?.user;
   const isAdmin = session?.user?.role === "ADMIN";
 
-  const [activeType, setActiveType] = useState("Tất cả");
+  const [activeType, setActiveType] = useState("all");
   const [activeLevel, setActiveLevel] = useState<LevelKey>("all");
   const [activeGrade, setActiveGrade] = useState("");
   const [activeSubject, setActiveSubject] = useState("");
@@ -50,7 +52,7 @@ export default function LibraryPage() {
     if (activeGrade) p.set("grade", activeGrade);
     if (activeSubject) p.set("subjectId", activeSubject);
     if (activeMajor) p.set("major", activeMajor);
-    if (activeType !== "Tất cả") p.set("type", activeType);
+    if (activeType !== "all") p.set("type", activeType);
     if (debouncedQuery) p.set("query", debouncedQuery);
     if (activeSort === "saved") p.set("saved", "1");
     else if (activeSort === "mine") p.set("mine", "1");
@@ -92,7 +94,7 @@ export default function LibraryPage() {
     if (activeGrade) p.set("grade", activeGrade);
     if (activeSubject) p.set("subjectId", activeSubject);
     if (activeMajor) p.set("major", activeMajor);
-    if (activeType !== "Tất cả") p.set("type", activeType);
+    if (activeType !== "all") p.set("type", activeType);
     if (debouncedQuery) p.set("query", debouncedQuery);
     if (activeSort === "saved") p.set("saved", "1");
     else if (activeSort === "mine") p.set("mine", "1");
@@ -212,7 +214,7 @@ export default function LibraryPage() {
                   disabled={loading}
                   className="px-5 py-2 text-sm font-semibold text-primary border border-primary/30 rounded-xl hover:bg-primary/5 transition-colors disabled:opacity-50"
                 >
-                  {loading ? "Đang tải..." : "Xem thêm"}
+                  {loading ? t("loading") : t("loadMore")}
                 </button>
               </div>
             )}

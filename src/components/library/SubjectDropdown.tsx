@@ -3,32 +3,45 @@
 import { useState, useRef, useEffect } from "react";
 import { ChevronDown } from "lucide-react";
 import clsx from "clsx";
+import { useTranslations } from "next-intl";
 
-interface Option { id: string; label: string; }
+interface Option {
+  id: string;
+  label: string;
+}
 
 interface SubjectDropdownProps {
-  label:    string;
-  options:  Option[];
-  value:    string;
+  label: string;
+  options: Option[];
+  value: string;
   onChange: (id: string) => void;
 }
 
-export default function SubjectDropdown({ label, options, value, onChange }: SubjectDropdownProps) {
+export default function SubjectDropdown({
+  label,
+  options,
+  value,
+  onChange,
+}: SubjectDropdownProps) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
+  const t = useTranslations("library.dropdown");
 
   const activeLabel = options.find((o) => o.id === value)?.label;
 
   useEffect(() => {
     const handler = (e: MouseEvent) => {
-      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+      if (ref.current && !ref.current.contains(e.target as Node))
+        setOpen(false);
     };
     if (open) document.addEventListener("mousedown", handler);
     return () => document.removeEventListener("mousedown", handler);
   }, [open]);
 
   useEffect(() => {
-    const handler = (e: KeyboardEvent) => { if (e.key === "Escape") setOpen(false); };
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpen(false);
+    };
     if (open) document.addEventListener("keydown", handler);
     return () => document.removeEventListener("keydown", handler);
   }, [open]);
@@ -47,7 +60,13 @@ export default function SubjectDropdown({ label, options, value, onChange }: Sub
         )}
       >
         {value ? activeLabel : label}
-        <ChevronDown size={13} className={clsx("transition-transform duration-200", open && "rotate-180")} />
+        <ChevronDown
+          size={13}
+          className={clsx(
+            "transition-transform duration-200",
+            open && "rotate-180",
+          )}
+        />
       </button>
 
       {open && (
@@ -57,10 +76,13 @@ export default function SubjectDropdown({ label, options, value, onChange }: Sub
         >
           {value && (
             <button
-              onClick={() => { onChange(""); setOpen(false); }}
+              onClick={() => {
+                onChange("");
+                setOpen(false);
+              }}
               className="w-full text-left px-3.5 py-2 text-sm text-text-muted hover:bg-surface-50 border-b border-surface-100 mb-1"
             >
-              Bỏ chọn
+              {t("clear")}
             </button>
           )}
           {options.map((opt) => (
@@ -68,7 +90,10 @@ export default function SubjectDropdown({ label, options, value, onChange }: Sub
               key={opt.id}
               role="option"
               aria-selected={value === opt.id}
-              onClick={() => { onChange(opt.id); setOpen(false); }}
+              onClick={() => {
+                onChange(opt.id);
+                setOpen(false);
+              }}
               className={clsx(
                 "w-full text-left px-3.5 py-2 text-sm transition-colors",
                 value === opt.id

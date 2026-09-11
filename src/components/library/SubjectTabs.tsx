@@ -1,6 +1,7 @@
 "use client";
 
 import clsx from "clsx";
+import { useTranslations } from "next-intl";
 import {
   LEVEL_TABS,
   ACADEMIC_GRADES,
@@ -45,7 +46,22 @@ export default function LevelFilterBar({
   activeMajor,
   onMajorChange,
 }: LevelFilterBarProps) {
+  const t = useTranslations("library.data");
+  const td = useTranslations("library.dropdown");
   const filteredSubjects = getFilteredSubjects(activeGrade);
+
+  const gradeOptions = ACADEMIC_GRADES.map((g) => ({
+    id: g.id,
+    label: t(g.labelKey),
+  }));
+  const subjectOptions = filteredSubjects.map((s) => ({
+    id: s.id,
+    label: t(s.labelKey),
+  }));
+  const majorOptions = UNIVERSITY_MAJORS.map((m) => ({
+    id: m.id,
+    label: t(m.labelKey),
+  }));
 
   return (
     <div className="flex flex-col gap-3">
@@ -61,7 +77,7 @@ export default function LevelFilterBar({
                 : "bg-surface border border-surface-200 text-text-secondary hover:border-primary hover:text-primary",
             )}
           >
-            {tab.label}
+            {t(tab.labelKey)}
           </button>
         ))}
       </div>
@@ -69,8 +85,8 @@ export default function LevelFilterBar({
       {activeLevel === "academic" && (
         <div className="flex items-center gap-2 flex-wrap">
           <SubjectDropdown
-            label="Chọn lớp"
-            options={ACADEMIC_GRADES}
+            label={td("chooseGrade")}
+            options={gradeOptions}
             value={activeGrade}
             onChange={(v) => {
               onGradeChange(v);
@@ -84,8 +100,8 @@ export default function LevelFilterBar({
             }}
           />
           <SubjectDropdown
-            label="Chọn môn"
-            options={filteredSubjects}
+            label={td("chooseSubject")}
+            options={subjectOptions}
             value={activeSubject}
             onChange={onSubjectChange}
           />
@@ -95,8 +111,8 @@ export default function LevelFilterBar({
       {activeLevel === "university" && (
         <div className="flex items-center gap-2">
           <SubjectDropdown
-            label="Chọn khối ngành"
-            options={UNIVERSITY_MAJORS}
+            label={td("chooseMajor")}
+            options={majorOptions}
             value={activeMajor}
             onChange={onMajorChange}
           />

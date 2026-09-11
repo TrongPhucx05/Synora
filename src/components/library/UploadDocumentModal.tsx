@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import { X, Upload, FileText, CheckCircle, ChevronDown } from "lucide-react";
 import clsx from "clsx";
+import { useTranslations } from "next-intl";
 import { useUploadThing } from "@/lib/uploadthing";
 import {
   ACADEMIC_GRADES,
@@ -10,6 +11,7 @@ import {
   LEVEL_TABS,
   UNIVERSITY_MAJORS,
 } from "@/lib/library/data";
+
 const ACCEPTED_TYPES = ".pdf,.docx,.pptx";
 const ACCEPTED_MIME = [
   "application/pdf",
@@ -61,6 +63,10 @@ export default function UploadDocumentModal({ onClose, onSuccess }: Props) {
   const firstFieldRef = useRef<HTMLInputElement>(null);
   const modalRef = useRef<HTMLDivElement>(null);
 
+  const t = useTranslations("library.modal");
+  const td = useTranslations("library.data");
+  const tc = useTranslations("common");
+
   const { startUpload } = useUploadThing("postDocument");
 
   useEffect(() => {
@@ -99,7 +105,7 @@ export default function UploadDocumentModal({ onClose, onSuccess }: Props) {
 
   const handleFile = (f: File) => {
     if (!ACCEPTED_MIME.includes(f.type)) {
-      setErrors((p) => ({ ...p, file: "Chỉ hỗ trợ PDF, DOCX, PPTX" }));
+      setErrors((p) => ({ ...p, file: t("errors.onlyPdfDocxPptx") }));
       return;
     }
     setFile(f);
@@ -112,17 +118,17 @@ export default function UploadDocumentModal({ onClose, onSuccess }: Props) {
 
   const validate = () => {
     const e: Record<string, string> = {};
-    if (!title.trim()) e.title = "Vui lòng nhập tiêu đề";
-    if (!file) e.file = "Vui lòng chọn file";
-    if (!level) e.level = "Vui lòng chọn cấp học";
+    if (!title.trim()) e.title = t("errors.titleRequired");
+    if (!file) e.file = t("errors.fileRequired");
+    if (!level) e.level = t("errors.levelRequired");
 
     if (level === "academic") {
-      if (!grade) e.grade = "Vui lòng chọn lớp";
-      if (!subjectId) e.subject = "Vui lòng chọn môn học";
+      if (!grade) e.grade = t("errors.gradeRequired");
+      if (!subjectId) e.subject = t("errors.subjectRequired");
     }
 
     if (level === "university" && !major) {
-      e.major = "Vui lòng chọn khối ngành";
+      e.major = t("errors.majorRequired");
     }
 
     setErrors(e);
@@ -136,14 +142,13 @@ export default function UploadDocumentModal({ onClose, onSuccess }: Props) {
 
     try {
       const uploaded = await startUpload([file]);
-      if (!uploaded?.[0]) throw new Error("Upload thất bại");
+      if (!uploaded?.[0]) throw new Error(t("errors.uploadFailed"));
 
       setUploadState("saving");
       const { ufsUrl, key } = uploaded[0] as any;
 
-      const subjectLabel = ACADEMIC_SUBJECTS.find(
-        (s) => s.id === subjectId,
-      )?.label;
+      const subjectData = ACADEMIC_SUBJECTS.find((s) => s.id === subjectId);
+      const subjectLabel = subjectData ? td(subjectData.labelKey) : undefined;
 
       const res = await fetch("/api/library/documents", {
         method: "POST",
@@ -163,13 +168,13 @@ export default function UploadDocumentModal({ onClose, onSuccess }: Props) {
         }),
       });
 
-      if (!res.ok) throw new Error("Lưu tài liệu thất bại");
+      if (!res.ok) throw new Error(t("errors.saveDocFailed"));
 
       setUploadState("success");
       setTimeout(onSuccess, 1800);
     } catch (err: any) {
       setUploadState("error");
-      setErrorMsg(err.message ?? "Có lỗi xảy ra, vui lòng thử lại");
+      setErrorMsg(err.message ?? t("errors.generic"));
     }
   };
 
@@ -179,7 +184,7 @@ export default function UploadDocumentModal({ onClose, onSuccess }: Props) {
     <div
       role="dialog"
       aria-modal="true"
-      aria-label="Tải lên tài liệu"
+      aria-label={t("uploadTitle")}
       className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 dark:bg-black/35 backdrop-blur-sm animate-in fade-in duration-200 sm:p-6"
       onClick={(e) => {
         if (e.target === e.currentTarget) onClose();
@@ -191,11 +196,11 @@ export default function UploadDocumentModal({ onClose, onSuccess }: Props) {
       >
         <div className="flex items-center justify-between px-5 py-4 border-b border-surface-200 shrink-0">
           <h2 className="text-sm font-semibold text-text-primary">
-            Tải lên tài liệu
+            {t("uploadTitle")}
           </h2>
           <button
             onClick={onClose}
-            aria-label="Đóng"
+            aria-label={tc("close")}
             className="p-2 rounded-lg text-text-muted hover:text-text-primary hover:bg-surface-100 transition-colors"
           >
             <X size={15} />
@@ -205,21 +210,24 @@ export default function UploadDocumentModal({ onClose, onSuccess }: Props) {
         {uploadState === "success" ? (
           <div className="flex flex-col items-center justify-center gap-4 px-8 py-16 text-center">
             <div className="w-14 h-14 rounded-full bg-green-50 dark:bg-green-500/15 flex items-center justify-center">
-              <CheckCircle size={28} className="text-green-500 dark:text-green-400" />
+              <CheckCircle
+                size={28}
+                className="text-green-500 dark:text-green-400"
+              />
             </div>
             <div>
               <p className="text-sm font-semibold text-text-primary mb-1">
-                Tải lên thành công!
+                {t("uploadSuccessTitle")}
               </p>
               <p className="text-xs text-text-muted">
-                Tài liệu đã được thêm vào thư viện.
+                {t("uploadSuccessDesc")}
               </p>
             </div>
             <button
               onClick={onClose}
               className="mt-2 px-5 py-2 bg-primary text-white text-sm font-semibold rounded-xl hover:bg-primary-700 transition-colors"
             >
-              Đóng
+              {tc("close")}
             </button>
           </div>
         ) : (
@@ -227,7 +235,8 @@ export default function UploadDocumentModal({ onClose, onSuccess }: Props) {
             <div className="flex-1 overflow-y-auto px-5 py-5 flex flex-col gap-4">
               <div className="flex flex-col gap-1.5">
                 <label className="text-xs font-semibold text-text-primary">
-                  Tiêu đề <span className="text-red-500 dark:text-red-400">*</span>
+                  {t("titleLabel")}{" "}
+                  <span className="text-red-500 dark:text-red-400">*</span>
                 </label>
                 <input
                   ref={firstFieldRef}
@@ -241,7 +250,7 @@ export default function UploadDocumentModal({ onClose, onSuccess }: Props) {
                       return n;
                     });
                   }}
-                  placeholder="Nhập tiêu đề tài liệu..."
+                  placeholder={t("titlePlaceholder")}
                   className={clsx(
                     "w-full px-3 py-2.5 bg-surface border rounded-xl text-sm placeholder:text-text-muted focus:outline-none transition-colors",
                     errors.title
@@ -250,13 +259,15 @@ export default function UploadDocumentModal({ onClose, onSuccess }: Props) {
                   )}
                 />
                 {errors.title && (
-                  <p className="text-[11px] text-red-500 dark:text-red-400">{errors.title}</p>
+                  <p className="text-[11px] text-red-500 dark:text-red-400">
+                    {errors.title}
+                  </p>
                 )}
               </div>
 
               <div className="flex flex-col gap-1.5">
                 <label className="text-xs font-semibold text-text-primary">
-                  Cấp học
+                  {t("levelLabel")}
                 </label>
                 <div className="relative">
                   <select
@@ -269,10 +280,10 @@ export default function UploadDocumentModal({ onClose, onSuccess }: Props) {
                     }}
                     className="w-full px-3 py-2.5 bg-surface border border-surface-200 rounded-xl text-sm appearance-none focus:outline-none focus:border-primary transition-colors"
                   >
-                    <option value="">Chọn cấp học...</option>
+                    <option value="">{t("chooseLevelPlaceholder")}</option>
                     {levelOptions.map((l) => (
                       <option key={l.id} value={l.id}>
-                        {l.label}
+                        {td(l.labelKey)}
                       </option>
                     ))}
                   </select>
@@ -282,7 +293,9 @@ export default function UploadDocumentModal({ onClose, onSuccess }: Props) {
                   />
                 </div>
                 {errors.level && (
-                  <p className="text-[11px] text-red-500 dark:text-red-400">{errors.level}</p>
+                  <p className="text-[11px] text-red-500 dark:text-red-400">
+                    {errors.level}
+                  </p>
                 )}
               </div>
 
@@ -290,7 +303,7 @@ export default function UploadDocumentModal({ onClose, onSuccess }: Props) {
                 <div className="flex gap-3">
                   <div className="flex-1 flex flex-col gap-1.5">
                     <label className="text-xs font-semibold text-text-primary">
-                      Lớp
+                      {t("gradeLabel")}
                     </label>
                     <div className="relative">
                       <select
@@ -308,10 +321,10 @@ export default function UploadDocumentModal({ onClose, onSuccess }: Props) {
                         }}
                         className="w-full px-3 py-2.5 bg-surface border border-surface-200 rounded-xl text-sm appearance-none focus:outline-none focus:border-primary"
                       >
-                        <option value="">Chọn lớp...</option>
+                        <option value="">{t("chooseGradePlaceholder")}</option>
                         {ACADEMIC_GRADES.map((g) => (
                           <option key={g.id} value={g.id}>
-                            {g.label}
+                            {td(g.labelKey)}
                           </option>
                         ))}
                       </select>
@@ -321,12 +334,14 @@ export default function UploadDocumentModal({ onClose, onSuccess }: Props) {
                       />
                     </div>
                     {errors.grade && (
-                      <p className="text-[11px] text-red-500 dark:text-red-400">{errors.grade}</p>
+                      <p className="text-[11px] text-red-500 dark:text-red-400">
+                        {errors.grade}
+                      </p>
                     )}
                   </div>
                   <div className="flex-1 flex flex-col gap-1.5">
                     <label className="text-xs font-semibold text-text-primary">
-                      Môn học
+                      {t("subjectLabel")}
                     </label>
                     <div className="relative">
                       <select
@@ -334,10 +349,12 @@ export default function UploadDocumentModal({ onClose, onSuccess }: Props) {
                         onChange={(e) => setSubjectId(e.target.value)}
                         className="w-full px-3 py-2.5 bg-surface border border-surface-200 rounded-xl text-sm appearance-none focus:outline-none focus:border-primary"
                       >
-                        <option value="">Chọn môn...</option>
+                        <option value="">
+                          {t("chooseSubjectPlaceholder")}
+                        </option>
                         {getFilteredSubjects(grade).map((s) => (
                           <option key={s.id} value={s.id}>
-                            {s.label}
+                            {td(s.labelKey)}
                           </option>
                         ))}
                       </select>
@@ -358,7 +375,7 @@ export default function UploadDocumentModal({ onClose, onSuccess }: Props) {
               {level === "university" && (
                 <div className="flex flex-col gap-1.5">
                   <label className="text-xs font-semibold text-text-primary">
-                    Khối ngành
+                    {t("majorLabel")}
                   </label>
                   <div className="relative">
                     <select
@@ -366,10 +383,10 @@ export default function UploadDocumentModal({ onClose, onSuccess }: Props) {
                       onChange={(e) => setMajor(e.target.value)}
                       className="w-full px-3 py-2.5 bg-surface border border-surface-200 rounded-xl text-sm appearance-none focus:outline-none focus:border-primary"
                     >
-                      <option value="">Chọn khối ngành...</option>
+                      <option value="">{t("chooseMajorPlaceholder")}</option>
                       {UNIVERSITY_MAJORS.map((m) => (
                         <option key={m.id} value={m.id}>
-                          {m.label}
+                          {td(m.labelKey)}
                         </option>
                       ))}
                     </select>
@@ -379,16 +396,19 @@ export default function UploadDocumentModal({ onClose, onSuccess }: Props) {
                     />
                   </div>
                   {errors.major && (
-                    <p className="text-[11px] text-red-500 dark:text-red-400">{errors.major}</p>
+                    <p className="text-[11px] text-red-500 dark:text-red-400">
+                      {errors.major}
+                    </p>
                   )}
                 </div>
               )}
 
               <div className="flex flex-col gap-1.5">
                 <label className="text-xs font-semibold text-text-primary">
-                  File <span className="text-red-500 dark:text-red-400">*</span>
+                  {t("fileLabel")}{" "}
+                  <span className="text-red-500 dark:text-red-400">*</span>
                   <span className="text-text-muted font-normal ml-1">
-                    (PDF, DOCX, PPTX)
+                    {t("fileHint")}
                   </span>
                 </label>
                 <div
@@ -418,7 +438,10 @@ export default function UploadDocumentModal({ onClose, onSuccess }: Props) {
                   {file ? (
                     <>
                       <div className="w-9 h-9 rounded-lg bg-green-100 dark:bg-green-500/20 flex items-center justify-center">
-                        <FileText size={18} className="text-green-600 dark:text-green-400" />
+                        <FileText
+                          size={18}
+                          className="text-green-600 dark:text-green-400"
+                        />
                       </div>
                       <p className="text-xs font-semibold text-text-primary text-center">
                         {file.name}
@@ -434,9 +457,9 @@ export default function UploadDocumentModal({ onClose, onSuccess }: Props) {
                         <Upload size={16} className="text-text-muted" />
                       </div>
                       <p className="text-xs font-medium text-text-secondary text-center">
-                        Kéo thả file vào đây hoặc{" "}
+                        {t("dragDropText")}{" "}
                         <span className="text-primary font-semibold">
-                          chọn file
+                          {t("chooseFileLink")}
                         </span>
                       </p>
                     </>
@@ -453,21 +476,23 @@ export default function UploadDocumentModal({ onClose, onSuccess }: Props) {
                   }}
                 />
                 {errors.file && (
-                  <p className="text-[11px] text-red-500 dark:text-red-400">{errors.file}</p>
+                  <p className="text-[11px] text-red-500 dark:text-red-400">
+                    {errors.file}
+                  </p>
                 )}
               </div>
 
               <div className="flex flex-col gap-1.5">
                 <label className="text-xs font-semibold text-text-primary">
-                  Mô tả{" "}
+                  {t("descriptionLabel")}{" "}
                   <span className="text-text-muted font-normal">
-                    (tùy chọn)
+                    {t("optionalHint")}
                   </span>
                 </label>
                 <textarea
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
-                  placeholder="Mô tả ngắn về nội dung tài liệu..."
+                  placeholder={t("descriptionPlaceholder")}
                   rows={3}
                   className="w-full px-3 py-2.5 bg-surface border border-surface-200 rounded-xl text-sm placeholder:text-text-muted focus:outline-none focus:border-primary transition-colors resize-none"
                 />
@@ -486,7 +511,7 @@ export default function UploadDocumentModal({ onClose, onSuccess }: Props) {
                 disabled={uploadState !== "idle"}
                 className="px-4 py-2 text-sm font-semibold text-text-secondary border border-surface-200 rounded-xl hover:border-surface-300 transition-colors disabled:opacity-50"
               >
-                Hủy
+                {tc("cancel")}
               </button>
               <button
                 onClick={handleSubmit}
@@ -496,16 +521,16 @@ export default function UploadDocumentModal({ onClose, onSuccess }: Props) {
                 {uploadState === "uploading" ? (
                   <>
                     <span className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />{" "}
-                    Đang tải lên...
+                    {t("uploading")}
                   </>
                 ) : uploadState === "saving" ? (
                   <>
                     <span className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />{" "}
-                    Đang lưu...
+                    {tc("saving")}
                   </>
                 ) : (
                   <>
-                    <Upload size={13} /> Tải lên
+                    <Upload size={13} /> {t("uploadBtn")}
                   </>
                 )}
               </button>

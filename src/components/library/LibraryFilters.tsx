@@ -2,6 +2,7 @@
 
 import { Upload, Search, X } from "lucide-react";
 import clsx from "clsx";
+import { useTranslations } from "next-intl";
 import { TYPE_TABS, SORT_OPTIONS } from "@/lib/library/data";
 import type { SortKey, LevelKey } from "@/lib/library/types";
 import LevelFilterBar from "./SubjectTabs";
@@ -45,6 +46,8 @@ export default function LibraryFilters({
   isLoggedIn,
   onUpload,
 }: LibraryFiltersProps) {
+  const t = useTranslations("library.filters");
+  const td = useTranslations("library.data");
   const visibleSortOptions = isLoggedIn
     ? SORT_OPTIONS
     : SORT_OPTIONS.filter((o) => o.key !== "saved" && o.key !== "mine");
@@ -61,13 +64,13 @@ export default function LibraryFilters({
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Tìm tài liệu theo tên, môn học, tác giả..."
+            placeholder={t("searchPlaceholder")}
             className="w-full pl-9 pr-9 py-2.5 bg-surface border border-surface-200 rounded-xl text-sm placeholder:text-text-muted focus:outline-none focus:border-primary transition-colors shadow-sm"
           />
           {query && (
             <button
               onClick={() => setQuery("")}
-              aria-label="Xoá"
+              aria-label={t("clearSearch")}
               className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-secondary"
             >
               <X size={14} />
@@ -80,7 +83,7 @@ export default function LibraryFilters({
             className="flex items-center gap-2 px-4 py-2.5 bg-primary text-white text-sm font-semibold rounded-xl hover:bg-primary-700 transition-colors shrink-0"
           >
             <Upload size={14} />
-            Tải lên
+            {t("upload")}
           </button>
         )}
       </div>
@@ -100,16 +103,16 @@ export default function LibraryFilters({
         <div className="flex items-center gap-1 border-b border-surface-200">
           {TYPE_TABS.map((tab) => (
             <button
-              key={tab}
-              onClick={() => setActiveType(tab)}
+              key={tab.id}
+              onClick={() => setActiveType(tab.id)}
               className={clsx(
                 "px-4 py-2 text-sm font-medium border-b-2 transition-colors whitespace-nowrap",
-                activeType === tab
+                activeType === tab.id
                   ? "border-primary text-primary"
                   : "border-transparent text-text-secondary hover:text-text-primary",
               )}
             >
-              {tab}
+              {tab.labelKey ? td(tab.labelKey) : tab.id}
             </button>
           ))}
         </div>
@@ -126,7 +129,7 @@ export default function LibraryFilters({
                   : "text-text-muted hover:text-text-secondary",
               )}
             >
-              {opt.label}
+              {td(opt.labelKey)}
               {opt.key === "saved" && savedCount > 0 && ` (${savedCount})`}
             </button>
           ))}
