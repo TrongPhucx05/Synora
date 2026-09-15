@@ -16,6 +16,7 @@ import {
   Loader2,
 } from "lucide-react";
 import { clsx } from "clsx";
+import { useTranslations } from "next-intl";
 import Avatar from "@/components/ui/Avatar";
 import { Badge } from "@/components/chat/Badge";
 import { useOutsideClickRefs } from "@/lib/chat/hooks";
@@ -30,13 +31,18 @@ function getInitials(name: string) {
     .toUpperCase();
 }
 
-function formatTime(iso: string | null): string {
+function formatTime(
+  iso: string | null,
+  t: ReturnType<typeof useTranslations>,
+): string {
   if (!iso) return "";
   const diff = Date.now() - new Date(iso).getTime();
-  if (diff < 3_600_000) return `${Math.floor(diff / 60_000)} phút`;
-  if (diff < 86_400_000) return `${Math.floor(diff / 3_600_000)} giờ`;
-  if (diff < 172_800_000) return "Hôm qua";
-  return new Date(iso).toLocaleDateString("vi-VN");
+  if (diff < 3_600_000)
+    return t("time.minutes", { count: Math.floor(diff / 60_000) });
+  if (diff < 86_400_000)
+    return t("time.hours", { count: Math.floor(diff / 3_600_000) });
+  if (diff < 172_800_000) return t("time.yesterday");
+  return new Date(iso).toLocaleDateString();
 }
 
 interface ConversationItemMenuProps {
@@ -60,6 +66,8 @@ function ConversationItemMenu({
 }: ConversationItemMenuProps) {
   const ref = useRef<HTMLDivElement>(null);
   useOutsideClickRefs([ref], onClose);
+  const t = useTranslations("chat.list");
+  const tc = useTranslations("common");
 
   const { isSelf, isGroup } = conversation;
 
@@ -74,9 +82,7 @@ function ConversationItemMenu({
           className="w-full flex items-center gap-2.5 px-3.5 py-2.5 text-xs text-text-primary hover:bg-surface-50 transition-colors"
         >
           <Mail size={13} className="text-text-muted shrink-0" />
-          {conversation.unreadCount > 0
-            ? "Đánh dấu đã đọc"
-            : "Đánh dấu chưa đọc"}
+          {conversation.unreadCount > 0 ? t("markRead") : t("markUnread")}
         </button>
       )}
       {!isSelf && !isGroup && conversation.otherUsername && (
@@ -86,7 +92,7 @@ function ConversationItemMenu({
           className="flex items-center gap-2.5 px-3.5 py-2.5 text-xs text-text-primary hover:bg-surface-50 transition-colors"
         >
           <User size={13} className="text-text-muted shrink-0" />
-          Trang cá nhân
+          {t("profile")}
         </Link>
       )}
       {!isSelf && !isGroup && (
@@ -95,7 +101,7 @@ function ConversationItemMenu({
           className="w-full flex items-center gap-2.5 px-3.5 py-2.5 text-xs text-text-primary hover:bg-surface-50 transition-colors"
         >
           <Ban size={13} className="text-text-muted shrink-0" />
-          Chặn
+          {tc("block")}
         </button>
       )}
       <button
@@ -103,14 +109,14 @@ function ConversationItemMenu({
         className="w-full flex items-center gap-2.5 px-3.5 py-2.5 text-xs text-text-primary hover:bg-surface-50 transition-colors"
       >
         <Archive size={13} className="text-text-muted shrink-0" />
-        Lưu trữ
+        {t("archive")}
       </button>
       <button
         onClick={onDelete}
         className="w-full flex items-center gap-2.5 px-3.5 py-2.5 text-xs text-text-primary hover:bg-surface-50 transition-colors"
       >
         <Trash2 size={13} className="text-text-muted shrink-0" />
-        Xóa
+        {tc("delete")}
       </button>
       {!isSelf && (
         <>
@@ -120,7 +126,7 @@ function ConversationItemMenu({
             className="w-full flex items-center gap-2.5 px-3.5 py-2.5 text-xs text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/20 transition-colors"
           >
             <Flag size={13} className="shrink-0" />
-            Báo cáo
+            {tc("report")}
           </button>
         </>
       )}
@@ -148,12 +154,6 @@ interface ConversationListProps {
   onSelectHidden?: (conv: Conversation) => void;
 }
 
-const FILTER_CHIPS: { key: FilterChip; label: string }[] = [
-  { key: "all", label: "Tất cả" },
-  { key: "unread", label: "Chưa đọc" },
-  { key: "group", label: "Nhóm" },
-];
-
 export function ConversationList({
   conversations,
   activeId,
@@ -174,6 +174,14 @@ export function ConversationList({
   onSelectHidden,
 }: ConversationListProps) {
   const [menuOpenId, setMenuOpenId] = useState<string | null>(null);
+  const t = useTranslations("chat.list");
+  const tTime = useTranslations("chat.time");
+
+  const FILTER_CHIPS: { key: FilterChip; label: string }[] = [
+    { key: "all", label: t("filterAll") },
+    { key: "unread", label: t("filterUnread") },
+    { key: "group", label: t("filterGroup") },
+  ];
 
   const handleDeleteClick = (conv: Conversation) => {
     onDelete(conv.id);
@@ -184,7 +192,9 @@ export function ConversationList({
   return (
     <div className="w-[268px] shrink-0 border-r border-surface-200 bg-surface flex flex-col">
       <div className="px-4 pt-4 pb-3 border-b border-surface-100">
-        <h2 className="text-base font-bold text-text-primary mb-3">Tin nhắn</h2>
+        <h2 className="text-base font-bold text-text-primary mb-3">
+          {t("title")}
+        </h2>
         <div className="relative">
           <Search
             size={13}
@@ -194,7 +204,7 @@ export function ConversationList({
             type="text"
             value={searchQuery}
             onChange={(e) => onSearchChange(e.target.value)}
-            placeholder="Tìm kiếm..."
+            placeholder={t("searchPlaceholder")}
             className="w-full pl-8 pr-3 py-2 bg-surface-100 rounded-lg text-xs placeholder:text-text-muted focus:outline-none border border-transparent focus:border-primary focus:bg-surface transition-colors"
           />
         </div>
@@ -246,17 +256,17 @@ export function ConversationList({
             <MessageSquare size={28} className="text-surface-300" />
             <p className="text-xs text-text-muted text-center">
               {activeFilter === "unread"
-                ? "Không có tin nhắn chưa đọc"
+                ? t("emptyUnread")
                 : activeFilter === "group"
-                  ? "Không có nhóm nào"
-                  : "Không tìm thấy cuộc trò chuyện"}
+                  ? t("emptyGroup")
+                  : t("emptyDefault")}
             </p>
             {activeFilter !== "all" && (
               <button
                 onClick={() => onFilterChange("all")}
                 className="text-[10px] text-primary font-semibold hover:underline"
               >
-                Xem tất cả
+                {t("viewAll")}
               </button>
             )}
           </div>
@@ -296,7 +306,7 @@ export function ConversationList({
                       </p>
                       {conv.isPending && (
                         <span className="shrink-0 text-[9px] font-semibold text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-500/15 px-1.5 py-0.5 rounded-full">
-                          Chờ
+                          {t("pendingBadge")}
                         </span>
                       )}
                     </div>
@@ -308,7 +318,7 @@ export function ConversationList({
                           : "text-text-muted",
                       )}
                     >
-                      {formatTime(conv.lastMessageAt)}
+                      {formatTime(conv.lastMessageAt, tTime)}
                     </span>
                   </div>
                   <div className="flex items-center justify-between">
@@ -388,7 +398,7 @@ export function ConversationList({
             <div className="flex items-center gap-1.5 px-4 py-2">
               <History size={11} className="text-text-muted" />
               <p className="text-[10px] font-bold text-text-muted uppercase tracking-wider">
-                Đoạn chat đã xóa
+                {t("deletedChatsHeader")}
               </p>
               {searchingHidden && (
                 <Loader2
@@ -399,7 +409,7 @@ export function ConversationList({
             </div>
             {!searchingHidden && hiddenResults.length === 0 ? (
               <p className="text-[11px] text-text-muted px-4 pb-3">
-                Không tìm thấy đoạn chat đã xóa nào khớp
+                {t("noDeletedChatsMatch")}
               </p>
             ) : (
               hiddenResults.map((conv) => (
@@ -419,7 +429,7 @@ export function ConversationList({
                       {conv.name}
                     </p>
                     <p className="text-[11px] text-text-muted truncate">
-                      {conv.lastMessage || "Đã xóa khỏi danh sách của bạn"}
+                      {conv.lastMessage || t("removedFromYourList")}
                     </p>
                   </div>
                 </button>

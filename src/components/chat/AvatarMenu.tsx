@@ -14,13 +14,15 @@ import {
 } from "lucide-react";
 import { clsx } from "clsx";
 import { useSession, signOut } from "next-auth/react";
+import { useTranslations } from "next-intl";
 import { useOutsideClick } from "@/lib/chat/hooks";
 import { ToggleSwitch } from "@/components/ui/ToggleSwitch";
 import Avatar from "@/components/ui/Avatar";
-import { PillBadge } from "./Badge";
 import { getColorForUser, getInitialsFromName } from "@/lib/chat/utils";
 import type { AvatarMenuPanel } from "@/lib/chat/types";
 import { useSyncedBoolean } from "@/lib/settings/hooks";
+import { useTheme } from "@/components/providers/ThemeProvider";
+import { useLanguage } from "@/components/providers/LanguageProvider";
 
 export function AvatarMenu() {
   const { data: session } = useSession();
@@ -38,6 +40,11 @@ export function AvatarMenu() {
     apiPath: "/api/settings/activity-status",
     field: "showActivityStatus",
   });
+  const { resolvedTheme } = useTheme();
+  const { locale } = useLanguage();
+  const t = useTranslations("chat.avatarMenu");
+  const tTheme = useTranslations("settings.theme");
+  const tLang = useTranslations("settings.language");
 
   const [open, setOpen] = useState(false);
   const [panel, setPanel] = useState<AvatarMenuPanel>("main");
@@ -51,6 +58,10 @@ export function AvatarMenu() {
     setOpen(false);
     setPanel("main");
   };
+
+  const currentThemeLabel =
+    resolvedTheme === "dark" ? tTheme("dark") : tTheme("light");
+  const currentLanguageLabel = locale === "en" ? tLang("en") : tLang("vi");
 
   return (
     <div ref={ref} className="relative w-full flex flex-col items-center">
@@ -92,7 +103,7 @@ export function AvatarMenu() {
                     {displayName}
                   </p>
                   <p className="text-xs text-green-500 dark:text-green-400 mt-0.5 font-medium">
-                    ● Đang hoạt động
+                    ● {t("online")}
                   </p>
                 </div>
               </div>
@@ -104,20 +115,20 @@ export function AvatarMenu() {
                   className="flex items-center gap-2.5 px-4 py-2.5 text-xs text-text-primary hover:bg-surface-50 transition-colors"
                 >
                   <User size={14} className="text-text-muted shrink-0" />
-                  Trang cá nhân
+                  {t("profile")}
                 </Link>
                 <button
                   onClick={() => setPanel("settings")}
                   className="w-full flex items-center gap-2.5 px-4 py-2.5 text-xs text-text-primary hover:bg-surface-50 transition-colors"
                 >
                   <Settings size={14} className="text-text-muted shrink-0" />
-                  Cài đặt
+                  {t("settings")}
                   <ChevronRight size={12} className="text-text-muted ml-auto" />
                 </button>
 
                 <button className="w-full flex items-center gap-2.5 px-4 py-2.5 text-xs text-text-primary hover:bg-surface-50 transition-colors">
                   <HelpCircle size={14} className="text-text-muted shrink-0" />
-                  Trợ giúp
+                  {t("help")}
                 </button>
               </div>
 
@@ -127,7 +138,7 @@ export function AvatarMenu() {
                   className="w-full flex items-center gap-2.5 px-4 py-2.5 text-xs text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/20 transition-colors"
                 >
                   <LogOut size={14} className="shrink-0" />
-                  Đăng xuất
+                  {t("logout")}
                 </button>
               </div>
             </>
@@ -141,7 +152,9 @@ export function AvatarMenu() {
                 >
                   <ArrowLeft size={14} />
                 </button>
-                <p className="text-sm font-bold text-text-primary">Cài đặt</p>
+                <p className="text-sm font-bold text-text-primary">
+                  {t("settings")}
+                </p>
               </div>
               <div className="py-2">
                 <div className="flex items-center gap-3 px-4 py-3 hover:bg-surface-50 transition-colors">
@@ -150,10 +163,10 @@ export function AvatarMenu() {
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-xs font-semibold text-text-primary">
-                      Trạng thái hoạt động
+                      {t("activityStatus")}
                     </p>
                     <p className="text-[10px] text-text-muted">
-                      Cho bạn bè thấy bạn đang online
+                      {t("activityStatusDesc")}
                     </p>
                   </div>
                   <ToggleSwitch
@@ -167,21 +180,31 @@ export function AvatarMenu() {
                 <div className="h-px bg-surface-100 my-1 mx-4" />
                 {[
                   {
-                    label: "Thông báo đẩy",
-                    desc: "Nhận thông báo tin nhắn mới",
+                    label: t("pushNotif"),
+                    desc: t("pushNotifDesc"),
                     icon: <Bell size={13} className="text-primary" />,
                     val: true,
                   },
                   {
-                    label: "Âm thanh",
-                    desc: "Phát âm khi có tin nhắn",
-                    icon: <Bell size={13} className="text-amber-500 dark:text-amber-400" />,
+                    label: t("sound"),
+                    desc: t("soundDesc"),
+                    icon: (
+                      <Bell
+                        size={13}
+                        className="text-amber-500 dark:text-amber-400"
+                      />
+                    ),
                     val: true,
                   },
                   {
-                    label: "Xem trước tin nhắn",
-                    desc: "Hiện nội dung ở thông báo",
-                    icon: <MessageSquare size={13} className="text-teal-500 dark:text-teal-400" />,
+                    label: t("messagePreview"),
+                    desc: t("messagePreviewDesc"),
+                    icon: (
+                      <MessageSquare
+                        size={13}
+                        className="text-teal-500 dark:text-teal-400"
+                      />
+                    ),
                     val: false,
                   },
                 ].map((item, i) => (
@@ -203,8 +226,8 @@ export function AvatarMenu() {
                 ))}
                 <div className="h-px bg-surface-100 my-1 mx-4" />
                 {[
-                  { label: "Ngôn ngữ", value: "Tiếng Việt" },
-                  { label: "Chủ đề", value: "Sáng" },
+                  { label: t("language"), value: currentLanguageLabel },
+                  { label: t("theme"), value: currentThemeLabel },
                 ].map((item, i) => (
                   <div
                     key={i}

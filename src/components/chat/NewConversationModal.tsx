@@ -4,6 +4,7 @@ import { useState, useEffect, useMemo } from "react";
 import { useSession } from "next-auth/react";
 import { X, Search, User, Hash, Check, Loader2 } from "lucide-react";
 import { clsx } from "clsx";
+import { useTranslations } from "next-intl";
 import Avatar from "@/components/ui/Avatar";
 import { getColorForUser, getInitialsFromName } from "@/lib/chat/utils";
 import type { NewConvTab, Conversation } from "@/lib/chat/types";
@@ -40,6 +41,8 @@ export function NewConversationModal({
   const [groupName, setGroupName] = useState("");
   const [creating, setCreating] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const t = useTranslations("chat.newConv");
+  const tc = useTranslations("common");
 
   useEffect(() => {
     const username = session?.user?.username;
@@ -65,11 +68,11 @@ export function NewConversationModal({
     return {
       id: currentUserId || "self",
       username: session.user.username ?? "",
-      displayName: session.user.name ?? "Bạn",
+      displayName: session.user.name ?? t("you"),
       avatarUrl: session.user.image ?? null,
       isSelf: true,
     };
-  }, [session, currentUserId]);
+  }, [session, currentUserId, t]);
 
   const recentContacts: FriendItem[] = useMemo(() => {
     return conversations
@@ -167,12 +170,12 @@ export function NewConversationModal({
       });
       const data = await res.json();
       if (!res.ok) {
-        setError(data.error ?? "Có lỗi xảy ra");
+        setError(data.error ?? t("genericError"));
         return;
       }
       onCreated(data.id);
     } catch {
-      setError("Không thể tạo cuộc trò chuyện");
+      setError(t("createFailed"));
     } finally {
       setCreating(false);
     }
@@ -181,7 +184,7 @@ export function NewConversationModal({
   const renderFriendRow = (f: FriendItem) => {
     const isSelected = selected.some((s) => s.id === f.id);
     const isDisabled = tab === "direct" && selected.length === 1 && !isSelected;
-    const label = f.isSelf ? "Bạn" : f.displayName;
+    const label = f.isSelf ? t("you") : f.displayName;
     return (
       <button
         key={f.id}
@@ -230,7 +233,7 @@ export function NewConversationModal({
       />
       <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[440px] bg-surface rounded-2xl shadow-2xl z-[80] flex flex-col overflow-hidden max-h-[80vh]">
         <div className="flex items-center justify-between px-5 py-4 border-b border-surface-100">
-          <p className="text-sm font-bold text-text-primary">Tạo trò chuyện</p>
+          <p className="text-sm font-bold text-text-primary">{t("title")}</p>
           <button
             onClick={onClose}
             className="p-1.5 hover:bg-surface-100 rounded-lg transition-colors text-text-muted"
@@ -242,26 +245,26 @@ export function NewConversationModal({
         <div className="flex border-b border-surface-100 px-5">
           {(
             [
-              { key: "direct", icon: <User size={12} />, label: "Trực tiếp" },
-              { key: "group", icon: <Hash size={12} />, label: "Nhóm" },
+              { key: "direct", icon: <User size={12} />, label: t("tabDirect") },
+              { key: "group", icon: <Hash size={12} />, label: t("tabGroup") },
             ] as { key: NewConvTab; icon: React.ReactNode; label: string }[]
-          ).map((t) => (
+          ).map((tItem) => (
             <button
-              key={t.key}
+              key={tItem.key}
               onClick={() => {
-                setTab(t.key);
+                setTab(tItem.key);
                 setSelected([]);
                 setError(null);
               }}
               className={clsx(
                 "flex items-center gap-1.5 py-3 mr-7 text-xs font-semibold border-b-2 transition-colors",
-                tab === t.key
+                tab === tItem.key
                   ? "border-primary text-primary"
                   : "border-transparent text-text-muted hover:text-text-secondary",
               )}
             >
-              {t.icon}
-              {t.label}
+              {tItem.icon}
+              {tItem.label}
             </button>
           ))}
         </div>
@@ -270,13 +273,13 @@ export function NewConversationModal({
           {tab === "group" && (
             <div className="px-5 pt-4 pb-2">
               <label className="text-[10px] font-bold text-text-muted uppercase tracking-wider block mb-1.5">
-                Tên nhóm
+                {t("groupNameLabel")}
               </label>
               <input
                 type="text"
                 value={groupName}
                 onChange={(e) => setGroupName(e.target.value)}
-                placeholder="Nhập tên nhóm..."
+                placeholder={t("groupNamePlaceholder")}
                 className="w-full px-3 py-2.5 bg-surface-100 rounded-xl text-sm placeholder:text-text-muted focus:outline-none border border-transparent focus:border-primary focus:bg-surface transition-colors"
               />
             </div>
@@ -296,9 +299,9 @@ export function NewConversationModal({
                       getColorForUser(f.id),
                     )}
                   >
-                    {getInitialsFromName(f.isSelf ? "Bạn" : f.displayName)[0]}
+                    {getInitialsFromName(f.isSelf ? t("you") : f.displayName)[0]}
                   </span>
-                  {f.isSelf ? "Bạn" : f.displayName.split(" ").slice(-1)[0]}
+                  {f.isSelf ? t("you") : f.displayName.split(" ").slice(-1)[0]}
                   <X size={10} className="text-text-muted" />
                 </button>
               ))}
@@ -307,7 +310,7 @@ export function NewConversationModal({
 
           <div className="px-5 pt-3 pb-2">
             <label className="text-[10px] font-bold text-text-muted uppercase tracking-wider block mb-1.5">
-              {tab === "direct" ? "Chọn người dùng" : "Thêm thành viên"}
+              {tab === "direct" ? t("chooseUserLabel") : t("addMembersLabel")}
             </label>
             <div className="relative">
               <Search
@@ -318,7 +321,7 @@ export function NewConversationModal({
                 type="text"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                placeholder="Tìm kiếm bạn bè..."
+                placeholder={t("searchFriendsPlaceholder")}
                 className="w-full pl-8 pr-3 py-2 bg-surface-100 rounded-xl text-xs placeholder:text-text-muted focus:outline-none border border-transparent focus:border-primary focus:bg-surface transition-colors"
               />
             </div>
@@ -328,7 +331,7 @@ export function NewConversationModal({
             {loadingFriends ? (
               <div className="flex items-center justify-center py-8 gap-2 text-text-muted">
                 <Loader2 size={16} className="animate-spin" />
-                <span className="text-xs">Đang tải...</span>
+                <span className="text-xs">{tc("loading")}</span>
               </div>
             ) : (
               <>
@@ -336,8 +339,8 @@ export function NewConversationModal({
                 {filteredOthers.length === 0 ? (
                   <p className="text-xs text-text-muted text-center py-6">
                     {friends.length === 0 && recentContacts.length === 0
-                      ? "Bạn chưa có bạn bè nào"
-                      : "Không tìm thấy kết quả"}
+                      ? t("noFriends")
+                      : t("noResults")}
                   </p>
                 ) : (
                   filteredOthers.map((f) => renderFriendRow(f))
@@ -357,16 +360,16 @@ export function NewConversationModal({
           <p className="text-xs text-text-muted">
             {selected.length === 0
               ? tab === "direct"
-                ? "Chọn 1 người để nhắn tin"
-                : "Chọn ít nhất 2 người"
-              : `Đã chọn ${selected.length} người`}
+                ? t("selectOneToChat")
+                : t("selectAtLeastTwo")
+              : t("selectedCount", { count: selected.length })}
           </p>
           <div className="flex gap-2">
             <button
               onClick={onClose}
               className="px-4 py-2 rounded-xl border border-surface-200 text-xs font-semibold text-text-secondary hover:bg-surface-50 transition-colors"
             >
-              Huỷ
+              {tc("cancel")}
             </button>
             <button
               disabled={!canCreate || creating}
@@ -379,7 +382,7 @@ export function NewConversationModal({
               )}
             >
               {creating && <Loader2 size={12} className="animate-spin" />}
-              {tab === "direct" ? "Nhắn tin" : "Tạo nhóm"}
+              {tab === "direct" ? t("directBtn") : t("groupBtn")}
             </button>
           </div>
         </div>

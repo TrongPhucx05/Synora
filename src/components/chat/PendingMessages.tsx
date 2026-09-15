@@ -13,6 +13,7 @@ import {
   Flag,
   Mail,
 } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { PillBadge, Badge } from "@/components/chat/Badge";
 import Avatar from "@/components/ui/Avatar";
 import { useToast } from "@/components/ui/Toast";
@@ -29,13 +30,18 @@ import {
 
 type Tab = "pending" | "archived";
 
-function formatTime(iso: string | null): string {
+function formatTime(
+  iso: string | null,
+  t: ReturnType<typeof useTranslations>,
+): string {
   if (!iso) return "";
   const diff = Date.now() - new Date(iso).getTime();
-  if (diff < 3_600_000) return `${Math.floor(diff / 60_000)} phút`;
-  if (diff < 86_400_000) return `${Math.floor(diff / 3_600_000)} giờ`;
-  if (diff < 172_800_000) return "Hôm qua";
-  return new Date(iso).toLocaleDateString("vi-VN");
+  if (diff < 3_600_000)
+    return t("time.minutes", { count: Math.floor(diff / 60_000) });
+  if (diff < 86_400_000)
+    return t("time.hours", { count: Math.floor(diff / 3_600_000) });
+  if (diff < 172_800_000) return t("time.yesterday");
+  return new Date(iso).toLocaleDateString();
 }
 
 export type OpenPendingPayload = {
@@ -67,6 +73,10 @@ function PendingItemMenu({
 }) {
   const ref = useRef<HTMLDivElement>(null);
   useOutsideClickRefs([ref], onClose);
+  const t = useTranslations("chat.pending");
+  const tc = useTranslations("common");
+  const tl = useTranslations("chat.list");
+  const tu = useTranslations("chat.utils");
 
   return (
     <div
@@ -80,7 +90,7 @@ function PendingItemMenu({
           className="flex items-center gap-2.5 px-3.5 py-2.5 text-xs text-text-primary hover:bg-surface-50 transition-colors"
         >
           <User size={13} className="text-text-muted shrink-0" />
-          Trang cá nhân
+          {tl("profile")}
         </Link>
       )}
       {!isGroup && (
@@ -89,7 +99,7 @@ function PendingItemMenu({
           className="w-full flex items-center gap-2.5 px-3.5 py-2.5 text-xs text-text-primary hover:bg-surface-50 transition-colors"
         >
           <Ban size={13} className="text-text-muted shrink-0" />
-          Chặn
+          {tc("block")}
         </button>
       )}
       <button
@@ -97,7 +107,7 @@ function PendingItemMenu({
         className="w-full flex items-center gap-2.5 px-3.5 py-2.5 text-xs text-text-primary hover:bg-surface-50 transition-colors"
       >
         <Trash2 size={13} className="text-text-muted shrink-0" />
-        {isGroup ? "Từ chối lời mời" : "Xóa"}
+        {isGroup ? t("rejectInvite") : tc("delete")}
       </button>
       <div className="h-px bg-surface-100 my-0.5" />
       <button
@@ -105,7 +115,7 @@ function PendingItemMenu({
         className="w-full flex items-center gap-2.5 px-3.5 py-2.5 text-xs text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/20 transition-colors"
       >
         <Flag size={13} className="shrink-0" />
-        Báo cáo
+        {tc("report")}
       </button>
     </div>
   );
@@ -128,6 +138,9 @@ function ArchivedItemMenu({
 }) {
   const ref = useRef<HTMLDivElement>(null);
   useOutsideClickRefs([ref], onClose);
+  const t = useTranslations("chat.pending");
+  const tc = useTranslations("common");
+  const tl = useTranslations("chat.list");
 
   return (
     <div
@@ -140,7 +153,7 @@ function ArchivedItemMenu({
           className="w-full flex items-center gap-2.5 px-3.5 py-2.5 text-xs text-text-primary hover:bg-surface-50 transition-colors"
         >
           <Mail size={13} className="text-text-muted shrink-0" />
-          {conv.unreadCount > 0 ? "Đánh dấu đã đọc" : "Đánh dấu chưa đọc"}
+          {conv.unreadCount > 0 ? tl("markRead") : tl("markUnread")}
         </button>
       )}
       {!conv.isSelf && !conv.isGroup && conv.otherUsername && (
@@ -150,7 +163,7 @@ function ArchivedItemMenu({
           className="flex items-center gap-2.5 px-3.5 py-2.5 text-xs text-text-primary hover:bg-surface-50 transition-colors"
         >
           <User size={13} className="text-text-muted shrink-0" />
-          Trang cá nhân
+          {tl("profile")}
         </Link>
       )}
       <button
@@ -158,14 +171,14 @@ function ArchivedItemMenu({
         className="w-full flex items-center gap-2.5 px-3.5 py-2.5 text-xs text-text-primary hover:bg-surface-50 transition-colors"
       >
         <Archive size={13} className="text-text-muted shrink-0" />
-        Bỏ lưu trữ
+        {t("unarchive")}
       </button>
       <button
         onClick={onDelete}
         className="w-full flex items-center gap-2.5 px-3.5 py-2.5 text-xs text-text-primary hover:bg-surface-50 transition-colors"
       >
         <Trash2 size={13} className="text-text-muted shrink-0" />
-        Xóa
+        {tc("delete")}
       </button>
       {!conv.isSelf && (
         <>
@@ -175,7 +188,7 @@ function ArchivedItemMenu({
             className="w-full flex items-center gap-2.5 px-3.5 py-2.5 text-xs text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/20 transition-colors"
           >
             <Flag size={13} className="shrink-0" />
-            Báo cáo
+            {tc("report")}
           </button>
         </>
       )}
@@ -224,10 +237,14 @@ export function PendingMessages({
     id: string;
     username: string;
   } | null>(null);
+  const t = useTranslations("chat.pending");
+  const tc = useTranslations("common");
+  const tu = useTranslations("chat.utils");
+  const tTime = useTranslations("chat.time");
 
   const load = () => {
     setLoading(true);
-    fetchPendingConversations()
+    fetchPendingConversations(tu)
       .then(setItems)
       .catch(() => setItems([]))
       .finally(() => setLoading(false));
@@ -270,12 +287,12 @@ export function PendingMessages({
   const handleDelete = async (id: string) => {
     setActionLoadingId(id);
     try {
-      await respondPendingConversation(id, "reject");
+      await respondPendingConversation(id, "reject", tu);
       setItems((prev) => prev.filter((i) => i.id !== id));
       setMenuOpenId(null);
       onDeleted?.(id);
     } catch {
-      showToast("Không thể xóa tin nhắn chờ", "error");
+      showToast(t("toast.cannotDeletePending"), "error");
     } finally {
       setActionLoadingId(null);
     }
@@ -300,7 +317,7 @@ export function PendingMessages({
       setArchivedItems((prev) => prev.filter((c) => c.id !== conv.id));
       onUnarchived?.(conv.id);
     } catch {
-      showToast("Không thể bỏ lưu trữ", "error");
+      showToast(t("toast.cannotUnarchive"), "error");
     }
   };
 
@@ -310,11 +327,14 @@ export function PendingMessages({
         method: "DELETE",
       });
       const data = await res.json().catch(() => ({}));
-      if (!res.ok) throw new Error(data?.error ?? "Có lỗi xảy ra");
+      if (!res.ok) throw new Error(data?.error ?? t("toast.cannotDelete"));
       setArchivedItems((prev) => prev.filter((c) => c.id !== conv.id));
       onDeleted?.(conv.id);
     } catch (e) {
-      showToast(e instanceof Error ? e.message : "Không thể xóa", "error");
+      showToast(
+        e instanceof Error ? e.message : t("toast.cannotDelete"),
+        "error",
+      );
     }
   };
 
@@ -357,10 +377,10 @@ export function PendingMessages({
       await blockUser(senderId);
       setItems((prev) => prev.filter((i) => i.id !== pendingId));
       onDeleted?.(pendingId);
-      showToast("Đã chặn người dùng", "success");
+      showToast(t("toast.blockedUser"), "success");
     } catch (e) {
       showToast(
-        e instanceof Error ? e.message : "Không thể chặn người dùng",
+        e instanceof Error ? e.message : t("toast.cannotBlockUser"),
         "error",
       );
     }
@@ -393,7 +413,7 @@ export function PendingMessages({
           load();
         }}
         className="w-9 h-9 rounded-xl bg-surface-100 hover:bg-primary/10 flex items-center justify-center text-text-muted hover:text-primary transition-colors relative"
-        title="Tin nhắn chờ"
+        title={t("title")}
       >
         <Clock size={16} />
         {items.length > 0 && (
@@ -411,16 +431,16 @@ export function PendingMessages({
           style={{ width: "320px" }}
           role="dialog"
           aria-modal="true"
-          aria-label="Tin nhắn chờ"
+          aria-label={t("title")}
         >
           <div className="flex items-center justify-between px-4 py-4 border-b border-surface-100 shrink-0">
             <div>
               <p className="text-sm font-bold text-text-primary">
-                Tin nhắn chờ
+                {t("title")}
               </p>
               {items.length > 0 && (
                 <p className="text-[11px] text-text-muted mt-0.5">
-                  {items.length} yêu cầu đang chờ
+                  {t("pendingRequestsCount", { count: items.length })}
                 </p>
               )}
             </div>
@@ -430,7 +450,7 @@ export function PendingMessages({
                 onClose?.();
               }}
               className="p-1.5 hover:bg-surface-100 rounded-lg transition-colors text-text-muted hover:text-text-primary"
-              aria-label="Đóng"
+              aria-label={tc("close")}
             >
               <X size={16} />
             </button>
@@ -447,7 +467,7 @@ export function PendingMessages({
               )}
             >
               <Clock size={11} />
-              Chờ
+              {t("tabPending")}
               {items.length > 0 && (
                 <span
                   className={clsx(
@@ -474,7 +494,7 @@ export function PendingMessages({
               )}
             >
               <Archive size={11} />
-              Lưu trữ
+              {t("tabArchived")}
             </button>
           </div>
 
@@ -503,10 +523,10 @@ export function PendingMessages({
                     </div>
                     <div className="text-center">
                       <p className="text-sm font-medium text-text-secondary">
-                        Không có tin nhắn chờ
+                        {t("emptyTitle")}
                       </p>
                       <p className="text-xs text-text-muted mt-1">
-                        Các yêu cầu trò chuyện mới sẽ hiển thị ở đây
+                        {t("emptyDesc")}
                       </p>
                     </div>
                   </div>
@@ -536,15 +556,19 @@ export function PendingMessages({
                                 {msg.sender}
                               </p>
                               <span className="text-[10px] text-text-muted shrink-0 ml-2">
-                                {formatTime(msg.createdAt)}
+                                {formatTime(msg.createdAt, tTime)}
                               </span>
                             </div>
                             <div className="flex items-center justify-between gap-2">
                               <p className="text-[11px] text-text-muted truncate flex-1">
                                 {msg.content ??
                                   (msg.isGroup
-                                    ? `Bạn được mời tham gia "${msg.sender}"`
-                                    : `${msg.sender} muốn trò chuyện với bạn`)}
+                                    ? t("groupInviteFallback", {
+                                        name: msg.sender,
+                                      })
+                                    : t("dmRequestFallback", {
+                                        name: msg.sender,
+                                      }))}
                               </p>
                               {msg.messageCount > 1 && (
                                 <Badge
@@ -629,10 +653,10 @@ export function PendingMessages({
                     </div>
                     <div className="text-center">
                       <p className="text-sm font-medium text-text-secondary">
-                        Chưa có tin nhắn lưu trữ
+                        {t("archivedEmptyTitle")}
                       </p>
                       <p className="text-xs text-text-muted mt-1">
-                        Các cuộc trò chuyện đã lưu trữ sẽ hiển thị ở đây
+                        {t("archivedEmptyDesc")}
                       </p>
                     </div>
                   </div>
@@ -670,7 +694,7 @@ export function PendingMessages({
                                 {conv.name}
                               </p>
                               <span className="text-[10px] text-text-muted shrink-0 ml-1">
-                                {formatTime(conv.lastMessageAt)}
+                                {formatTime(conv.lastMessageAt, tTime)}
                               </span>
                             </div>
                             <div className="flex items-center justify-between">
@@ -755,52 +779,52 @@ export function PendingMessages({
             )
           }
           iconBgClass={
-            confirmAction.type === "unarchive" ? "bg-primary/10" : "bg-red-100 dark:bg-red-500/20"
+            confirmAction.type === "unarchive"
+              ? "bg-primary/10"
+              : "bg-red-100 dark:bg-red-500/20"
           }
           title={
             confirmAction.type === "unarchive"
-              ? "Bỏ lưu trữ cuộc trò chuyện?"
+              ? t("confirm.unarchiveTitle")
               : confirmAction.type === "deletePending"
-                ? "Xóa tin nhắn chờ?"
+                ? t("confirm.deletePendingTitle")
                 : confirmAction.type === "block"
-                  ? `Chặn ${confirmAction.name}?`
-                  : "Xóa cuộc trò chuyện?"
+                  ? t("confirm.blockTitle", { name: confirmAction.name })
+                  : t("confirm.deleteConvTitle")
           }
           description={
             confirmAction.type === "unarchive" ? (
-              <>
-                Cuộc trò chuyện với{" "}
-                <span className="font-medium text-text-secondary">
-                  {confirmAction.conv.name}
-                </span>{" "}
-                sẽ được chuyển về danh sách tin nhắn chính.
-              </>
+              t.rich("confirm.unarchiveDesc", {
+                name: confirmAction.conv.name,
+                b: (chunks) => (
+                  <span className="font-medium text-text-secondary">{chunks}</span>
+                ),
+              })
             ) : confirmAction.type === "block" ? (
-              <>
-                <span className="font-medium text-text-secondary">
-                  {confirmAction.name}
-                </span>{" "}
-                sẽ không thể nhắn tin, xem trang cá nhân hoặc kết bạn với bạn
-                nữa.
-              </>
+              t.rich("confirm.blockDesc", {
+                name: confirmAction.name,
+                b: (chunks) => (
+                  <span className="font-medium text-text-secondary">{chunks}</span>
+                ),
+              })
             ) : (
-              <>
-                Toàn bộ tin nhắn với{" "}
-                <span className="font-medium text-text-secondary">
-                  {confirmAction.type === "deletePending"
+              t.rich("confirm.deleteConvDesc", {
+                name:
+                  confirmAction.type === "deletePending"
                     ? confirmAction.name
-                    : confirmAction.conv.name}
-                </span>{" "}
-                sẽ bị xóa. Không thể hoàn tác.
-              </>
+                    : confirmAction.conv.name,
+                b: (chunks) => (
+                  <span className="font-medium text-text-secondary">{chunks}</span>
+                ),
+              })
             )
           }
           confirmLabel={
             confirmAction.type === "unarchive"
-              ? "Bỏ lưu trữ"
+              ? t("unarchive")
               : confirmAction.type === "block"
-                ? "Chặn"
-                : "Xóa"
+                ? tc("block")
+                : tc("delete")
           }
           confirmVariant={
             confirmAction.type === "unarchive" ? "primary" : "danger"
@@ -814,7 +838,7 @@ export function PendingMessages({
         <ReportModal
           targetType="USER"
           targetId={reportingUser.id}
-          title={`Báo cáo ${reportingUser.username}`}
+          title={t("reportTitle", { name: reportingUser.username })}
           onClose={() => setReportingUser(null)}
         />
       )}

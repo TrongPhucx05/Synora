@@ -27,6 +27,7 @@ import {
   Ban,
 } from "lucide-react";
 import { clsx } from "clsx";
+import { useTranslations } from "next-intl";
 import type {
   Conversation,
   Message,
@@ -66,6 +67,7 @@ import Avatar from "@/components/ui/Avatar";
 import { useToast } from "@/components/ui/Toast";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 import { ReportModal } from "@/components/ui/ReportModal";
+import { useLanguage } from "@/components/providers/LanguageProvider";
 
 function getInitials(name: string) {
   return name
@@ -94,6 +96,11 @@ export default function ChatPage() {
   const { data: session } = useSession();
   const currentUserId = session?.user?.id ?? "";
   const isAdmin = session?.user?.role === "ADMIN";
+  const t = useTranslations("chat.page");
+  const tc = useTranslations("common");
+  const tu = useTranslations("chat.utils");
+  const { locale } = useLanguage();
+  const tPending = useTranslations("chat.pending");
 
   const [convList, setConvList] = useState<Conversation[]>([]);
   const [convLoading, setConvLoading] = useState(true);
@@ -180,7 +187,7 @@ export default function ChatPage() {
   } | null>(null);
   const loadPinned = useCallback(async (convId: string) => {
     try {
-      const data = await fetchPinnedMessages(convId);
+      const data = await fetchPinnedMessages(convId, tu);
       pinnedRef.current = data;
       setPinnedMessages(data);
     } catch {
@@ -198,7 +205,7 @@ export default function ChatPage() {
     if (!activeId) return;
     try {
       if (m.pinnedAt) {
-        await unpinMessage(activeId, m.id);
+        await unpinMessage(activeId, m.id, tu);
         setMessages((prev) =>
           prev.map((msg) =>
             msg.id === m.id
@@ -206,12 +213,12 @@ export default function ChatPage() {
               : msg,
           ),
         );
-        const actorName = "Bạn";
+        const actorName = t("you");
         const preview = m.content
           ? m.content.length > 30
             ? m.content.slice(0, 30) + "..."
             : m.content
-          : buildAttachmentLabel(m.attachments);
+          : buildAttachmentLabel(m.attachments, tu)
         setPinNotices((prev) => [
           ...prev,
           {
@@ -228,14 +235,14 @@ export default function ChatPage() {
             c.id === activeId
               ? {
                   ...c,
-                  lastMessage: "Bạn đã bỏ ghim tin nhắn",
+                  lastMessage: t("youUnpinnedMessage"),
                   lastMessageAt: new Date().toISOString(),
                 }
               : c,
           ),
         );
       } else {
-        const result = await pinMessage(activeId, m.id);
+        const result = await pinMessage(activeId, m.id, tu);
         setMessages((prev) =>
           prev.map((msg) =>
             msg.id === m.id
@@ -249,12 +256,12 @@ export default function ChatPage() {
               : msg,
           ),
         );
-        const actorNamePin = "Bạn";
+        const actorNamePin = t("you");
         const previewPin = m.content
           ? m.content.length > 30
             ? m.content.slice(0, 30) + "..."
             : m.content
-          : (m.attachments[0]?.name ?? "Đã gửi một tệp");
+          : (m.attachments[0]?.name ?? t("sentAttachment"));
         setPinNotices((prev) => [
           ...prev,
           {
@@ -268,14 +275,14 @@ export default function ChatPage() {
         setConvList((prev) =>
           prev.map((c) =>
             c.id === activeId
-              ? { ...c, lastMessage: "Bạn đã ghim tin nhắn" }
+              ? { ...c, lastMessage: t("youPinnedMessage") }
               : c,
           ),
         );
       }
       loadPinned(activeId);
     } catch (e) {
-      showToast(e instanceof Error ? e.message : "Có lỗi xảy ra", "error");
+      showToast(e instanceof Error ? e.message : t("genericError"), "error");
     }
   };
 
@@ -283,7 +290,7 @@ export default function ChatPage() {
     if (!activeId) return;
     try {
       const msg = messages.find((m) => m.id === messageId);
-      await unpinMessage(activeId, messageId);
+      await unpinMessage(activeId, messageId, tu);
       setMessages((prev) =>
         prev.map((m) =>
           m.id === messageId
@@ -300,7 +307,7 @@ export default function ChatPage() {
         ...prev,
         {
           messageId,
-          actorName: "Bạn",
+          actorName: t("you"),
           preview,
           action: "unpin",
           createdAt: new Date().toISOString(),
@@ -311,7 +318,7 @@ export default function ChatPage() {
           c.id === activeId
             ? {
                 ...c,
-                lastMessage: "Bạn đã bỏ ghim tin nhắn",
+                lastMessage: t("youUnpinnedMessage"),
                 lastMessageAt: new Date().toISOString(),
               }
             : c,
@@ -319,7 +326,7 @@ export default function ChatPage() {
       );
       loadPinned(activeId);
     } catch (e) {
-      showToast(e instanceof Error ? e.message : "Có lỗi xảy ra", "error");
+      showToast(e instanceof Error ? e.message : t("genericError"), "error");
     }
   };
 
@@ -350,7 +357,7 @@ export default function ChatPage() {
     }
     let cancelled = false;
     setSearchingHidden(true);
-    const t = setTimeout(async () => {
+    const tId = setTimeout(async () => {
       try {
         const all = await searchConversations(q);
         if (cancelled) return;
@@ -369,13 +376,13 @@ export default function ChatPage() {
 
     return () => {
       cancelled = true;
-      clearTimeout(t);
+      clearTimeout(tId);
     };
   }, [searchQuery]);
 
   const handleForwardConfirm = async (targetConversationId: string) => {
     if (!forwardingMsg || !activeId) return;
-    await forwardMessage(activeId, forwardingMsg.id, targetConversationId);
+    await forwardMessage(activeId, forwardingMsg.id, targetConversationId, tu);
     setForwardingMsg(null);
     fetchConversations();
   };
@@ -418,7 +425,7 @@ export default function ChatPage() {
         if (!res.ok) return;
         const data = await res.json();
         const adapted = (data.messages as ApiMessage[]).map((m) =>
-          adaptApiMessage(m, currentUserId),
+          adaptApiMessage(m, currentUserId, tu, locale)
         );
         scrollModeRef.current = "instant";
         setMessages(adapted);
@@ -507,7 +514,7 @@ export default function ChatPage() {
         });
 
         if (activeId && !activeStillExists) {
-          showToast("Nhóm đã bị giải tán", "error");
+          showToast(t("groupDisbanded"), "error");
           setActiveId(null);
           setMessages([]);
           setInfoOpen(false);
@@ -526,7 +533,7 @@ export default function ChatPage() {
       if (msgRes.ok) {
         const data = await msgRes.json();
         const adapted = (data.messages as ApiMessage[]).map((m) =>
-          adaptApiMessage(m, currentUserId),
+          adaptApiMessage(m, currentUserId, tu, locale)
         );
         setMessages((prev) => {
           const lastPrev = prev[prev.length - 1];
@@ -563,12 +570,12 @@ export default function ChatPage() {
       }
 
       try {
-        const pinnedData = await fetchPinnedMessages(convId);
+        const pinnedData = await fetchPinnedMessages(convId, tu);
         pinnedRef.current = pinnedData;
         setPinnedMessages(pinnedData);
       } catch {}
     } catch {}
-  }, [currentUserId]);
+  }, [currentUserId, t, showToast]);
 
   useEffect(() => {
     pollingRef.current = setInterval(pollMessages, 3000);
@@ -604,7 +611,7 @@ export default function ChatPage() {
       if (!res.ok) return;
       const data = await res.json();
       const adapted = (data.messages as ApiMessage[]).map((m) =>
-        adaptApiMessage(m, currentUserId),
+        adaptApiMessage(m, currentUserId, tu, locale)
       );
       setMessages((prev) => [...adapted, ...prev]);
       setNextCursor(data.nextCursor);
@@ -629,12 +636,18 @@ export default function ChatPage() {
 
         if (isCrossParty) {
           const reactorName = latest.reactedByMe
-            ? "Bạn"
+            ? t("you")
             : (latest.users[latest.users.length - 1] ?? "");
           setConvList((convs) =>
             convs.map((c) =>
               c.id === activeIdRef.current
-                ? { ...c, lastMessage: `${reactorName} đã thả ${latest.emoji}` }
+                ? {
+                    ...c,
+                    lastMessage: t("reactedWith", {
+                      name: reactorName,
+                      emoji: latest.emoji,
+                    }),
+                  }
                 : c,
             ),
           );
@@ -651,7 +664,7 @@ export default function ChatPage() {
         setConvList((convs) =>
           convs.map((c) =>
             c.id === activeIdRef.current
-              ? { ...c, lastMessage: "Tin nhắn đã bị thu hồi" }
+              ? { ...c, lastMessage: t("messageRecalled") }
               : c,
           ),
         );
@@ -730,7 +743,7 @@ export default function ChatPage() {
     setPendingFiles([]);
     setSending(true);
     setUploadingFiles(filesToUpload.length > 0);
-    const attachmentLabel = buildAttachmentLabel(uploadedAttachments);
+    const attachmentLabel = buildAttachmentLabel(uploadedAttachments, tu);
 
     try {
       const mediaToUpload = filesToUpload.filter((f) => f.kind !== "DOCUMENT");
@@ -767,7 +780,7 @@ export default function ChatPage() {
         );
       }
     } catch {
-      showToast("Tải file lên thất bại", "error");
+      showToast(t("uploadFailed"), "error");
       setSending(false);
       setUploadingFiles(false);
       setInput(text);
@@ -781,11 +794,11 @@ export default function ChatPage() {
     const optimistic: Message = {
       id: tempId,
       senderId: currentUserId,
-      sender: session?.user?.name ?? "Bạn",
+      sender: session?.user?.name ?? t("you"),
       initials: getInitials(session?.user?.name ?? "B"),
       color: "bg-primary",
       avatarUrl: session?.user?.image ?? null,
-      time: new Date().toLocaleTimeString("vi-VN", {
+      time: new Date().toLocaleTimeString([], {
         hour: "2-digit",
         minute: "2-digit",
       }),
@@ -862,7 +875,7 @@ export default function ChatPage() {
         const real: ApiMessage = await res.json();
         setMessages((prev) =>
           prev.map((m) =>
-            m.id === tempId ? adaptApiMessage(real, currentUserId) : m,
+            m.id === tempId ? adaptApiMessage(real, currentUserId, tu, locale) : m,
           ),
         );
         setConvList((prev) =>
@@ -953,7 +966,7 @@ export default function ChatPage() {
         });
         if (!res.ok) throw new Error();
       } catch {
-        showToast("Không thể đánh dấu chưa đọc", "error");
+        showToast(t("cannotMarkUnread"), "error");
         setConvList((prev) =>
           prev.map((c) => (c.id === id ? { ...c, unreadCount: 0 } : c)),
         );
@@ -961,7 +974,7 @@ export default function ChatPage() {
         fetchConversations();
       }
     },
-    [fetchConversations, showToast],
+    [fetchConversations, showToast, t],
   );
 
   const handleMarkRead = useCallback(
@@ -977,11 +990,11 @@ export default function ChatPage() {
         });
         if (!res.ok) throw new Error();
       } catch {
-        showToast("Không thể đánh dấu đã đọc", "error");
+        showToast(t("cannotMarkRead"), "error");
         fetchConversations();
       }
     },
-    [fetchConversations, showToast],
+    [fetchConversations, showToast, t],
   );
 
   const handleToggleReadStatus = useCallback(
@@ -1007,11 +1020,11 @@ export default function ChatPage() {
         });
         if (!res.ok) throw new Error();
       } catch {
-        showToast("Không thể lưu trữ cuộc trò chuyện", "error");
+        showToast(t("cannotArchive"), "error");
         fetchConversations();
       }
     },
-    [fetchConversations, showToast],
+    [fetchConversations, showToast, t],
   );
 
   const handleDeleteConv = useCallback(
@@ -1026,16 +1039,16 @@ export default function ChatPage() {
           method: "DELETE",
         });
         const data = await res.json().catch(() => ({}));
-        if (!res.ok) throw new Error(data?.error ?? "Có lỗi xảy ra");
+        if (!res.ok) throw new Error(data?.error ?? t("genericError"));
       } catch (e) {
         showToast(
-          e instanceof Error ? e.message : "Không thể xóa cuộc trò chuyện",
+          e instanceof Error ? e.message : t("cannotDeleteConv"),
           "error",
         );
         fetchConversations();
       }
     },
-    [fetchConversations, showToast],
+    [fetchConversations, showToast, t],
   );
 
   const handleBlockConv = useCallback((id: string) => {
@@ -1066,12 +1079,9 @@ export default function ChatPage() {
             : c,
         ),
       );
-      showToast("Đã chặn người dùng", "success");
+      showToast(t("blockedUser"), "success");
     } catch (e) {
-      showToast(
-        e instanceof Error ? e.message : "Không thể chặn người dùng",
-        "error",
-      );
+      showToast(e instanceof Error ? e.message : t("cannotBlockUser"), "error");
     } finally {
       setBlockLoading(false);
       setBlockTarget(null);
@@ -1087,15 +1097,15 @@ export default function ChatPage() {
         setConvList((prev) =>
           prev.map((c) => (c.id === id ? { ...c, isBlockedByMe: false } : c)),
         );
-        showToast("Đã bỏ chặn người dùng", "success");
+        showToast(t("unblockedUser"), "success");
       } catch (e) {
         showToast(
-          e instanceof Error ? e.message : "Không thể bỏ chặn người dùng",
+          e instanceof Error ? e.message : t("cannotUnblockUser"),
           "error",
         );
       }
     },
-    [showToast],
+    [showToast, t],
   );
 
   const handleReportConv = useCallback((id: string) => {
@@ -1111,16 +1121,13 @@ export default function ChatPage() {
     if (!activeId || pendingActionLoading) return;
     setPendingActionLoading(true);
     try {
-      await respondPendingConversation(activeId, "accept");
+      await respondPendingConversation(activeId, "accept", tu);
       isPreviewingPendingRef.current = false;
       await fetchConversations();
       setPendingRefreshKey((k) => k + 1);
       setCloseDrawerSignal((k) => k + 1);
     } catch (e) {
-      showToast(
-        e instanceof Error ? e.message : "Không thể mở nhắn tin",
-        "error",
-      );
+      showToast(e instanceof Error ? e.message : t("cannotOpenChat"), "error");
     } finally {
       setPendingActionLoading(false);
     }
@@ -1130,14 +1137,14 @@ export default function ChatPage() {
     if (!activeId || pendingActionLoading) return;
     setPendingActionLoading(true);
     try {
-      await respondPendingConversation(activeId, "reject");
+      await respondPendingConversation(activeId, "reject", tu);
       setConvList((prev) => prev.filter((c) => c.id !== activeId));
       setActiveId(null);
       setMessages([]);
       setPendingRefreshKey((k) => k + 1);
     } catch (e) {
       showToast(
-        e instanceof Error ? e.message : "Không thể xóa cuộc trò chuyện",
+        e instanceof Error ? e.message : t("cannotDeleteConv"),
         "error",
       );
     } finally {
@@ -1146,7 +1153,7 @@ export default function ChatPage() {
   };
 
   const handlePendingBlock = () => {
-    showToast("Chức năng chặn đang được phát triển", "error");
+    showToast(t("blockFeatureInDev"), "error");
   };
 
   const requestDeleteConv = (id: string) => {
@@ -1186,7 +1193,9 @@ export default function ChatPage() {
         const data = await res.json().catch(() => ({}));
         if (!res.ok) {
           throw new Error(
-            data?.detail || data?.error || `Lỗi không xác định (${res.status})`,
+            data?.detail ||
+              data?.error ||
+              t("unknownError", { status: res.status }),
           );
         }
 
@@ -1229,11 +1238,11 @@ export default function ChatPage() {
         setHasNewMessage(false);
       } catch (e) {
         const msg =
-          e instanceof Error ? e.message : "Không thể mở cuộc trò chuyện";
+          e instanceof Error ? e.message : t("cannotOpenConversation");
         showToast(msg, "error");
       }
     },
-    [fetchConversations, showToast],
+    [fetchConversations, showToast, t, isAdmin],
   );
 
   useEffect(() => {
@@ -1291,7 +1300,7 @@ export default function ChatPage() {
         <Link
           href="/feed"
           className="w-9 h-9 rounded-xl bg-surface-100 hover:bg-primary/10 flex items-center justify-center text-text-muted hover:text-primary transition-colors"
-          title="Về trang chủ"
+          title={t("home")}
         >
           <Home size={16} />
         </Link>
@@ -1305,7 +1314,7 @@ export default function ChatPage() {
               ? "opacity-40 cursor-not-allowed"
               : "hover:bg-primary/10 hover:text-primary",
           )}
-          title="Tạo trò chuyện mới"
+          title={t("newConversation")}
         >
           <Edit size={16} />
         </button>
@@ -1400,7 +1409,7 @@ export default function ChatPage() {
       <div className="flex-1 flex flex-col bg-surface min-w-0 relative">
         {!currentConv ? (
           <div className="flex-1 flex items-center justify-center text-text-muted text-sm">
-            {convLoading ? "Đang tải..." : "Chọn một cuộc trò chuyện"}
+            {convLoading ? tc("loading") : t("selectConversation")}
           </div>
         ) : (
           <>
@@ -1420,10 +1429,15 @@ export default function ChatPage() {
                     {currentConv.isGroup
                       ? currentConv.totalMemberCount &&
                         currentConv.totalMemberCount !== currentConv.memberCount
-                        ? `${currentConv.memberCount ?? 0}/${currentConv.totalMemberCount} thành viên`
-                        : `${currentConv.memberCount ?? 0} thành viên`
+                        ? t("membersRatio", {
+                            accepted: currentConv.memberCount ?? 0,
+                            total: currentConv.totalMemberCount,
+                          })
+                        : t("membersCount", {
+                            count: currentConv.memberCount ?? 0,
+                          })
                       : currentOtherOnline
-                        ? "Đang hoạt động"
+                        ? t("activeNow")
                         : (formatLastSeen(currentOtherLastActive) ?? "")}
                   </p>
                 </div>
@@ -1474,16 +1488,16 @@ export default function ChatPage() {
                   disabled={loadingMore}
                   className="self-center text-xs text-primary font-semibold hover:underline disabled:opacity-50 mb-2"
                 >
-                  {loadingMore ? "Đang tải..." : "Tải tin cũ hơn"}
+                  {loadingMore ? tc("loading") : t("loadOlder")}
                 </button>
               )}
               {msgLoading ? (
                 <div className="flex-1 flex items-center justify-center text-text-muted text-sm">
-                  Đang tải tin nhắn...
+                  {t("loadingMessages")}
                 </div>
               ) : messages.length === 0 ? (
                 <div className="flex-1 flex items-center justify-center text-text-muted text-sm">
-                  Chưa có tin nhắn nào. Hãy bắt đầu cuộc trò chuyện!
+                  {t("noMessagesYet")}
                 </div>
               ) : (
                 (() => {
@@ -1520,8 +1534,8 @@ export default function ChatPage() {
                           <p className="text-xs text-text-muted text-center">
                             {n.actorName}{" "}
                             {n.action === "pin"
-                              ? "đã ghim tin nhắn"
-                              : "đã bỏ ghim tin nhắn"}{" "}
+                              ? t("pinnedNotice")
+                              : t("unpinnedNotice")}{" "}
                             <span className="font-semibold text-text-secondary">
                               "{n.preview}"
                             </span>{" "}
@@ -1530,7 +1544,7 @@ export default function ChatPage() {
                                 onClick={() => handleJumpToReply(n.messageId)}
                                 className="text-primary font-semibold hover:underline"
                               >
-                                Xem
+                                {t("jumpToView")}
                               </button>
                             )}
                           </p>
@@ -1545,12 +1559,12 @@ export default function ChatPage() {
                     );
                     if (!hasLocalNotice && msg.pinnedAt && msg.pinnedByName) {
                       const isMe = msg.pinnedById === currentUserId;
-                      const actorName = isMe ? "Bạn" : msg.pinnedByName!;
+                      const actorName = isMe ? t("you") : msg.pinnedByName!;
                       const preview = msg.content
                         ? msg.content.length > 30
                           ? msg.content.slice(0, 30) + "..."
                           : msg.content
-                        : (msg.attachments[0]?.name ?? "Đã gửi một tệp");
+                        : (msg.attachments[0]?.name ?? t("sentAttachment"));
                       items.push({
                         kind: "notice",
                         ts: new Date(msg.pinnedAt).getTime(),
@@ -1562,7 +1576,7 @@ export default function ChatPage() {
                               className="text-text-muted fill-current shrink-0"
                             />
                             <p className="text-xs text-text-muted text-center">
-                              {actorName} đã ghim tin nhắn{" "}
+                              {actorName} {t("pinnedNotice")}{" "}
                               <span className="font-semibold text-text-secondary">
                                 "{preview}"
                               </span>{" "}
@@ -1570,7 +1584,7 @@ export default function ChatPage() {
                                 onClick={() => handleJumpToReply(msg.id)}
                                 className="text-primary font-semibold hover:underline"
                               >
-                                Xem
+                                {t("jumpToView")}
                               </button>
                             </p>
                           </div>
@@ -1596,7 +1610,7 @@ export default function ChatPage() {
                           key: `divider-${item.msg.id}`,
                           render: () => (
                             <p className="text-center text-[11px] text-text-muted font-medium py-1">
-                              {formatDateDivider(item.msg.createdAt)}
+                              {formatDateDivider(item.msg.createdAt, locale)}
                             </p>
                           ),
                         });
@@ -1639,10 +1653,14 @@ export default function ChatPage() {
                 <div className="w-0.5 h-8 bg-primary rounded-full shrink-0" />
                 <div className="flex-1 min-w-0">
                   <p className="text-[11px] font-semibold text-primary">
-                    Trả lời {replyingTo.isMe ? "chính mình" : replyingTo.sender}
+                    {t("replyingTo", {
+                      name: replyingTo.isMe
+                        ? t("replyToSelf")
+                        : replyingTo.sender,
+                    })}
                   </p>
                   <p className="text-[11px] text-text-muted truncate">
-                    {replyingTo.content || "Đã gửi một tệp"}
+                    {replyingTo.content || t("sentAttachment")}
                   </p>
                 </div>
                 <button
@@ -1669,7 +1687,7 @@ export default function ChatPage() {
                   }}
                   className="flex items-center gap-1.5 px-3 py-1.5 bg-primary text-white text-xs font-semibold rounded-full shadow-lg hover:bg-primary-700 transition-colors"
                 >
-                  Tin nhắn mới
+                  {t("newMessage")}
                   <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
                     <path
                       d="M6 2v8M2 7l4 4 4-4"
@@ -1708,7 +1726,7 @@ export default function ChatPage() {
                     disabled={pendingActionLoading}
                     className="flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-semibold bg-surface-100 text-text-secondary hover:bg-surface-200 transition-colors disabled:opacity-50"
                   >
-                    Chặn
+                    {t("pendingBlock")}
                   </button>
                 )}
                 <button
@@ -1716,20 +1734,20 @@ export default function ChatPage() {
                   disabled={pendingActionLoading}
                   className="flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-semibold bg-red-50 dark:bg-red-500/15 text-red-500 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-500/25 transition-colors disabled:opacity-50"
                 >
-                  Từ chối
+                  {t("pendingReject")}
                 </button>
                 <button
                   onClick={handlePendingAccept}
                   disabled={pendingActionLoading}
                   className="flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-semibold bg-primary text-white hover:bg-primary-700 transition-colors disabled:opacity-50"
                 >
-                  Chấp nhận
+                  {t("pendingAccept")}
                 </button>
               </div>
             ) : currentConv.isArchived ? (
               <div className="px-4 py-4 border-t border-surface-200 bg-surface shrink-0 flex items-center justify-center gap-3">
                 <p className="text-xs text-text-muted">
-                  Cuộc trò chuyện đang được lưu trữ
+                  {t("conversationArchived")}
                 </p>
                 <button
                   onClick={async () => {
@@ -1749,34 +1767,31 @@ export default function ChatPage() {
                       );
                       fetchConversations();
                     } catch {
-                      showToast("Không thể bỏ lưu trữ", "error");
+                      showToast(t("cannotUnarchive"), "error");
                     }
                   }}
                   className="flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-semibold bg-primary text-white hover:bg-primary-700 transition-colors"
                 >
-                  Bỏ lưu trữ
+                  {t("unarchive")}
                 </button>
               </div>
             ) : currentConv.isDisabled ? (
               <div className="px-4 py-4 border-t border-surface-200 bg-surface shrink-0 flex items-center justify-center gap-3">
-                <p className="text-xs text-text-muted">
-                  Nhóm này đã bị quản trị viên vô hiệu hóa. Bạn vẫn có thể xem
-                  lịch sử nhưng không thể gửi tin nhắn mới.
-                </p>
+                <p className="text-xs text-text-muted">{t("groupDisabled")}</p>
               </div>
             ) : currentConv.isBlockedByMe || currentConv.hasBlockedMe ? (
               <div className="px-4 py-4 border-t border-surface-200 bg-surface shrink-0 flex items-center justify-center gap-3">
                 <p className="text-xs text-text-muted">
                   {currentConv.isBlockedByMe
-                    ? "Bạn đã chặn người dùng này"
-                    : "Bạn không thể nhắn tin cho người này"}
+                    ? t("youBlockedThisUser")
+                    : t("cannotMessageThisUser")}
                 </p>
                 {currentConv.isBlockedByMe && (
                   <button
                     onClick={() => handleUnblockConv(activeId!)}
                     className="flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-semibold bg-primary text-white hover:bg-primary-700 transition-colors"
                   >
-                    Bỏ chặn
+                    {t("unblock")}
                   </button>
                 )}
               </div>
@@ -1855,8 +1870,8 @@ export default function ChatPage() {
                         }}
                         placeholder={
                           isAdmin
-                            ? "Quản trị viên không thể nhắn tin"
-                            : "Nhập tin nhắn..."
+                            ? t("adminCannotMessage")
+                            : t("messagePlaceholder")
                         }
                         className="flex-1 bg-transparent text-sm text-text-primary placeholder:text-text-muted focus:outline-none disabled:cursor-not-allowed"
                       />
@@ -1875,7 +1890,7 @@ export default function ChatPage() {
                   </div>
                   {uploadingFiles && (
                     <p className="text-xs text-text-muted mt-1.5 px-1">
-                      Đang tải file lên...
+                      {t("uploadingFiles")}
                     </p>
                   )}
                 </div>
@@ -1927,33 +1942,37 @@ export default function ChatPage() {
             )
           }
           iconBgClass={
-            confirmAction.type === "delete" ? "bg-red-100 dark:bg-red-500/20" : "bg-primary/10"
+            confirmAction.type === "delete"
+              ? "bg-red-100 dark:bg-red-500/20"
+              : "bg-primary/10"
           }
           title={
             confirmAction.type === "delete"
-              ? "Xóa cuộc trò chuyện?"
-              : "Lưu trữ cuộc trò chuyện?"
+              ? t("deleteConvTitle")
+              : t("archiveConvTitle")
           }
           description={
-            confirmAction.type === "delete" ? (
-              <>
-                Cuộc trò chuyện với{" "}
-                <span className="font-medium text-text-secondary">
-                  {confirmAction.conv.name}
-                </span>{" "}
-                sẽ biến mất khỏi danh sách của bạn.
-              </>
-            ) : (
-              <>
-                Bạn có thể tìm lại cuộc trò chuyện với{" "}
-                <span className="font-medium text-text-secondary">
-                  {confirmAction.conv.name}
-                </span>{" "}
-                trong mục đã lưu trữ bất cứ lúc nào.
-              </>
-            )
+            confirmAction.type === "delete"
+              ? t.rich("deleteConvDesc", {
+                  name: confirmAction.conv.name,
+                  b: (chunks) => (
+                    <span className="font-medium text-text-secondary">
+                      {chunks}
+                    </span>
+                  ),
+                })
+              : t.rich("archiveConvDesc", {
+                  name: confirmAction.conv.name,
+                  b: (chunks) => (
+                    <span className="font-medium text-text-secondary">
+                      {chunks}
+                    </span>
+                  ),
+                })
           }
-          confirmLabel={confirmAction.type === "delete" ? "Xóa" : "Lưu trữ"}
+          confirmLabel={
+            confirmAction.type === "delete" ? tc("delete") : t("archive")
+          }
           confirmVariant={
             confirmAction.type === "delete" ? "danger" : "primary"
           }
@@ -1966,9 +1985,9 @@ export default function ChatPage() {
         <ConfirmDialog
           icon={<Ban size={20} className="text-red-500 dark:text-red-400" />}
           iconBgClass="bg-red-100 dark:bg-red-500/20"
-          title={`Chặn ${blockTarget.username}?`}
-          description="Người này sẽ không thể nhắn tin, xem trang cá nhân hoặc kết bạn với bạn nữa."
-          confirmLabel="Chặn"
+          title={t("blockUserTitle", { name: blockTarget.username })}
+          description={t("blockUserDesc")}
+          confirmLabel={tc("block")}
           confirmVariant="danger"
           loading={blockLoading}
           onConfirm={handleConfirmBlockUser}
@@ -1979,7 +1998,7 @@ export default function ChatPage() {
         <ReportModal
           targetType="USER"
           targetId={reportingUser.id}
-          title={`Báo cáo ${reportingUser.username}`}
+          title={tPending("reportTitle", { name: reportingUser.username })}
           onClose={() => setReportingUser(null)}
         />
       )}

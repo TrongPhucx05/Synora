@@ -9,41 +9,35 @@ import type {
   PinnedMessage,
   GroupMember,
   Conversation,
+  PendingConversation,
   GroupInviteLinkInfo,
   JoinLinkPreview,
   JoinRequestItem,
 } from "./types";
 
 export const RECALL_WINDOW_MS = 24 * 60 * 60 * 1000;
+export const DIVIDER_GAP_MS = 30 * 60 * 1000;
 
-const VN_MONTHS = [
-  "Tháng 1",
-  "Tháng 2",
-  "Tháng 3",
-  "Tháng 4",
-  "Tháng 5",
-  "Tháng 6",
-  "Tháng 7",
-  "Tháng 8",
-  "Tháng 9",
-  "Tháng 10",
-  "Tháng 11",
-  "Tháng 12",
-];
+type Translator = (key: string, values?: Record<string, any>) => string;
 
-export function formatDateDivider(iso: string): string {
+function intlLocale(locale: string): string {
+  return locale === "en" ? "en-US" : "vi-VN";
+}
+
+export function formatDateDivider(iso: string, locale: string = "vi"): string {
   const d = new Date(iso);
-  const day = d.getDate();
-  const month = VN_MONTHS[d.getMonth()];
-  const year = d.getFullYear();
-  const time = d.toLocaleTimeString("vi-VN", {
+  const loc = intlLocale(locale);
+  const datePart = d.toLocaleDateString(loc, {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
+  const time = d.toLocaleTimeString(loc, {
     hour: "2-digit",
     minute: "2-digit",
   });
-  return `${day} ${month} ${year}, ${time}`;
+  return `${datePart}, ${time}`;
 }
-
-export const DIVIDER_GAP_MS = 30 * 60 * 1000;
 
 export function getColorForUser(_userId: string): string {
   return "bg-primary";
@@ -58,9 +52,9 @@ export function getInitialsFromName(name: string): string {
     .toUpperCase();
 }
 
-export function formatMessageTime(iso: string): string {
+export function formatMessageTime(iso: string, locale: string = "vi"): string {
   const date = new Date(iso);
-  return date.toLocaleTimeString("vi-VN", {
+  return date.toLocaleTimeString(intlLocale(locale), {
     hour: "2-digit",
     minute: "2-digit",
   });
@@ -99,6 +93,7 @@ export async function toggleMessageReaction(
   conversationId: string,
   messageId: string,
   emoji: string,
+  t: Translator,
 ): Promise<{ reactions: ApiReaction[] }> {
   const res = await fetch(
     `/api/conversations/${conversationId}/messages/${messageId}/reactions`,
@@ -108,13 +103,14 @@ export async function toggleMessageReaction(
       body: JSON.stringify({ emoji }),
     },
   );
-  if (!res.ok) throw new Error("Failed to toggle reaction");
+  if (!res.ok) throw new Error(t("cannotToggleReaction"));
   return res.json();
 }
 
 export async function recallMessage(
   conversationId: string,
   messageId: string,
+  t: Translator,
 ): Promise<{ id: string; deletedAt: string }> {
   const res = await fetch(
     `/api/conversations/${conversationId}/messages/${messageId}`,
@@ -122,7 +118,7 @@ export async function recallMessage(
   );
   const data = await res.json().catch(() => ({}));
   if (!res.ok) {
-    throw new Error(data.error ?? "Không thể thu hồi tin nhắn");
+    throw new Error(data.error ?? t("cannotRecallMessage"));
   }
   return data;
 }
@@ -160,6 +156,7 @@ export function getFileColor(ext: string): string {
 
 export function buildAttachmentLabel(
   attachments: { type: "IMAGE" | "VIDEO" | "DOCUMENT" }[],
+  t: Translator,
 ): string {
   if (attachments.length === 0) return "";
 
@@ -170,12 +167,19 @@ export function buildAttachmentLabel(
     Boolean,
   ).length;
 
-  if (typeCount > 1) return `Đã gửi ${attachments.length} tệp`;
+  if (typeCount > 1)
+    return t("attachmentLabel.multipleTypes", { count: attachments.length });
   if (imageCount > 0)
-    return imageCount === 1 ? "Đã gửi một ảnh" : `Đã gửi ${imageCount} ảnh`;
+    return imageCount === 1
+      ? t("attachmentLabel.oneImage")
+      : t("attachmentLabel.multipleImages", { count: imageCount });
   if (videoCount > 0)
-    return videoCount === 1 ? "Đã gửi một video" : `Đã gửi ${videoCount} video`;
-  return docCount === 1 ? "Đã gửi một tệp" : `Đã gửi ${docCount} tệp`;
+    return videoCount === 1
+      ? t("attachmentLabel.oneVideo")
+      : t("attachmentLabel.multipleVideos", { count: videoCount });
+  return docCount === 1
+    ? t("attachmentLabel.oneFile")
+    : t("attachmentLabel.multipleFiles", { count: docCount });
 }
 
 function mapAttachments(list: ApiAttachment[]): Attachment[] {
@@ -192,6 +196,8 @@ function mapAttachments(list: ApiAttachment[]): Attachment[] {
 export function adaptApiMessage(
   msg: ApiMessage,
   currentUserId: string,
+  t: Translator,
+  locale: string = "vi",
 ): Message {
   const isMe = msg.senderId === currentUserId;
   const pinnedByName = msg.pinnedBy
@@ -210,7 +216,7 @@ export function adaptApiMessage(
           msg.replyTo.sender.username,
         content:
           msg.replyTo.content ??
-          (msg.replyTo.attachments.length > 0 ? "Đã gửi một file" : ""),
+          (msg.replyTo.attachments.length > 0 ? t("replySentFile") : ""),
         isMe: msg.replyTo.senderId === currentUserId,
       }
     : null;
@@ -223,7 +229,7 @@ export function adaptApiMessage(
       initials,
       color,
       avatarUrl,
-      time: formatMessageTime(msg.createdAt),
+      time: formatMessageTime(msg.createdAt, locale),
       createdAt: msg.createdAt,
       content: null,
       isMe,
@@ -246,7 +252,7 @@ export function adaptApiMessage(
     initials,
     color,
     avatarUrl,
-    time: formatMessageTime(msg.createdAt),
+    time: formatMessageTime(msg.createdAt, locale),
     createdAt: msg.createdAt,
     content: msg.content,
     isMe,
@@ -265,6 +271,7 @@ export function adaptApiMessage(
 export async function pinMessage(
   conversationId: string,
   messageId: string,
+  t: Translator,
 ): Promise<{
   id: string;
   pinnedAt: string;
@@ -278,13 +285,14 @@ export async function pinMessage(
     { method: "POST" },
   );
   const data = await res.json().catch(() => ({}));
-  if (!res.ok) throw new Error(data.error ?? "Không thể ghim tin nhắn");
+  if (!res.ok) throw new Error(data.error ?? t("cannotPinMessage"));
   return data;
 }
 
 export async function unpinMessage(
   conversationId: string,
   messageId: string,
+  t: Translator,
 ): Promise<void> {
   const res = await fetch(
     `/api/conversations/${conversationId}/messages/${messageId}/pin`,
@@ -292,17 +300,18 @@ export async function unpinMessage(
   );
   if (!res.ok) {
     const data = await res.json().catch(() => ({}));
-    throw new Error(data.error ?? "Không thể bỏ ghim tin nhắn");
+    throw new Error(data.error ?? t("cannotUnpinMessage"));
   }
 }
 
 export async function fetchPinnedMessages(
   conversationId: string,
+  t: Translator,
 ): Promise<PinnedMessage[]> {
   const res = await fetch(
     `/api/conversations/${conversationId}/pinned-messages`,
   );
-  if (!res.ok) throw new Error("Không thể tải tin nhắn ghim");
+  if (!res.ok) throw new Error(t("cannotLoadPinned"));
   return res.json();
 }
 
@@ -310,6 +319,7 @@ export async function forwardMessage(
   sourceConversationId: string,
   messageId: string,
   targetConversationId: string,
+  t: Translator,
 ): Promise<ApiMessage> {
   const res = await fetch(
     `/api/conversations/${sourceConversationId}/messages/${messageId}/forward`,
@@ -320,15 +330,16 @@ export async function forwardMessage(
     },
   );
   const data = await res.json().catch(() => ({}));
-  if (!res.ok) throw new Error(data.error ?? "Không thể chuyển tiếp tin nhắn");
+  if (!res.ok) throw new Error(data.error ?? t("cannotForwardMessage"));
   return data;
 }
 
 export async function fetchConversationAttachments(
   conversationId: string,
+  t: Translator,
 ): Promise<SharedAttachment[]> {
   const res = await fetch(`/api/conversations/${conversationId}/attachments`);
-  if (!res.ok) throw new Error("Không thể tải dữ liệu file");
+  if (!res.ok) throw new Error(t("cannotLoadAttachments"));
   return res.json();
 }
 
@@ -344,9 +355,10 @@ export function downloadFile(url: string, filename: string): void {
 
 export async function fetchGroupMembers(
   conversationId: string,
+  t: Translator,
 ): Promise<GroupMember[]> {
   const res = await fetch(`/api/conversations/${conversationId}/members`);
-  if (!res.ok) throw new Error("Không thể tải danh sách thành viên");
+  if (!res.ok) throw new Error(t("cannotLoadMembers"));
   const data = await res.json();
   return data.map(
     (m: {
@@ -376,6 +388,7 @@ export async function fetchGroupMembers(
 export async function inviteMembers(
   conversationId: string,
   usernames: string[],
+  t: Translator,
 ): Promise<{ added: number }> {
   const res = await fetch(`/api/conversations/${conversationId}/members`, {
     method: "POST",
@@ -383,13 +396,14 @@ export async function inviteMembers(
     body: JSON.stringify({ usernames }),
   });
   const data = await res.json().catch(() => ({}));
-  if (!res.ok) throw new Error(data.error ?? "Không thể thêm thành viên");
+  if (!res.ok) throw new Error(data.error ?? t("cannotAddMembers"));
   return data;
 }
 
 export async function removeMember(
   conversationId: string,
   userId: string,
+  t: Translator,
 ): Promise<void> {
   const res = await fetch(
     `/api/conversations/${conversationId}/members/${userId}`,
@@ -397,13 +411,14 @@ export async function removeMember(
   );
   if (!res.ok) {
     const data = await res.json().catch(() => ({}));
-    throw new Error(data.error ?? "Không thể xóa thành viên");
+    throw new Error(data.error ?? t("cannotRemoveMember"));
   }
 }
 
 export async function transferLeader(
   conversationId: string,
   userId: string,
+  t: Translator,
 ): Promise<void> {
   const res = await fetch(
     `/api/conversations/${conversationId}/members/${userId}`,
@@ -415,13 +430,14 @@ export async function transferLeader(
   );
   if (!res.ok) {
     const data = await res.json().catch(() => ({}));
-    throw new Error(data.error ?? "Không thể chuyển quyền trưởng nhóm");
+    throw new Error(data.error ?? t("cannotTransferLeader"));
   }
 }
 
 export async function updateConversationInfo(
   conversationId: string,
   payload: { avatarUrl?: string; avatarKey?: string; name?: string },
+  t: Translator,
 ): Promise<{ id: string; name: string | null; avatarUrl: string | null }> {
   const res = await fetch(`/api/conversations/${conversationId}`, {
     method: "PATCH",
@@ -429,12 +445,13 @@ export async function updateConversationInfo(
     body: JSON.stringify(payload),
   });
   const data = await res.json().catch(() => ({}));
-  if (!res.ok) throw new Error(data.error ?? "Không thể cập nhật nhóm");
+  if (!res.ok) throw new Error(data.error ?? t("cannotUpdateGroup"));
   return data;
 }
 
 export async function leaveGroup(
   conversationId: string,
+  t: Translator,
   transferToUserId?: string,
 ): Promise<{ left: boolean; newLeaderId?: string }> {
   const res = await fetch(`/api/conversations/${conversationId}/leave`, {
@@ -443,38 +460,42 @@ export async function leaveGroup(
     body: JSON.stringify({ transferToUserId }),
   });
   const data = await res.json().catch(() => ({}));
-  if (!res.ok) throw new Error(data.error ?? "Không thể rời nhóm");
+  if (!res.ok) throw new Error(data.error ?? t("cannotLeaveGroup"));
   return data;
 }
 
-export async function disbandGroup(conversationId: string): Promise<void> {
+export async function disbandGroup(
+  conversationId: string,
+  t: Translator,
+): Promise<void> {
   const res = await fetch(`/api/conversations/${conversationId}/disband`, {
     method: "POST",
   });
   if (!res.ok) {
     const data = await res.json().catch(() => ({}));
-    throw new Error(data.error ?? "Không thể giải tán nhóm");
+    throw new Error(data.error ?? t("cannotDisbandGroup"));
   }
 }
 
-export async function fetchPendingConversations(): Promise<
-  PendingConversation[]
-> {
+export async function fetchPendingConversations(
+  t: Translator,
+): Promise<PendingConversation[]> {
   const res = await fetch("/api/conversations/pending");
-  if (!res.ok) throw new Error("Không thể tải tin nhắn chờ");
+  if (!res.ok) throw new Error(t("cannotLoadPending"));
   return res.json();
 }
 
 export async function respondPendingConversation(
   conversationId: string,
   action: "accept" | "reject",
+  t: Translator,
 ): Promise<void> {
   const res = await fetch(`/api/conversations/${conversationId}/pending`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ action }),
   });
-  if (!res.ok) throw new Error("Có lỗi xảy ra");
+  if (!res.ok) throw new Error(t("genericError"));
 }
 
 export async function searchConversations(q: string): Promise<Conversation[]> {
@@ -485,17 +506,19 @@ export async function searchConversations(q: string): Promise<Conversation[]> {
 
 export async function fetchInviteLink(
   conversationId: string,
+  t: Translator,
 ): Promise<GroupInviteLinkInfo> {
   const res = await fetch(`/api/conversations/${conversationId}/invite-link`);
-  if (!res.ok) throw new Error("Không thể tải link mời");
+  if (!res.ok) throw new Error(t("cannotLoadInviteLink"));
   return res.json();
 }
 
 export async function fetchJoinRequests(
   conversationId: string,
+  t: Translator,
 ): Promise<JoinRequestItem[]> {
   const res = await fetch(`/api/conversations/${conversationId}/join-requests`);
-  if (!res.ok) throw new Error("Không thể tải yêu cầu tham gia");
+  if (!res.ok) throw new Error(t("cannotLoadJoinRequests"));
   return res.json();
 }
 
@@ -503,6 +526,7 @@ export async function respondJoinRequest(
   conversationId: string,
   userId: string,
   action: "approve" | "reject",
+  t: Translator,
 ): Promise<void> {
   const res = await fetch(
     `/api/conversations/${conversationId}/join-requests/${userId}`,
@@ -514,25 +538,27 @@ export async function respondJoinRequest(
   );
   if (!res.ok) {
     const data = await res.json().catch(() => ({}));
-    throw new Error(data.error ?? "Có lỗi xảy ra");
+    throw new Error(data.error ?? t("genericError"));
   }
 }
 
 export async function fetchJoinPreview(
   token: string,
+  t: Translator,
 ): Promise<JoinLinkPreview> {
   const res = await fetch(`/api/groups/join/${token}`);
   const data = await res.json().catch(() => ({}));
-  if (!res.ok) throw new Error(data.error ?? "Link mời không hợp lệ");
+  if (!res.ok) throw new Error(data.error ?? t("invalidInviteLink"));
   return data;
 }
 
 export async function submitJoinRequest(
   token: string,
+  t: Translator,
 ): Promise<{ status: string; conversationId: string }> {
   const res = await fetch(`/api/groups/join/${token}`, { method: "POST" });
   const data = await res.json().catch(() => ({}));
-  if (!res.ok) throw new Error(data.error ?? "Không thể gửi yêu cầu tham gia");
+  if (!res.ok) throw new Error(data.error ?? t("cannotSendJoinRequest"));
   return data;
 }
 

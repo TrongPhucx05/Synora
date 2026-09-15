@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { Users, Loader2, Check, Clock } from "lucide-react";
+import { useTranslations } from "next-intl";
 import Avatar from "@/components/ui/Avatar";
 import { fetchJoinPreview, submitJoinRequest } from "@/lib/chat/utils";
 import type { JoinLinkPreview } from "@/lib/chat/types";
@@ -20,9 +21,11 @@ export function GroupInviteCard({ token }: { token: string }) {
   const [invalid, setInvalid] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [localStatus, setLocalStatus] = useState<string | null>(null);
+  const t = useTranslations("chat.inviteCard");
+  const tu = useTranslations("chat.utils");
 
   useEffect(() => {
-    fetchJoinPreview(token)
+    fetchJoinPreview(token, tu)
       .then(setPreview)
       .catch(() => setInvalid(true))
       .finally(() => setLoading(false));
@@ -31,7 +34,7 @@ export function GroupInviteCard({ token }: { token: string }) {
   if (loading) {
     return (
       <div className="flex items-center gap-2 px-4 py-3 rounded-2xl border border-surface-200 bg-surface text-xs text-text-muted">
-        <Loader2 size={13} className="animate-spin" /> Đang tải link mời...
+        <Loader2 size={13} className="animate-spin" /> {t("loadingLink")}
       </div>
     );
   }
@@ -42,7 +45,7 @@ export function GroupInviteCard({ token }: { token: string }) {
   const handleJoin = async () => {
     setSubmitting(true);
     try {
-      const data = await submitJoinRequest(token);
+      const data = await submitJoinRequest(token, tu);
       setLocalStatus(data.status);
     } finally {
       setSubmitting(false);
@@ -54,7 +57,7 @@ export function GroupInviteCard({ token }: { token: string }) {
       <div className="flex items-center gap-3 px-4 py-3">
         <Avatar
           src={preview.avatarUrl}
-          initials={getInitials(preview.name ?? "Nhóm")}
+          initials={getInitials(preview.name ?? t("defaultGroupName"))}
           size="md"
           shape="circle"
         />
@@ -63,7 +66,7 @@ export function GroupInviteCard({ token }: { token: string }) {
             {preview.name}
           </p>
           <p className="text-[11px] text-text-muted flex items-center gap-1">
-            <Users size={11} /> {preview.memberCount} thành viên
+            <Users size={11} /> {preview.memberCount} {t("membersSuffix")}
           </p>
         </div>
       </div>
@@ -72,15 +75,15 @@ export function GroupInviteCard({ token }: { token: string }) {
         status === "already_member" ||
         status === "joined" ? (
           <div className="flex items-center justify-center gap-1.5 py-2 text-xs font-semibold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-500/15 rounded-xl">
-            <Check size={13} /> Đã tham gia
+            <Check size={13} /> {t("joined")}
           </div>
         ) : status === "requested" || status === "already_requested" ? (
           <div className="flex items-center justify-center gap-1.5 py-2 text-xs font-semibold text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-500/15 rounded-xl">
-            <Clock size={13} /> Đang chờ duyệt
+            <Clock size={13} /> {t("waitingApproval")}
           </div>
         ) : status === "cooldown" ? (
           <div className="flex items-center justify-center gap-1.5 py-2 text-xs font-semibold text-text-muted bg-surface-100 rounded-xl">
-            <Clock size={13} /> Không thể gửi lại lúc này
+            <Clock size={13} /> {t("cooldown")}
           </div>
         ) : (
           <button
@@ -89,7 +92,7 @@ export function GroupInviteCard({ token }: { token: string }) {
             className="w-full py-2 rounded-xl bg-primary text-white text-xs font-semibold hover:bg-primary-700 transition-colors disabled:opacity-50 flex items-center justify-center gap-1.5"
           >
             {submitting && <Loader2 size={12} className="animate-spin" />}
-            {status === "invited" ? "Tham gia ngay" : "Gửi yêu cầu tham gia"}
+            {status === "invited" ? t("joinNow") : t("sendJoinRequest")}
           </button>
         )}
       </div>

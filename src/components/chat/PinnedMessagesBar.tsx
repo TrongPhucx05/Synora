@@ -10,22 +10,15 @@ import {
   PinOff,
 } from "lucide-react";
 import { clsx } from "clsx";
+import { useTranslations } from "next-intl";
 import { useOutsideClickRefs } from "@/lib/chat/hooks";
 import type { PinnedMessage } from "@/lib/chat/types";
-import { buildAttachmentLabel } from "@/lib/chat/utils";
 
 interface PinnedMessagesBarProps {
   pinned: PinnedMessage[];
   onJump: (id: string) => void;
   onUnpin: (id: string) => void;
 }
-
-const getPreview = (m: PinnedMessage) => {
-  if (m.deletedAt) return "Tin nhắn đã bị thu hồi";
-  if (m.content) return m.content;
-  if (m.attachments.length > 0) return buildAttachmentLabel(m.attachments);
-  return "";
-};
 
 function PinnedItemMenu({
   onUnpin,
@@ -37,6 +30,7 @@ function PinnedItemMenu({
   const [open, setOpen] = useState(false);
   const btnRef = useRef<HTMLButtonElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
+  const t = useTranslations("chat.pinnedBar");
 
   useOutsideClickRefs([btnRef, menuRef], () => setOpen(false));
 
@@ -48,7 +42,7 @@ function PinnedItemMenu({
           e.stopPropagation();
           setOpen((v) => !v);
         }}
-        title="Tùy chọn"
+        title={t("options")}
         className="p-1 hover:bg-primary/10 rounded-lg text-primary/70 transition-colors cursor-pointer"
       >
         <MoreVertical size={15} />
@@ -68,7 +62,7 @@ function PinnedItemMenu({
             className="w-full flex items-center gap-2.5 px-3.5 py-2 text-sm text-text-primary hover:bg-surface-50 transition-colors"
           >
             <ArrowRight size={14} className="text-text-muted shrink-0" />
-            Chuyển đến
+            {t("jumpTo")}
           </button>
           <button
             onClick={(e) => {
@@ -79,7 +73,7 @@ function PinnedItemMenu({
             className="w-full flex items-center gap-2.5 px-3.5 py-2 text-sm text-text-primary hover:bg-surface-50 transition-colors"
           >
             <PinOff size={14} className="text-text-muted shrink-0" />
-            Bỏ ghim
+            {t("unpin")}
           </button>
         </div>
       )}
@@ -93,14 +87,15 @@ export function PinnedMessagesBar({
   onUnpin,
 }: PinnedMessagesBarProps) {
   const [expanded, setExpanded] = useState(false);
+  const t = useTranslations("chat.pinnedBar");
   if (pinned.length === 0) return null;
 
   const visible = expanded ? pinned : pinned.slice(0, 1);
 
   const getPreview = (m: PinnedMessage) => {
-    if (m.deletedAt) return "Tin nhắn đã bị thu hồi";
+    if (m.deletedAt) return t("recalledMessage");
     if (m.content) return m.content;
-    if (m.attachments.length > 0) return "Đã gửi một tệp";
+    if (m.attachments.length > 0) return t("sentAttachment");
     return "";
   };
 
@@ -140,11 +135,12 @@ export function PinnedMessagesBar({
         >
           {expanded ? (
             <>
-              Thu gọn <ChevronUp size={12} />
+              {t("collapse")} <ChevronUp size={12} />
             </>
           ) : (
             <>
-              Xem {pinned.length - 1} tin ghim khác <ChevronDown size={12} />
+              {t("showMorePinned", { count: pinned.length - 1 })}{" "}
+              <ChevronDown size={12} />
             </>
           )}
         </button>

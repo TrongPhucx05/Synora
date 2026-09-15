@@ -25,6 +25,7 @@ import {
   MessageSquare,
 } from "lucide-react";
 import { clsx } from "clsx";
+import { useTranslations } from "next-intl";
 import Avatar from "@/components/ui/Avatar";
 import { useToast } from "@/components/ui/Toast";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
@@ -62,6 +63,7 @@ function extractJoinToken(content: string | null): string | null {
 
 function ReactionModal({ reactions, onClose }: ReactionModalProps) {
   const [activeEmoji, setActiveEmoji] = useState<string | null>(null);
+  const t = useTranslations("chat.bubble");
 
   const displayed = activeEmoji
     ? reactions.filter((r) => r.emoji === activeEmoji)
@@ -81,7 +83,9 @@ function ReactionModal({ reactions, onClose }: ReactionModalProps) {
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between px-4 py-3 border-b border-surface-100">
-          <p className="text-sm font-semibold text-text-primary">Cảm xúc</p>
+          <p className="text-sm font-semibold text-text-primary">
+            {t("reactionsTitle")}
+          </p>
           <button
             onClick={onClose}
             className="w-7 h-7 rounded-full hover:bg-surface-100 flex items-center justify-center text-text-muted transition-colors"
@@ -100,7 +104,7 @@ function ReactionModal({ reactions, onClose }: ReactionModalProps) {
                 : "bg-surface-100 text-text-secondary hover:bg-surface-200",
             )}
           >
-            Tất cả
+            {t("allReactions")}
             <span className="font-semibold">
               {reactions.reduce((s, r) => s + r.count, 0)}
             </span>
@@ -340,6 +344,7 @@ function MediaLightbox({
 }) {
   const [index, setIndex] = useState(initialIndex);
   const current = media[index];
+  const t = useTranslations("chat.bubble");
 
   return (
     <div
@@ -353,7 +358,7 @@ function MediaLightbox({
             downloadFile(current.url, current.name);
           }}
           className="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white"
-          title="Tải xuống"
+          title={t("download")}
         >
           <Download size={16} />
         </button>
@@ -421,6 +426,7 @@ function MessageActions({
   const [menuOpen, setMenuOpen] = useState(false);
   const emojiBtnRef = useRef<HTMLButtonElement>(null);
   const menuBtnRef = useRef<HTMLButtonElement>(null);
+  const t = useTranslations("chat.bubble");
 
   const align: "left" | "right" = isMe ? "right" : "left";
 
@@ -439,7 +445,7 @@ function MessageActions({
           setMenuOpen(false);
         }}
         className="w-7 h-7 rounded-full hover:bg-surface-200 flex items-center justify-center text-text-muted transition-colors"
-        title="Cảm xúc"
+        title={t("emojiTooltip")}
       >
         <Smile size={15} />
       </button>
@@ -468,7 +474,7 @@ function MessageActions({
       <button
         onClick={onReply}
         className="w-7 h-7 rounded-full hover:bg-surface-200 flex items-center justify-center text-text-muted transition-colors"
-        title="Trả lời"
+        title={t("replyTooltip")}
       >
         <CornerUpLeft size={14} />
       </button>
@@ -480,7 +486,7 @@ function MessageActions({
           setEmojiOpen(false);
         }}
         className="w-7 h-7 rounded-full hover:bg-surface-200 flex items-center justify-center text-text-muted transition-colors"
-        title="Thêm"
+        title={t("moreTooltip")}
       >
         <MoreVertical size={14} />
       </button>
@@ -504,7 +510,7 @@ function MessageActions({
                 className={isPinned ? "fill-current text-primary" : ""}
               />
             </span>
-            {isPinned ? "Bỏ ghim" : "Ghim tin nhắn"}
+            {isPinned ? t("unpin") : t("pin")}
           </button>
           <button
             onClick={() => {
@@ -516,7 +522,7 @@ function MessageActions({
             <span className="text-text-muted shrink-0">
               <Forward size={14} />
             </span>
-            Chuyển tiếp
+            {t("forward")}
           </button>
 
           {isMe && (
@@ -527,11 +533,7 @@ function MessageActions({
                 setMenuOpen(false);
               }}
               disabled={!canRecall}
-              title={
-                canRecall
-                  ? undefined
-                  : "Chỉ có thể thu hồi tin nhắn trong vòng 24 giờ"
-              }
+              title={canRecall ? undefined : t("recallDisabledTooltip")}
               className={clsx(
                 "w-full flex items-center gap-2.5 px-3.5 py-2.5 text-sm transition-colors",
                 canRecall
@@ -547,10 +549,10 @@ function MessageActions({
               >
                 <Undo2 size={14} />
               </span>
-              Thu hồi
+              {t("recall")}
               {!canRecall && (
                 <span className="ml-auto text-[10px] text-text-muted/60">
-                  Hết hạn
+                  {t("expired")}
                 </span>
               )}
             </button>
@@ -565,7 +567,7 @@ function MessageActions({
             className="w-full flex items-center gap-2.5 px-3.5 py-2.5 text-sm text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/20 transition-colors"
           >
             <Flag size={14} className="shrink-0" />
-            Báo cáo
+            {t("report")}
           </button>
         </div>
       </FloatingPanel>
@@ -586,6 +588,7 @@ function ReactionBar({
   onToggle,
   onOpenModal,
 }: ReactionBarProps) {
+  const t = useTranslations("chat.bubble");
   if (reactions.length === 0) return null;
 
   const totalCount = reactions.reduce((s, r) => s + r.count, 0);
@@ -596,8 +599,8 @@ function ReactionBar({
   const allUsers = reactions.flatMap((r) => r.users);
   const tooltipText =
     allUsers.length <= 2
-      ? allUsers.join(" và ")
-      : `${allUsers.slice(0, 2).join(", ")} và ${allUsers.length - 2} người khác`;
+      ? allUsers.join(` ${t("reactedByAnd")} `)
+      : `${allUsers.slice(0, 2).join(", ")} ${t("reactedByAnd")} ${t("reactedByOthers", { count: allUsers.length - 2 })}`;
 
   return (
     <div
@@ -652,11 +655,12 @@ interface PinSystemNoticeProps {
 }
 
 function PinSystemNotice({ pinnedByName }: PinSystemNoticeProps) {
+  const t = useTranslations("chat.bubble");
   return (
     <div className="flex items-center justify-center gap-1.5 py-1.5">
       <Pin size={11} className="text-text-muted fill-current shrink-0" />
       <p className="text-xs text-text-muted text-center">
-        {pinnedByName} đã ghim một tin nhắn
+        {t("pinnedNotice", { name: pinnedByName })}
       </p>
     </div>
   );
@@ -692,6 +696,8 @@ function AvatarPopup({
 }) {
   const ref = useRef<HTMLDivElement>(null);
   useOutsideClickRefs([ref], onClose);
+  const t = useTranslations("chat.bubble.avatarPopup");
+  const tu = useTranslations("chat.utils");
 
   return (
     <div
@@ -704,7 +710,7 @@ function AvatarPopup({
         className="flex items-center gap-2.5 px-3 py-2.5 text-xs text-text-primary hover:bg-surface-50 transition-colors"
       >
         <User size={13} className="text-text-muted shrink-0" />
-        Trang cá nhân
+        {t("profile")}
       </Link>
       <button
         onClick={() => {
@@ -714,7 +720,7 @@ function AvatarPopup({
         className="w-full flex items-center gap-2.5 px-3 py-2.5 text-xs text-text-primary hover:bg-surface-50 transition-colors"
       >
         <MessageSquare size={13} className="text-text-muted shrink-0" />
-        Nhắn tin
+        {t("message")}
       </button>
       <div className="h-px bg-surface-100 my-0.5" />
       <button
@@ -725,7 +731,7 @@ function AvatarPopup({
         className="w-full flex items-center gap-2.5 px-3 py-2.5 text-xs text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/20 transition-colors"
       >
         <BanIcon size={13} className="shrink-0" />
-        Chặn
+        {t("block")}
       </button>
     </div>
   );
@@ -756,6 +762,8 @@ export function MessageBubble({
     (a) => a.type === "IMAGE" || a.type === "VIDEO",
   );
   const { showToast } = useToast();
+  const t = useTranslations("chat.bubble");
+  const tu = useTranslations("chat.utils");
 
   const handleEmoji = async (emoji: string) => {
     if (reacting) return;
@@ -795,7 +803,7 @@ export function MessageBubble({
       } else {
         optimistic = [
           ...withOldRemoved,
-          { emoji, count: 1, reactedByMe: true, users: ["Bạn"] },
+          { emoji, count: 1, reactedByMe: true, users: [t("you")] },
         ];
       }
     } else {
@@ -809,7 +817,7 @@ export function MessageBubble({
       } else {
         optimistic = [
           ...msg.reactions,
-          { emoji, count: 1, reactedByMe: true, users: ["Bạn"] },
+          { emoji, count: 1, reactedByMe: true, users: [t("you")] },
         ];
       }
     }
@@ -817,7 +825,7 @@ export function MessageBubble({
     onReactionsUpdated(msg.id, optimistic);
 
     try {
-      const data = await toggleMessageReaction(conversationId, msg.id, emoji);
+      const data = await toggleMessageReaction(conversationId, msg.id, emoji, tu);
       const grouped = groupReactions(
         data.reactions as ApiReaction[],
         currentUserId,
@@ -839,14 +847,11 @@ export function MessageBubble({
     if (recalling) return;
     setRecalling(true);
     try {
-      await recallMessage(conversationId, msg.id);
+      await recallMessage(conversationId, msg.id, tu);
       onRecall(msg.id);
       setRecallDialogOpen(false);
     } catch (e) {
-      showToast(
-        e instanceof Error ? e.message : "Có lỗi xảy ra, vui lòng thử lại",
-        "error",
-      );
+      showToast(e instanceof Error ? e.message : t("recallFailed"), "error");
     } finally {
       setRecalling(false);
     }
@@ -919,7 +924,7 @@ export function MessageBubble({
             </p>
           )}
           <div className="px-4 py-2.5 rounded-2xl text-xs italic bg-surface-100 text-text-muted">
-            Tin nhắn đã bị thu hồi
+            {t("recalledMessage")}
           </div>
           <p
             className={clsx(
@@ -927,7 +932,7 @@ export function MessageBubble({
               msg.isMe ? "text-right" : "text-left",
             )}
           >
-            {msg.isMe ? `Bạn · ${msg.time}` : msg.time}
+            {msg.isMe ? `${t("you")} · ${msg.time}` : msg.time}
           </p>
         </div>
       </div>
@@ -992,8 +997,8 @@ export function MessageBubble({
             >
               <Forward size={10} />
               {msg.isMe
-                ? "Bạn đã chuyển tiếp một tin nhắn"
-                : `${msg.sender} đã chuyển tiếp một tin nhắn`}
+                ? t("selfForwarded")
+                : t("otherForwarded", { name: msg.sender })}
             </p>
           ) : (
             !msg.isMe && (
@@ -1020,17 +1025,20 @@ export function MessageBubble({
                 {msg.isMe ? (
                   msg.replyTo.sender !== msg.sender && (
                     <p className="text-[10px] text-primary/60 font-medium leading-tight mb-0.5">
-                      {`Bạn đã trả lời ${msg.replyTo.sender}`}
+                      {t("selfRepliedTo", { name: msg.replyTo.sender })}
                     </p>
                   )
                 ) : msg.replyTo.isMe ? (
                   <p className="text-[10px] text-primary/60 font-medium leading-tight mb-0.5">
-                    {`${msg.sender} đã trả lời bạn`}
+                    {t("otherRepliedToYou", { name: msg.sender })}
                   </p>
                 ) : (
                   msg.sender !== msg.replyTo.sender && (
                     <p className="text-[10px] text-primary/60 font-medium leading-tight mb-0.5">
-                      {`${msg.sender} đã trả lời ${msg.replyTo.sender}`}
+                      {t("otherRepliedToOther", {
+                        name: msg.sender,
+                        target: msg.replyTo.sender,
+                      })}
                     </p>
                   )
                 )}
@@ -1106,7 +1114,7 @@ export function MessageBubble({
               msg.isMe ? "text-right" : "text-left",
             )}
           >
-            {msg.isMe ? `Bạn · ${msg.time}` : msg.time}
+            {msg.isMe ? `${t("you")} · ${msg.time}` : msg.time}
           </p>
         </div>
       </div>
@@ -1121,9 +1129,9 @@ export function MessageBubble({
       {recallDialogOpen && (
         <ConfirmDialog
           icon={<Undo2 size={20} className="text-red-500 dark:text-red-400" />}
-          title="Thu hồi tin nhắn?"
-          description="Mọi người trong cuộc trò chuyện sẽ không còn thấy nội dung gốc."
-          confirmLabel="Thu hồi"
+          title={t("recallConfirmTitle")}
+          description={t("recallConfirmDesc")}
+          confirmLabel={t("recall")}
           confirmVariant="danger"
           loading={recalling}
           onConfirm={executeRecall}

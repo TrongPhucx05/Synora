@@ -31,6 +31,7 @@ import {
   Link2,
 } from "lucide-react";
 import { clsx } from "clsx";
+import { useTranslations } from "next-intl";
 import { ToggleSwitch } from "@/components/ui/ToggleSwitch";
 import Avatar from "@/components/ui/Avatar";
 import { useToast } from "@/components/ui/Toast";
@@ -97,15 +98,14 @@ function MediaModal({
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(
     initialIndex ?? null,
   );
+  const t = useTranslations("chat.info.media");
 
   return (
     <>
       <div className="fixed inset-0 bg-black/40 dark:bg-black/25 z-[60]" onClick={onClose} />
       <div className="fixed inset-y-0 right-0 w-[380px] bg-surface z-[60] flex flex-col shadow-2xl">
         <div className="flex items-center justify-between px-5 py-4 border-b border-surface-100">
-          <p className="text-sm font-bold text-text-primary">
-            Ảnh &amp; File đã chia sẻ
-          </p>
+          <p className="text-sm font-bold text-text-primary">{t("title")}</p>
           <button
             onClick={onClose}
             className="p-1.5 hover:bg-surface-100 rounded-lg transition-colors text-text-muted"
@@ -114,20 +114,20 @@ function MediaModal({
           </button>
         </div>
         <div className="flex border-b border-surface-100 px-5">
-          {(["images", "files"] as const).map((t) => (
+          {(["images", "files"] as const).map((tab2) => (
             <button
-              key={t}
-              onClick={() => setTab(t)}
+              key={tab2}
+              onClick={() => setTab(tab2)}
               className={clsx(
                 "py-3 mr-7 text-xs font-semibold border-b-2 transition-colors",
-                tab === t
+                tab === tab2
                   ? "border-primary text-primary"
                   : "border-transparent text-text-muted hover:text-text-secondary",
               )}
             >
-              {t === "images"
-                ? `Ảnh & Video (${media.length})`
-                : `File (${docs.length})`}
+              {tab2 === "images"
+                ? t("imagesTab", { count: media.length })
+                : t("filesTab", { count: docs.length })}
             </button>
           ))}
         </div>
@@ -135,7 +135,7 @@ function MediaModal({
           {tab === "images" ? (
             media.length === 0 ? (
               <p className="text-xs text-text-muted text-center py-8">
-                Chưa có ảnh/video nào
+                {t("noImages")}
               </p>
             ) : (
               <div className="grid grid-cols-3 gap-2">
@@ -170,7 +170,7 @@ function MediaModal({
             )
           ) : docs.length === 0 ? (
             <p className="text-xs text-text-muted text-center py-8">
-              Chưa có file nào
+              {t("noFiles")}
             </p>
           ) : (
             <div className="flex flex-col gap-2">
@@ -225,7 +225,7 @@ function MediaModal({
                 );
               }}
               className="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white"
-              title="Tải xuống"
+              title={t("download")}
             >
               <Download size={16} />
             </button>
@@ -275,6 +275,7 @@ function MemberMenu({
 }) {
   const ref = useRef<HTMLDivElement>(null);
   useOutsideClick(ref, onClose);
+  const t = useTranslations("chat.info.memberMenu");
 
   return (
     <div
@@ -287,7 +288,7 @@ function MemberMenu({
         className="flex items-center gap-2.5 px-3 py-2.5 text-xs text-text-primary hover:bg-surface-50 transition-colors"
       >
         <User size={13} className="text-text-muted shrink-0" />
-        Trang cá nhân
+        {t("profile")}
       </Link>
       <button
         onClick={() => {
@@ -297,7 +298,7 @@ function MemberMenu({
         className="w-full flex items-center gap-2.5 px-3 py-2.5 text-xs text-text-primary hover:bg-surface-50 transition-colors"
       >
         <MessageSquare size={13} className="text-text-muted shrink-0" />
-        Nhắn tin riêng
+        {t("directMessage")}
       </button>
 
       {isRequesterLeader && (
@@ -311,7 +312,7 @@ function MemberMenu({
             className="w-full flex items-center gap-2.5 px-3 py-2.5 text-xs text-text-primary hover:bg-surface-50 transition-colors"
           >
             <Repeat size={13} className="text-text-muted shrink-0" />
-            Chuyển quyền
+            {t("transferRole")}
           </button>
           <button
             onClick={() => {
@@ -321,7 +322,7 @@ function MemberMenu({
             className="w-full flex items-center gap-2.5 px-3 py-2.5 text-xs text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/20 transition-colors"
           >
             <UserMinus size={13} className="shrink-0" />
-            Xóa khỏi nhóm
+            {t("removeFromGroup")}
           </button>
         </>
       )}
@@ -355,6 +356,9 @@ function InviteMembersModal({
   const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState<string[]>([]);
   const [submitting, setSubmitting] = useState(false);
+  const t = useTranslations("chat.info.invite");
+  const tc = useTranslations("common");
+  const tu = useTranslations("chat.utils");
 
   useEffect(() => {
     fetch("/api/users/suggested")
@@ -383,11 +387,11 @@ function InviteMembersModal({
       const usernames = friends
         .filter((f) => selected.includes(f.id))
         .map((f) => f.username);
-      await inviteMembers(conversationId, usernames);
+      await inviteMembers(conversationId, usernames, tu);
       onInvited();
       onClose();
     } catch (e) {
-      showToast(e instanceof Error ? e.message : "Có lỗi xảy ra", "error");
+      showToast(e instanceof Error ? e.message : t("genericError"), "error");
     } finally {
       setSubmitting(false);
     }
@@ -398,7 +402,7 @@ function InviteMembersModal({
       <div className="fixed inset-0 bg-black/50 dark:bg-black/35 z-[70]" onClick={onClose} />
       <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[380px] max-h-[70vh] bg-surface rounded-2xl shadow-2xl z-[70] flex flex-col overflow-hidden">
         <div className="flex items-center justify-between px-5 py-4 border-b border-surface-100">
-          <p className="text-sm font-bold text-text-primary">Thêm thành viên</p>
+          <p className="text-sm font-bold text-text-primary">{t("title")}</p>
           <button
             onClick={onClose}
             className="p-1.5 hover:bg-surface-100 rounded-lg text-text-muted"
@@ -411,18 +415,18 @@ function InviteMembersModal({
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Tìm bạn bè..."
+            placeholder={t("searchPlaceholder")}
             className="w-full px-3 py-2 bg-surface-100 rounded-lg text-xs placeholder:text-text-muted focus:outline-none border border-transparent focus:border-primary focus:bg-surface transition-colors"
           />
         </div>
         <div className="flex-1 overflow-y-auto py-2">
           {loading ? (
             <div className="flex items-center justify-center py-8 text-text-muted text-xs gap-2">
-              <Loader2 size={14} className="animate-spin" /> Đang tải...
+              <Loader2 size={14} className="animate-spin" /> {tc("loading")}
             </div>
           ) : filtered.length === 0 ? (
             <p className="text-xs text-text-muted text-center py-8">
-              Không có ai để thêm
+              {t("noOneToAdd")}
             </p>
           ) : (
             filtered.map((f) => (
@@ -465,7 +469,7 @@ function InviteMembersModal({
             onClick={onClose}
             className="px-4 py-2 rounded-xl border border-surface-200 text-xs font-semibold text-text-secondary hover:bg-surface-50"
           >
-            Huỷ
+            {tc("cancel")}
           </button>
           <button
             onClick={handleInvite}
@@ -473,7 +477,7 @@ function InviteMembersModal({
             className="px-4 py-2 rounded-xl text-xs font-semibold text-white bg-primary hover:bg-primary-700 disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-1.5"
           >
             {submitting && <Loader2 size={12} className="animate-spin" />}
-            Thêm ({selected.length})
+            {t("addCount", { count: selected.length })}
           </button>
         </div>
       </div>
@@ -503,6 +507,9 @@ function MembersModal({
     type: "remove" | "transfer";
     member: GroupMember;
   } | null>(null);
+  const t = useTranslations("chat.info.membersModal");
+  const tc = useTranslations("common");
+  const tu = useTranslations("chat.utils");
 
   const requester = members.find((m) => m.userId === currentUserId);
   const isRequesterLeader = requester?.isLeader ?? false;
@@ -510,7 +517,7 @@ function MembersModal({
   const load = async () => {
     setLoading(true);
     try {
-      setMembers(await fetchGroupMembers(conversationId));
+      setMembers(await fetchGroupMembers(conversationId, tu));
     } catch {
       setMembers([]);
     } finally {
@@ -526,20 +533,23 @@ function MembersModal({
     if (!confirmTarget) return;
     try {
       if (confirmTarget.type === "remove") {
-        await removeMember(conversationId, confirmTarget.member.userId);
-        showToast("Đã xóa thành viên khỏi nhóm", "success");
+        await removeMember(conversationId, confirmTarget.member.userId, tu);
+        showToast(t("removedToast"), "success");
       } else {
-        await transferLeader(conversationId, confirmTarget.member.userId);
-        showToast("Đã chuyển quyền trưởng nhóm", "success");
+        await transferLeader(conversationId, confirmTarget.member.userId, tu);
+        showToast(t("transferredToast"), "success");
       }
       await load();
       onMembersChanged?.();
     } catch (e) {
-      showToast(e instanceof Error ? e.message : "Có lỗi xảy ra", "error");
+      showToast(e instanceof Error ? e.message : t("genericError"), "error");
     } finally {
       setConfirmTarget(null);
     }
   };
+
+  const acceptedCount = members.filter((m) => m.isAccepted).length;
+  const pendingCount = members.filter((m) => !m.isAccepted).length;
 
   return (
     <>
@@ -547,14 +557,18 @@ function MembersModal({
       <div className="fixed inset-y-0 right-0 w-[320px] bg-surface z-[60] flex flex-col shadow-2xl">
         <div className="flex items-center justify-between px-5 py-4 border-b border-surface-100">
           <div>
-            <p className="text-sm font-bold text-text-primary">
-              Thành viên nhóm
-            </p>
+            <p className="text-sm font-bold text-text-primary">{t("title")}</p>
             <p className="text-xs text-text-muted mt-0.5">
-              {members.filter((m) => m.isAccepted).length}/{members.length}{" "}
-              thành viên
-              {members.some((m) => !m.isAccepted) &&
-                ` · ${members.filter((m) => !m.isAccepted).length} đang chờ`}
+              {pendingCount > 0
+                ? t("ratioWithPending", {
+                    accepted: acceptedCount,
+                    total: members.length,
+                    pending: pendingCount,
+                  })
+                : t("ratio", {
+                    accepted: acceptedCount,
+                    total: members.length,
+                  })}
             </p>
           </div>
           <button
@@ -572,7 +586,7 @@ function MembersModal({
               className="w-full flex items-center justify-center gap-1.5 py-2 rounded-xl bg-primary/10 text-primary text-xs font-semibold hover:bg-primary/15 transition-colors"
             >
               <UserPlus size={13} />
-              Mời thành viên
+              {t("inviteMembers")}
             </button>
           </div>
         )}
@@ -580,7 +594,7 @@ function MembersModal({
         <div className="flex-1 overflow-y-auto py-2">
           {loading ? (
             <div className="flex items-center justify-center py-8 text-text-muted text-xs gap-2">
-              <Loader2 size={14} className="animate-spin" /> Đang tải...
+              <Loader2 size={14} className="animate-spin" /> {tc("loading")}
             </div>
           ) : (
             members.map((m) => {
@@ -606,12 +620,12 @@ function MembersModal({
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-1.5 flex-wrap">
                       <p className="text-sm font-semibold text-text-primary truncate">
-                        {isMe ? `${m.displayName} (Bạn)` : m.displayName}
+                        {isMe ? `${m.displayName} ${t("youSuffix")}` : m.displayName}
                       </p>
                       <RoleBadge isLeader={m.isLeader} />
                       {!m.isAccepted && (
                         <span className="text-[10px] font-semibold text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-500/15 px-1.5 py-0.5 rounded-full">
-                          Đang chờ
+                          {t("pendingBadge")}
                         </span>
                       )}
                     </div>
@@ -671,13 +685,13 @@ function MembersModal({
           <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] bg-surface rounded-2xl shadow-2xl z-[70] p-6">
             <p className="text-sm font-bold text-text-primary mb-1">
               {confirmTarget.type === "remove"
-                ? `Xóa ${confirmTarget.member.displayName} khỏi nhóm?`
-                : `Chuyển quyền trưởng nhóm cho ${confirmTarget.member.displayName}?`}
+                ? t("removeConfirmTitle", { name: confirmTarget.member.displayName })
+                : t("transferConfirmTitle", { name: confirmTarget.member.displayName })}
             </p>
             <p className="text-xs text-text-muted mb-5">
               {confirmTarget.type === "remove"
-                ? "Thành viên này sẽ không còn xem được tin nhắn trong nhóm."
-                : "Bạn sẽ trở thành thành viên thường sau khi chuyển quyền."}
+                ? t("removeConfirmDesc")
+                : t("transferConfirmDesc")}
             </p>
             <div className="flex gap-2">
               <button
@@ -690,14 +704,14 @@ function MembersModal({
                 )}
               >
                 {confirmTarget.type === "remove"
-                  ? "Xóa khỏi nhóm"
-                  : "Chuyển quyền"}
+                  ? t("removeBtn")
+                  : t("transferBtn")}
               </button>
               <button
                 onClick={() => setConfirmTarget(null)}
                 className="w-full py-2.5 rounded-xl border border-surface-200 text-xs font-semibold text-text-secondary hover:bg-surface-50 transition-colors"
               >
-                Huỷ
+                {tc("cancel")}
               </button>
             </div>
           </div>
@@ -719,6 +733,8 @@ function RenameGroupModal({
   const [value, setValue] = useState(currentName);
   const [saving, setSaving] = useState(false);
   const { showToast } = useToast();
+  const t = useTranslations("chat.info.rename");
+  const tc = useTranslations("common");
 
   const handleSave = async () => {
     const trimmed = value.trim();
@@ -728,7 +744,7 @@ function RenameGroupModal({
       await onSave(trimmed);
       onClose();
     } catch (e) {
-      showToast(e instanceof Error ? e.message : "Có lỗi xảy ra", "error");
+      showToast(e instanceof Error ? e.message : t("genericError"), "error");
     } finally {
       setSaving(false);
     }
@@ -738,7 +754,7 @@ function RenameGroupModal({
     <>
       <div className="fixed inset-0 bg-black/50 dark:bg-black/35 z-[70]" onClick={onClose} />
       <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[320px] bg-surface rounded-2xl shadow-2xl z-[70] p-6">
-        <p className="text-sm font-bold text-text-primary mb-4">Đổi tên nhóm</p>
+        <p className="text-sm font-bold text-text-primary mb-4">{t("title")}</p>
         <input
           autoFocus
           value={value}
@@ -749,7 +765,7 @@ function RenameGroupModal({
           }}
           maxLength={50}
           className="w-full px-3 py-2.5 border border-surface-200 rounded-xl text-sm text-text-primary focus:outline-none focus:border-primary transition-colors mb-1"
-          placeholder="Tên nhóm..."
+          placeholder={t("placeholder")}
         />
         <p className="text-[10px] text-text-muted text-right mb-4">
           {value.trim().length}/50
@@ -759,7 +775,7 @@ function RenameGroupModal({
             onClick={onClose}
             className="flex-1 py-2 rounded-xl border border-surface-200 text-xs font-semibold text-text-secondary hover:bg-surface-50 transition-colors"
           >
-            Huỷ
+            {tc("cancel")}
           </button>
           <button
             onClick={handleSave}
@@ -767,7 +783,7 @@ function RenameGroupModal({
             className="flex-1 py-2 rounded-xl text-xs font-semibold text-white bg-primary hover:bg-primary-700 disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-1.5 transition-colors"
           >
             {saving && <Loader2 size={12} className="animate-spin" />}
-            Lưu
+            {tc("save")}
           </button>
         </div>
       </div>
@@ -784,30 +800,27 @@ function LeaveChoiceModal({
   onChooseTransfer: () => void;
   onChooseDisband: () => void;
 }) {
+  const t = useTranslations("chat.info.leaveChoice");
+  const tc = useTranslations("common");
   return (
     <>
       <div className="fixed inset-0 bg-black/50 dark:bg-black/35 z-[70]" onClick={onClose} />
       <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[320px] bg-surface rounded-2xl shadow-2xl z-[70] p-6">
-        <p className="text-sm font-bold text-text-primary mb-1">
-          Bạn đang là trưởng nhóm
-        </p>
-        <p className="text-xs text-text-muted mb-5">
-          Hãy chuyển quyền trưởng nhóm cho người khác trước khi rời, hoặc giải
-          tán nhóm nếu không còn ai phù hợp.
-        </p>
+        <p className="text-sm font-bold text-text-primary mb-1">{t("title")}</p>
+        <p className="text-xs text-text-muted mb-5">{t("desc")}</p>
         <div className="flex flex-col gap-2">
           <div className="flex gap-2">
             <button
               onClick={onChooseTransfer}
               className="flex-1 py-2.5 rounded-xl text-xs font-semibold text-white bg-primary hover:bg-primary-700 transition-colors"
             >
-              Chuyển quyền & rời
+              {t("transferAndLeave")}
             </button>
             <button
               onClick={onClose}
               className="flex-1 py-2.5 rounded-xl border border-surface-200 text-xs font-semibold text-text-secondary hover:bg-surface-50 transition-colors"
             >
-              Huỷ
+              {tc("cancel")}
             </button>
           </div>
         </div>
@@ -831,6 +844,8 @@ function TransferLeaderAndLeaveModal({
   const [submitting, setSubmitting] = useState(false);
   const { showToast } = useToast();
   const candidates = members.filter((m) => m.userId !== currentUserId);
+  const t = useTranslations("chat.info.transferLeave");
+  const tc = useTranslations("common");
 
   const handleConfirm = async () => {
     if (!selected || submitting) return;
@@ -838,7 +853,7 @@ function TransferLeaderAndLeaveModal({
     try {
       await onConfirm(selected);
     } catch (e) {
-      showToast(e instanceof Error ? e.message : "Có lỗi xảy ra", "error");
+      showToast(e instanceof Error ? e.message : t("genericError"), "error");
       setSubmitting(false);
     }
   };
@@ -848,17 +863,13 @@ function TransferLeaderAndLeaveModal({
       <div className="fixed inset-0 bg-black/50 dark:bg-black/35 z-[70]" onClick={onClose} />
       <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[340px] max-h-[70vh] bg-surface rounded-2xl shadow-2xl z-[70] flex flex-col overflow-hidden">
         <div className="px-5 py-4 border-b border-surface-100">
-          <p className="text-sm font-bold text-text-primary">
-            Chọn người kế nhiệm
-          </p>
-          <p className="text-xs text-text-muted mt-0.5">
-            Người này sẽ trở thành trưởng nhóm mới sau khi bạn rời nhóm.
-          </p>
+          <p className="text-sm font-bold text-text-primary">{t("title")}</p>
+          <p className="text-xs text-text-muted mt-0.5">{t("desc")}</p>
         </div>
         <div className="flex-1 overflow-y-auto py-2">
           {candidates.length === 0 ? (
             <p className="text-xs text-text-muted text-center py-8">
-              Không có thành viên nào khác
+              {t("noOtherMembers")}
             </p>
           ) : (
             candidates.map((m) => (
@@ -903,14 +914,14 @@ function TransferLeaderAndLeaveModal({
             className="px-4 py-2 rounded-xl text-xs font-semibold text-white bg-primary hover:bg-primary-700 disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-1.5"
           >
             {submitting && <Loader2 size={12} className="animate-spin" />}
-            Chuyển quyền & rời
+            {t("confirmBtn")}
           </button>
           <button
             onClick={onClose}
             disabled={submitting}
             className="px-4 py-2 rounded-xl border border-surface-200 text-xs font-semibold text-text-secondary hover:bg-surface-50 disabled:opacity-50"
           >
-            Huỷ
+            {tc("cancel")}
           </button>
         </div>
       </div>
@@ -929,6 +940,8 @@ function DisbandGroupModal({
 }) {
   const [submitting, setSubmitting] = useState(false);
   const { showToast } = useToast();
+  const t = useTranslations("chat.info.disband");
+  const tc = useTranslations("common");
 
   const handleConfirm = async () => {
     if (submitting) return;
@@ -936,7 +949,7 @@ function DisbandGroupModal({
     try {
       await onConfirm();
     } catch (e) {
-      showToast(e instanceof Error ? e.message : "Có lỗi xảy ra", "error");
+      showToast(e instanceof Error ? e.message : t("genericError"), "error");
       setSubmitting(false);
     }
   };
@@ -948,11 +961,8 @@ function DisbandGroupModal({
         onClick={() => !submitting && onClose()}
       />
       <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] bg-surface rounded-2xl shadow-2xl z-[70] p-6">
-        <p className="text-sm font-bold mb-1">Giải tán "{groupName}"?</p>
-        <p className="text-xs text-text-muted mb-5">
-          Toàn bộ tin nhắn, file và thành viên sẽ bị xoá vĩnh viễn. Hành động
-          này không thể hoàn tác.
-        </p>
+        <p className="text-sm font-bold mb-1">{t("title", { name: groupName })}</p>
+        <p className="text-xs text-text-muted mb-5">{t("desc")}</p>
         <div className="flex gap-2">
           <button
             onClick={handleConfirm}
@@ -960,14 +970,14 @@ function DisbandGroupModal({
             className="flex-1 py-2.5 rounded-xl text-xs font-semibold text-white bg-red-500 hover:bg-red-600 transition-colors disabled:opacity-60 flex items-center justify-center gap-1.5"
           >
             {submitting && <Loader2 size={12} className="animate-spin" />}
-            Giải tán nhóm
+            {t("confirmBtn")}
           </button>
           <button
             onClick={onClose}
             disabled={submitting}
             className="flex-1 py-2.5 rounded-xl border border-surface-200 text-xs font-semibold text-text-secondary hover:bg-surface-50 transition-colors disabled:opacity-50"
           >
-            Huỷ
+            {tc("cancel")}
           </button>
         </div>
       </div>
@@ -986,12 +996,15 @@ function InviteLinkPanel({
   const [info, setInfo] = useState<GroupInviteLinkInfo | null>(null);
   const [loading, setLoading] = useState(true);
   const [copied, setCopied] = useState(false);
+  const t = useTranslations("chat.info.inviteLink");
+  const tc = useTranslations("common");
+  const tu = useTranslations("chat.utils");
 
   useEffect(() => {
     setLoading(true);
-    fetchInviteLink(conversationId)
+    fetchInviteLink(conversationId, tu)
       .then(setInfo)
-      .catch(() => showToast("Không thể tải link mời", "error"))
+      .catch(() => showToast(t("loadFailed"), "error"))
       .finally(() => setLoading(false));
   }, [conversationId]);
 
@@ -1002,16 +1015,14 @@ function InviteLinkPanel({
     setTimeout(() => setCopied(false), 1500);
   };
 
-  const expiresText = info
-    ? new Date(info.expiresAt).toLocaleDateString("vi-VN")
-    : "";
+  const expiresText = info ? new Date(info.expiresAt).toLocaleDateString() : "";
 
   return (
     <>
       <div className="fixed inset-0 bg-black/40 dark:bg-black/25 z-[60]" onClick={onClose} />
       <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[380px] bg-surface rounded-2xl shadow-2xl z-[60] p-6">
         <div className="flex items-center justify-between mb-1">
-          <p className="text-sm font-bold text-text-primary">Link mời nhóm</p>
+          <p className="text-sm font-bold text-text-primary">{t("title")}</p>
           <button
             onClick={onClose}
             className="p-1.5 hover:bg-surface-100 rounded-lg text-text-muted"
@@ -1019,14 +1030,11 @@ function InviteLinkPanel({
             <X size={15} />
           </button>
         </div>
-        <p className="text-xs text-text-muted mb-4">
-          Bất kỳ ai có link này đều có thể gửi yêu cầu tham gia, chờ trưởng nhóm
-          duyệt. Link tự động đổi mới sau 30 ngày kể từ lần tạo.
-        </p>
+        <p className="text-xs text-text-muted mb-4">{t("desc")}</p>
 
         {loading ? (
           <div className="flex items-center justify-center py-6 text-text-muted text-xs gap-2">
-            <Loader2 size={14} className="animate-spin" /> Đang tải...
+            <Loader2 size={14} className="animate-spin" /> {tc("loading")}
           </div>
         ) : info ? (
           <>
@@ -1038,11 +1046,11 @@ function InviteLinkPanel({
                 onClick={handleCopy}
                 className="shrink-0 px-2.5 py-1 rounded-lg bg-primary text-white text-[11px] font-semibold hover:bg-primary-700 transition-colors"
               >
-                {copied ? "Đã sao chép" : "Sao chép"}
+                {copied ? t("copied") : t("copy")}
               </button>
             </div>
             <p className="text-[11px] text-text-muted">
-              Hết hạn vào {expiresText}
+              {t("expiresAt", { date: expiresText })}
             </p>
           </>
         ) : null}
@@ -1064,11 +1072,14 @@ function JoinRequestsPanel({
   const [requests, setRequests] = useState<JoinRequestItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [actioningId, setActioningId] = useState<string | null>(null);
+  const t = useTranslations("chat.info.joinRequests");
+  const tc = useTranslations("common");
+  const tu = useTranslations("chat.utils");
 
   const load = async () => {
     setLoading(true);
     try {
-      setRequests(await fetchJoinRequests(conversationId));
+      setRequests(await fetchJoinRequests(conversationId, tu));
     } catch {
       setRequests([]);
     } finally {
@@ -1086,17 +1097,15 @@ function JoinRequestsPanel({
   ) => {
     setActioningId(userId);
     try {
-      await respondJoinRequest(conversationId, userId, action);
+      await respondJoinRequest(conversationId, userId, action, tu);
       setRequests((prev) => prev.filter((r) => r.userId !== userId));
       onProcessed?.();
       showToast(
-        action === "approve"
-          ? "Đã chấp nhận thành viên mới"
-          : "Đã từ chối yêu cầu",
+        action === "approve" ? t("approvedToast") : t("rejectedToast"),
         "success",
       );
     } catch (e) {
-      showToast(e instanceof Error ? e.message : "Có lỗi xảy ra", "error");
+      showToast(e instanceof Error ? e.message : t("genericError"), "error");
     } finally {
       setActioningId(null);
     }
@@ -1108,11 +1117,9 @@ function JoinRequestsPanel({
       <div className="fixed inset-y-0 right-0 w-[340px] bg-surface z-[60] flex flex-col shadow-2xl">
         <div className="flex items-center justify-between px-5 py-4 border-b border-surface-100">
           <div>
-            <p className="text-sm font-bold text-text-primary">
-              Yêu cầu tham gia
-            </p>
+            <p className="text-sm font-bold text-text-primary">{t("title")}</p>
             <p className="text-xs text-text-muted mt-0.5">
-              {requests.length} yêu cầu đang chờ
+              {t("pendingCount", { count: requests.length })}
             </p>
           </div>
           <button
@@ -1126,16 +1133,14 @@ function JoinRequestsPanel({
         <div className="flex-1 overflow-y-auto py-2">
           {loading ? (
             <div className="flex items-center justify-center py-8 text-text-muted text-xs gap-2">
-              <Loader2 size={14} className="animate-spin" /> Đang tải...
+              <Loader2 size={14} className="animate-spin" /> {tc("loading")}
             </div>
           ) : requests.length === 0 ? (
             <div className="flex flex-col items-center py-16 gap-3 text-text-muted px-6">
               <div className="w-12 h-12 rounded-full bg-surface-100 flex items-center justify-center">
                 <UserPlus size={22} className="opacity-50" />
               </div>
-              <p className="text-xs text-center">
-                Chưa có yêu cầu tham gia nào
-              </p>
+              <p className="text-xs text-center">{t("empty")}</p>
             </div>
           ) : (
             requests.map((r) => {
@@ -1162,7 +1167,7 @@ function JoinRequestsPanel({
                       onClick={() => handleRespond(r.userId, "reject")}
                       disabled={busy}
                       className="w-7 h-7 rounded-full bg-surface-100 hover:bg-red-100 dark:hover:bg-red-500/25 flex items-center justify-center text-text-muted hover:text-red-500 transition-colors disabled:opacity-50"
-                      title="Từ chối"
+                      title={t("reject")}
                     >
                       <X size={13} />
                     </button>
@@ -1170,7 +1175,7 @@ function JoinRequestsPanel({
                       onClick={() => handleRespond(r.userId, "approve")}
                       disabled={busy}
                       className="w-7 h-7 rounded-full bg-primary/10 hover:bg-primary/20 flex items-center justify-center text-primary transition-colors disabled:opacity-50"
-                      title="Chấp nhận"
+                      title={t("approve")}
                     >
                       {busy ? (
                         <Loader2 size={13} className="animate-spin" />
@@ -1238,10 +1243,13 @@ export function InfoSidebar({
   const [inviteLinkOpen, setInviteLinkOpen] = useState(false);
   const [joinRequestsOpen, setJoinRequestsOpen] = useState(false);
   const [joinRequestCount, setJoinRequestCount] = useState(0);
+  const t = useTranslations("chat.info");
+  const tc = useTranslations("common");
+  const tu = useTranslations("chat.utils");
 
   useEffect(() => {
     setLoadingAttachments(true);
-    fetchConversationAttachments(conv.id)
+    fetchConversationAttachments(conv.id, tu)
       .then(setAttachments)
       .catch(() => setAttachments([]))
       .finally(() => setLoadingAttachments(false));
@@ -1250,7 +1258,7 @@ export function InfoSidebar({
   const reloadMembers = useCallback(async () => {
     if (!conv.isGroup) return;
     try {
-      const data = await fetchGroupMembers(conv.id);
+      const data = await fetchGroupMembers(conv.id, tu);
       setMembers(data);
     } catch {
       setMembers([]);
@@ -1266,7 +1274,7 @@ export function InfoSidebar({
 
   useEffect(() => {
     if (!conv.isGroup || !isLeader) return;
-    fetchJoinRequests(conv.id)
+    fetchJoinRequests(conv.id, tu)
       .then((r) => setJoinRequestCount(r.length))
       .catch(() => setJoinRequestCount(0));
   }, [conv.id, conv.isGroup, isLeader]);
@@ -1280,19 +1288,19 @@ export function InfoSidebar({
       const results = await startAvatarUpload([file]);
       const url = results?.[0]?.ufsUrl ?? results?.[0]?.url;
       const key = results?.[0]?.key;
-      if (!url) throw new Error("Tải ảnh lên thất bại");
-      await updateConversationInfo(conv.id, { avatarUrl: url, avatarKey: key });
+      if (!url) throw new Error(t("avatarUploadFailed"));
+      await updateConversationInfo(conv.id, { avatarUrl: url, avatarKey: key }, tu);
       onConvUpdated?.({ avatarUrl: url });
-      showToast("Đã đổi ảnh nhóm", "success");
+      showToast(t("avatarChangedToast"), "success");
     } catch (e) {
-      showToast(e instanceof Error ? e.message : "Có lỗi xảy ra", "error");
+      showToast(e instanceof Error ? e.message : t("genericError"), "error");
     } finally {
       setUploadingAvatar(false);
     }
   };
 
   const handleSaveName = async (trimmed: string) => {
-    await updateConversationInfo(conv.id, { name: trimmed });
+    await updateConversationInfo(conv.id, { name: trimmed }, tu);
     onConvUpdated?.({ name: trimmed });
   };
 
@@ -1301,9 +1309,9 @@ export function InfoSidebar({
     try {
       await blockUser(conv.otherUserId);
       onConvUpdated?.({ isBlockedByMe: true });
-      showToast("Đã chặn người dùng", "success");
+      showToast(t("blockedToast"), "success");
     } catch (e) {
-      showToast(e instanceof Error ? e.message : "Có lỗi xảy ra", "error");
+      showToast(e instanceof Error ? e.message : t("genericError"), "error");
     } finally {
       setConfirm(null);
     }
@@ -1314,9 +1322,9 @@ export function InfoSidebar({
     try {
       await unblockUser(conv.otherUserId);
       onConvUpdated?.({ isBlockedByMe: false });
-      showToast("Đã bỏ chặn người dùng", "success");
+      showToast(t("unblockedToast"), "success");
     } catch (e) {
-      showToast(e instanceof Error ? e.message : "Có lỗi xảy ra", "error");
+      showToast(e instanceof Error ? e.message : t("genericError"), "error");
     }
   };
 
@@ -1334,25 +1342,25 @@ export function InfoSidebar({
 
   const handleSimpleLeave = async () => {
     try {
-      await leaveGroup(conv.id);
-      showToast("Bạn đã rời nhóm", "success");
+      await leaveGroup(conv.id, tu);
+      showToast(t("leftGroupToast"), "success");
       setConfirm(null);
       onLeaveConversation?.(conv.id);
     } catch (e) {
-      showToast(e instanceof Error ? e.message : "Có lỗi xảy ra", "error");
+      showToast(e instanceof Error ? e.message : t("genericError"), "error");
     }
   };
 
   const handleTransferAndLeave = async (successorId: string) => {
-    await leaveGroup(conv.id, successorId);
-    showToast("Đã chuyển quyền trưởng nhóm và rời nhóm", "success");
+    await leaveGroup(conv.id, tu, successorId);
+    showToast(t("transferredAndLeftToast"), "success");
     setTransferLeaveOpen(false);
     onLeaveConversation?.(conv.id);
   };
 
   const handleDisband = async () => {
-    await disbandGroup(conv.id);
-    showToast("Đã giải tán nhóm", "success");
+    await disbandGroup(conv.id, tu);
+    showToast(t("disbandedToast"), "success");
     setDisbandOpen(false);
     onLeaveConversation?.(conv.id);
   };
@@ -1363,12 +1371,13 @@ export function InfoSidebar({
   const docAttachments = attachments.filter((a) => a.type === "DOCUMENT");
 
   const initials = getInitials(conv.name);
+  const acceptedMemberCount = members.filter((m) => m.isAccepted).length;
 
   return (
     <>
       <div className="w-[280px] shrink-0 border-l border-surface-200 bg-surface flex flex-col overflow-y-auto">
         <div className="flex items-center justify-between px-4 py-3 border-b border-surface-100 shrink-0">
-          <p className="text-sm font-bold text-text-primary">Thông tin</p>
+          <p className="text-sm font-bold text-text-primary">{t("header")}</p>
           <button
             onClick={onClose}
             className="p-1.5 hover:bg-surface-100 rounded-lg transition-colors text-text-muted"
@@ -1425,7 +1434,7 @@ export function InfoSidebar({
                     className="w-full flex items-center gap-2.5 px-3 py-2.5 text-xs text-text-primary hover:bg-surface-50 transition-colors"
                   >
                     <User size={13} className="text-text-muted shrink-0" />
-                    Xem ảnh nhóm
+                    {t("viewGroupPhoto")}
                   </button>
                 )}
                 <button
@@ -1436,7 +1445,7 @@ export function InfoSidebar({
                   className="w-full flex items-center gap-2.5 px-3 py-2.5 text-xs text-text-primary hover:bg-surface-50 transition-colors"
                 >
                   <Camera size={13} className="text-text-muted shrink-0" />
-                  Đổi ảnh nhóm
+                  {t("changeGroupPhoto")}
                 </button>
               </div>
             )}
@@ -1450,13 +1459,13 @@ export function InfoSidebar({
               className="mt-1.5 flex items-center gap-1 text-[11px] text-text-muted hover:text-primary transition-colors"
             >
               <Pencil size={11} />
-              Đổi tên nhóm
+              {t("renameGroup")}
             </button>
           )}
           {!conv.isGroup &&
             (isOnline ? (
               <p className="text-xs text-green-500 dark:text-green-400 mt-0.5 font-medium">
-                ● Đang hoạt động
+                ● {t("activeNow")}
               </p>
             ) : (
               formatLastSeen(lastActiveAt) && (
@@ -1471,7 +1480,7 @@ export function InfoSidebar({
               className="mt-2.5 px-3.5 py-1.5 bg-primary/10 text-primary text-xs font-semibold rounded-full hover:bg-primary/20 transition-colors flex items-center gap-1.5"
             >
               <User size={11} />
-              Xem trang cá nhân
+              {t("viewProfile")}
             </Link>
           )}
         </div>
@@ -1479,8 +1488,8 @@ export function InfoSidebar({
           <div className="px-4 py-4 text-center">
             <p className="text-xs text-text-muted">
               {conv.isGroup
-                ? "Chấp nhận lời mời để xem đầy đủ thông tin nhóm"
-                : "Chấp nhận cuộc trò chuyện để xem thêm tuỳ chọn"}
+                ? t("acceptGroupInviteHint")
+                : t("acceptConvHint")}
             </p>
           </div>
         ) : (
@@ -1502,10 +1511,10 @@ export function InfoSidebar({
                   </div>
                   <div>
                     <p className="text-xs font-semibold text-text-primary">
-                      Thông báo
+                      {t("notifications")}
                     </p>
                     <p className="text-[11px] text-text-muted">
-                      {notifOn ? "Đang bật" : "Đã tắt"}
+                      {notifOn ? t("notifOn") : t("notifOff")}
                     </p>
                   </div>
                 </div>
@@ -1529,11 +1538,13 @@ export function InfoSidebar({
               </div>
               <div className="flex-1 text-left">
                 <p className="text-xs font-semibold text-text-primary">
-                  Thành viên
+                  {t("membersLabel")}
                 </p>
                 <p className="text-[11px] text-text-muted">
-                  {members.filter((m) => m.isAccepted).length}/{members.length}{" "}
-                  người
+                  {t("peopleRatio", {
+                    accepted: acceptedMemberCount,
+                    total: members.length,
+                  })}
                 </p>
               </div>
               <ChevronRight
@@ -1554,10 +1565,10 @@ export function InfoSidebar({
               </div>
               <div className="flex-1 text-left">
                 <p className="text-xs font-semibold text-text-primary">
-                  Link mời nhóm
+                  {t("inviteLinkLabel")}
                 </p>
                 <p className="text-[11px] text-text-muted">
-                  Chia sẻ để mời người tham gia
+                  {t("inviteLinkDesc")}
                 </p>
               </div>
               <ChevronRight
@@ -1584,12 +1595,14 @@ export function InfoSidebar({
                 </div>
                 <div className="flex-1 text-left">
                   <p className="text-xs font-semibold text-text-primary">
-                    Yêu cầu tham gia
+                    {t("joinRequestsLabel")}
                   </p>
                   <p className="text-[11px] text-text-muted">
                     {joinRequestCount > 0
-                      ? `${joinRequestCount} yêu cầu đang chờ`
-                      : "Chưa có yêu cầu nào"}
+                      ? t("joinRequests.pendingCount", {
+                          count: joinRequestCount,
+                        })
+                      : t("noRequestsYet")}
                   </p>
                 </div>
                 <ChevronRight
@@ -1604,14 +1617,14 @@ export function InfoSidebar({
         <div className="px-4 py-3 border-b border-surface-100">
           <div className="flex items-center justify-between mb-3">
             <p className="text-xs font-semibold text-text-primary">
-              Ảnh &amp; File
+              {t("mediaFiles")}
             </p>
             {(mediaAttachments.length > 0 || docAttachments.length > 0) && (
               <button
                 onClick={() => setMediaModalTab("images")}
                 className="text-xs text-primary font-semibold shrink-0 cursor-pointer"
               >
-                Xem tất cả
+                {t("viewAll")}
               </button>
             )}
           </div>
@@ -1627,7 +1640,7 @@ export function InfoSidebar({
             </div>
           ) : mediaAttachments.length === 0 && docAttachments.length === 0 ? (
             <p className="text-[11px] text-text-muted py-2">
-              Chưa có ảnh/file nào được chia sẻ
+              {t("noMediaShared")}
             </p>
           ) : (
             <>
@@ -1710,7 +1723,7 @@ export function InfoSidebar({
 
         <div className="px-4 py-3 flex flex-col gap-0.5">
           <p className="text-[10px] font-bold text-text-muted uppercase tracking-wider mb-2 px-1">
-            {conv.isGroup ? "Tuỳ chọn nhóm" : "Tuỳ chọn"}
+            {conv.isGroup ? t("groupOptions") : t("options")}
           </p>
           {!conv.isGroup && (
             <button
@@ -1719,7 +1732,7 @@ export function InfoSidebar({
               }
               className="flex items-center gap-2.5 px-3 py-2 rounded-xl hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors group w-full text-left"
             >
-              <div className="w-7 h-7 rounded-lg bg-surface-100 group-hover:bg-red-100 dark:group-hover:bg-red-500/20 dark:hover:bg-red-500/25 dark:group-hover:bg-red-500/20 dark:hover:bg-red-500/25 dark:group-hover:bg-red-500/20 dark:hover:bg-red-500/25 dark:group-hover:bg-red-500/15 flex items-center justify-center transition-colors shrink-0">
+              <div className="w-7 h-7 rounded-lg bg-surface-100 group-hover:bg-red-100 dark:group-hover:bg-red-500/15 flex items-center justify-center transition-colors shrink-0">
                 <ShieldAlert
                   size={13}
                   className="text-text-muted group-hover:text-red-500 transition-colors"
@@ -1727,14 +1740,12 @@ export function InfoSidebar({
               </div>
               <div>
                 <p className="text-xs font-semibold text-text-secondary group-hover:text-red-500 transition-colors">
-                  {conv.isBlockedByMe
-                    ? "Bỏ chặn người dùng"
-                    : "Chặn người dùng"}
+                  {conv.isBlockedByMe ? t("unblockUser") : t("blockUser")}
                 </p>
                 <p className="text-[11px] text-text-muted">
                   {conv.isBlockedByMe
-                    ? "Cho phép nhắn tin trở lại"
-                    : "Ngừng nhận tin từ người này"}
+                    ? t("allowMessagingAgain")
+                    : t("stopReceivingFromUser")}
                 </p>
               </div>
             </button>
@@ -1744,7 +1755,7 @@ export function InfoSidebar({
               onClick={handleLeaveClick}
               className="flex items-center gap-2.5 px-3 py-2 rounded-xl hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors group w-full text-left"
             >
-              <div className="w-7 h-7 rounded-lg bg-surface-100 group-hover:bg-red-100 dark:group-hover:bg-red-500/20 dark:hover:bg-red-500/25 dark:group-hover:bg-red-500/20 dark:hover:bg-red-500/25 dark:group-hover:bg-red-500/20 dark:hover:bg-red-500/25 dark:group-hover:bg-red-500/15 flex items-center justify-center transition-colors shrink-0">
+              <div className="w-7 h-7 rounded-lg bg-surface-100 group-hover:bg-red-100 dark:group-hover:bg-red-500/15 flex items-center justify-center transition-colors shrink-0">
                 <LogOut
                   size={13}
                   className="text-text-muted group-hover:text-red-500 transition-colors"
@@ -1752,10 +1763,10 @@ export function InfoSidebar({
               </div>
               <div>
                 <p className="text-xs font-semibold text-text-secondary group-hover:text-red-500 transition-colors">
-                  Rời nhóm
+                  {t("leaveGroup")}
                 </p>
                 <p className="text-[11px] text-text-muted">
-                  Bạn sẽ không nhận tin nhắn nữa
+                  {t("leaveGroupDesc")}
                 </p>
               </div>
             </button>
@@ -1765,7 +1776,7 @@ export function InfoSidebar({
               onClick={() => setDisbandOpen(true)}
               className="flex items-center gap-2.5 px-3 py-2 rounded-xl hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors group w-full text-left"
             >
-              <div className="w-7 h-7 rounded-lg bg-surface-100 group-hover:bg-red-100 dark:group-hover:bg-red-500/20 dark:hover:bg-red-500/25 dark:group-hover:bg-red-500/20 dark:hover:bg-red-500/25 dark:group-hover:bg-red-500/20 dark:hover:bg-red-500/25 dark:group-hover:bg-red-500/15 flex items-center justify-center transition-colors shrink-0">
+              <div className="w-7 h-7 rounded-lg bg-surface-100 group-hover:bg-red-100 dark:group-hover:bg-red-500/15 flex items-center justify-center transition-colors shrink-0">
                 <ShieldAlert
                   size={13}
                   className="text-text-muted group-hover:text-red-500 transition-colors"
@@ -1773,10 +1784,10 @@ export function InfoSidebar({
               </div>
               <div>
                 <p className="text-xs font-semibold text-text-secondary group-hover:text-red-500 transition-colors">
-                  Giải tán nhóm
+                  {t("disbandGroup")}
                 </p>
                 <p className="text-[11px] text-text-muted">
-                  Xoá vĩnh viễn toàn bộ nhóm
+                  {t("disbandGroupDesc")}
                 </p>
               </div>
             </button>
@@ -1785,7 +1796,7 @@ export function InfoSidebar({
             onClick={() => setConfirm("report")}
             className="flex items-center gap-2.5 px-3 py-2 rounded-xl hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors group w-full text-left"
           >
-            <div className="w-7 h-7 rounded-lg bg-surface-100 group-hover:bg-red-100 dark:group-hover:bg-red-500/20 dark:hover:bg-red-500/25 dark:group-hover:bg-red-500/20 dark:hover:bg-red-500/25 dark:group-hover:bg-red-500/20 dark:hover:bg-red-500/25 dark:group-hover:bg-red-500/15 flex items-center justify-center transition-colors shrink-0">
+            <div className="w-7 h-7 rounded-lg bg-surface-100 group-hover:bg-red-100 dark:group-hover:bg-red-500/15 flex items-center justify-center transition-colors shrink-0">
               <Flag
                 size={13}
                 className="text-text-muted group-hover:text-red-500 transition-colors"
@@ -1793,11 +1804,9 @@ export function InfoSidebar({
             </div>
             <div>
               <p className="text-xs font-semibold text-text-secondary group-hover:text-red-500 transition-colors">
-                Báo cáo
+                {t("report")}
               </p>
-              <p className="text-[11px] text-text-muted">
-                Gửi phản ánh đến quản trị viên
-              </p>
+              <p className="text-[11px] text-text-muted">{t("reportDesc")}</p>
             </div>
           </button>
         </div>
@@ -1897,19 +1906,19 @@ export function InfoSidebar({
           <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] bg-surface rounded-2xl shadow-2xl z-[70] p-6">
             <p className="text-sm font-bold text-text-primary mb-1">
               {confirm === "block"
-                ? "Chặn người dùng?"
+                ? t("confirm.blockTitle")
                 : confirm === "leave"
-                  ? "Rời nhóm?"
-                  : "Báo cáo?"}
+                  ? t("confirm.leaveTitle")
+                  : t("confirm.reportTitle")}
             </p>
             <p className="text-xs text-text-muted mb-5">
               {confirm === "block"
-                ? `Bạn sẽ không nhận được tin nhắn từ ${conv.name} nữa.`
+                ? t("confirm.blockDesc", { name: conv.name })
                 : confirm === "leave"
-                  ? `Bạn sẽ rời ${conv.name}. Bạn chắc chứ ?`
+                  ? t("confirm.leaveDesc", { name: conv.name })
                   : conv.isGroup
-                    ? `Báo cáo nhóm "${conv.name}" tới quản trị viên.`
-                    : "Mô tả vấn đề sẽ giúp chúng tôi xử lý nhanh hơn."}
+                    ? t("confirm.reportGroupDesc", { name: conv.name })
+                    : t("confirm.reportUserDesc")}
             </p>
             <div className="flex gap-2">
               <button
@@ -1927,16 +1936,16 @@ export function InfoSidebar({
                 )}
               >
                 {confirm === "block"
-                  ? "Chặn"
+                  ? t("confirm.blockBtn")
                   : confirm === "leave"
-                    ? "Rời nhóm"
-                    : "Báo cáo"}
+                    ? t("confirm.leaveBtn")
+                    : t("confirm.reportBtn")}
               </button>
               <button
                 onClick={() => setConfirm(null)}
                 className="flex-1 py-2 rounded-xl border border-surface-200 text-xs font-semibold text-text-secondary hover:bg-surface-50 transition-colors"
               >
-                Huỷ
+                {tc("cancel")}
               </button>
             </div>
           </div>
@@ -1947,14 +1956,14 @@ export function InfoSidebar({
           <ReportModal
             targetType="GROUP"
             targetId={conv.id}
-            title={`Báo cáo nhóm ${conv.name}`}
+            title={t("reportGroupTitle", { name: conv.name })}
             onClose={() => setReportModalOpen(false)}
           />
         ) : conv.otherUserId ? (
           <ReportModal
             targetType="USER"
             targetId={conv.otherUserId}
-            title={`Báo cáo ${conv.name}`}
+            title={t("reportUserTitle", { name: conv.name })}
             onClose={() => setReportModalOpen(false)}
           />
         ) : null)}
