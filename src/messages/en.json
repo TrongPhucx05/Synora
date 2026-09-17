@@ -6,6 +6,27 @@
     "notifications": "Notifications",
     "support": "Support"
   },
+  "navbar": {
+    "searchPlaceholder": "Search documents, posts, study groups...",
+    "search": "Search",
+    "searchByCategory": "Search by category",
+    "categories": {
+      "documents": "Documents",
+      "posts": "Posts",
+      "people": "People",
+      "groups": "Groups",
+      "topics": "Topics"
+    },
+    "history": {
+      "empty": "No search history",
+      "recent": "Recent searches",
+      "clearAll": "Clear all"
+    },
+    "messagesTooltip": "Messages",
+    "adminPage": "Admin panel",
+    "login": "Log in",
+    "register": "Sign up"
+  },
   "settings": {
     "theme": {
       "title": "Theme",
@@ -657,6 +678,34 @@
         "multipleFiles": "Sent {count} files"
       },
       "replySentFile": "Sent a file"
+    }
+  },
+  "notifications": {
+    "page": {
+      "title": "Notifications",
+      "subtitle": "Last 30 days",
+      "markAllRead": "Mark all as read",
+      "tabAll": "All",
+      "tabUnread": "Unread",
+      "tabActivity": "Activity",
+      "tabGroups": "Groups",
+      "tabDocuments": "Documents",
+      "empty": "No matching notifications",
+      "loadMore": "Load more"
+    },
+    "row": {
+      "minutesAgo": "{count}m ago",
+      "hoursAgo": "{count}h ago",
+      "approved": "Approved",
+      "accepted": "Accepted",
+      "declined": "Declined"
+    },
+    "bell": {
+      "tooltip": "Notifications",
+      "title": "Notifications",
+      "viewAll": "View all",
+      "loading": "Loading...",
+      "empty": "No notifications in the last 30 days"
     }
   }
 }

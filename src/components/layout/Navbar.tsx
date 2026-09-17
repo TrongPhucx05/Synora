@@ -5,6 +5,7 @@ import { useState, useRef, useEffect, useCallback } from "react";
 import { Session } from "next-auth";
 import { signOut } from "next-auth/react";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { Bell, Search, MessageCircle, X, Clock, Loader2 } from "lucide-react";
 import { NotifRow } from "@/components/notifications/NotifRow";
@@ -45,13 +46,13 @@ function clearHistory(userId: string) {
   localStorage.setItem(HISTORY_KEY(userId), JSON.stringify([]));
 }
 
-const CATEGORY_TABS: { label: string; tab: string; isTopic?: boolean }[] = [
-  { label: "Tài liệu", tab: "documents" },
-  { label: "Bài viết", tab: "posts" },
-  { label: "Mọi người", tab: "people" },
-  { label: "Nhóm", tab: "groups" },
-  { label: "Chủ đề", tab: "topics", isTopic: true },
-];
+const CATEGORY_TABS = [
+  { tab: "documents", labelKey: "categories.documents" },
+  { tab: "posts", labelKey: "categories.posts" },
+  { tab: "people", labelKey: "categories.people" },
+  { tab: "groups", labelKey: "categories.groups" },
+  { tab: "topics", labelKey: "categories.topics", isTopic: true },
+] as const;
 
 function SearchDropdown({
   query,
@@ -68,6 +69,7 @@ function SearchDropdown({
   onSelect: () => void;
   onSelectHistory: (q: string) => void;
 }) {
+  const t = useTranslations("navbar");
   const hasQuery = query.trim().length > 0;
   const cleanQuery = query.startsWith("#") ? query.slice(1) : query;
 
@@ -76,13 +78,13 @@ function SearchDropdown({
       <div className="absolute top-full left-0 right-0 mt-2 bg-surface rounded-2xl shadow-xl border border-surface-200 overflow-hidden z-50">
         {history.length === 0 ? (
           <div className="px-4 py-6 text-center text-xs text-text-muted">
-            Chưa có lịch sử tìm kiếm
+            {t("history.empty")}
           </div>
         ) : (
           <>
             <div className="flex items-center justify-between px-4 pt-3 pb-1">
               <p className="text-[10px] font-bold text-text-muted uppercase tracking-wider flex items-center gap-1.5">
-                <Clock size={10} /> Tìm kiếm gần đây
+                <Clock size={10} /> {t("history.recent")}
               </p>
               <button
                 onClick={(e) => {
@@ -91,7 +93,7 @@ function SearchDropdown({
                 }}
                 className="text-[10px] text-text-muted hover:text-text-secondary transition-colors"
               >
-                Xóa tất cả
+                {t("history.clearAll")}
               </button>
             </div>
             <div className="px-2 pb-2">
@@ -140,13 +142,16 @@ function SearchDropdown({
         <span className="flex-1 text-sm text-text-primary font-medium truncate">
           {query}
         </span>
-        <span className="text-[10px] text-text-muted shrink-0">Tìm kiếm</span>
+        <span className="text-[10px] text-text-muted shrink-0">
+          {t("search")}
+        </span>
       </Link>
       <div className="px-2 py-1.5">
         <p className="text-[10px] font-semibold text-text-muted px-2 mb-1 uppercase tracking-wider">
-          Tìm theo danh mục
+          {t("searchByCategory")}
         </p>
-        {CATEGORY_TABS.map(({ label, tab, isTopic }) => {
+        {CATEGORY_TABS.map(({ tab, labelKey, isTopic }) => {
+          const label = t(labelKey);
           const searchQ = isTopic ? `#${cleanQuery}` : query;
           const displaySuffix = isTopic ? `#${cleanQuery}` : `"${query}"`;
           return (
@@ -183,6 +188,10 @@ export default function Navbar({
   status?: string;
 }) {
   const router = useRouter();
+  const tBell = useTranslations("notifications.bell");
+  const t = useTranslations("navbar");
+  const tAvatar = useTranslations("chat.avatarMenu");
+  const tCommon = useTranslations("common");
   const [notifs, setNotifs] = useState<NotifItem[]>([]);
   const [totalUnread, setTotalUnread] = useState(0);
   const [bellLoading, setBellLoading] = useState(false);
@@ -194,7 +203,7 @@ export default function Navbar({
   const searchRef = useRef<HTMLDivElement>(null);
   const [avatarOpen, setAvatarOpen] = useState(false);
   const avatarRef = useRef<HTMLDivElement>(null);
-  const displayName = session?.user?.name ?? "User";
+  const displayName = session?.user?.name ?? tCommon("user");
   const email = session?.user?.email ?? "";
   const avatarUrl = session?.user?.image;
   const userId = session?.user?.id ?? "guest";
@@ -362,7 +371,7 @@ export default function Navbar({
               onChange={(e) => setSearchQuery(e.target.value)}
               onFocus={() => setSearchFocused(true)}
               onKeyDown={handleSearchKeyDown}
-              placeholder="Tìm kiếm tài liệu, bài viết, nhóm học tập..."
+              placeholder={t("searchPlaceholder")}
               className={`w-full pl-9 pr-8 py-2 bg-surface-100 border rounded-full text-sm text-text-primary placeholder:text-text-muted focus:outline-none transition-colors ${
                 searchFocused
                   ? "border-blue-400 bg-surface shadow-sm shadow-blue-100"
@@ -396,7 +405,7 @@ export default function Navbar({
           <Link
             href="/chat"
             className="relative p-2.5 rounded-full hover:bg-surface-100 text-text-secondary hover:text-blue-500 transition-colors block"
-            title="Tin nhắn"
+            title={t("messagesTooltip")}
           >
             <MessageCircle size={18} />
             {chatUnread > 0 && (
@@ -418,7 +427,7 @@ export default function Navbar({
                   ? "bg-blue-50 dark:bg-blue-500/15 text-blue-500 dark:text-blue-400"
                   : "hover:bg-surface-100 text-text-secondary hover:text-blue-500"
               }`}
-              title="Thông báo"
+              title={tBell("tooltip")}
             >
               <Bell size={18} />
               {totalUnread > 0 && (
@@ -435,7 +444,7 @@ export default function Navbar({
                 <div className="flex items-center justify-between px-4 py-3 border-b border-surface-200">
                   <div className="flex items-center gap-2">
                     <span className="text-sm font-bold text-text-primary">
-                      Thông báo
+                      {tBell("title")}
                     </span>
                     {totalUnread > 0 && (
                       <span className="text-[10px] font-bold text-white bg-primary rounded-full px-1.5 py-0.5 leading-none">
@@ -449,7 +458,7 @@ export default function Navbar({
                       onClick={() => setBellOpen(false)}
                       className="text-[11px] font-semibold text-blue-500 dark:text-blue-400 hover:text-blue-600 transition-colors"
                     >
-                      Xem tất cả
+                      {tBell("viewAll")}
                     </Link>
                     <button
                       onClick={() => setBellOpen(false)}
@@ -463,11 +472,11 @@ export default function Navbar({
                   {bellLoading ? (
                     <div className="flex items-center justify-center py-10 gap-2 text-text-muted">
                       <Loader2 size={16} className="animate-spin" />
-                      <span className="text-xs">Đang tải...</span>
+                      <span className="text-xs">{tBell("loading")}</span>
                     </div>
                   ) : notifs.length === 0 ? (
                     <p className="text-center text-xs text-text-muted py-10">
-                      Không có thông báo nào trong 30 ngày qua
+                      {tBell("empty")}
                     </p>
                   ) : (
                     notifs
@@ -535,7 +544,7 @@ export default function Navbar({
                         />
                       </div>
                       <span className="text-sm text-text-secondary">
-                        Trang quản trị
+                        {t("adminPage")}
                       </span>
                     </Link>
                   ) : (
@@ -552,7 +561,7 @@ export default function Navbar({
                           />
                         </div>
                         <span className="text-sm text-text-secondary">
-                          Trang cá nhân
+                          {tAvatar("profile")}
                         </span>
                       </Link>
                       <Link
@@ -567,7 +576,7 @@ export default function Navbar({
                           />
                         </div>
                         <span className="text-sm text-text-secondary">
-                          Cài đặt
+                          {tAvatar("settings")}
                         </span>
                       </Link>
                     </>
@@ -587,7 +596,7 @@ export default function Navbar({
                       />
                     </div>
                     <span className="text-sm text-red-500 dark:text-red-400 font-medium">
-                      Đăng xuất
+                      {tAvatar("logout")}
                     </span>
                   </button>
                 </div>
@@ -600,13 +609,13 @@ export default function Navbar({
               href="/login"
               className="px-4 py-1.5 text-sm font-semibold text-text-secondary border border-surface-200 hover:border-surface-200 hover:bg-surface-50 rounded-full transition-colors"
             >
-              Đăng nhập
+              {t("login")}
             </Link>
             <Link
               href="/register"
               className="px-4 py-1.5 text-sm font-semibold text-white bg-blue-500 hover:bg-blue-600 rounded-full transition-colors shadow-sm shadow-blue-200"
             >
-              Đăng ký
+              {t("register")}
             </Link>
           </div>
         )}

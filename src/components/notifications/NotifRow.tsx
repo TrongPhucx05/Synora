@@ -23,6 +23,8 @@ import {
 import type { NotifItem, NotifType } from "@/lib/notifications/types";
 import Avatar from "@/components/ui/Avatar";
 import { useSession } from "next-auth/react";
+import { useTranslations } from "next-intl";
+import { useLanguage } from "@/components/providers/LanguageProvider";
 
 const AVATAR_COLORS = [
   "bg-violet-500",
@@ -163,13 +165,19 @@ const typeConfig: Record<NotifType, { icon: any; bg: string; color: string }> =
     },
   };
 
-export function formatVietnameseTime(isoString: string) {
+export function formatNotifTime(
+  isoString: string,
+  t: (key: string, values?: Record<string, any>) => string,
+  locale: string = "vi",
+) {
   const diffMs = Date.now() - new Date(isoString).getTime();
   const diffMins = Math.floor(diffMs / 60000);
   const diffHours = Math.floor(diffMins / 60);
-  if (diffMins < 60) return `${diffMins || 1} phút trước`;
-  if (diffHours < 24) return `${diffHours} giờ trước`;
-  return new Date(isoString).toLocaleDateString("vi-VN");
+  if (diffMins < 60) return t("minutesAgo", { count: diffMins || 1 });
+  if (diffHours < 24) return t("hoursAgo", { count: diffHours });
+  return new Date(isoString).toLocaleDateString(
+    locale === "en" ? "en-US" : "vi-VN",
+  );
 }
 
 export function NotifRow({
@@ -182,6 +190,8 @@ export function NotifRow({
   onRead?: (id: string) => void;
 }) {
   const { data: session } = useSession();
+  const t = useTranslations("notifications.row");
+  const { locale } = useLanguage();
   const [status, setStatus] = useState<"pending" | "accepted" | "declined">(
     "pending",
   );
@@ -279,7 +289,7 @@ export function NotifRow({
         <p
           className={`text-[11px] mt-1 ${notif.unread ? "text-blue-500 dark:text-blue-400 font-medium" : "text-text-muted"}`}
         >
-          {formatVietnameseTime(notif.createdAt)}
+          {formatNotifTime(notif.createdAt, t, locale)}
         </p>
 
         {notif.action && !compact && (
@@ -287,12 +297,12 @@ export function NotifRow({
             {status === "accepted" ? (
               <span className="text-xs text-emerald-600 dark:text-emerald-400 font-semibold bg-emerald-50 dark:bg-emerald-500/15 px-3 py-1 rounded-lg">
                 {notif.type === "GROUP_JOIN_REQUEST"
-                  ? "Đã duyệt"
-                  : "Đã chấp nhận"}
+                  ? t("approved")
+                  : t("accepted")}
               </span>
             ) : status === "declined" ? (
               <span className="text-xs text-text-muted bg-surface-100 px-3 py-1 rounded-lg">
-                Đã từ chối
+                {t("declined")}
               </span>
             ) : (
               <>

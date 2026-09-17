@@ -6,6 +6,27 @@
     "notifications": "Thông báo",
     "support": "Trợ giúp"
   },
+  "navbar": {
+    "searchPlaceholder": "Tìm kiếm tài liệu, bài viết, nhóm học tập...",
+    "search": "Tìm kiếm",
+    "searchByCategory": "Tìm theo danh mục",
+    "categories": {
+      "documents": "Tài liệu",
+      "posts": "Bài viết",
+      "people": "Mọi người",
+      "groups": "Nhóm",
+      "topics": "Chủ đề"
+    },
+    "history": {
+      "empty": "Chưa có lịch sử tìm kiếm",
+      "recent": "Tìm kiếm gần đây",
+      "clearAll": "Xóa tất cả"
+    },
+    "messagesTooltip": "Tin nhắn",
+    "adminPage": "Trang quản trị",
+    "login": "Đăng nhập",
+    "register": "Đăng ký"
+  },
   "settings": {
     "theme": {
       "title": "Theme",
@@ -657,6 +678,34 @@
         "multipleFiles": "Đã gửi {count} tệp"
       },
       "replySentFile": "Đã gửi một file"
+    }
+  },
+  "notifications": {
+    "page": {
+      "title": "Thông báo",
+      "subtitle": "30 ngày gần nhất",
+      "markAllRead": "Đọc tất cả",
+      "tabAll": "Tất cả",
+      "tabUnread": "Chưa đọc",
+      "tabActivity": "Hoạt động",
+      "tabGroups": "Nhóm",
+      "tabDocuments": "Tài liệu",
+      "empty": "Không có thông báo phù hợp",
+      "loadMore": "Xem thêm"
+    },
+    "row": {
+      "minutesAgo": "{count} phút trước",
+      "hoursAgo": "{count} giờ trước",
+      "approved": "Đã duyệt",
+      "accepted": "Đã chấp nhận",
+      "declined": "Đã từ chối"
+    },
+    "bell": {
+      "tooltip": "Thông báo",
+      "title": "Thông báo",
+      "viewAll": "Xem tất cả",
+      "loading": "Đang tải...",
+      "empty": "Không có thông báo nào trong 30 ngày qua"
     }
   }
 }

@@ -5,6 +5,7 @@ import { Bell, Loader2, CheckCheck } from "lucide-react";
 import { NotifRow } from "@/components/notifications/NotifRow";
 import type { NotifItem } from "@/lib/notifications/types";
 import { emitUnreadCount } from "@/lib/notifications/hooks";
+import { useTranslations } from "next-intl";
 
 const ACTIVITY_TYPES = [
   "FRIEND_REQUEST",
@@ -33,6 +34,8 @@ export default function NotificationsPage() {
   const [loading, setLoading] = useState(true);
   const [totalUnread, setTotalUnread] = useState(0);
   const [nextCursor, setNextCursor] = useState<string | null>(null);
+  const t = useTranslations("notifications.page");
+  const tc = useTranslations("common");
 
   useEffect(() => {
     setLoading(true);
@@ -91,11 +94,11 @@ export default function NotificationsPage() {
   ).length;
 
   const tabs = [
-    { id: "all", label: "Tất cả", badge: totalUnread },
-    { id: "unread", label: "Chưa đọc", badge: 0 },
-    { id: "activity", label: "Hoạt động", badge: unreadActivity },
-    { id: "groups", label: "Nhóm", badge: unreadGroups },
-    { id: "documents", label: "Tài liệu", badge: unreadDocs },
+    { id: "all", label: t("tabAll"), badge: totalUnread },
+    { id: "unread", label: t("tabUnread"), badge: 0 },
+    { id: "activity", label: t("tabActivity"), badge: unreadActivity },
+    { id: "groups", label: t("tabGroups"), badge: unreadGroups },
+    { id: "documents", label: t("tabDocuments"), badge: unreadDocs },
   ];
 
   const filteredNotifs = notifs.filter((n) => {
@@ -112,9 +115,9 @@ export default function NotificationsPage() {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-xl font-bold tracking-tight text-text-primary">
-              Thông báo
+              {t("title")}
             </h1>
-            <p className="text-xs text-text-muted mt-0.5">30 ngày gần nhất</p>
+            <p className="text-xs text-text-muted mt-0.5">{t("subtitle")}</p>
           </div>
           <button
             onClick={markAllRead}
@@ -122,7 +125,7 @@ export default function NotificationsPage() {
             className="flex items-center gap-1.5 text-xs font-semibold text-blue-500 dark:text-blue-400 bg-blue-50 dark:bg-blue-500/15 hover:bg-blue-100 dark:hover:bg-blue-500/25 px-3 py-2 rounded-xl disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
           >
             <CheckCheck size={13} />
-            Đọc tất cả
+            {t("markAllRead")}
           </button>
         </div>
 
@@ -157,12 +160,12 @@ export default function NotificationsPage() {
           {loading ? (
             <div className="flex items-center justify-center py-24 gap-2 text-text-muted">
               <Loader2 size={18} className="animate-spin" />
-              <span className="text-sm">Đang tải...</span>
+              <span className="text-sm">{tc("loading")}</span>
             </div>
           ) : filteredNotifs.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-24 text-text-muted gap-3">
               <Bell size={36} className="opacity-20" />
-              <p className="text-sm">Không có thông báo phù hợp</p>
+              <p className="text-sm">{t("empty")}</p>
             </div>
           ) : (
             <>
@@ -175,7 +178,7 @@ export default function NotificationsPage() {
                     onClick={loadMore}
                     className="px-5 py-2 text-sm font-semibold text-blue-500 dark:text-blue-400 border border-blue-200 rounded-xl hover:bg-blue-50 dark:hover:bg-blue-500/20 transition-colors"
                   >
-                    Xem thêm
+                    {t("loadMore")}
                   </button>
                 </div>
               )}
