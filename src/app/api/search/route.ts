@@ -22,7 +22,6 @@ export async function GET(req: NextRequest) {
       posts: [],
       documents: [],
       people: [],
-      groups: [],
       topics: [],
     });
 
@@ -151,51 +150,39 @@ export async function GET(req: NextRequest) {
   };
 
   if (countOnly) {
-    const [postCount, docCount, peopleCount, groupCount, topicCount] =
-      await Promise.all([
-        prisma.post.count({ where: postWhere }),
-        !isHashtag
-          ? prisma.document.count({
-              where: {
-                OR: [
-                  { title: { contains: q, mode: "insensitive" } },
-                  { description: { contains: q, mode: "insensitive" } },
-                ],
-              },
-            })
-          : Promise.resolve(0),
-        !isHashtag
-          ? prisma.user.count({
-              where: {
-                ...(blockedIds.length > 0 ? { id: { notIn: blockedIds } } : {}),
-                OR: [
-                  { username: { contains: q, mode: "insensitive" } },
-                  {
-                    profile: {
-                      displayName: { contains: q, mode: "insensitive" },
-                    },
+    const [postCount, docCount, peopleCount, topicCount] = await Promise.all([
+      prisma.post.count({ where: postWhere }),
+      !isHashtag
+        ? prisma.document.count({
+            where: {
+              OR: [
+                { title: { contains: q, mode: "insensitive" } },
+                { description: { contains: q, mode: "insensitive" } },
+              ],
+            },
+          })
+        : Promise.resolve(0),
+      !isHashtag
+        ? prisma.user.count({
+            where: {
+              ...(blockedIds.length > 0 ? { id: { notIn: blockedIds } } : {}),
+              OR: [
+                { username: { contains: q, mode: "insensitive" } },
+                {
+                  profile: {
+                    displayName: { contains: q, mode: "insensitive" },
                   },
-                ],
-              },
-            })
-          : Promise.resolve(0),
-        !isHashtag
-          ? prisma.community.count({
-              where: {
-                OR: [
-                  { name: { contains: q, mode: "insensitive" } },
-                  { description: { contains: q, mode: "insensitive" } },
-                ],
-              },
-            })
-          : Promise.resolve(0),
-        prisma.tag.count({ where: topicWhere }),
-      ]);
+                },
+              ],
+            },
+          })
+        : Promise.resolve(0),
+      prisma.tag.count({ where: topicWhere }),
+    ]);
     return NextResponse.json({
       posts: postCount,
       documents: docCount,
       people: peopleCount,
-      groups: groupCount,
       topics: topicCount,
     });
   }
@@ -219,7 +206,7 @@ export async function GET(req: NextRequest) {
     }),
   );
 
-  const [posts, documents, people, groups] = await Promise.all([
+  const [posts, documents, people] = await Promise.all([
     tab === "all" || tab === "posts"
       ? prisma.post.findMany({
           where: postWhere,
@@ -272,19 +259,6 @@ export async function GET(req: NextRequest) {
             profile: true,
             _count: { select: { followers: true, documents: true } },
           },
-        })
-      : [],
-
-    !isHashtag && (tab === "all" || tab === "groups")
-      ? prisma.community.findMany({
-          where: {
-            OR: [
-              { name: { contains: q, mode: "insensitive" } },
-              { description: { contains: q, mode: "insensitive" } },
-            ],
-          },
-          take: tab === "all" ? 3 : 20,
-          include: { _count: { select: { members: true } } },
         })
       : [],
   ]);
@@ -369,7 +343,6 @@ export async function GET(req: NextRequest) {
     posts,
     documents,
     people: peopleWithStatus,
-    groups,
     topics: tagsWithCorrectCount,
   });
 }

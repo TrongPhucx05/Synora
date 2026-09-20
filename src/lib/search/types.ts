@@ -1,6 +1,6 @@
-export type TabKey = "all" | "documents" | "posts" | "people" | "groups" | "topics";
+export type TabKey = "all" | "documents" | "posts" | "people" | "topics";
 
-export type ResultType = "document" | "post" | "person" | "group" | "topic";
+export type ResultType = "document" | "post" | "person" | "topic";
 
 export type FriendStatus = "none" | "pending" | "friends";
 
@@ -23,6 +23,7 @@ export interface SearchResult {
   sessionUsername?: string | null;
   canSendFriendRequest?: boolean;
   canMessage?: boolean;
+  followerCount?: number;
 }
 
 export interface FilterGroup {

@@ -13,7 +13,6 @@ import { DocumentsTab } from "@/components/profile/tabs/DocumentsTab";
 import { SavedPostsTab } from "@/components/profile/tabs/SavedPostsTab";
 import { SubjectsWidget } from "@/components/profile/widgets/SubjectsWidget";
 import { FriendsWidget } from "@/components/profile/widgets/FriendsWidget";
-import { SuggestionsWidget } from "@/components/profile/widgets/SuggestionsWidget";
 import { RecentDocsWidget } from "@/components/profile/widgets/RecentDocsWidget";
 import { PROFILE_TABS } from "@/lib/profile/data";
 import type { ProfileTab } from "@/lib/profile/data";
@@ -139,7 +138,6 @@ export default function ProfilePage() {
         <div className="w-[252px] shrink-0 flex flex-col gap-3">
           <SubjectsWidget subjects={profileData.subjects} />
           <FriendsWidget username={username} refreshKey={friendsRefreshKey} onUnfriend={refreshProfile} />
-          <SuggestionsWidget username={username} />
           <RecentDocsWidget docs={profileData.recentDocs} username={username} />
         </div>
       </div>

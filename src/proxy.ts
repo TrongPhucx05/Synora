@@ -24,7 +24,6 @@ export const config = {
   matcher: [
     "/settings(.*)",
     "/chat(.*)",
-    "/community(.*)",
     "/notifications(.*)",
     "/admin(.*)",
   ],
