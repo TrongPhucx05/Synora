@@ -759,5 +759,95 @@
       "loading": "Loading...",
       "empty": "No notifications in the last 30 days"
     }
+  },
+  "support": {
+    "title": "Support",
+    "subtitle": "Send a support request, report an issue, or share feedback with the Synora team.",
+    "tabs": {
+      "submit": "Submit request",
+      "mine": "My requests",
+      "track": "Track a request"
+    },
+    "types": {
+      "ACCOUNT_SUPPORT": "Account support",
+      "BUG_REPORT": "Bug report",
+      "FEEDBACK": "Feedback / Suggestion",
+      "BAN_APPEAL": "Appeal a locked account",
+      "ACCOUNT_DELETION": "Account deletion request",
+      "OTHER": "Other"
+    },
+    "status": {
+      "PENDING": "Pending",
+      "IN_PROGRESS": "In progress",
+      "WAITING_FOR_USER": "Waiting for more info",
+      "RESOLVED": "Resolved",
+      "CLOSED": "Closed",
+      "REJECTED": "Rejected"
+    },
+    "form": {
+      "title": "Submit a support request",
+      "description": "Describe your issue and our support team will reply by email.",
+      "spamNotice": "Please avoid sending multiple requests in a row or spam content. Each request should be described clearly and completely so our team can handle it faster. Duplicate requests may slow down processing.",
+      "typeLabel": "Request type",
+      "emailLabel": "Contact email",
+      "emailLabelRequired": "Contact email *",
+      "emailPlaceholder": "you@example.com",
+      "nameLabel": "Your name",
+      "subjectLabel": "Subject",
+      "subjectPlaceholder": "e.g. Can't upload a document",
+      "contentLabel": "Message",
+      "contentPlaceholder": "Describe your issue in detail...",
+      "charCount": "{count}/2000",
+      "submitBtn": "Send request",
+      "submitting": "Sending...",
+      "successTitle": "Your request has been sent successfully",
+      "successCode": "Request code:",
+      "successEmailNotice": "We've sent a confirmation email to your address.",
+      "submitAnother": "Send another request",
+      "errors": {
+        "missingFields": "Please fill in both the subject and message",
+        "missingEmail": "Please enter a contact email",
+        "submitFailed": "Couldn't send the request",
+        "submitFailedRetry": "Couldn't send the request, please try again"
+      }
+    },
+    "myRequests": {
+      "loading": "Loading...",
+      "empty": "You haven't sent any support requests yet",
+      "detailTitle": "Request details"
+    },
+    "track": {
+      "pageTitle": "Track a support request",
+      "pageSubtitle": "Check the status of a support request you've sent.",
+      "title": "Track a request",
+      "description": "Enter the request code and the contact email you used when submitting to check its status.",
+      "codeLabel": "Request code",
+      "codePlaceholder": "SUP-20260819-000123",
+      "emailLabel": "Contact email",
+      "emailPlaceholder": "you@example.com",
+      "searchBtn": "Look up",
+      "searching": "Looking up...",
+      "trackAnother": "Track another request",
+      "errors": {
+        "missingFields": "Please enter the request code and contact email",
+        "notFound": "Request not found",
+        "genericRetry": "Couldn't look up the request, please try again"
+      }
+    },
+    "detail": {
+      "code": "Request code",
+      "type": "Request type",
+      "subject": "Subject",
+      "content": "Message",
+      "sentAt": "Sent on {date}",
+      "history": "Update history"
+    },
+    "rateLimit": {
+      "remaining": "You have <b>{remaining}/{limit}</b> requests left this week",
+      "cooldown": "You just sent a request. Please wait {time} before sending another.",
+      "cooldownFallback": "a moment",
+      "cooldownMinutes": "about {minutes} minutes",
+      "dailyLimit": "You've used all {limit} requests for this week. Please come back later."
+    }
   }
 }

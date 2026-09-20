@@ -1,7 +1,7 @@
 "use client";
 import { X, Send } from "lucide-react";
 import { useState } from "react";
-import { StatusBadge } from "@/components/support/StatusBadge";
+import { AdminStatusBadge } from "@/components/support/AdminStatusBadge";
 import { STATUS_LABELS, TYPE_LABELS } from "@/lib/support/labels";
 import type {
   AdminSupportRequestRow,
@@ -60,7 +60,7 @@ export function SupportRequestDetailModal({
                 {request.code}
               </p>
             </div>
-            <StatusBadge status={request.status} />
+            <AdminStatusBadge status={request.status} />
           </div>
 
           <div>

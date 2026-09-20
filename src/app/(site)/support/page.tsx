@@ -2,13 +2,14 @@
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { clsx } from "clsx";
 import { X, LifeBuoy, ArrowUpRight } from "lucide-react";
 import { SupportRequestForm } from "@/components/support/SupportRequestForm";
 import { MyRequestsList } from "@/components/support/MyRequestsList";
 import { TrackRequestPanel } from "@/components/support/TrackRequestPanel";
 import { Pagination } from "@/components/admin/Pagination";
-import { StatusBadge } from "@/components/support/StatusBadge";
+import { AdminStatusBadge } from "@/components/support/AdminStatusBadge";
 import { TYPE_LABELS } from "@/lib/support/labels";
 import type { AdminSupportRequestRow } from "@/lib/support/types";
 
@@ -69,7 +70,7 @@ function AdminRequestsPreview() {
                 · {TYPE_LABELS[r.type]}
               </p>
             </div>
-            <StatusBadge status={r.status} />
+            <AdminStatusBadge status={r.status} />
           </button>
         ))}
       </div>
@@ -98,7 +99,7 @@ function AdminRequestsPreview() {
                 <p className="text-sm font-mono text-text-muted">
                   {detail.code}
                 </p>
-                <StatusBadge status={detail.status} />
+                <AdminStatusBadge status={detail.status} />
               </div>
               <div>
                 <p className="text-xs text-text-muted mb-1">Người gửi</p>
@@ -144,6 +145,7 @@ export default function SupportPage() {
   const { data: session } = useSession();
   const isLoggedIn = !!session?.user?.id;
   const isAdmin = session?.user?.role === "ADMIN";
+  const t = useTranslations("support");
   const [tab, setTab] = useState<Tab>(
     (searchParams.get("tab") as Tab) || "submit",
   );
@@ -164,32 +166,30 @@ export default function SupportPage() {
   }
 
   const tabs: { key: Tab; label: string }[] = [
-    { key: "submit", label: "Gửi yêu cầu" },
-    ...(isLoggedIn ? [{ key: "mine" as Tab, label: "Yêu cầu của tôi" }] : []),
+    { key: "submit", label: t("tabs.submit") },
+    ...(isLoggedIn ? [{ key: "mine" as Tab, label: t("tabs.mine") }] : []),
     ...(!isLoggedIn
-      ? [{ key: "track" as Tab, label: "Theo dõi yêu cầu" }]
+      ? [{ key: "track" as Tab, label: t("tabs.track") }]
       : []),
   ];
 
   return (
     <div className="max-w-2xl mx-auto px-4 py-8">
-      <h1 className="text-lg font-bold text-text-primary mb-1">Trợ giúp</h1>
-      <p className="text-sm text-text-muted mb-6">
-        Gửi yêu cầu hỗ trợ, báo cáo vấn đề hoặc góp ý cho đội ngũ Synora.
-      </p>
+      <h1 className="text-lg font-bold text-text-primary mb-1">{t("title")}</h1>
+      <p className="text-sm text-text-muted mb-6">{t("subtitle")}</p>
       <div className="flex gap-1 border-b border-surface-200 mb-5">
-        {tabs.map((t) => (
+        {tabs.map((tabItem) => (
           <button
-            key={t.key}
-            onClick={() => setTab(t.key)}
+            key={tabItem.key}
+            onClick={() => setTab(tabItem.key)}
             className={clsx(
               "px-3 py-2 text-xs font-semibold border-b-2 -mb-px transition-colors",
-              tab === t.key
+              tab === tabItem.key
                 ? "border-primary text-primary"
                 : "border-transparent text-text-muted hover:text-text-secondary",
             )}
           >
-            {t.label}
+            {tabItem.label}
           </button>
         ))}
       </div>

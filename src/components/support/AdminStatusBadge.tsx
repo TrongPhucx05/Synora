@@ -1,6 +1,5 @@
-"use client";
 import { clsx } from "clsx";
-import { useSupportLabels } from "@/lib/support/labels.client";
+import { STATUS_LABELS } from "@/lib/support/labels";
 import type { SupportRequestStatus } from "@/generated/prisma/enums";
 
 const STATUS_CLASSES: Record<SupportRequestStatus, string> = {
@@ -12,8 +11,7 @@ const STATUS_CLASSES: Record<SupportRequestStatus, string> = {
   REJECTED: "bg-red-50 dark:bg-red-500/15 text-red-600 dark:text-red-400",
 };
 
-export function StatusBadge({ status }: { status: SupportRequestStatus }) {
-  const { statusLabel } = useSupportLabels();
+export function AdminStatusBadge({ status }: { status: SupportRequestStatus }) {
   return (
     <span
       className={clsx(
@@ -21,7 +19,7 @@ export function StatusBadge({ status }: { status: SupportRequestStatus }) {
         STATUS_CLASSES[status],
       )}
     >
-      {statusLabel(status)}
+      {STATUS_LABELS[status]}
     </span>
   );
 }

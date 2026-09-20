@@ -1,11 +1,12 @@
 "use client";
 import { useState } from "react";
 import { useSession } from "next-auth/react";
+import { useTranslations } from "next-intl";
 import { CheckCircle2, ShieldAlert } from "lucide-react";
 import { clsx } from "clsx";
 import { useSupportRateLimitStatus } from "@/lib/support/hooks";
 import { RateLimitNotice } from "./RateLimitNotice";
-import { TYPE_LABELS } from "@/lib/support/labels";
+import { useSupportLabels } from "@/lib/support/labels.client";
 import type { SupportRequestType } from "@/lib/support/types";
 
 const TYPE_OPTIONS: SupportRequestType[] = [
@@ -20,6 +21,8 @@ const TYPE_OPTIONS: SupportRequestType[] = [
 export function SupportRequestForm() {
   const { data: session } = useSession();
   const isLoggedIn = !!session?.user?.id;
+  const t = useTranslations("support.form");
+  const { typeLabel } = useSupportLabels();
 
   const [type, setType] = useState<SupportRequestType>("ACCOUNT_SUPPORT");
   const [subject, setSubject] = useState("");
@@ -37,11 +40,11 @@ export function SupportRequestForm() {
   const handleSubmit = async () => {
     setError(null);
     if (!subject.trim() || !message.trim()) {
-      setError("Vui lòng nhập đầy đủ tiêu đề và nội dung");
+      setError(t("errors.missingFields"));
       return;
     }
     if (!isLoggedIn && !contactEmail.trim()) {
-      setError("Vui lòng nhập email liên hệ");
+      setError(t("errors.missingEmail"));
       return;
     }
 
@@ -60,14 +63,14 @@ export function SupportRequestForm() {
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) {
-        setError(data.error ?? "Không thể gửi yêu cầu");
+        setError(data.error ?? t("errors.submitFailed"));
         refreshRateStatus();
         return;
       }
       setResult({ code: data.code });
       refreshRateStatus();
     } catch {
-      setError("Không thể gửi yêu cầu, vui lòng thử lại");
+      setError(t("errors.submitFailedRetry"));
     } finally {
       setLoading(false);
     }
@@ -80,16 +83,16 @@ export function SupportRequestForm() {
           <CheckCircle2 size={24} />
         </div>
         <h3 className="text-sm font-bold text-text-primary mb-1">
-          Yêu cầu của bạn đã được gửi thành công
+          {t("successTitle")}
         </h3>
         <p className="text-xs text-text-muted mb-1">
-          Mã yêu cầu:{" "}
+          {t("successCode")}{" "}
           <span className="font-mono font-semibold text-text-secondary">
             {result.code}
           </span>
         </p>
         <p className="text-xs text-text-muted mb-5">
-          Chúng tôi đã gửi email xác nhận đến địa chỉ email của bạn.
+          {t("successEmailNotice")}
         </p>
         <button
           onClick={() => {
@@ -99,7 +102,7 @@ export function SupportRequestForm() {
           }}
           className="px-5 py-2 text-xs font-semibold text-white bg-slate-900 rounded-lg hover:bg-slate-800 transition-colors"
         >
-          Gửi yêu cầu khác
+          {t("submitAnother")}
         </button>
       </div>
     );
@@ -116,10 +119,10 @@ export function SupportRequestForm() {
       <div className="flex items-start justify-between gap-3 flex-wrap">
         <div>
           <h3 className="text-sm font-bold text-text-primary">
-            Gửi yêu cầu hỗ trợ
+            {t("title")}
           </h3>
           <p className="text-xs text-text-muted mt-0.5">
-            Mô tả vấn đề của bạn, đội ngũ hỗ trợ sẽ phản hồi qua email.
+            {t("description")}
           </p>
         </div>
         <RateLimitNotice status={rateStatus} />
@@ -127,26 +130,21 @@ export function SupportRequestForm() {
 
       <div className="flex items-start gap-2 text-xs text-text-muted bg-surface-50 border border-surface-100 rounded-lg px-3 py-2.5">
         <ShieldAlert size={14} className="mt-0.5 shrink-0 text-text-muted" />
-        <span>
-          Vui lòng không gửi nhiều yêu cầu liên tiếp hoặc gửi nội dung spam. Mỗi
-          yêu cầu cần được mô tả rõ ràng và đầy đủ để đội ngũ hỗ trợ có thể xử
-          lý nhanh nhất. Gửi nhiều yêu cầu trùng lặp có thể làm quá trình xử lý
-          chậm hơn.
-        </span>
+        <span>{t("spamNotice")}</span>
       </div>
 
       <div>
         <label className="text-xs font-medium text-text-secondary mb-1 block">
-          Loại yêu cầu
+          {t("typeLabel")}
         </label>
         <select
           value={type}
           onChange={(e) => setType(e.target.value as SupportRequestType)}
           className="w-full text-xs border border-surface-200 rounded-lg px-2.5 py-2 bg-surface text-text-primary focus:outline-none focus:ring-2 focus:ring-primary/30"
         >
-          {TYPE_OPTIONS.map((t) => (
-            <option key={t} value={t}>
-              {TYPE_LABELS[t]}
+          {TYPE_OPTIONS.map((opt) => (
+            <option key={opt} value={opt}>
+              {typeLabel(opt)}
             </option>
           ))}
         </select>
@@ -156,19 +154,19 @@ export function SupportRequestForm() {
         <>
           <div>
             <label className="text-xs font-medium text-text-secondary mb-1 block">
-              Email liên hệ *
+              {t("emailLabelRequired")}
             </label>
             <input
               type="email"
               value={contactEmail}
               onChange={(e) => setContactEmail(e.target.value)}
-              placeholder="ban@example.com"
+              placeholder={t("emailPlaceholder")}
               className="w-full text-xs border border-surface-200 rounded-lg px-2.5 py-2 focus:outline-none focus:ring-2 focus:ring-primary/30"
             />
           </div>
           <div>
             <label className="text-xs font-medium text-text-secondary mb-1 block">
-              Tên của bạn
+              {t("nameLabel")}
             </label>
             <input
               type="text"
@@ -183,7 +181,7 @@ export function SupportRequestForm() {
       {isLoggedIn && (
         <div>
           <label className="text-xs font-medium text-text-secondary mb-1 block">
-            Email liên hệ
+            {t("emailLabel")}
           </label>
           <input
             type="email"
@@ -197,30 +195,30 @@ export function SupportRequestForm() {
 
       <div>
         <label className="text-xs font-medium text-text-secondary mb-1 block">
-          Tiêu đề
+          {t("subjectLabel")}
         </label>
         <input
           type="text"
           value={subject}
           onChange={(e) => setSubject(e.target.value)}
-          placeholder="Ví dụ: Không thể tải tài liệu lên"
+          placeholder={t("subjectPlaceholder")}
           className="w-full text-xs border border-surface-200 rounded-lg px-2.5 py-2 focus:outline-none focus:ring-2 focus:ring-primary/30"
         />
       </div>
 
       <div>
         <label className="text-xs font-medium text-text-secondary mb-1 block">
-          Nội dung
+          {t("contentLabel")}
         </label>
         <textarea
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           rows={6}
-          placeholder="Mô tả chi tiết vấn đề của bạn..."
+          placeholder={t("contentPlaceholder")}
           className="w-full text-xs border border-surface-200 rounded-lg px-2.5 py-2 resize-none focus:outline-none focus:ring-2 focus:ring-primary/30"
         />
         <p className="text-[10px] text-text-muted mt-1 text-right">
-          {message.length}/2000
+          {t("charCount", { count: message.length })}
         </p>
       </div>
 
@@ -234,7 +232,7 @@ export function SupportRequestForm() {
           disabled && "opacity-50 cursor-not-allowed",
         )}
       >
-        {loading ? "Đang gửi..." : "Gửi yêu cầu"}
+        {loading ? t("submitting") : t("submitBtn")}
       </button>
     </div>
   );

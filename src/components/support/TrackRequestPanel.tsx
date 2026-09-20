@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { Search } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { SupportRequestDetail } from "./SupportRequestDetail";
 import type { TrackedSupportRequest } from "@/lib/support/types";
 
@@ -11,6 +12,7 @@ export function TrackRequestPanel({
   initialCode?: string;
   initialToken?: string;
 }) {
+  const t = useTranslations("support.track");
   const [code, setCode] = useState(initialCode ?? "");
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
@@ -26,19 +28,19 @@ export function TrackRequestPanel({
       .then(async (res) => {
         const data = await res.json().catch(() => ({}));
         if (!res.ok) {
-          setError(data.error ?? "Không tìm thấy yêu cầu");
+          setError(data.error ?? t("errors.notFound"));
           return;
         }
         setResult(data);
       })
-      .catch(() => setError("Không thể tra cứu, vui lòng thử lại"))
+      .catch(() => setError(t("errors.genericRetry")))
       .finally(() => setLoading(false));
-  }, [initialCode, initialToken]);
+  }, [initialCode, initialToken, t]);
 
   const handleSearch = async () => {
     setError(null);
     if (!code.trim() || !email.trim()) {
-      setError("Vui lòng nhập mã yêu cầu và email liên hệ");
+      setError(t("errors.missingFields"));
       return;
     }
     setLoading(true);
@@ -48,13 +50,13 @@ export function TrackRequestPanel({
       );
       const data = await res.json().catch(() => ({}));
       if (!res.ok) {
-        setError(data.error ?? "Không tìm thấy yêu cầu");
+        setError(data.error ?? t("errors.notFound"));
         setResult(null);
         return;
       }
       setResult(data);
     } catch {
-      setError("Không thể tra cứu, vui lòng thử lại");
+      setError(t("errors.genericRetry"));
     } finally {
       setLoading(false);
     }
@@ -68,7 +70,7 @@ export function TrackRequestPanel({
           onClick={() => setResult(null)}
           className="mt-4 text-xs font-semibold text-primary hover:underline"
         >
-          Tra cứu yêu cầu khác
+          {t("trackAnother")}
         </button>
       </div>
     );
@@ -77,33 +79,30 @@ export function TrackRequestPanel({
   return (
     <div className="bg-surface border border-surface-200 rounded-2xl p-5 flex flex-col gap-4">
       <div>
-        <h3 className="text-sm font-bold text-text-primary">Theo dõi yêu cầu</h3>
-        <p className="text-xs text-text-muted mt-0.5">
-          Nhập mã yêu cầu và email liên hệ đã dùng khi gửi yêu cầu để xem trạng
-          thái.
-        </p>
+        <h3 className="text-sm font-bold text-text-primary">{t("title")}</h3>
+        <p className="text-xs text-text-muted mt-0.5">{t("description")}</p>
       </div>
 
       <div>
         <label className="text-xs font-medium text-text-secondary mb-1 block">
-          Mã yêu cầu
+          {t("codeLabel")}
         </label>
         <input
           value={code}
           onChange={(e) => setCode(e.target.value)}
-          placeholder="SUP-20260819-000123"
+          placeholder={t("codePlaceholder")}
           className="w-full text-xs border border-surface-200 rounded-lg px-2.5 py-2 font-mono focus:outline-none focus:ring-2 focus:ring-primary/30"
         />
       </div>
       <div>
         <label className="text-xs font-medium text-text-secondary mb-1 block">
-          Email liên hệ
+          {t("emailLabel")}
         </label>
         <input
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          placeholder="ban@example.com"
+          placeholder={t("emailPlaceholder")}
           className="w-full text-xs border border-surface-200 rounded-lg px-2.5 py-2 focus:outline-none focus:ring-2 focus:ring-primary/30"
         />
       </div>
@@ -115,7 +114,7 @@ export function TrackRequestPanel({
         disabled={loading}
         className="self-end flex items-center gap-1.5 px-5 py-2 text-xs font-semibold text-white bg-primary rounded-lg hover:opacity-90 transition-opacity disabled:opacity-50"
       >
-        <Search size={14} /> {loading ? "Đang tra cứu..." : "Tra cứu"}
+        <Search size={14} /> {loading ? t("searching") : t("searchBtn")}
       </button>
     </div>
   );

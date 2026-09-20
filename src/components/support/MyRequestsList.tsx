@@ -1,11 +1,12 @@
 "use client";
 import { useCallback, useEffect, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
+import { useTranslations, useLocale } from "next-intl";
 import { X, LifeBuoy } from "lucide-react";
 import { Pagination } from "@/components/admin/Pagination";
 import { StatusBadge } from "./StatusBadge";
 import { SupportRequestDetail } from "./SupportRequestDetail";
-import { TYPE_LABELS } from "@/lib/support/labels";
+import { useSupportLabels } from "@/lib/support/labels.client";
 import type {
   MySupportRequestRow,
   TrackedSupportRequest,
@@ -14,6 +15,12 @@ import type {
 export function MyRequestsList() {
   const searchParams = useSearchParams();
   const router = useRouter();
+  const t = useTranslations("support.myRequests");
+  const tCommon = useTranslations("common");
+  const { typeLabel } = useSupportLabels();
+  const locale = useLocale();
+  const dateLocale = locale === "en" ? "en-US" : "vi-VN";
+
   const [items, setItems] = useState<MySupportRequestRow[]>([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -58,7 +65,7 @@ export function MyRequestsList() {
   if (loading) {
     return (
       <div className="text-center text-sm text-text-muted py-10">
-        Đang tải...
+        {t("loading")}
       </div>
     );
   }
@@ -67,7 +74,7 @@ export function MyRequestsList() {
     return (
       <div className="bg-surface border border-surface-200 rounded-2xl p-10 text-center text-sm text-text-muted">
         <LifeBuoy size={22} className="mx-auto mb-2 opacity-40" />
-        Bạn chưa gửi yêu cầu hỗ trợ nào
+        {t("empty")}
       </div>
     );
   }
@@ -87,13 +94,13 @@ export function MyRequestsList() {
                 {r.subject}
               </p>
               <p className="text-[11px] text-text-muted">
-                {TYPE_LABELS[r.type]}
+                {typeLabel(r.type)}
               </p>
             </div>
             <div className="flex flex-col items-end gap-1 shrink-0">
               <StatusBadge status={r.status} />
               <span className="text-[11px] text-text-muted">
-                {new Date(r.createdAt).toLocaleDateString("vi-VN")}
+                {new Date(r.createdAt).toLocaleDateString(dateLocale)}
               </span>
             </div>
           </button>
@@ -110,7 +117,7 @@ export function MyRequestsList() {
           <div className="bg-surface rounded-2xl shadow-xl w-full max-w-[560px] max-h-[85vh] overflow-y-auto">
             <div className="flex items-center justify-between px-6 py-4 border-b border-surface-100">
               <h2 className="text-base font-semibold text-text-primary">
-                Chi tiết yêu cầu
+                {t("detailTitle")}
               </h2>
               <button
                 onClick={() => setDetail(null)}
@@ -122,7 +129,7 @@ export function MyRequestsList() {
             <div className="px-6 py-5">
               {detailLoading && !detail ? (
                 <p className="text-sm text-text-muted text-center py-6">
-                  Đang tải...
+                  {tCommon("loading")}
                 </p>
               ) : detail ? (
                 <SupportRequestDetail request={detail} />

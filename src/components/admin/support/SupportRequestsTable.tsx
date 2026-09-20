@@ -1,6 +1,6 @@
 "use client";
 import { Eye, LifeBuoy } from "lucide-react";
-import { StatusBadge } from "@/components/support/StatusBadge";
+import { AdminStatusBadge } from "@/components/support/AdminStatusBadge";
 import { TYPE_LABELS } from "@/lib/support/labels";
 import type { AdminSupportRequestRow } from "@/lib/support/types";
 
@@ -75,7 +75,7 @@ export function SupportRequestsTable({
                 </span>
               </td>
               <td className="px-5 py-3 whitespace-nowrap">
-                <StatusBadge status={r.status} />
+                <AdminStatusBadge status={r.status} />
               </td>
               <td className="px-5 py-3 text-text-muted whitespace-nowrap">
                 {new Date(r.createdAt).toLocaleDateString("vi-VN")}

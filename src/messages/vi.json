@@ -759,5 +759,95 @@
       "loading": "Đang tải...",
       "empty": "Không có thông báo nào trong 30 ngày qua"
     }
+  },
+  "support": {
+    "title": "Trợ giúp",
+    "subtitle": "Gửi yêu cầu hỗ trợ, báo cáo vấn đề hoặc góp ý cho đội ngũ Synora.",
+    "tabs": {
+      "submit": "Gửi yêu cầu",
+      "mine": "Yêu cầu của tôi",
+      "track": "Theo dõi yêu cầu"
+    },
+    "types": {
+      "ACCOUNT_SUPPORT": "Hỗ trợ tài khoản",
+      "BUG_REPORT": "Báo cáo lỗi",
+      "FEEDBACK": "Góp ý / Đề xuất",
+      "BAN_APPEAL": "Khiếu nại tài khoản bị khóa",
+      "ACCOUNT_DELETION": "Yêu cầu xóa tài khoản",
+      "OTHER": "Khác"
+    },
+    "status": {
+      "PENDING": "Chờ xử lý",
+      "IN_PROGRESS": "Đang xử lý",
+      "WAITING_FOR_USER": "Chờ bạn cung cấp thêm thông tin",
+      "RESOLVED": "Đã xử lý",
+      "CLOSED": "Đã đóng",
+      "REJECTED": "Từ chối"
+    },
+    "form": {
+      "title": "Gửi yêu cầu hỗ trợ",
+      "description": "Mô tả vấn đề của bạn, đội ngũ hỗ trợ sẽ phản hồi qua email.",
+      "spamNotice": "Vui lòng không gửi nhiều yêu cầu liên tiếp hoặc gửi nội dung spam. Mỗi yêu cầu cần được mô tả rõ ràng và đầy đủ để đội ngũ hỗ trợ có thể xử lý nhanh nhất. Gửi nhiều yêu cầu trùng lặp có thể làm quá trình xử lý chậm hơn.",
+      "typeLabel": "Loại yêu cầu",
+      "emailLabel": "Email liên hệ",
+      "emailLabelRequired": "Email liên hệ *",
+      "emailPlaceholder": "ban@example.com",
+      "nameLabel": "Tên của bạn",
+      "subjectLabel": "Tiêu đề",
+      "subjectPlaceholder": "Ví dụ: Không thể tải tài liệu lên",
+      "contentLabel": "Nội dung",
+      "contentPlaceholder": "Mô tả chi tiết vấn đề của bạn...",
+      "charCount": "{count}/2000",
+      "submitBtn": "Gửi yêu cầu",
+      "submitting": "Đang gửi...",
+      "successTitle": "Yêu cầu của bạn đã được gửi thành công",
+      "successCode": "Mã yêu cầu:",
+      "successEmailNotice": "Chúng tôi đã gửi email xác nhận đến địa chỉ email của bạn.",
+      "submitAnother": "Gửi yêu cầu khác",
+      "errors": {
+        "missingFields": "Vui lòng nhập đầy đủ tiêu đề và nội dung",
+        "missingEmail": "Vui lòng nhập email liên hệ",
+        "submitFailed": "Không thể gửi yêu cầu",
+        "submitFailedRetry": "Không thể gửi yêu cầu, vui lòng thử lại"
+      }
+    },
+    "myRequests": {
+      "loading": "Đang tải...",
+      "empty": "Bạn chưa gửi yêu cầu hỗ trợ nào",
+      "detailTitle": "Chi tiết yêu cầu"
+    },
+    "track": {
+      "pageTitle": "Theo dõi yêu cầu hỗ trợ",
+      "pageSubtitle": "Kiểm tra trạng thái yêu cầu hỗ trợ bạn đã gửi.",
+      "title": "Theo dõi yêu cầu",
+      "description": "Nhập mã yêu cầu và email liên hệ đã dùng khi gửi yêu cầu để xem trạng thái.",
+      "codeLabel": "Mã yêu cầu",
+      "codePlaceholder": "SUP-20260819-000123",
+      "emailLabel": "Email liên hệ",
+      "emailPlaceholder": "ban@example.com",
+      "searchBtn": "Tra cứu",
+      "searching": "Đang tra cứu...",
+      "trackAnother": "Tra cứu yêu cầu khác",
+      "errors": {
+        "missingFields": "Vui lòng nhập mã yêu cầu và email liên hệ",
+        "notFound": "Không tìm thấy yêu cầu",
+        "genericRetry": "Không thể tra cứu, vui lòng thử lại"
+      }
+    },
+    "detail": {
+      "code": "Mã yêu cầu",
+      "type": "Loại yêu cầu",
+      "subject": "Tiêu đề",
+      "content": "Nội dung",
+      "sentAt": "Gửi lúc {date}",
+      "history": "Lịch sử cập nhật"
+    },
+    "rateLimit": {
+      "remaining": "Bạn còn <b>{remaining}/{limit}</b> lượt trong 7 ngày",
+      "cooldown": "Bạn vừa gửi một yêu cầu. Vui lòng đợi {time} trước khi gửi yêu cầu tiếp theo.",
+      "cooldownFallback": "một chút",
+      "cooldownMinutes": "khoảng {minutes} phút",
+      "dailyLimit": "Bạn đã sử dụng hết {limit} lượt yêu cầu trong 7 ngày. Vui lòng quay lại sau."
+    }
   }
 }
