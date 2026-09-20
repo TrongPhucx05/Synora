@@ -849,5 +849,17 @@
       "cooldownMinutes": "khoảng {minutes} phút",
       "dailyLimit": "Bạn đã sử dụng hết {limit} lượt yêu cầu trong 7 ngày. Vui lòng quay lại sau."
     }
+  },
+  "widgets": {
+    "suggestedPeople": {
+      "title": "Gợi ý kết bạn",
+      "seeMore": "Xem thêm",
+      "empty": "Không có gợi ý nào",
+      "friendRequestError": "Không thể gửi lời mời kết bạn"
+    },
+    "trendingTopics": {
+      "title": "Chủ đề thịnh hành",
+      "exploreMore": "Khám phá thêm"
+    }
   }
 }

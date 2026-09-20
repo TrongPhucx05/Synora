@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
+import { useTranslations } from "next-intl";
 import {
   Loader2,
   UserPlus,
@@ -60,6 +61,9 @@ function UserRow({
   sessionUsername?: string | null;
   onRemove: (id: string) => void;
 }) {
+  const t = useTranslations("widgets.suggestedPeople");
+  const tPerson = useTranslations("search.person");
+  const tSearch = useTranslations("search");
   const [status, setStatus] = useState<"none" | "pending" | "friends">(
     user.friendStatus ?? "none",
   );
@@ -118,7 +122,7 @@ function UserRow({
       });
       const data = await res.json();
       if (!res.ok) {
-        showToast(data.error ?? "Không thể gửi lời mời kết bạn", "error");
+        showToast(data.error ?? t("friendRequestError"), "error");
         return;
       }
       const next = data.status ?? "none";
@@ -187,7 +191,7 @@ function UserRow({
           {user.followerCount > 0 && (
             <>
               {user.role ? " · " : ""}
-              {formatCount(user.followerCount)} người theo dõi
+              {formatCount(user.followerCount)} {tSearch("followersLabel")}
             </>
           )}
         </p>
@@ -243,7 +247,7 @@ function UserRow({
                 : "px-2 py-1 rounded-md",
             )}
           >
-            Trả lời{" "}
+            {tPerson("reply")}{" "}
             <ChevronDown
               size={10}
               className={clsx(
@@ -263,7 +267,7 @@ function UserRow({
                 : "px-2 py-1 rounded-md",
             )}
           >
-            <Clock size={10} /> Đã gửi
+            <Clock size={10} /> {tPerson("sent")}
           </button>
         ) : user.canSendFriendRequest === false ? null : (
           <button
@@ -276,7 +280,7 @@ function UserRow({
                 : "text-primary border border-primary/30 hover:bg-primary hover:text-white px-2 py-1 rounded-md",
             )}
           >
-            <UserPlus size={10} /> Kết bạn
+            <UserPlus size={10} /> {tPerson("addFriend")}
           </button>
         )}
       </div>
@@ -296,13 +300,13 @@ function UserRow({
               onClick={(e) => handleRequestAction(e, "accept")}
               className="w-full flex items-center gap-2 px-3.5 py-2.5 text-xs font-medium text-text-primary hover:bg-surface-50 transition-colors"
             >
-              <UserCheck size={12} className="text-primary" /> Chấp nhận
+              <UserCheck size={12} className="text-primary" /> {tPerson("accept")}
             </button>
             <button
               onClick={(e) => handleRequestAction(e, "reject")}
               className="w-full flex items-center gap-2 px-3.5 py-2.5 text-xs font-medium text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/20 transition-colors"
             >
-              <span className="text-sm leading-none">✕</span> Từ chối
+              <span className="text-sm leading-none">✕</span> {tPerson("decline")}
             </button>
           </div>,
           document.body,
@@ -326,7 +330,7 @@ function UserRow({
       {showAuthModal && (
         <AuthGuardModal
           onClose={() => setShowAuthModal(false)}
-          action="kết bạn với mọi người"
+          action={tPerson("addFriendAction")}
         />
       )}
     </div>
@@ -335,6 +339,7 @@ function UserRow({
 
 export default function SuggestedPeople({ variant = "feed" }: Props) {
   const { data: session } = useSession();
+  const t = useTranslations("widgets.suggestedPeople");
   const [users, setUsers] = useState<SuggestedUser[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -362,18 +367,18 @@ export default function SuggestedPeople({ variant = "feed" }: Props) {
         {variant === "feed" ? (
           <>
             <h3 className="text-sm font-semibold text-text-primary">
-              Gợi ý kết bạn
+              {t("title")}
             </h3>
             <Link
               href="/search?tab=people"
               className="text-[11px] text-primary font-medium hover:underline"
             >
-              Xem thêm
+              {t("seeMore")}
             </Link>
           </>
         ) : (
           <h3 className="text-[11px] font-bold text-text-secondary uppercase tracking-wider">
-            Gợi ý kết bạn
+            {t("title")}
           </h3>
         )}
       </div>
@@ -384,7 +389,7 @@ export default function SuggestedPeople({ variant = "feed" }: Props) {
         </div>
       ) : users.length === 0 ? (
         <p className="text-xs text-text-muted text-center py-3">
-          Không có gợi ý nào
+          {t("empty")}
         </p>
       ) : (
         <div className="flex flex-col gap-3">

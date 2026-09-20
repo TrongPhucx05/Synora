@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState, useCallback, useRef } from "react";
+import { useTranslations } from "next-intl";
 import { Loader2 } from "lucide-react";
 
 interface TrendingTag {
@@ -14,6 +15,8 @@ interface Props {
 }
 
 export default function TrendingTopics({ variant = "feed" }: Props) {
+  const t = useTranslations("widgets.trendingTopics");
+  const tSearch = useTranslations("search");
   const [topics, setTopics] = useState<TrendingTag[]>([]);
   const [loading, setLoading] = useState(true);
   const [tick, setTick] = useState(0);
@@ -53,7 +56,7 @@ export default function TrendingTopics({ variant = "feed" }: Props) {
       }`}
     >
       <h3 className="text-sm font-semibold text-text-primary mb-3">
-        Chủ đề thịnh hành
+        {t("title")}
       </h3>
 
       {loading ? (
@@ -62,10 +65,10 @@ export default function TrendingTopics({ variant = "feed" }: Props) {
         </div>
       ) : (
         <div className="flex flex-col gap-1">
-          {topics.map((t, i) => (
+          {topics.map((tag, i) => (
             <Link
-              key={t.name}
-              href={`/search?q=${encodeURIComponent("#" + t.name)}&tab=topics`}
+              key={tag.name}
+              href={`/search?q=${encodeURIComponent("#" + tag.name)}&tab=topics`}
               className="flex items-center gap-3 py-1.5 px-1 rounded-lg hover:bg-surface-50 group transition-colors"
             >
               <span className="text-xs font-bold text-text-muted w-4 shrink-0">
@@ -73,10 +76,10 @@ export default function TrendingTopics({ variant = "feed" }: Props) {
               </span>
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-semibold text-text-primary group-hover:text-primary transition-colors truncate">
-                  #{t.name}
+                  #{tag.name}
                 </p>
                 <p className="text-xs text-text-muted">
-                  {t._count.posts} bài viết
+                  {tag._count.posts} {tSearch("postsLabel")}
                 </p>
               </div>
             </Link>
@@ -88,7 +91,7 @@ export default function TrendingTopics({ variant = "feed" }: Props) {
         href="/search?tab=topics"
         className="block mt-3 text-center text-xs text-primary font-medium py-2 border border-primary/20 rounded-lg hover:bg-primary/5 transition-colors"
       >
-        Khám phá thêm
+        {t("exploreMore")}
       </Link>
     </div>
   );

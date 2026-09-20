@@ -849,5 +849,17 @@
       "cooldownMinutes": "about {minutes} minutes",
       "dailyLimit": "You've used all {limit} requests for this week. Please come back later."
     }
+  },
+  "widgets": {
+    "suggestedPeople": {
+      "title": "Suggested friends",
+      "seeMore": "See more",
+      "empty": "No suggestions",
+      "friendRequestError": "Couldn't send the friend request"
+    },
+    "trendingTopics": {
+      "title": "Trending topics",
+      "exploreMore": "Explore more"
+    }
   }
 }
