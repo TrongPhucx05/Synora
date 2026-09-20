@@ -2,6 +2,7 @@
 
 import { ChevronDown } from "lucide-react";
 import { useRef, useState, useEffect } from "react";
+import { useTranslations } from "next-intl";
 import { TAB_CONFIG } from "@/lib/search/data";
 import type { TabKey } from "@/lib/search/types";
 
@@ -15,19 +16,29 @@ interface Props {
   onSortChange: (s: SortKey) => void;
 }
 
-const SORT_OPTIONS: { key: SortKey; label: string }[] = [
-  { key: "relevant", label: "Liên quan nhất" },
-  { key: "newest",   label: "Mới nhất" },
-  { key: "popular",  label: "Phổ biến nhất" },
+const SORT_OPTIONS: { key: SortKey; labelKey: string }[] = [
+  { key: "relevant", labelKey: "relevant" },
+  { key: "newest", labelKey: "newest" },
+  { key: "popular", labelKey: "popular" },
 ];
 
-export function SearchTabs({ activeTab, tabCounts, onTabChange, sort, onSortChange }: Props) {
+export function SearchTabs({
+  activeTab,
+  tabCounts,
+  onTabChange,
+  sort,
+  onSortChange,
+}: Props) {
+  const t = useTranslations("search");
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handler = (e: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(e.target as Node)
+      ) {
         setDropdownOpen(false);
       }
     };
@@ -35,7 +46,9 @@ export function SearchTabs({ activeTab, tabCounts, onTabChange, sort, onSortChan
     return () => document.removeEventListener("mousedown", handler);
   }, []);
 
-  const currentSortLabel = SORT_OPTIONS.find((o) => o.key === sort)?.label ?? "Sắp xếp";
+  const currentSortLabel = SORT_OPTIONS.find((o) => o.key === sort)?.labelKey
+    ? t(`sort.${SORT_OPTIONS.find((o) => o.key === sort)!.labelKey}` as any)
+    : t("sort.label");
 
   return (
     <div className="sticky top-14 z-20 bg-surface border-b border-surface-200">
@@ -52,23 +65,27 @@ export function SearchTabs({ activeTab, tabCounts, onTabChange, sort, onSortChan
                     : "border-transparent text-text-secondary hover:text-text-primary"
                 }`}
               >
-                {tab.label}
-                {tabCounts[tab.key] !== undefined && tabCounts[tab.key]! > 0 && (
-                  <span
-                    className={`text-[10px] px-1.5 py-0.5 rounded-full font-bold ${
-                      activeTab === tab.key
-                        ? "bg-primary/10 text-primary"
-                        : "bg-surface-100 text-text-muted"
-                    }`}
-                  >
-                    {tabCounts[tab.key]}
-                  </span>
-                )}
+                {t(tab.labelKey as any)}
+                {tabCounts[tab.key] !== undefined &&
+                  tabCounts[tab.key]! > 0 && (
+                    <span
+                      className={`text-[10px] px-1.5 py-0.5 rounded-full font-bold ${
+                        activeTab === tab.key
+                          ? "bg-primary/10 text-primary"
+                          : "bg-surface-100 text-text-muted"
+                      }`}
+                    >
+                      {tabCounts[tab.key]}
+                    </span>
+                  )}
               </button>
             ))}
           </div>
 
-          <div className="shrink-0 pl-4 ml-2 border-l border-surface-100" ref={dropdownRef}>
+          <div
+            className="shrink-0 pl-4 ml-2 border-l border-surface-100"
+            ref={dropdownRef}
+          >
             <div className="relative">
               <button
                 onClick={() => setDropdownOpen((p) => !p)}
@@ -82,7 +99,7 @@ export function SearchTabs({ activeTab, tabCounts, onTabChange, sort, onSortChan
               </button>
               {dropdownOpen && (
                 <div className="absolute right-0 top-full mt-1.5 w-44 bg-surface border border-surface-200 rounded-xl shadow-lg overflow-hidden z-30 py-1">
-                  {SORT_OPTIONS.map(({ key, label }) => (
+                  {SORT_OPTIONS.map(({ key, labelKey }) => (
                     <button
                       key={key}
                       onClick={() => {
@@ -95,7 +112,7 @@ export function SearchTabs({ activeTab, tabCounts, onTabChange, sort, onSortChan
                           : "text-text-primary hover:bg-surface-50"
                       }`}
                     >
-                      {label}
+                      {t(`sort.${labelKey}` as any)}
                     </button>
                   ))}
                 </div>

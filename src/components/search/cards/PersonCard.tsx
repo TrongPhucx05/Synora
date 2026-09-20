@@ -11,16 +11,14 @@ import {
 import { useState, useRef, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { clsx } from "clsx";
+import { useTranslations } from "next-intl";
 import type { SearchResult } from "@/lib/search/types";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 import AuthGuardModal from "@/components/ui/AuthGuardModal";
 
-function parseFollowerCount(meta?: string): number {
-  const match = meta?.match(/(\d+)\s*người theo dõi/);
-  return match ? parseInt(match[1], 10) : 0;
-}
-
 export function PersonCard({ r }: { r: SearchResult }) {
+  const t = useTranslations("search");
+  const tPerson = useTranslations("search.person");
   const [status, setStatus] = useState(r.friendStatus ?? "none");
   const [incomingRequestId, setIncomingRequestId] = useState<string | null>(
     r.incomingRequestId ?? null,
@@ -35,11 +33,8 @@ export function PersonCard({ r }: { r: SearchResult }) {
 
   const username = r.username ?? r.href.split("/profile/")[1];
   const sessionUsername = r.sessionUsername;
-  const baseFollowers = parseFollowerCount(r.meta);
-  const displayMeta = r.meta?.replace(
-    /\d+\s*người theo dõi/,
-    `${baseFollowers + followerDelta} người theo dõi`,
-  );
+  const baseFollowers = r.followerCount ?? 0;
+  const displayMeta = `${r.meta} · ${baseFollowers + followerDelta} ${t("followersLabel")}`;
   const [showAuthModal, setShowAuthModal] = useState(false);
 
   const openReplyMenu = (e: React.MouseEvent) => {
@@ -176,7 +171,7 @@ export function PersonCard({ r }: { r: SearchResult }) {
                   onClick={(e) => e.stopPropagation()}
                   className="flex items-center gap-1.5 text-xs font-semibold text-primary border border-primary/30 px-3 py-1.5 rounded-lg hover:bg-primary hover:text-white transition-all"
                 >
-                  <MessageCircle size={12} /> Nhắn tin
+                  <MessageCircle size={12} /> {tPerson("message")}
                 </Link>
               )}
               <button
@@ -188,7 +183,7 @@ export function PersonCard({ r }: { r: SearchResult }) {
                 disabled={loading}
                 className="flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg bg-surface-100 text-text-secondary border border-surface-200 hover:bg-red-50 dark:hover:bg-red-500/20 hover:text-red-500 hover:border-red-200 transition-all disabled:opacity-70"
               >
-                <UserCheck size={12} /> Bạn bè
+                <UserCheck size={12} /> {tPerson("friends")}
               </button>
             </div>
           ) : incomingRequestId ? (
@@ -198,7 +193,7 @@ export function PersonCard({ r }: { r: SearchResult }) {
               disabled={loading}
               className="flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg bg-primary text-white hover:bg-primary-700 transition-colors disabled:opacity-70"
             >
-              Trả lời{" "}
+              {tPerson("reply")}{" "}
               <ChevronDown
                 size={12}
                 className={clsx(
@@ -213,7 +208,7 @@ export function PersonCard({ r }: { r: SearchResult }) {
               disabled={loading}
               className="flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg bg-surface-50 text-text-muted border border-surface-200 hover:bg-red-50 dark:hover:bg-red-500/20 hover:text-red-500 hover:border-red-200 transition-all disabled:opacity-70"
             >
-              <Clock size={12} /> Đã gửi
+              <Clock size={12} /> {tPerson("sent")}
             </button>
           ) : r.canSendFriendRequest === false ? null : (
             <button
@@ -221,7 +216,7 @@ export function PersonCard({ r }: { r: SearchResult }) {
               disabled={loading}
               className="flex items-center gap-1.5 text-xs font-semibold bg-primary text-white px-3 py-1.5 rounded-lg hover:bg-primary-700 transition-all disabled:opacity-70"
             >
-              <UserPlus size={12} /> Kết bạn
+              <UserPlus size={12} /> {tPerson("addFriend")}
             </button>
           )}
         </div>
@@ -242,13 +237,15 @@ export function PersonCard({ r }: { r: SearchResult }) {
               onClick={(e) => handleRequestAction(e, "accept")}
               className="w-full flex items-center gap-2 px-3.5 py-2.5 text-xs font-medium text-text-primary hover:bg-surface-50 transition-colors"
             >
-              <UserCheck size={13} className="text-primary" /> Chấp nhận
+              <UserCheck size={13} className="text-primary" />{" "}
+              {tPerson("accept")}
             </button>
             <button
               onClick={(e) => handleRequestAction(e, "reject")}
               className="w-full flex items-center gap-2 px-3.5 py-2.5 text-xs font-medium text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/20 transition-colors"
             >
-              <span className="text-sm leading-none">✕</span> Từ chối
+              <span className="text-sm leading-none">✕</span>{" "}
+              {tPerson("decline")}
             </button>
           </div>,
           document.body,
@@ -274,7 +271,7 @@ export function PersonCard({ r }: { r: SearchResult }) {
       {showAuthModal && (
         <AuthGuardModal
           onClose={() => setShowAuthModal(false)}
-          action="kết bạn với mọi người"
+          action={tPerson("addFriendAction")}
         />
       )}
     </>

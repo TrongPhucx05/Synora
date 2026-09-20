@@ -50,7 +50,6 @@ const CATEGORY_TABS = [
   { tab: "documents", labelKey: "categories.documents" },
   { tab: "posts", labelKey: "categories.posts" },
   { tab: "people", labelKey: "categories.people" },
-  { tab: "groups", labelKey: "categories.groups" },
   { tab: "topics", labelKey: "categories.topics", isTopic: true },
 ] as const;
 

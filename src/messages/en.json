@@ -14,7 +14,6 @@
       "documents": "Documents",
       "posts": "Posts",
       "people": "People",
-      "groups": "Groups",
       "topics": "Topics"
     },
     "history": {
@@ -26,6 +25,59 @@
     "adminPage": "Admin panel",
     "login": "Log in",
     "register": "Sign up"
+  },
+  "search": {
+    "resultsFor": "Results for",
+    "resultsCount": "results",
+    "searching": "Searching...",
+    "seeMore": "See more",
+    "seeMorePosts": "See {count} more posts",
+    "noResultsFor": "No results for \"{query}\"",
+    "enterKeyword": "Enter a keyword to search",
+    "tabs": {
+      "all": "All",
+      "documents": "Documents",
+      "posts": "Posts",
+      "people": "People",
+      "topics": "Topics"
+    },
+    "sort": {
+      "relevant": "Most relevant",
+      "newest": "Newest",
+      "popular": "Most popular",
+      "label": "Sort"
+    },
+    "topicView": {
+      "back": "Back to topics",
+      "postsCount": "{count} posts",
+      "loadingPosts": "Loading posts...",
+      "empty": "No posts yet for #{tag}"
+    },
+    "trending": {
+      "loading": "Loading topics...",
+      "empty": "No topics yet",
+      "count": "{count} trending topics",
+      "postsCount": "{count} posts"
+    },
+    "topicsFound": "{count} topics found",
+    "downloadsLabel": "downloads",
+    "documentsCountLabel": "documents",
+    "followersLabel": "followers",
+    "postsLabel": "posts",
+    "topicSubtitle": "Topic about {name}",
+    "person": {
+      "message": "Message",
+      "friends": "Friends",
+      "reply": "Reply",
+      "sent": "Sent",
+      "addFriend": "Add friend",
+      "accept": "Accept",
+      "decline": "Decline",
+      "addFriendAction": "add friends"
+    },
+    "card": {
+      "join": "Join"
+    }
   },
   "settings": {
     "theme": {

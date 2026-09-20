@@ -3,10 +3,11 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useSearchParams } from "next/navigation";
 import { useSession } from "next-auth/react";
+import { useTranslations, useLocale } from "next-intl";
 import { Search, Loader2, Hash, ArrowLeft } from "lucide-react";
 import {
   TYPE_TO_TAB,
-  SECTION_LABELS,
+  SECTION_LABEL_KEYS,
   RESULT_SECTION_ORDER,
 } from "@/lib/search/data";
 import type { TabKey, ResultType, SearchResult } from "@/lib/search/types";
@@ -17,7 +18,7 @@ import TrendingTopics from "@/components/ui/TrendingTopics";
 import SuggestedPeople from "@/components/ui/SuggestedPeople";
 import PostCard from "@/components/feed/PostCard";
 
-function mapDocument(d: any): SearchResult {
+function mapDocument(d: any, downloadsLabel: string): SearchResult {
   const ext = d.title.split(".").pop()?.toUpperCase() ?? d.type;
   const sizeMB = d.fileSize ? (d.fileSize / (1024 * 1024)).toFixed(1) : null;
   return {
@@ -32,19 +33,24 @@ function mapDocument(d: any): SearchResult {
     ]
       .filter(Boolean)
       .join(" · "),
-    stats: [{ label: "lượt tải", value: d.downloadCount ?? 0 }],
+    stats: [{ label: downloadsLabel, value: d.downloadCount ?? 0 }],
     href: `/library/${d.id}`,
   };
 }
 
-function mapPerson(u: any, sessionUsername?: string | null): SearchResult {
+function mapPerson(
+  u: any,
+  sessionUsername: string | null | undefined,
+  documentsLabel: string,
+): SearchResult {
   const name = u.profile?.displayName ?? u.username;
   return {
     id: u.id,
     type: "person",
     title: name,
     subtitle: [u.profile?.major, u.profile?.school].filter(Boolean).join(" · "),
-    meta: `${u._count.documents} tài liệu · ${u._count.followers} người theo dõi`,
+    meta: `${u._count.documents} ${documentsLabel}`,
+    followerCount: u._count.followers,
     avatar: name
       .split(" ")
       .map((w: string) => w[0])
@@ -63,31 +69,18 @@ function mapPerson(u: any, sessionUsername?: string | null): SearchResult {
   };
 }
 
-function mapGroup(g: any): SearchResult {
-  return {
-    id: g.id,
-    type: "group",
-    title: g.name,
-    subtitle: g.description ?? "",
-    meta: `${g._count.members} thành viên · ${g.isPrivate ? "Riêng tư" : "Công khai"}`,
-    avatar: g.name.slice(0, 2).toUpperCase(),
-    avatarColor: "bg-orange-500",
-    href: `/community/${g.slug}`,
-  };
-}
-
-function mapTopic(t: any): SearchResult {
+function mapTopic(t: any, subtitleTpl: (name: string) => string, postsLabel: string): SearchResult {
   return {
     id: t.id,
     type: "topic",
     title: `#${t.name}`,
-    subtitle: `Chủ đề về ${t.name}`,
-    meta: `${t._count.posts} bài viết`,
+    subtitle: subtitleTpl(t.name),
+    meta: `${t._count.posts} ${postsLabel}`,
     href: `/search?q=${encodeURIComponent("#" + t.name)}&tab=topics`,
   };
 }
 
-function mapPostToCard(p: any) {
+function mapPostToCard(p: any, locale: string, defaultUserLabel: string) {
   const mediaDocs = (p.documents ?? []).filter(
     (d: any) => d.type === "IMAGE" || d.type === "VIDEO",
   );
@@ -99,7 +92,7 @@ function mapPostToCard(p: any) {
     authorId: p.authorId,
     visibility: p.visibility,
     author: {
-      name: p.author.profile?.displayName ?? p.author.username ?? "User",
+      name: p.author.profile?.displayName ?? p.author.username ?? defaultUserLabel,
       initials: (p.author.profile?.displayName ?? p.author.username ?? "U")
         .split(" ")
         .map((w: string) => w[0])
@@ -111,7 +104,7 @@ function mapPostToCard(p: any) {
       username: p.author.username ?? "",
       avatarUrl: p.author.profile?.avatarUrl ?? null,
     },
-    time: new Date(p.createdAt).toLocaleDateString("vi-VN"),
+    time: new Date(p.createdAt).toLocaleDateString(locale === "en" ? "en-US" : "vi-VN"),
     content: p.content,
     tags: p.tags?.map((t: any) => `#${t.tag.name}`) ?? [],
     likes: p._count?.likes ?? 0,
@@ -159,6 +152,9 @@ function TopicPostsView({
   tagName: string;
   onBack: () => void;
 }) {
+  const t = useTranslations("search");
+  const locale = useLocale();
+  const tCommon = useTranslations("common");
   const [posts, setPosts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -181,7 +177,7 @@ function TopicPostsView({
         <span className="w-7 h-7 rounded-full bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors shrink-0">
           <ArrowLeft size={14} className="text-primary" />
         </span>
-        Quay lại chủ đề
+        {t("topicView.back")}
       </button>
 
       <div className="flex items-center gap-3 mb-5 p-4 bg-surface rounded-xl border border-surface-200">
@@ -191,7 +187,7 @@ function TopicPostsView({
         <div>
           <h2 className="text-base font-bold text-text-primary">#{tagName}</h2>
           <p className="text-xs text-text-secondary mt-0.5">
-            {loading ? "Đang tải..." : `${posts.length} bài viết`}
+            {loading ? tCommon("loading") : t("topicView.postsCount", { count: posts.length })}
           </p>
         </div>
       </div>
@@ -199,17 +195,17 @@ function TopicPostsView({
       {loading ? (
         <div className="flex items-center justify-center py-16 gap-2 text-text-secondary">
           <Loader2 size={16} className="animate-spin" />
-          <span className="text-sm">Đang tải bài viết...</span>
+          <span className="text-sm">{t("topicView.loadingPosts")}</span>
         </div>
       ) : posts.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-16 gap-3 text-text-muted">
           <Hash size={32} strokeWidth={1.2} />
-          <p className="text-sm">Chưa có bài viết nào với #{tagName}</p>
+          <p className="text-sm">{t("topicView.empty", { tag: tagName })}</p>
         </div>
       ) : (
         <div className="flex flex-col gap-3">
           {posts.map((p) => (
-            <PostCard key={p.id} post={mapPostToCard(p)} />
+            <PostCard key={p.id} post={mapPostToCard(p, locale, tCommon("user"))} />
           ))}
         </div>
       )}
@@ -256,6 +252,7 @@ function TrendingTagsView({
 }: {
   onSelectTopic: (name: string) => void;
 }) {
+  const t = useTranslations("search");
   const [tags, setTags] = useState<
     { name: string; _count: { posts: number } }[]
   >([]);
@@ -274,7 +271,7 @@ function TrendingTagsView({
     return (
       <div className="flex items-center justify-center py-20 gap-2 text-text-secondary">
         <Loader2 size={18} className="animate-spin" />
-        <span className="text-sm">Đang tải chủ đề...</span>
+        <span className="text-sm">{t("trending.loading")}</span>
       </div>
     );
 
@@ -282,20 +279,20 @@ function TrendingTagsView({
     return (
       <div className="flex flex-col items-center justify-center py-16 gap-3 text-text-muted">
         <Hash size={32} strokeWidth={1.2} />
-        <p className="text-sm">Chưa có chủ đề nào</p>
+        <p className="text-sm">{t("trending.empty")}</p>
       </div>
     );
 
   return (
     <div>
       <p className="text-xs text-text-secondary mb-3">
-        {tags.length} chủ đề thịnh hành
+        {t("trending.count", { count: tags.length })}
       </p>
       <div className="grid grid-cols-2 gap-3">
-        {tags.map((t, i) => (
+        {tags.map((tg, i) => (
           <button
-            key={t.name}
-            onClick={() => onSelectTopic(t.name)}
+            key={tg.name}
+            onClick={() => onSelectTopic(tg.name)}
             className="flex items-center gap-3 bg-surface border border-surface-200 rounded-xl p-4 hover:border-primary/40 hover:bg-primary/5 transition-all text-left group"
           >
             <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0 group-hover:bg-primary/20 transition-colors">
@@ -303,10 +300,10 @@ function TrendingTagsView({
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-sm font-semibold text-text-primary truncate group-hover:text-primary transition-colors">
-                #{t.name}
+                #{tg.name}
               </p>
               <p className="text-xs text-text-secondary mt-0.5">
-                {t._count.posts} bài viết
+                {t("trending.postsCount", { count: tg._count.posts })}
               </p>
             </div>
             <span className="text-xs font-bold text-text-muted shrink-0">
@@ -322,6 +319,9 @@ function TrendingTagsView({
 export function SearchContent() {
   const searchParams = useSearchParams();
   const { data: session } = useSession();
+  const t = useTranslations("search");
+  const tCommon = useTranslations("common");
+  const locale = useLocale();
 
   const rawQuery = searchParams.get("q") ?? "";
   const initialTab = (searchParams.get("tab") as TabKey) ?? "all";
@@ -355,18 +355,19 @@ export function SearchContent() {
         const data = await res.json();
         setRawPosts(data.posts ?? []);
         setResults([
-          ...(data.documents ?? []).map(mapDocument),
+          ...(data.documents ?? []).map((d: any) => mapDocument(d, t("downloadsLabel"))),
           ...(data.people ?? []).map((p: any) =>
-            mapPerson(p, session?.user?.username),
+            mapPerson(p, session?.user?.username, t("documentsCountLabel")),
           ),
-          ...(data.groups ?? []).map(mapGroup),
-          ...(data.topics ?? []).map(mapTopic),
+          ...(data.topics ?? []).map((tp: any) =>
+            mapTopic(tp, (name) => t("topicSubtitle", { name }), t("postsLabel")),
+          ),
         ]);
       } finally {
         setLoading(false);
       }
     },
-    [],
+    [t, session?.user?.username],
   );
 
   useEffect(() => {
@@ -382,16 +383,10 @@ export function SearchContent() {
       .then((r) => r.json())
       .then((data) => {
         setCounts({
-          all:
-            data.posts +
-            data.documents +
-            data.people +
-            data.groups +
-            data.topics,
+          all: data.posts + data.documents + data.people + data.topics,
           posts: data.posts,
           documents: data.documents,
           people: data.people,
-          groups: data.groups,
           topics: data.topics,
         });
       })
@@ -418,7 +413,7 @@ export function SearchContent() {
     fetchResults(rawQuery, activeTabRef.current, s);
   };
 
-  const topicResults = results.filter((r) => r.type === "topic");
+    const topicResults = results.filter((r) => r.type === "topic");
   const nonPostResults = results.filter((r) => r.type !== "post");
   const groupedAll = RESULT_SECTION_ORDER.filter(
     (type) => type !== "post" && type !== "topic",
@@ -448,18 +443,18 @@ export function SearchContent() {
         <div className="flex-1 min-w-0">
           {showResultBar && (
             <p className="text-sm text-text-secondary mb-4">
-              Kết quả cho{" "}
+              {t("resultsFor")}{" "}
               <span className="font-semibold text-text-primary">
                 "{rawQuery}"
               </span>{" "}
-              · {totalCount} kết quả
+              · {totalCount} {t("resultsCount")}
             </p>
           )}
 
           {loading ? (
             <div className="flex items-center justify-center py-20 gap-2 text-text-secondary">
               <Loader2 size={18} className="animate-spin" />
-              <span className="text-sm">Đang tìm kiếm...</span>
+              <span className="text-sm">{t("searching")}</span>
             </div>
           ) : activeTab === "all" ? (
             !rawQuery.trim() ? (
@@ -472,18 +467,18 @@ export function SearchContent() {
                   <section>
                     <div className="flex items-center justify-between mb-2">
                       <h2 className="text-[11px] font-bold text-text-secondary uppercase tracking-wider">
-                        Bài viết
+                        {t("tabs.posts")}
                       </h2>
                       <button
                         onClick={() => handleTabChange("posts")}
                         className="text-xs text-primary font-medium hover:underline"
                       >
-                        Xem thêm
+                        {t("seeMore")}
                       </button>
                     </div>
                     <div className="flex flex-col gap-3">
                       {displayedPosts.map((p) => (
-                        <PostCard key={p.id} post={mapPostToCard(p)} />
+                        <PostCard key={p.id} post={mapPostToCard(p, locale, tCommon("user"))} />
                       ))}
                     </div>
                     {!showAllPosts && rawPosts.length > 3 && (
@@ -491,7 +486,7 @@ export function SearchContent() {
                         onClick={() => setShowAllPosts(true)}
                         className="mt-3 w-full py-2.5 text-xs font-medium text-primary border border-primary/20 rounded-xl hover:bg-primary/5 transition-colors"
                       >
-                        Xem thêm {rawPosts.length - 3} bài viết
+                        {t("seeMorePosts", { count: rawPosts.length - 3 })}
                       </button>
                     )}
                   </section>
@@ -501,7 +496,7 @@ export function SearchContent() {
                   <section key={group.type}>
                     <div className="flex items-center justify-between mb-2">
                       <h2 className="text-[11px] font-bold text-text-secondary uppercase tracking-wider">
-                        {SECTION_LABELS[group.type as ResultType]}
+                        {t(SECTION_LABEL_KEYS[group.type as ResultType] as any)}
                       </h2>
                       <button
                         onClick={() =>
@@ -509,7 +504,7 @@ export function SearchContent() {
                         }
                         className="text-xs text-primary font-medium hover:underline"
                       >
-                        Xem thêm
+                        {t("seeMore")}
                       </button>
                     </div>
                     <div className="bg-surface rounded-xl border border-surface-200 divide-y divide-surface-100 overflow-hidden">
@@ -524,13 +519,13 @@ export function SearchContent() {
                   <section>
                     <div className="flex items-center justify-between mb-2">
                       <h2 className="text-[11px] font-bold text-text-secondary uppercase tracking-wider">
-                        Chủ đề
+                        {t("tabs.topics")}
                       </h2>
                       <button
                         onClick={() => handleTabChange("topics")}
                         className="text-xs text-primary font-medium hover:underline"
                       >
-                        Xem thêm
+                        {t("seeMore")}
                       </button>
                     </div>
                     <TopicsGrid
@@ -550,7 +545,7 @@ export function SearchContent() {
                 <EmptyState query={rawQuery} />
               ) : (
                 rawPosts.map((p) => (
-                  <PostCard key={p.id} post={mapPostToCard(p)} />
+                  <PostCard key={p.id} post={mapPostToCard(p, locale, tCommon("user"))} />
                 ))
               )}
             </div>
@@ -567,7 +562,7 @@ export function SearchContent() {
             ) : (
               <div>
                 <p className="text-xs text-text-secondary mb-3">
-                  {topicResults.length} chủ đề tìm thấy
+                  {t("topicsFound", { count: topicResults.length })}
                 </p>
                 <TopicsGrid
                   topics={topicResults}
@@ -599,13 +594,12 @@ export function SearchContent() {
 }
 
 function EmptyState({ query }: { query: string }) {
+  const t = useTranslations("search");
   return (
     <div className="flex flex-col items-center justify-center py-16 text-text-muted gap-3">
       <Search size={32} strokeWidth={1.2} />
       <p className="text-sm">
-        {query
-          ? `Không tìm thấy kết quả cho "${query}"`
-          : "Nhập từ khóa để tìm kiếm"}
+        {query ? t("noResultsFor", { query }) : t("enterKeyword")}
       </p>
     </div>
   );

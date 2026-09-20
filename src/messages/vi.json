@@ -14,7 +14,6 @@
       "documents": "Tài liệu",
       "posts": "Bài viết",
       "people": "Mọi người",
-      "groups": "Nhóm",
       "topics": "Chủ đề"
     },
     "history": {
@@ -26,6 +25,59 @@
     "adminPage": "Trang quản trị",
     "login": "Đăng nhập",
     "register": "Đăng ký"
+  },
+  "search": {
+    "resultsFor": "Kết quả cho",
+    "resultsCount": "kết quả",
+    "searching": "Đang tìm kiếm...",
+    "seeMore": "Xem thêm",
+    "seeMorePosts": "Xem thêm {count} bài viết",
+    "noResultsFor": "Không tìm thấy kết quả cho \"{query}\"",
+    "enterKeyword": "Nhập từ khóa để tìm kiếm",
+    "tabs": {
+      "all": "Tất cả",
+      "documents": "Tài liệu",
+      "posts": "Bài viết",
+      "people": "Mọi người",
+      "topics": "Chủ đề"
+    },
+    "sort": {
+      "relevant": "Liên quan nhất",
+      "newest": "Mới nhất",
+      "popular": "Phổ biến nhất",
+      "label": "Sắp xếp"
+    },
+    "topicView": {
+      "back": "Quay lại chủ đề",
+      "postsCount": "{count} bài viết",
+      "loadingPosts": "Đang tải bài viết...",
+      "empty": "Chưa có bài viết nào với #{tag}"
+    },
+    "trending": {
+      "loading": "Đang tải chủ đề...",
+      "empty": "Chưa có chủ đề nào",
+      "count": "{count} chủ đề thịnh hành",
+      "postsCount": "{count} bài viết"
+    },
+    "topicsFound": "{count} chủ đề tìm thấy",
+    "downloadsLabel": "lượt tải",
+    "documentsCountLabel": "tài liệu",
+    "followersLabel": "người theo dõi",
+    "postsLabel": "bài viết",
+    "topicSubtitle": "Chủ đề về {name}",
+    "person": {
+      "message": "Nhắn tin",
+      "friends": "Bạn bè",
+      "reply": "Trả lời",
+      "sent": "Đã gửi",
+      "addFriend": "Kết bạn",
+      "accept": "Chấp nhận",
+      "decline": "Từ chối",
+      "addFriendAction": "kết bạn với mọi người"
+    },
+    "card": {
+      "join": "Tham gia"
+    }
   },
   "settings": {
     "theme": {
