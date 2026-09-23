@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import { useTranslations, useLocale } from "next-intl";
 import PostCard from "@/components/feed/PostCard";
 import { mapApiPostToCard } from "@/lib/profile/utils";
 import { useToast } from "@/components/ui/Toast";
@@ -11,6 +12,9 @@ interface SavedPostsTabProps {
 }
 
 export function SavedPostsTab({ username, isOwner }: SavedPostsTabProps) {
+  const t = useTranslations("profile.savedPostsTab");
+  const tPosts = useTranslations("profile.postsTab");
+  const locale = useLocale();
   const [posts, setPosts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [nextCursor, setNextCursor] = useState<string | null>(null);
@@ -24,23 +28,23 @@ export function SavedPostsTab({ username, isOwner }: SavedPostsTabProps) {
     fetch(`/api/profile/${username}/saved`)
       .then((r) => r.json())
       .then((data) => {
-        setPosts((data.posts ?? []).map(mapApiPostToCard));
+        setPosts((data.posts ?? []).map((p: any) => mapApiPostToCard(p, locale, tPosts("defaultUser"))));
         setNextCursor(data.nextCursor);
         setLoading(false);
       })
       .catch(() => setLoading(false));
-  }, [username, isOwner]);
+  }, [username, isOwner, locale, tPosts]);
 
   const handlePostSaveToggle = useCallback(
     (postId: string | number, savedState: boolean) => {
       if (!savedState) {
         setPosts((prev) => prev.filter((p) => p.id !== postId));
-        showToast("Đã bỏ lưu bài viết", "unsave");
+        showToast(t("unsavedToast"), "unsave");
       } else {
-        showToast("Đã lưu bài viết", "save");
+        showToast(t("savedToast"), "save");
       }
     },
-    [showToast],
+    [showToast, t],
   );
 
   const loadMore = async () => {
@@ -49,7 +53,7 @@ export function SavedPostsTab({ username, isOwner }: SavedPostsTabProps) {
       `/api/profile/${username}/saved?cursor=${nextCursor}`,
     );
     const data = await res.json();
-    setPosts((prev) => [...prev, ...(data.posts ?? []).map(mapApiPostToCard)]);
+    setPosts((prev) => [...prev, ...(data.posts ?? []).map((p: any) => mapApiPostToCard(p, locale, tPosts("defaultUser")))]);
     setNextCursor(data.nextCursor);
   };
 
@@ -57,7 +61,7 @@ export function SavedPostsTab({ username, isOwner }: SavedPostsTabProps) {
     return (
       <div className="bg-surface border border-surface-200 rounded-2xl p-8 text-center">
         <p className="text-text-muted text-sm">
-          Mục này chỉ hiển thị với chủ trang.
+          {t("ownerOnly")}
         </p>
       </div>
     );
@@ -79,7 +83,7 @@ export function SavedPostsTab({ username, isOwner }: SavedPostsTabProps) {
   if (posts.length === 0) {
     return (
       <div className="bg-surface border border-surface-200 rounded-2xl p-8 text-center">
-        <p className="text-text-muted text-sm">Bạn chưa lưu bài viết nào.</p>
+        <p className="text-text-muted text-sm">{t("empty")}</p>
       </div>
     );
   }
@@ -103,7 +107,7 @@ export function SavedPostsTab({ username, isOwner }: SavedPostsTabProps) {
             onClick={loadMore}
             className="text-xs text-primary font-medium py-2 hover:opacity-70 transition-opacity"
           >
-            Tải thêm →
+            {t("loadMore")}
           </button>
         )}
       </div>

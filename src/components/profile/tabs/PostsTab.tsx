@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import { useTranslations, useLocale } from "next-intl";
 import PostComposer from "@/components/feed/PostComposer";
 import type { AttachedFile } from "@/components/feed/PostComposer";
 import PostCard from "@/components/feed/PostCard";
@@ -13,6 +14,8 @@ interface PostsTabProps {
 }
 
 export function PostsTab({ username, isOwner, session }: PostsTabProps) {
+  const t = useTranslations("profile.postsTab");
+  const locale = useLocale();
   const [posts, setPosts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [nextCursor, setNextCursor] = useState<string | null>(null);
@@ -21,12 +24,12 @@ export function PostsTab({ username, isOwner, session }: PostsTabProps) {
     fetch(`/api/profile/${username}/posts`)
       .then((r) => r.json())
       .then((data) => {
-        setPosts((data.posts ?? []).map(mapApiPostToCard));
+        setPosts((data.posts ?? []).map((p: any) => mapApiPostToCard(p, locale, t("defaultUser"))));
         setNextCursor(data.nextCursor);
         setLoading(false);
       })
       .catch(() => setLoading(false));
-  }, [username]);
+  }, [username, locale, t]);
 
   const handleDeleted = useCallback((id: string | number) => {
     setPosts((prev) => prev.filter((p) => p.id !== id));
@@ -48,7 +51,7 @@ export function PostsTab({ username, isOwner, session }: PostsTabProps) {
     });
     if (res.ok) {
       const newPost = await res.json();
-      setPosts((prev) => [mapApiPostToCard(newPost), ...prev]);
+      setPosts((prev) => [mapApiPostToCard(newPost, locale, t("defaultUser")), ...prev]);
     }
   };
 
@@ -56,7 +59,7 @@ export function PostsTab({ username, isOwner, session }: PostsTabProps) {
     if (!nextCursor) return;
     const res = await fetch(`/api/profile/${username}/posts?cursor=${nextCursor}`);
     const data = await res.json();
-    setPosts((prev) => [...prev, ...(data.posts ?? []).map(mapApiPostToCard)]);
+    setPosts((prev) => [...prev, ...(data.posts ?? []).map((p: any) => mapApiPostToCard(p, locale, t("defaultUser")))]);
     setNextCursor(data.nextCursor);
   };
 
@@ -66,7 +69,7 @@ export function PostsTab({ username, isOwner, session }: PostsTabProps) {
         <PostComposer
           onPost={handlePost}
           currentUser={{
-            name: session.user.name ?? "Người dùng",
+            name: session.user.name ?? t("defaultUser"),
             initials: (session.user.name ?? "U")
               .split(" ")
               .map((w: string) => w[0])
@@ -84,7 +87,7 @@ export function PostsTab({ username, isOwner, session }: PostsTabProps) {
           ))
         ) : posts.length === 0 ? (
           <div className="bg-surface border border-surface-200 rounded-2xl p-8 text-center">
-            <p className="text-text-muted text-sm">Chưa có bài đăng nào.</p>
+            <p className="text-text-muted text-sm">{t("empty")}</p>
           </div>
         ) : (
           posts.map((post) => (
@@ -93,7 +96,7 @@ export function PostsTab({ username, isOwner, session }: PostsTabProps) {
         )}
         {nextCursor && (
           <button onClick={loadMore} className="text-xs text-primary font-medium py-2 hover:opacity-70 transition-opacity">
-            Tải thêm →
+            {t("loadMore")}
           </button>
         )}
       </div>

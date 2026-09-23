@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { clsx } from "clsx";
 import { useSession } from "next-auth/react";
+import { useTranslations } from "next-intl";
 import { FILE_TYPE_COLORS } from "@/lib/library/data";
 import { useToast } from "@/components/ui/Toast";
 
@@ -86,6 +87,7 @@ function DocCard({
   isOwner?: boolean;
 }) {
   const { data: session } = useSession();
+  const t = useTranslations("profile.documentsTab");
   const isLoggedIn = !!session?.user;
   const [menuOpen, setMenuOpen] = useState(false);
   const [isSaved, setIsSaved] = useState(initialSaved);
@@ -113,7 +115,7 @@ function DocCard({
     const data = await res.json();
     setIsSaved(data.saved);
     showToast(
-      data.saved ? "Đã lưu tài liệu" : "Đã bỏ lưu tài liệu",
+      data.saved ? t("savedToast") : t("unsavedToast"),
       data.saved ? "save" : "unsave",
     );
     if (!data.saved) onRemove?.(doc.id);
@@ -130,10 +132,10 @@ function DocCard({
         setTimeout(() => onRemove?.(doc.id), 500);
       } else {
         const data = await res.json();
-        showToast(data.error ?? "Xóa thất bại", "error");
+        showToast(data.error ?? t("deleteFailedToast"), "error");
       }
     } catch {
-      showToast("Lỗi kết nối, vui lòng thử lại", "error");
+      showToast(t("connectionErrorToast"), "error");
     } finally {
       setIsDeleting(false);
     }
@@ -192,7 +194,7 @@ function DocCard({
                         ) : (
                           <Bookmark size={12} />
                         )}
-                        {isSaved ? "Bỏ lưu" : "Lưu tài liệu"}
+                        {isSaved ? t("unsave") : t("save")}
                       </button>
                       {isOwner && (
                         <>
@@ -205,7 +207,7 @@ function DocCard({
                             className="w-full flex items-center gap-2 px-3 py-1.5 text-xs text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/20 transition-colors"
                           >
                             <Trash2 size={12} />
-                            Xóa tài liệu
+                            {t("delete")}
                           </button>
                         </>
                       )}
@@ -214,7 +216,7 @@ function DocCard({
                         className="w-full flex items-center gap-2 px-3 py-1.5 text-xs text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/20 transition-colors"
                       >
                         <Flag size={12} />
-                        Báo cáo
+                        {t("report")}
                       </button>
                     </div>
                   )}
@@ -222,7 +224,7 @@ function DocCard({
               )}
             </div>
             <p className="text-[10px] text-text-muted mt-0.5">
-              {doc.pageCount ? `${doc.pageCount} trang · ` : ""}
+              {doc.pageCount ? `${t("pagesLabel", { count: doc.pageCount })} · ` : ""}
               {type}
               {doc.fileSize ? ` · ${(doc.fileSize / 1024).toFixed(0)} KB` : ""}
             </p>
@@ -237,11 +239,11 @@ function DocCard({
                   className="flex items-center gap-1 px-2 py-1 text-[11px] font-semibold text-primary hover:bg-primary/10 rounded-md transition-colors"
                 >
                   <Eye size={12} />
-                  Xem trước
+                  {t("preview")}
                 </button>
                 <button
                   onClick={handleDownload}
-                  aria-label="Tải xuống"
+                  aria-label={t("downloadTooltip")}
                   className="p-1.5 text-primary hover:bg-primary/10 rounded-md transition-colors"
                 >
                   <Download size={13} />
@@ -258,14 +260,10 @@ function DocCard({
               <Trash2 size={20} className="text-red-500 dark:text-red-400" />
             </div>
             <h3 className="text-sm font-semibold text-text-primary text-center mb-1">
-              Xóa tài liệu?
+              {t("deleteConfirmTitle")}
             </h3>
             <p className="text-xs text-text-muted text-center mb-5 leading-relaxed">
-              Tài liệu{" "}
-              <span className="font-medium text-text-secondary">
-                "{doc.title}"
-              </span>{" "}
-              sẽ bị xóa vĩnh viễn và không thể khôi phục.
+              {t("deleteConfirmDesc", { title: doc.title })}
             </p>
             <div className="flex gap-2">
               <button
@@ -273,7 +271,7 @@ function DocCard({
                 disabled={isDeleting}
                 className="flex-1 py-2 text-sm font-medium text-text-secondary bg-surface-100 hover:bg-surface-200 rounded-xl transition-colors disabled:opacity-50"
               >
-                Hủy
+                {t("cancel")}
               </button>
               <button
                 onClick={handleDelete}
@@ -283,10 +281,10 @@ function DocCard({
                 {isDeleting ? (
                   <>
                     <span className="w-3.5 h-3.5 border-2 border-white/40 border-t-white rounded-full animate-spin" />
-                    Đang xóa...
+                    {t("deleting")}
                   </>
                 ) : (
-                  "Xóa"
+                  t("deleteBtn")
                 )}
               </button>
             </div>
@@ -306,6 +304,7 @@ function MyDocsTab({
   refreshKey?: number;
   onDownload?: () => void;
 }) {
+  const t = useTranslations("profile.documentsTab");
   const [docs, setDocs] = useState<DocItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [nextCursor, setNextCursor] = useState<string | null>(null);
@@ -334,7 +333,7 @@ function MyDocsTab({
 
   if (loading) return <LoadingSkeleton />;
   if (docs.length === 0)
-    return <EmptyDoc message="Chưa có tài liệu nào được đăng." />;
+    return <EmptyDoc message={t("emptyMine")} />;
 
   return (
     <>
@@ -357,7 +356,7 @@ function MyDocsTab({
           onClick={loadMore}
           className="text-xs text-primary font-medium py-2 hover:opacity-70 transition-opacity text-center w-full"
         >
-          Tải thêm
+          {t("loadMore")}
         </button>
       )}
     </>
@@ -373,6 +372,7 @@ function SavedDocsTab({
   refreshKey?: number;
   onDownload?: () => void;
 }) {
+  const t = useTranslations("profile.documentsTab");
   const [docs, setDocs] = useState<DocItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [nextCursor, setNextCursor] = useState<string | null>(null);
@@ -400,7 +400,7 @@ function SavedDocsTab({
   };
 
   if (loading) return <LoadingSkeleton />;
-  if (docs.length === 0) return <EmptyDoc message="Chưa lưu tài liệu nào." />;
+  if (docs.length === 0) return <EmptyDoc message={t("emptySaved")} />;
 
   return (
     <>
@@ -422,7 +422,7 @@ function SavedDocsTab({
           onClick={loadMore}
           className="text-xs text-primary font-medium py-2 hover:opacity-70 transition-opacity text-center w-full"
         >
-          Tải thêm
+          {t("loadMore")}
         </button>
       )}
     </>
@@ -456,11 +456,12 @@ export function DocumentsTab({
   refreshKey,
   onDownload,
 }: DocumentsTabProps) {
+  const t = useTranslations("profile.documentsTab");
   const [activeTab, setActiveTab] = useState<DocTab>("mine");
 
   const tabs: { key: DocTab; label: string }[] = [
-    { key: "mine", label: "Của tôi" },
-    { key: "saved", label: "Đã lưu" },
+    { key: "mine", label: t("tabMine") },
+    { key: "saved", label: t("tabSaved") },
   ];
 
   return (
@@ -502,7 +503,7 @@ export function DocumentsTab({
             onDownload={onDownload}
           />
         ) : (
-          <EmptyDoc message="Bạn không có quyền truy cập." />
+          <EmptyDoc message={t("noAccess")} />
         ))}
     </div>
   );
