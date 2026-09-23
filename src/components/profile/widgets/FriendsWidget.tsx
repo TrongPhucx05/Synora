@@ -5,6 +5,7 @@ import { clsx } from "clsx";
 import { UserCheck } from "lucide-react";
 import NextLink from "next/link";
 import { useSession } from "next-auth/react";
+import { useTranslations } from "next-intl";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 import { useToast } from "@/components/ui/Toast";
 import Avatar from "@/components/ui/Avatar";
@@ -26,6 +27,8 @@ export function FriendsWidget({
   refreshKey?: number;
   onUnfriend?: () => void;
 }) {
+  const t = useTranslations("profile.friendsWidget");
+  const tSearch = useTranslations("search");
   const { data: session } = useSession();
   const [friends, setFriends] = useState<Friend[]>([]);
   const [loading, setLoading] = useState(true);
@@ -57,7 +60,7 @@ export function FriendsWidget({
     try {
       await fetch(`/api/profile/${friend.username}/follow`, { method: "POST" });
       setFriends((prev) => prev.filter((f) => f.id !== friend.id));
-      showToast("Đã hủy kết bạn", "delete");
+      showToast(t("unfriendedToast"), "delete");
       onUnfriend?.();
     } finally {
       actionInProgress.current.delete(friend.id);
@@ -94,7 +97,7 @@ export function FriendsWidget({
       <div className="bg-surface border border-surface-200 rounded-2xl p-4">
         <div className="flex items-center justify-between mb-2.5">
           <div className="flex items-center gap-2">
-            <h3 className="text-xs font-semibold text-text-primary">Bạn bè</h3>
+            <h3 className="text-xs font-semibold text-text-primary">{t("title")}</h3>
             {friends.length > 0 && (
               <span className="text-[10px] text-text-muted bg-surface-100 px-1.5 py-0.5 rounded-full">
                 {friends.length}
@@ -106,18 +109,18 @@ export function FriendsWidget({
               href={`/friends/${username}`}
               className="flex items-center gap-0.5 text-[11px] font-medium text-primary transition-colors"
             >
-              Tất cả
+              {t("seeAll")}
             </NextLink>
           )}
         </div>
 
         {hidden ? (
           <p className="text-[11px] text-text-muted text-center py-3">
-            Danh sách bạn bè đã được ẩn.
+            {t("hidden")}
           </p>
         ) : friends.length === 0 ? (
           <p className="text-[11px] text-text-muted text-center py-3">
-            Chưa có bạn bè nào.
+            {t("empty")}
           </p>
         ) : (
           <div className="flex flex-col gap-2">
@@ -144,14 +147,14 @@ export function FriendsWidget({
                     </p>
                   </NextLink>
                   <p className="text-[10px] text-text-muted">
-                    {f.followerCount.toLocaleString("vi-VN")} người theo dõi
+                    {f.followerCount.toLocaleString("vi-VN")} {tSearch("followersLabel")}
                   </p>
                 </div>
                 {isOwner && (
                   <button
                     onClick={() => setConfirmFriend(f)}
                     className="shrink-0 p-1.5 rounded-full transition-colors text-primary bg-primary/10 hover:bg-red-50 dark:hover:bg-red-500/20 hover:text-red-500"
-                    title="Hủy kết bạn"
+                    title={t("unfriendTooltip")}
                   >
                     <UserCheck size={13} />
                   </button>
