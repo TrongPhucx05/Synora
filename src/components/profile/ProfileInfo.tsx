@@ -1,4 +1,6 @@
+"use client";
 import { MapPin, School, Globe, Calendar } from "lucide-react";
+import { useTranslations, useLocale } from "next-intl";
 
 interface ProfileInfoProps {
   displayName: string;
@@ -7,7 +9,7 @@ interface ProfileInfoProps {
   school?: string | null;
   location?: string | null;
   website?: string | null;
-  joinDate?: string;
+  joinedAt?: string;
 }
 
 export function ProfileInfo({
@@ -17,8 +19,18 @@ export function ProfileInfo({
   school,
   location,
   website,
-  joinDate,
+  joinedAt,
 }: ProfileInfoProps) {
+  const t = useTranslations("profile");
+  const locale = useLocale();
+
+  const joinDate = joinedAt
+    ? new Date(joinedAt).toLocaleDateString(locale === "en" ? "en-US" : "vi-VN", {
+        month: "long",
+        year: "numeric",
+      })
+    : null;
+
   return (
     <div className="px-1 mb-4">
       <div className="flex items-center gap-2 mb-0.5">
@@ -44,7 +56,7 @@ export function ProfileInfo({
         {joinDate && (
           <span className="flex items-center gap-1.5">
             <Calendar size={12} />
-            Tham gia {joinDate}
+            {t("joinedOn", { date: joinDate })}
           </span>
         )}
         {website && (

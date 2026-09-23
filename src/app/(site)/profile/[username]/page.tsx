@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import { useSession } from "next-auth/react";
+import { useTranslations, useLocale } from "next-intl";
 import { ProfileHeader } from "@/components/profile/ProfileHeader";
 import { ProfileInfo } from "@/components/profile/ProfileInfo";
 import { ProfileStats } from "@/components/profile/ProfileStats";
@@ -21,6 +22,7 @@ import { formatCount } from "@/lib/profile/utils";
 export default function ProfilePage() {
   const { username } = useParams<{ username: string }>();
   const { data: session } = useSession();
+  const t = useTranslations("profile");
   const [activeTab, setActiveTab] = useState<ProfileTab>(PROFILE_TABS[0]);
   const [profileData, setProfileData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -64,7 +66,7 @@ export default function ProfilePage() {
     return (
       <div className="max-w-[1080px] mx-auto px-4 pb-12 pt-20 text-center">
         <p className="text-text-muted text-sm">
-          Không tìm thấy người dùng này.
+          {t("notFound")}
         </p>
       </div>
     );
@@ -76,11 +78,6 @@ export default function ProfilePage() {
     documents: profileData.stats.documents,
     downloads: formatCount(profileData.stats.downloads),
   };
-
-  const joinDate = new Date(profileData.createdAt).toLocaleDateString("vi-VN", {
-    month: "long",
-    year: "numeric",
-  });
 
   return (
     <div className="max-w-[1080px] mx-auto px-4 pb-12">
@@ -106,7 +103,7 @@ export default function ProfilePage() {
         school={profileData.profile?.school}
         location={profileData.profile?.location}
         website={profileData.profile?.website}
-        joinDate={joinDate}
+        joinedAt={profileData.createdAt}
       />
       <ProfileStats stats={stats} />
 
@@ -114,15 +111,15 @@ export default function ProfilePage() {
         <div className="flex-1 min-w-0">
           <ProfileTabs activeTab={activeTab} onChange={setActiveTab} />
           <div className="mt-3">
-            {activeTab === "Bài đăng" && (
+            {activeTab === "posts" && (
               <PostsTab
                 username={username}
                 isOwner={isOwner}
                 session={session}
               />
             )}
-            {activeTab === "Hình ảnh" && <ImagesTab username={username} />}
-            {activeTab === "Tài liệu" && (
+            {activeTab === "images" && <ImagesTab username={username} />}
+            {activeTab === "documents" && (
               <DocumentsTab
                 username={username}
                 isOwner={isOwner}
@@ -130,7 +127,7 @@ export default function ProfilePage() {
                 onDownload={() => setDocRefreshKey((k) => k + 1)}
               />
             )}
-            {activeTab === "Bài viết đã lưu" && (
+            {activeTab === "saved" && (
               <SavedPostsTab username={username} isOwner={isOwner} />
             )}
           </div>

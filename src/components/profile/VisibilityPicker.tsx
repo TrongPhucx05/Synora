@@ -1,19 +1,10 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Globe, Users, Lock, ChevronDown } from "lucide-react";
 
 export type Visibility = "public" | "friends" | "private";
-
-const VISIBILITY_OPTIONS: {
-  value: Visibility;
-  label: string;
-  icon: React.ReactNode;
-}[] = [
-  { value: "public", label: "Mọi người", icon: <Globe size={14} /> },
-  { value: "friends", label: "Bạn bè", icon: <Users size={14} /> },
-  { value: "private", label: "Chỉ mình tôi", icon: <Lock size={14} /> },
-];
 
 interface VisibilityPickerProps {
   value: Visibility;
@@ -21,7 +12,19 @@ interface VisibilityPickerProps {
 }
 
 export function VisibilityPicker({ value, onChange }: VisibilityPickerProps) {
+  const t = useTranslations("post.composer.visibility");
   const [open, setOpen] = useState(false);
+
+  const VISIBILITY_OPTIONS: {
+    value: Visibility;
+    label: string;
+    icon: React.ReactNode;
+  }[] = [
+    { value: "public", label: t("public"), icon: <Globe size={14} /> },
+    { value: "friends", label: t("friends"), icon: <Users size={14} /> },
+    { value: "private", label: t("private"), icon: <Lock size={14} /> },
+  ];
+
   const current = VISIBILITY_OPTIONS.find((o) => o.value === value)!;
 
   return (

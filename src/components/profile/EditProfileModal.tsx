@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { useUploadThing } from "@/lib/uploadthing";
 import { useSession } from "next-auth/react";
+import { useTranslations } from "next-intl";
 
 interface EditProfileModalProps {
   username: string;
@@ -58,6 +59,7 @@ export function EditProfileModal({
   const coverInputRef = useRef<HTMLInputElement>(null);
 
   const { startUpload } = useUploadThing("postMedia");
+  const t = useTranslations("profile.editModal");
 
   const ini = (displayName || initial.displayName || "U")
     .split(" ")
@@ -135,7 +137,7 @@ export function EditProfileModal({
 
       onSaved();
     } catch {
-      setError("Có lỗi xảy ra, thử lại nhé.");
+      setError(t("genericError"));
     } finally {
       setSaving(false);
     }
@@ -149,7 +151,7 @@ export function EditProfileModal({
       <div className="bg-surface rounded-2xl shadow-2xl w-full max-w-lg flex flex-col overflow-hidden max-h-[90vh]">
         <div className="flex items-center justify-between px-5 py-4 border-b border-surface-100 shrink-0">
           <h2 className="text-sm font-bold text-text-primary">
-            Chỉnh sửa trang cá nhân
+            {t("title")}
           </h2>
           <button
             onClick={onClose}
@@ -172,7 +174,7 @@ export function EditProfileModal({
             )}
             <label className="absolute inset-0 flex items-center justify-center bg-black/20 hover:bg-black/30 transition-colors cursor-pointer group">
               <div className="flex items-center gap-1.5 bg-black/40 dark:bg-black/25 text-white text-xs font-medium px-3 py-1.5 rounded-full backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity">
-                <Camera size={12} /> Đổi ảnh bìa
+                <Camera size={12} /> {t("changeCover")}
               </div>
               <input
                 ref={coverInputRef}
@@ -213,44 +215,44 @@ export function EditProfileModal({
           <div className="px-5 pt-14 pb-5 flex flex-col gap-4">
             <Field
               icon={<User size={14} />}
-              label="Tên hiển thị"
+              label={t("displayName")}
               value={displayName}
               onChange={setDisplayName}
-              placeholder="Tên của bạn"
+              placeholder={t("displayNamePlaceholder")}
               maxLength={50}
             />
             <TextareaField
               icon={<AlignLeft size={14} />}
-              label="Giới thiệu"
+              label={t("bio")}
               value={bio}
               onChange={setBio}
-              placeholder="Viết vài dòng về bản thân..."
+              placeholder={t("bioPlaceholder")}
               maxLength={200}
             />
             <Field
               icon={<GraduationCap size={14} />}
-              label="Trường học"
+              label={t("school")}
               value={school}
               onChange={setSchool}
-              placeholder="Trường bạn đang học"
+              placeholder={t("schoolPlaceholder")}
             />
             <Field
               icon={<BookOpen size={14} />}
-              label="Lớp / Khoá"
+              label={t("grade")}
               value={grade}
               onChange={setGrade}
-              placeholder="VD: 12A1, K66, ..."
+              placeholder={t("gradePlaceholder")}
             />
             <Field
               icon={<MapPin size={14} />}
-              label="Địa điểm"
+              label={t("location")}
               value={location}
               onChange={setLocation}
-              placeholder="Thành phố, tỉnh..."
+              placeholder={t("locationPlaceholder")}
             />
             <Field
               icon={<Globe size={14} />}
-              label="Website"
+              label={t("website")}
               value={website}
               onChange={setWebsite}
               placeholder="https://..."
@@ -265,7 +267,7 @@ export function EditProfileModal({
             onClick={onClose}
             className="px-4 py-2 text-sm text-text-secondary border border-surface-200 rounded-xl hover:bg-surface-50 transition-colors"
           >
-            Huỷ
+            {t("cancel")}
           </button>
           <button
             onClick={handleSave}
@@ -274,10 +276,10 @@ export function EditProfileModal({
           >
             {saving ? (
               <>
-                <Loader2 size={14} className="animate-spin" /> Đang lưu...
+                <Loader2 size={14} className="animate-spin" /> {t("saving")}
               </>
             ) : (
-              <>Lưu</>
+              <>{t("save")}</>
             )}
           </button>
         </div>

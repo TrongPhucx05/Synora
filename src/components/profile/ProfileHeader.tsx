@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import {
   Camera,
   Share2,
@@ -62,6 +63,7 @@ export function ProfileHeader({
   const { showToast } = useToast();
   const canSendFriendRequest = profileData?.canSendFriendRequest ?? true;
   const canMessage = profileData?.canMessage ?? true;
+  const t = useTranslations("profile.header");
 
   const handleFollowToggle = async () => {
     if (isAdmin) return;
@@ -76,7 +78,7 @@ export function ProfileHeader({
       });
       const data = await res.json();
       if (!res.ok) {
-        showToast(data.error ?? "Không thể gửi lời mời kết bạn", "error");
+        showToast(data.error ?? t("friendRequestError"), "error");
         return;
       }
       setStatus(data.status ?? "none");
@@ -143,7 +145,7 @@ export function ProfileHeader({
             onClick={() => setShowEditModal(true)}
             className="absolute top-3 right-3 flex items-center gap-1.5 bg-black/20 hover:bg-black/30 text-white text-xs font-medium px-3 py-1.5 rounded-full backdrop-blur-sm transition-colors"
           >
-            <Camera size={11} /> Đổi ảnh bìa
+            <Camera size={11} /> {t("changeCover")}
           </button>
         )}
       </div>
@@ -175,7 +177,7 @@ export function ProfileHeader({
       <div className="absolute -bottom-10 right-0 flex items-center gap-2">
         {!isAdmin && (
           <button className="flex items-center gap-1.5 border border-surface-200 bg-surface text-text-secondary text-xs font-medium px-3 py-1.5 rounded-lg hover:bg-surface-50 transition-colors">
-            <Share2 size={13} /> Chia sẻ
+            <Share2 size={13} /> {t("share")}
           </button>
         )}
 
@@ -184,7 +186,7 @@ export function ProfileHeader({
             onClick={() => setShowEditModal(true)}
             className="flex items-center gap-1.5 border border-surface-200 bg-surface text-text-secondary text-xs font-medium px-3 py-1.5 rounded-lg hover:bg-surface-50 transition-colors"
           >
-            <Pencil size={13} /> Chỉnh sửa
+            <Pencil size={13} /> {t("edit")}
           </button>
         ) : (
           !isAdmin && (
@@ -207,7 +209,7 @@ export function ProfileHeader({
                       : "hover:bg-surface-50",
                   )}
                 >
-                  <MessageCircle size={13} /> Nhắn tin
+                  <MessageCircle size={13} /> {t("message")}
                 </button>
               )}
 
@@ -218,7 +220,7 @@ export function ProfileHeader({
                     disabled={followLoading}
                     className="flex items-center gap-1.5 text-xs font-semibold px-4 py-1.5 rounded-lg transition-colors bg-primary text-white hover:bg-primary-700 disabled:opacity-70"
                   >
-                    Trả lời <ChevronDown size={13} />
+                    {t("reply")} <ChevronDown size={13} />
                   </button>
                   {showReplyMenu && (
                     <div className="absolute right-0 top-full mt-1.5 bg-surface border border-surface-200 rounded-xl shadow-lg overflow-hidden z-20 min-w-[140px]">
@@ -226,14 +228,13 @@ export function ProfileHeader({
                         onClick={() => handleRequestAction("accept")}
                         className="w-full flex items-center gap-2 px-3 py-2.5 text-xs font-medium text-text-primary hover:bg-surface-50 transition-colors"
                       >
-                        <UserCheck size={13} className="text-primary" /> Chấp
-                        nhận
+                        <UserCheck size={13} className="text-primary" /> {t("accept")}
                       </button>
                       <button
                         onClick={() => handleRequestAction("reject")}
                         className="w-full flex items-center gap-2 px-3 py-2.5 text-xs font-medium text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/20 transition-colors"
                       >
-                        <span className="text-red-500 dark:text-red-400">✕</span> Từ chối
+                        <span className="text-red-500 dark:text-red-400">✕</span> {t("decline")}
                       </button>
                     </div>
                   )}
@@ -272,15 +273,15 @@ export function ProfileHeader({
                     >
                       {status === "friends" ? (
                         <>
-                          <UserCheck size={13} /> Bạn bè
+                          <UserCheck size={13} /> {t("friends")}
                         </>
                       ) : status === "pending" ? (
                         <>
-                          <Clock size={13} /> Đã gửi yêu cầu
+                          <Clock size={13} /> {t("requestSent")}
                         </>
                       ) : (
                         <>
-                          <UserPlus size={13} /> Kết bạn
+                          <UserPlus size={13} /> {t("addFriend")}
                         </>
                       )}
                     </button>
@@ -312,7 +313,7 @@ export function ProfileHeader({
       {showAuthModal && (
         <AuthGuardModal
           onClose={() => setShowAuthModal(false)}
-          action="kết bạn với người này"
+          action={t("addFriendAction")}
         />
       )}
     </div>

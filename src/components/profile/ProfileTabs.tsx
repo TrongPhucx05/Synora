@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { clsx } from "clsx";
 import { PROFILE_TABS } from "@/lib/profile/data";
 import type { ProfileTab } from "@/lib/profile/data";
@@ -10,6 +11,8 @@ interface ProfileTabsProps {
 }
 
 export function ProfileTabs({ activeTab, onChange }: ProfileTabsProps) {
+  const t = useTranslations("profile.tabs");
+
   return (
     <div className="bg-surface border border-surface-200 rounded-2xl mb-3 px-1">
       <div className="flex">
@@ -22,7 +25,7 @@ export function ProfileTabs({ activeTab, onChange }: ProfileTabsProps) {
               activeTab === tab ? "text-primary" : "text-text-muted hover:text-text-primary"
             )}
           >
-            {tab}
+            {t(tab)}
             {activeTab === tab && (
               <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-6 h-0.5 bg-primary rounded-full" />
             )}

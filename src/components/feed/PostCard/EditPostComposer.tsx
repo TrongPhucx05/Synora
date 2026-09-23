@@ -327,7 +327,6 @@ export default function EditPostComposer({
       onClick={(e) => e.target === e.currentTarget && onClose()}
     >
       <div className="bg-surface rounded-2xl shadow-2xl w-full max-w-lg flex flex-col overflow-hidden max-h-[90vh]">
-        {/* Header */}
         <div className="flex items-center justify-between px-5 py-4 border-b border-surface-100 shrink-0">
           <div className="flex items-center gap-3">
             <h2 className="text-sm font-bold text-text-primary">
@@ -343,7 +342,6 @@ export default function EditPostComposer({
           </button>
         </div>
 
-        {/* Body */}
         <div className="overflow-y-auto flex-1">
           <div className="px-5 pt-4">
             <textarea
@@ -368,7 +366,6 @@ export default function EditPostComposer({
             )}
           </div>
 
-          {/* Existing + new media */}
           {(existingMedia.length > 0 || newMediaFiles.length > 0) && (
             <div className="px-5 pb-3 flex flex-wrap gap-2">
               {existingMedia.map((m, idx) => (
@@ -417,7 +414,6 @@ export default function EditPostComposer({
             </div>
           )}
 
-          {/* Existing + new attachments */}
           {(existingAttachments.length > 0 || newDocFiles.length > 0) && (
             <div className="px-5 pb-3 flex flex-wrap gap-2">
               {existingAttachments.map((att) => (
@@ -457,7 +453,6 @@ export default function EditPostComposer({
           )}
         </div>
 
-        {/* Footer */}
         <div className="border-t border-surface-100 shrink-0">
           {uploadError && (
             <p className="text-xs text-red-500 dark:text-red-400 px-5 pt-3">

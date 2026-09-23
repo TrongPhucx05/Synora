@@ -1,3 +1,6 @@
+"use client";
+import { useTranslations } from "next-intl";
+
 interface StatsShape {
   followers: string | number;
   following: string | number;
@@ -9,13 +12,15 @@ interface ProfileStatsProps {
   stats: StatsShape;
 }
 
-const LABELS = [
-  { key: "followers" as const, label: "người theo dõi" },
-  { key: "documents" as const, label: "tài liệu" },
-  { key: "downloads" as const, label: "lượt tải" },
-];
-
 export function ProfileStats({ stats }: ProfileStatsProps) {
+  const t = useTranslations("search");
+
+  const LABELS = [
+    { key: "followers" as const, label: t("followersLabel") },
+    { key: "documents" as const, label: t("documentsCountLabel") },
+    { key: "downloads" as const, label: t("downloadsLabel") },
+  ];
+
   return (
     <div className="flex items-center gap-5 px-1 mb-5 border-b border-surface-100 pb-4">
       {LABELS.map(({ key, label }) => (
