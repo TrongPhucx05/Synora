@@ -20,9 +20,13 @@ export function getViewUrl(fileUrl: string, type: string): string {
   return fileUrl;
 }
 
-export function mapApiPostToCard(post: any) {
+export function mapApiPostToCard(
+  post: any,
+  locale: string = "vi",
+  defaultUserLabel: string = "User",
+) {
   const displayName =
-    post.author?.profile?.displayName ?? post.author?.username ?? "User";
+    post.author?.profile?.displayName ?? post.author?.username ?? defaultUserLabel;
 
   const mediaDocs = (post.documents ?? []).filter(
     (d: any) => d.type === "IMAGE" || d.type === "VIDEO",
@@ -62,11 +66,10 @@ export function mapApiPostToCard(post: any) {
       username: post.author?.username,
       avatarUrl: post.author?.profile?.avatarUrl ?? null,
     },
-    time: new Date(post.createdAt).toLocaleDateString("vi-VN", {
-      day: "numeric",
-      month: "long",
-      year: "numeric",
-    }),
+    time: new Date(post.createdAt).toLocaleDateString(
+      locale === "en" ? "en-US" : "vi-VN",
+      { day: "numeric", month: "long", year: "numeric" },
+    ),
     content: post.content,
     tags: (post.tags ?? []).map((t: any) => t.tag?.name ?? ""),
     likes: post._count?.likes ?? 0,

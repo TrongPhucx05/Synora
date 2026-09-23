@@ -861,5 +861,146 @@
       "title": "Chủ đề thịnh hành",
       "exploreMore": "Khám phá thêm"
     }
+  },
+  "profile": {
+    "notFound": "Không tìm thấy người dùng này.",
+    "tabs": {
+      "posts": "Bài đăng",
+      "images": "Hình ảnh",
+      "documents": "Tài liệu",
+      "saved": "Bài viết đã lưu"
+    },
+    "joinedOn": "Tham gia {date}",
+    "header": {
+      "changeCover": "Đổi ảnh bìa",
+      "share": "Chia sẻ",
+      "edit": "Chỉnh sửa",
+      "message": "Nhắn tin",
+      "reply": "Trả lời",
+      "accept": "Chấp nhận",
+      "decline": "Từ chối",
+      "friends": "Bạn bè",
+      "requestSent": "Đã gửi yêu cầu",
+      "addFriend": "Kết bạn",
+      "friendRequestError": "Không thể gửi lời mời kết bạn",
+      "addFriendAction": "kết bạn với người này"
+    },
+    "editModal": {
+      "title": "Chỉnh sửa trang cá nhân",
+      "changeCover": "Đổi ảnh bìa",
+      "displayName": "Tên hiển thị",
+      "displayNamePlaceholder": "Tên của bạn",
+      "bio": "Giới thiệu",
+      "bioPlaceholder": "Viết vài dòng về bản thân...",
+      "school": "Trường học",
+      "schoolPlaceholder": "Trường bạn đang học",
+      "grade": "Lớp / Khoá",
+      "gradePlaceholder": "VD: 12A1, K66, ...",
+      "location": "Địa điểm",
+      "locationPlaceholder": "Thành phố, tỉnh...",
+      "website": "Website",
+      "cancel": "Huỷ",
+      "save": "Lưu",
+      "saving": "Đang lưu...",
+      "genericError": "Có lỗi xảy ra, thử lại nhé."
+    },
+    "friendsWidget": {
+      "title": "Bạn bè",
+      "seeAll": "Tất cả",
+      "hidden": "Danh sách bạn bè đã được ẩn.",
+      "empty": "Chưa có bạn bè nào.",
+      "unfriendTooltip": "Hủy kết bạn",
+      "unfriendedToast": "Đã hủy kết bạn"
+    },
+    "recentDocsWidget": {
+      "title": "Tài liệu gần đây",
+      "seeAll": "Tất cả",
+      "pagesLabel": "{count} trang",
+      "downloadsLabel": "{count} lượt tải",
+      "view": "Xem",
+      "viewTooltip": "Xem tài liệu"
+    },
+    "subjectsWidget": {
+      "title": "Môn học"
+    },
+    "documentsTab": {
+      "tabMine": "Của tôi",
+      "tabSaved": "Đã lưu",
+      "emptyMine": "Chưa có tài liệu nào được đăng.",
+      "emptySaved": "Chưa lưu tài liệu nào.",
+      "noAccess": "Bạn không có quyền truy cập.",
+      "loadMore": "Tải thêm",
+      "unsave": "Bỏ lưu",
+      "save": "Lưu tài liệu",
+      "delete": "Xóa tài liệu",
+      "report": "Báo cáo",
+      "preview": "Xem trước",
+      "downloadTooltip": "Tải xuống",
+      "pagesLabel": "{count} trang",
+      "savedToast": "Đã lưu tài liệu",
+      "unsavedToast": "Đã bỏ lưu tài liệu",
+      "deleteFailedToast": "Xóa thất bại",
+      "connectionErrorToast": "Lỗi kết nối, vui lòng thử lại",
+      "deleteConfirmTitle": "Xóa tài liệu?",
+      "deleteConfirmDesc": "Tài liệu \"{title}\" sẽ bị xóa vĩnh viễn và không thể khôi phục.",
+      "cancel": "Hủy",
+      "deleting": "Đang xóa...",
+      "deleteBtn": "Xóa"
+    },
+    "imagesTab": {
+      "empty": "Chưa có hình ảnh nào.",
+      "loadMore": "Tải thêm →"
+    },
+    "postsTab": {
+      "empty": "Chưa có bài đăng nào.",
+      "loadMore": "Tải thêm →",
+      "defaultUser": "Người dùng"
+    },
+    "savedPostsTab": {
+      "ownerOnly": "Mục này chỉ hiển thị với chủ trang.",
+      "empty": "Bạn chưa lưu bài viết nào.",
+      "loadMore": "Tải thêm →",
+      "unsavedToast": "Đã bỏ lưu bài viết",
+      "savedToast": "Đã lưu bài viết"
+    }
+  },
+  "friendsPage": {
+    "title": "Bạn bè",
+    "tabs": {
+      "all": "Tất cả bạn bè",
+      "requests": "Yêu cầu kết bạn",
+      "pending": "Đang theo dõi"
+    },
+    "empty": {
+      "all": "Chưa có bạn bè nào",
+      "requests": "Không có yêu cầu kết bạn",
+      "pending": "Không có lời mời nào đang chờ",
+      "hint": "Hãy kết nối với mọi người xung quanh bạn"
+    },
+    "hiddenState": {
+      "title": "Danh sách bạn bè đã được ẩn",
+      "desc": "Người dùng này đã giới hạn hiển thị danh sách bạn bè"
+    },
+    "unfriendBtn": "Hủy kết bạn",
+    "acceptBtn": "Chấp nhận",
+    "rejectBtn": "Từ chối",
+    "cancelInviteBtn": "Thu hồi lời mời",
+    "toast": {
+      "unfriended": "Đã hủy kết bạn",
+      "cancelled": "Đã thu hồi lời mời kết bạn",
+      "accepted": "Đã chấp nhận kết bạn với {name}",
+      "rejected": "Đã từ chối yêu cầu"
+    },
+    "confirm": {
+      "unfriendTitle": "Hủy kết bạn?",
+      "unfriendDesc": "Bạn sẽ không còn là bạn bè với {name} nữa.",
+      "unfriendConfirm": "Hủy kết bạn",
+      "rejectTitle": "Từ chối yêu cầu?",
+      "rejectDesc": "Từ chối lời mời kết bạn từ {name}.",
+      "rejectConfirm": "Từ chối",
+      "cancelTitle": "Thu hồi lời mời?",
+      "cancelDesc": "Thu hồi lời mời kết bạn đã gửi đến {name}.",
+      "cancelConfirm": "Thu hồi"
+    }
   }
 }

@@ -861,5 +861,146 @@
       "title": "Trending topics",
       "exploreMore": "Explore more"
     }
+  },
+  "profile": {
+    "notFound": "User not found.",
+    "tabs": {
+      "posts": "Posts",
+      "images": "Photos",
+      "documents": "Documents",
+      "saved": "Saved posts"
+    },
+    "joinedOn": "Joined {date}",
+    "header": {
+      "changeCover": "Change cover photo",
+      "share": "Share",
+      "edit": "Edit",
+      "message": "Message",
+      "reply": "Reply",
+      "accept": "Accept",
+      "decline": "Decline",
+      "friends": "Friends",
+      "requestSent": "Request sent",
+      "addFriend": "Add friend",
+      "friendRequestError": "Couldn't send the friend request",
+      "addFriendAction": "add this person as a friend"
+    },
+    "editModal": {
+      "title": "Edit profile",
+      "changeCover": "Change cover photo",
+      "displayName": "Display name",
+      "displayNamePlaceholder": "Your name",
+      "bio": "Bio",
+      "bioPlaceholder": "Write a few lines about yourself...",
+      "school": "School",
+      "schoolPlaceholder": "Your school",
+      "grade": "Grade / Class",
+      "gradePlaceholder": "e.g. 12A1, K66, ...",
+      "location": "Location",
+      "locationPlaceholder": "City, province...",
+      "website": "Website",
+      "cancel": "Cancel",
+      "save": "Save",
+      "saving": "Saving...",
+      "genericError": "Something went wrong, please try again."
+    },
+    "friendsWidget": {
+      "title": "Friends",
+      "seeAll": "See all",
+      "hidden": "This friends list is hidden.",
+      "empty": "No friends yet.",
+      "unfriendTooltip": "Unfriend",
+      "unfriendedToast": "Unfriended"
+    },
+    "recentDocsWidget": {
+      "title": "Recent documents",
+      "seeAll": "See all",
+      "pagesLabel": "{count} pages",
+      "downloadsLabel": "{count} downloads",
+      "view": "View",
+      "viewTooltip": "View document"
+    },
+    "subjectsWidget": {
+      "title": "Subjects"
+    },
+    "documentsTab": {
+      "tabMine": "Mine",
+      "tabSaved": "Saved",
+      "emptyMine": "No documents uploaded yet.",
+      "emptySaved": "No documents saved yet.",
+      "noAccess": "You don't have access to this.",
+      "loadMore": "Load more",
+      "unsave": "Unsave",
+      "save": "Save document",
+      "delete": "Delete document",
+      "report": "Report",
+      "preview": "Preview",
+      "downloadTooltip": "Download",
+      "pagesLabel": "{count} pages",
+      "savedToast": "Document saved",
+      "unsavedToast": "Document unsaved",
+      "deleteFailedToast": "Couldn't delete",
+      "connectionErrorToast": "Connection error, please try again",
+      "deleteConfirmTitle": "Delete this document?",
+      "deleteConfirmDesc": "\"{title}\" will be permanently deleted and cannot be recovered.",
+      "cancel": "Cancel",
+      "deleting": "Deleting...",
+      "deleteBtn": "Delete"
+    },
+    "imagesTab": {
+      "empty": "No photos yet.",
+      "loadMore": "Load more →"
+    },
+    "postsTab": {
+      "empty": "No posts yet.",
+      "loadMore": "Load more →",
+      "defaultUser": "User"
+    },
+    "savedPostsTab": {
+      "ownerOnly": "Only the profile owner can see this.",
+      "empty": "You haven't saved any posts yet.",
+      "loadMore": "Load more →",
+      "unsavedToast": "Post unsaved",
+      "savedToast": "Post saved"
+    }
+  },
+  "friendsPage": {
+    "title": "Friends",
+    "tabs": {
+      "all": "All friends",
+      "requests": "Friend requests",
+      "pending": "Sent requests"
+    },
+    "empty": {
+      "all": "No friends yet",
+      "requests": "No friend requests",
+      "pending": "No pending requests",
+      "hint": "Connect with people around you"
+    },
+    "hiddenState": {
+      "title": "This friends list is hidden",
+      "desc": "This user has limited who can see their friends list"
+    },
+    "unfriendBtn": "Unfriend",
+    "acceptBtn": "Accept",
+    "rejectBtn": "Decline",
+    "cancelInviteBtn": "Cancel request",
+    "toast": {
+      "unfriended": "Unfriended",
+      "cancelled": "Friend request cancelled",
+      "accepted": "You are now friends with {name}",
+      "rejected": "Request declined"
+    },
+    "confirm": {
+      "unfriendTitle": "Unfriend this person?",
+      "unfriendDesc": "You will no longer be friends with {name}.",
+      "unfriendConfirm": "Unfriend",
+      "rejectTitle": "Decline this request?",
+      "rejectDesc": "Decline the friend request from {name}.",
+      "rejectConfirm": "Decline",
+      "cancelTitle": "Cancel this request?",
+      "cancelDesc": "Cancel the friend request sent to {name}.",
+      "cancelConfirm": "Cancel request"
+    }
   }
 }
