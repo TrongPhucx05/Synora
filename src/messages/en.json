@@ -94,6 +94,141 @@
       "vi": "Tiếng Việt",
       "en": "English",
       "updateError": "Couldn't update the language"
+    },
+    "pageTitle": "Settings",
+    "nav": {
+      "account": {
+        "label": "Account",
+        "subItems": ["Email", "Password", "Delete account"]
+      },
+      "privacy": {
+        "label": "Privacy",
+        "subItems": ["Activity status", "Blocked users", "Profile visibility"]
+      },
+      "notifications": {
+        "label": "Notifications",
+        "subItems": ["Community", "Groups", "Documents"]
+      },
+      "appearance": { "label": "Appearance", "subItems": ["Theme", "Language"] }
+    },
+    "account": {
+      "email": {
+        "title": "Email",
+        "description": "The email address used to sign in and receive important notifications",
+        "placeholder": "email@example.com",
+        "cancel": "Cancel",
+        "change": "Change",
+        "save": "Save changes",
+        "saving": "Saving...",
+        "changeFailed": "Couldn't change your email",
+        "changeSuccess": "Email changed successfully",
+        "connectionError": "Connection error, please try again"
+      },
+      "password": {
+        "title": "Change password",
+        "description": "Use a strong password that isn't reused on other services",
+        "currentLabel": "Current password",
+        "newLabel": "New password",
+        "confirmLabel": "Confirm new password",
+        "updateBtn": "Update password",
+        "updating": "Saving...",
+        "missingFields": "Please fill in all fields",
+        "mismatch": "Passwords don't match",
+        "tooShort": "New password must be at least 8 characters",
+        "changeFailed": "Couldn't change your password",
+        "changeSuccess": "Password changed successfully",
+        "connectionError": "Connection error, please try again"
+      },
+      "deletion": {
+        "title": "Delete account",
+        "descPending": "Your account deletion request is pending",
+        "descDefault": "This will permanently delete your account after a grace period",
+        "pendingNotice": "Your account will be permanently deleted on <b>{date}</b>. You can cancel this request anytime before then.",
+        "cancelBtn": "Cancel deletion request",
+        "cancelling": "Cancelling...",
+        "warningNotice": "Once submitted, your account will be permanently deleted after {days} days. You can still sign in and cancel the request during this time.",
+        "deleteBtn": "Delete my account",
+        "confirmTitle": "Submit account deletion request?",
+        "confirmDesc": "Your account will be permanently deleted after <b>{days} days</b>. You can cancel the request anytime during the grace period.",
+        "confirmBtn": "Submit deletion request",
+        "requestFailed": "Couldn't submit the request",
+        "requestSuccess": "Your account deletion request has been recorded. Your account will be deleted in {days} days unless you cancel.",
+        "cancelFailed": "Couldn't cancel the request",
+        "cancelSuccess": "Account deletion request cancelled",
+        "connectionError": "Connection error, please try again"
+      }
+    },
+    "privacy": {
+      "activityStatus": {
+        "title": "Activity status",
+        "desc": "Let friends see your green dot and when you were last online",
+        "updateError": "Couldn't update your activity status"
+      },
+      "blockList": {
+        "title": "Blocked users",
+        "desc": "People you've blocked can't message you or view your profile",
+        "empty": "You haven't blocked anyone",
+        "viewAll": "View all ({count})",
+        "unblockSuccess": "User unblocked",
+        "unblockError": "Couldn't unblock this user",
+        "defaultReportName": "this user",
+        "reportTitle": "Report {name}"
+      },
+      "friendRequestPermission": {
+        "title": "Who can send you friend requests",
+        "desc": "Control who is allowed to send you friend requests",
+        "everyone": {
+          "label": "Everyone",
+          "desc": "Anyone can send you a friend request"
+        },
+        "friendsOfFriends": {
+          "label": "Friends of friends",
+          "desc": "Only people who share mutual friends with you"
+        },
+        "nobody": {
+          "label": "No one",
+          "desc": "No one can send you a friend request"
+        },
+        "updateError": "Couldn't update this setting"
+      },
+      "messagePrivacy": {
+        "title": "Only friends can message you",
+        "desc": "When on, only your friends can start a conversation with you",
+        "updateError": "Couldn't update your messaging setting"
+      },
+      "friendsListVisibility": {
+        "title": "Show friends list",
+        "desc": "Let others see your friends list on your profile",
+        "updateError": "Couldn't update your profile setting"
+      }
+    },
+    "blockModal": {
+      "profileLink": "Profile",
+      "unblock": "Unblock",
+      "report": "Report",
+      "title": "Blocked users",
+      "countLabel": "{count} blocked",
+      "searchPlaceholder": "Search blocked users...",
+      "noResults": "No results found",
+      "empty": "You haven't blocked anyone"
+    },
+    "notifications": {
+      "community": {
+        "title": "Community",
+        "desc": "Notifications for posts, comments, and followers",
+        "likes": "Post likes",
+        "comments": "New comments",
+        "follows": "New followers",
+        "mentions": "Mentions (@you)"
+      },
+      "group": {
+        "title": "Groups",
+        "desc": "Notifications for groups you're part of",
+        "invites": "Group invites",
+        "messages": "Group messages",
+        "updates": "Group changes",
+        "updatesDesc": "Name changes, photo, new members..."
+      }
     }
   },
   "common": {

@@ -2,6 +2,7 @@
 import { useState, useRef, useLayoutEffect, useEffect } from "react";
 import { createPortal } from "react-dom";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import { X, Search, MoreVertical, User, Ban, Flag } from "lucide-react";
 import { useOutsideClickRefs } from "@/lib/chat/hooks";
 import Avatar from "@/components/ui/Avatar";
@@ -55,6 +56,7 @@ export function BlockedItemMenu({
 }) {
   const { menuRef, pos } = useMenuPosition(anchorRef);
   useOutsideClickRefs([menuRef, anchorRef], onClose);
+  const t = useTranslations("settings.blockModal");
 
   return createPortal(
     <div
@@ -72,14 +74,14 @@ export function BlockedItemMenu({
         className="flex items-center gap-2.5 px-3.5 py-2.5 text-xs text-text-primary hover:bg-surface-50 transition-colors"
       >
         <User size={13} className="text-text-muted shrink-0" />
-        Trang cá nhân
+        {t("profileLink")}
       </Link>
       <button
         onClick={onUnblock}
         className="w-full flex items-center gap-2.5 px-3.5 py-2.5 text-xs text-text-primary hover:bg-surface-50 transition-colors"
       >
         <Ban size={13} className="text-text-muted shrink-0" />
-        Bỏ chặn
+        {t("unblock")}
       </button>
       <div className="h-px bg-surface-100 my-0.5" />
       <button
@@ -87,7 +89,7 @@ export function BlockedItemMenu({
         className="w-full flex items-center gap-2.5 px-3.5 py-2.5 text-xs text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/20 transition-colors"
       >
         <Flag size={13} className="shrink-0" />
-        Báo cáo
+        {t("report")}
       </button>
     </div>,
     document.body,
@@ -105,6 +107,7 @@ export function BlockedUsersModal({
   onUnblock: (id: string) => void;
   onReport: (id: string) => void;
 }) {
+  const t = useTranslations("settings.blockModal");
   const [query, setQuery] = useState("");
   const [menuOpenId, setMenuOpenId] = useState<string | null>(null);
   const buttonRefs = useRef<Record<string, HTMLButtonElement | null>>({});
@@ -127,10 +130,10 @@ export function BlockedUsersModal({
         <div className="flex items-center justify-between px-5 py-4 border-b border-surface-100 shrink-0">
           <div>
             <h3 className="text-sm font-bold text-text-primary">
-              Danh sách chặn
+              {t("title")}
             </h3>
             <p className="text-[11px] text-text-muted mt-0.5">
-              {users.length} người đã chặn
+              {t("countLabel", { count: users.length })}
             </p>
           </div>
           <button
@@ -148,7 +151,7 @@ export function BlockedUsersModal({
               type="text"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="Tìm trong danh sách chặn..."
+              placeholder={t("searchPlaceholder")}
               className="flex-1 bg-transparent text-sm text-text-primary placeholder:text-text-muted focus:outline-none"
             />
           </div>
@@ -159,7 +162,7 @@ export function BlockedUsersModal({
             <div className="flex flex-col items-center py-12 gap-2 text-text-muted">
               <Ban size={22} className="opacity-40" />
               <p className="text-xs">
-                {query ? "Không tìm thấy kết quả" : "Bạn chưa chặn ai"}
+                {query ? t("noResults") : t("empty")}
               </p>
             </div>
           ) : (

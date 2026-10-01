@@ -94,6 +94,145 @@
       "vi": "Tiếng Việt",
       "en": "English",
       "updateError": "Không thể cập nhật ngôn ngữ"
+    },
+    "pageTitle": "Cài đặt",
+    "nav": {
+      "account": {
+        "label": "Tài khoản",
+        "subItems": ["Email", "Đổi mật khẩu", "Xóa tài khoản"]
+      },
+      "privacy": {
+        "label": "Quyền riêng tư",
+        "subItems": [
+          "Trạng thái hoạt động",
+          "Danh sách chặn",
+          "Quyền xem hồ sơ"
+        ]
+      },
+      "notifications": {
+        "label": "Thông báo",
+        "subItems": ["Cộng đồng", "Nhóm", "Tài liệu"]
+      },
+      "appearance": { "label": "Giao diện", "subItems": ["Theme", "Ngôn ngữ"] }
+    },
+    "account": {
+      "email": {
+        "title": "Email",
+        "description": "Địa chỉ email dùng để đăng nhập và nhận thông báo quan trọng",
+        "placeholder": "email@example.com",
+        "cancel": "Hủy",
+        "change": "Thay đổi",
+        "save": "Lưu thay đổi",
+        "saving": "Đang lưu...",
+        "changeFailed": "Đổi email thất bại",
+        "changeSuccess": "Đổi email thành công",
+        "connectionError": "Lỗi kết nối, vui lòng thử lại"
+      },
+      "password": {
+        "title": "Đổi mật khẩu",
+        "description": "Nên dùng mật khẩu mạnh và không trùng với các dịch vụ khác",
+        "currentLabel": "Mật khẩu hiện tại",
+        "newLabel": "Mật khẩu mới",
+        "confirmLabel": "Xác nhận mật khẩu mới",
+        "updateBtn": "Cập nhật mật khẩu",
+        "updating": "Đang lưu...",
+        "missingFields": "Vui lòng nhập đầy đủ thông tin",
+        "mismatch": "Mật khẩu xác nhận không khớp",
+        "tooShort": "Mật khẩu mới phải có ít nhất 8 ký tự",
+        "changeFailed": "Đổi mật khẩu thất bại",
+        "changeSuccess": "Đổi mật khẩu thành công",
+        "connectionError": "Lỗi kết nối, vui lòng thử lại"
+      },
+      "deletion": {
+        "title": "Xóa tài khoản",
+        "descPending": "Yêu cầu xóa tài khoản của bạn đang chờ xử lý",
+        "descDefault": "Hành động này sẽ xóa vĩnh viễn tài khoản sau thời gian chờ",
+        "pendingNotice": "Tài khoản của bạn sẽ bị xóa vĩnh viễn vào ngày <b>{date}</b>. Bạn có thể hủy yêu cầu này bất cứ lúc nào trước thời điểm trên.",
+        "cancelBtn": "Hủy yêu cầu xóa",
+        "cancelling": "Đang hủy...",
+        "warningNotice": "Sau khi gửi yêu cầu, tài khoản sẽ bị xóa vĩnh viễn sau {days} ngày. Trong thời gian này bạn vẫn có thể đăng nhập và hủy yêu cầu bất cứ lúc nào.",
+        "deleteBtn": "Xóa tài khoản của tôi",
+        "confirmTitle": "Gửi yêu cầu xóa tài khoản?",
+        "confirmDesc": "Tài khoản sẽ bị xóa vĩnh viễn sau <b>{days} ngày</b>. Bạn có thể hủy yêu cầu bất cứ lúc nào trong thời gian chờ.",
+        "confirmBtn": "Gửi yêu cầu xóa",
+        "requestFailed": "Không thể gửi yêu cầu",
+        "requestSuccess": "Yêu cầu xóa tài khoản đã được ghi nhận. Tài khoản sẽ bị xóa sau {days} ngày nếu bạn không hủy.",
+        "cancelFailed": "Không thể hủy yêu cầu",
+        "cancelSuccess": "Đã hủy yêu cầu xóa tài khoản",
+        "connectionError": "Lỗi kết nối, vui lòng thử lại"
+      }
+    },
+    "privacy": {
+      "activityStatus": {
+        "title": "Trạng thái hoạt động",
+        "desc": "Cho phép bạn bè thấy chấm xanh và thời điểm bạn online gần nhất",
+        "updateError": "Không thể cập nhật trạng thái hoạt động"
+      },
+      "blockList": {
+        "title": "Danh sách chặn",
+        "desc": "Những người bạn đã chặn sẽ không thể nhắn tin hoặc xem hồ sơ của bạn",
+        "empty": "Bạn chưa chặn ai",
+        "viewAll": "Xem tất cả ({count})",
+        "unblockSuccess": "Đã bỏ chặn người dùng",
+        "unblockError": "Không thể bỏ chặn người dùng",
+        "defaultReportName": "người dùng",
+        "reportTitle": "Báo cáo {name}"
+      },
+      "friendRequestPermission": {
+        "title": "Ai có thể gửi lời mời kết bạn",
+        "desc": "Kiểm soát ai được phép gửi lời mời kết bạn đến bạn",
+        "everyone": {
+          "label": "Mọi người",
+          "desc": "Bất kỳ ai cũng có thể gửi lời mời kết bạn cho bạn"
+        },
+        "friendsOfFriends": {
+          "label": "Bạn của bạn bè",
+          "desc": "Chỉ những người có bạn chung với bạn mới gửi được"
+        },
+        "nobody": {
+          "label": "Không ai",
+          "desc": "Không ai có thể gửi lời mời kết bạn cho bạn"
+        },
+        "updateError": "Không thể cập nhật cài đặt"
+      },
+      "messagePrivacy": {
+        "title": "Chỉ bạn bè mới được nhắn tin",
+        "desc": "Khi bật, chỉ những người là bạn bè mới có thể mở cuộc trò chuyện với bạn",
+        "updateError": "Không thể cập nhật cài đặt tin nhắn"
+      },
+      "friendsListVisibility": {
+        "title": "Hiển thị danh sách bạn bè",
+        "desc": "Cho phép người khác xem danh sách bạn bè trên hồ sơ của bạn",
+        "updateError": "Không thể cập nhật cài đặt hồ sơ"
+      }
+    },
+    "blockModal": {
+      "profileLink": "Trang cá nhân",
+      "unblock": "Bỏ chặn",
+      "report": "Báo cáo",
+      "title": "Danh sách chặn",
+      "countLabel": "{count} người đã chặn",
+      "searchPlaceholder": "Tìm trong danh sách chặn...",
+      "noResults": "Không tìm thấy kết quả",
+      "empty": "Bạn chưa chặn ai"
+    },
+    "notifications": {
+      "community": {
+        "title": "Cộng đồng",
+        "desc": "Thông báo liên quan đến bài viết, bình luận và người theo dõi",
+        "likes": "Lượt thích bài viết",
+        "comments": "Bình luận mới",
+        "follows": "Người theo dõi mới",
+        "mentions": "Nhắc đến bạn (@mention)"
+      },
+      "group": {
+        "title": "Nhóm",
+        "desc": "Thông báo liên quan đến các nhóm bạn tham gia",
+        "invites": "Lời mời vào nhóm",
+        "messages": "Tin nhắn nhóm",
+        "updates": "Thay đổi trong nhóm",
+        "updatesDesc": "Đổi tên, ảnh đại diện, thành viên mới..."
+      }
     }
   },
   "common": {

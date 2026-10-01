@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import { Ban, MoreVertical } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { SettingsCard } from "./SettingsCard";
 import {
   BlockedUsersModal,
@@ -37,6 +38,7 @@ export function PrivacySection() {
     id: string;
     name: string;
   } | null>(null);
+  const t = useTranslations("settings.privacy");
 
   useEffect(() => {
     fetchBlockedUsers()
@@ -55,11 +57,11 @@ export function PrivacySection() {
     setBlocked((p) => p.filter((u) => u.id !== id));
     try {
       await unblockUser(id);
-      showToast("Đã bỏ chặn người dùng", "success");
+      showToast(t("blockList.unblockSuccess"), "success");
     } catch (e) {
       setBlocked(prev);
       showToast(
-        e instanceof Error ? e.message : "Không thể bỏ chặn người dùng",
+        e instanceof Error ? e.message : t("blockList.unblockError"),
         "error",
       );
     }
@@ -67,7 +69,10 @@ export function PrivacySection() {
 
   const handleReport = (id: string) => {
     const user = blocked.find((u) => u.id === id);
-    setReportingUser({ id, name: user?.name ?? "người dùng" });
+    setReportingUser({
+      id,
+      name: user?.name ?? t("blockList.defaultReportName"),
+    });
   };
 
   const {
@@ -109,18 +114,18 @@ export function PrivacySection() {
   }[] = [
     {
       value: "EVERYONE",
-      label: "Mọi người",
-      desc: "Bất kỳ ai cũng có thể gửi lời mời kết bạn cho bạn",
+      label: t("friendRequestPermission.everyone.label"),
+      desc: t("friendRequestPermission.everyone.desc"),
     },
     {
       value: "FRIENDS_OF_FRIENDS",
-      label: "Bạn của bạn bè",
-      desc: "Chỉ những người có bạn chung với bạn mới gửi được",
+      label: t("friendRequestPermission.friendsOfFriends.label"),
+      desc: t("friendRequestPermission.friendsOfFriends.desc"),
     },
     {
       value: "NOBODY",
-      label: "Không ai",
-      desc: "Không ai có thể gửi lời mời kết bạn cho bạn",
+      label: t("friendRequestPermission.nobody.label"),
+      desc: t("friendRequestPermission.nobody.desc"),
     },
   ];
 
@@ -129,10 +134,10 @@ export function PrivacySection() {
       <div className="bg-surface border border-surface-200 rounded-2xl p-5 flex items-center justify-between gap-4">
         <div className="min-w-0">
           <h3 className="text-sm font-bold text-text-primary">
-            Trạng thái hoạt động
+            {t("activityStatus.title")}
           </h3>
           <p className="text-xs text-text-muted mt-1">
-            Cho phép bạn bè thấy chấm xanh và thời điểm bạn online gần nhất
+            {t("activityStatus.desc")}
           </p>
         </div>
         <ToggleSwitch
@@ -140,15 +145,15 @@ export function PrivacySection() {
           disabled={loadingActivity}
           onChange={() => {
             toggleActivity().catch(() =>
-              showToast("Không thể cập nhật trạng thái hoạt động", "error"),
+              showToast(t("activityStatus.updateError"), "error"),
             );
           }}
         />
       </div>
 
       <SettingsCard
-        title="Danh sách chặn"
-        description="Những người bạn đã chặn sẽ không thể nhắn tin hoặc xem hồ sơ của bạn"
+        title={t("blockList.title")}
+        description={t("blockList.desc")}
       >
         {loadingBlocked ? (
           <div className="flex flex-col gap-2">
@@ -170,7 +175,7 @@ export function PrivacySection() {
             <div className="w-11 h-11 rounded-full bg-surface-100 flex items-center justify-center">
               <Ban size={18} className="opacity-50" />
             </div>
-            <p className="text-xs">Bạn chưa chặn ai</p>
+            <p className="text-xs">{t("blockList.empty")}</p>
           </div>
         ) : (
           <>
@@ -227,15 +232,15 @@ export function PrivacySection() {
               onClick={() => setModalOpen(true)}
               className="self-start text-xs font-semibold text-primary hover:underline"
             >
-              Xem tất cả ({blocked.length})
+              {t("blockList.viewAll", { count: blocked.length })}
             </button>
           </>
         )}
       </SettingsCard>
 
       <SettingsCard
-        title="Ai có thể gửi lời mời kết bạn"
-        description="Kiểm soát ai được phép gửi lời mời kết bạn đến bạn"
+        title={t("friendRequestPermission.title")}
+        description={t("friendRequestPermission.desc")}
       >
         <div className="flex flex-col gap-2">
           {permissionOptions.map((opt) => (
@@ -244,7 +249,7 @@ export function PrivacySection() {
               disabled={loadingPermission}
               onClick={() => {
                 updatePermission(opt.value).catch(() =>
-                  showToast("Không thể cập nhật cài đặt", "error"),
+                  showToast(t("friendRequestPermission.updateError"), "error"),
                 );
               }}
               className={clsx(
@@ -280,11 +285,10 @@ export function PrivacySection() {
       <div className="bg-surface border border-surface-200 rounded-2xl p-5 flex items-center justify-between gap-4">
         <div className="min-w-0">
           <h3 className="text-sm font-bold text-text-primary">
-            Chỉ bạn bè mới được nhắn tin
+            {t("messagePrivacy.title")}
           </h3>
           <p className="text-xs text-text-muted mt-1">
-            Khi bật, chỉ những người là bạn bè mới có thể mở cuộc trò chuyện với
-            bạn
+            {t("messagePrivacy.desc")}
           </p>
         </div>
         <ToggleSwitch
@@ -292,7 +296,7 @@ export function PrivacySection() {
           disabled={loadingMessagePrivacy}
           onChange={() => {
             toggleMessagePrivacy().catch(() =>
-              showToast("Không thể cập nhật cài đặt tin nhắn", "error"),
+              showToast(t("messagePrivacy.updateError"), "error"),
             );
           }}
         />
@@ -301,10 +305,10 @@ export function PrivacySection() {
       <div className="bg-surface border border-surface-200 rounded-2xl p-5 flex items-center justify-between gap-4">
         <div className="min-w-0">
           <h3 className="text-sm font-bold text-text-primary">
-            Hiển thị danh sách bạn bè
+            {t("friendsListVisibility.title")}
           </h3>
           <p className="text-xs text-text-muted mt-1">
-            Cho phép người khác xem danh sách bạn bè trên hồ sơ của bạn
+            {t("friendsListVisibility.desc")}
           </p>
         </div>
         <ToggleSwitch
@@ -312,7 +316,7 @@ export function PrivacySection() {
           disabled={loadingFriendsListVisibility}
           onChange={() => {
             toggleFriendsListVisibility().catch(() =>
-              showToast("Không thể cập nhật cài đặt hồ sơ", "error"),
+              showToast(t("friendsListVisibility.updateError"), "error"),
             );
           }}
         />
@@ -331,7 +335,7 @@ export function PrivacySection() {
         <ReportModal
           targetType="USER"
           targetId={reportingUser.id}
-          title={`Báo cáo ${reportingUser.name}`}
+          title={t("blockList.reportTitle", { name: reportingUser.name })}
           onClose={() => setReportingUser(null)}
         />
       )}

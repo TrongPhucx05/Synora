@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
+import { useTranslations, useLocale } from "next-intl";
 import {
   Mail,
   Lock,
@@ -17,16 +18,24 @@ import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 
 const DELETION_GRACE_DAYS = 7;
 
-function formatScheduledDate(scheduledDeleteAt: string): string {
-  return new Date(scheduledDeleteAt).toLocaleDateString("vi-VN", {
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric",
-  });
+function formatScheduledDate(
+  scheduledDeleteAt: string,
+  locale: string,
+): string {
+  return new Date(scheduledDeleteAt).toLocaleDateString(
+    locale === "en" ? "en-US" : "vi-VN",
+    {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    },
+  );
 }
 
 export function AccountSection() {
   const { data: authSession, update: updateSession } = useSession();
+  const t = useTranslations("settings.account");
+  const locale = useLocale();
   const { showToast } = useToast();
 
   const currentEmail = authSession?.user?.email ?? "";
@@ -68,14 +77,14 @@ export function AccountSection() {
       });
       const data = await res.json();
       if (!res.ok) {
-        showToast(data.error || "Đổi email thất bại", "error");
+        showToast(data.error || t("email.changeFailed"), "error");
         return;
       }
       await updateSession({ email: data.email });
-      showToast("Đổi email thành công", "success");
+      showToast(t("email.changeSuccess"), "success");
       setEditingEmail(false);
     } catch {
-      showToast("Lỗi kết nối, vui lòng thử lại", "error");
+      showToast(t("email.connectionError"), "error");
     } finally {
       setSavingEmail(false);
     }
@@ -83,15 +92,15 @@ export function AccountSection() {
 
   const handleChangePassword = async () => {
     if (!currentPw || !newPw || !confirmPw) {
-      showToast("Vui lòng nhập đầy đủ thông tin", "error");
+      showToast(t("password.missingFields"), "error");
       return;
     }
     if (newPw !== confirmPw) {
-      showToast("Mật khẩu xác nhận không khớp", "error");
+      showToast(t("password.mismatch"), "error");
       return;
     }
     if (newPw.length < 8) {
-      showToast("Mật khẩu mới phải có ít nhất 8 ký tự", "error");
+      showToast(t("password.tooShort"), "error");
       return;
     }
     setSavingPw(true);
@@ -106,15 +115,15 @@ export function AccountSection() {
       });
       const data = await res.json();
       if (!res.ok) {
-        showToast(data.error || "Đổi mật khẩu thất bại", "error");
+        showToast(data.error || t("password.changeFailed"), "error");
         return;
       }
-      showToast("Đổi mật khẩu thành công", "success");
+      showToast(t("password.changeSuccess"), "success");
       setCurrentPw("");
       setNewPw("");
       setConfirmPw("");
     } catch {
-      showToast("Lỗi kết nối, vui lòng thử lại", "error");
+      showToast(t("password.connectionError"), "error");
     } finally {
       setSavingPw(false);
     }
@@ -139,16 +148,16 @@ export function AccountSection() {
       });
       const data = await res.json();
       if (!res.ok) {
-        showToast(data.error || "Không thể gửi yêu cầu", "error");
+        showToast(data.error || t("deletion.requestFailed"), "error");
         return;
       }
       setDeletionRequest({ requestedAt: new Date().toISOString() });
       showToast(
-        `Yêu cầu xóa tài khoản đã được ghi nhận. Tài khoản sẽ bị xóa sau ${DELETION_GRACE_DAYS} ngày nếu bạn không hủy.`,
+        t("deletion.requestSuccess", { days: DELETION_GRACE_DAYS }),
         "success",
       );
     } catch {
-      showToast("Lỗi kết nối, vui lòng thử lại", "error");
+      showToast(t("deletion.connectionError"), "error");
     } finally {
       setDeleteLoading(false);
       setDeleteOpen(false);
@@ -163,13 +172,13 @@ export function AccountSection() {
       });
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
-        showToast(data.error || "Không thể hủy yêu cầu", "error");
+        showToast(data.error || t("deletion.cancelFailed"), "error");
         return;
       }
       setDeletionRequest(null);
-      showToast("Đã hủy yêu cầu xóa tài khoản", "success");
+      showToast(t("deletion.cancelSuccess"), "success");
     } catch {
-      showToast("Lỗi kết nối, vui lòng thử lại", "error");
+      showToast(t("deletion.connectionError"), "error");
     } finally {
       setCancelLoading(false);
     }
@@ -178,8 +187,8 @@ export function AccountSection() {
   return (
     <div className="flex flex-col gap-5">
       <SettingsCard
-        title="Email"
-        description="Địa chỉ email dùng để đăng nhập và nhận thông báo quan trọng"
+        title={t("email.title")}
+        description={t("email.description")}
       >
         <div className="flex flex-col gap-3">
           <div className="flex items-center gap-2 bg-surface-50 border border-surface-200 rounded-xl px-3.5 py-2.5">
@@ -190,7 +199,7 @@ export function AccountSection() {
               onChange={(e) => setNewEmail(e.target.value)}
               disabled={!editingEmail}
               className="flex-1 bg-transparent text-sm text-text-primary focus:outline-none disabled:text-text-muted disabled:cursor-not-allowed"
-              placeholder="email@example.com"
+              placeholder={t("email.placeholder")}
             />
           </div>
           <div className="flex items-center gap-2 justify-end">
@@ -203,7 +212,7 @@ export function AccountSection() {
                 disabled={savingEmail}
                 className="px-4 py-2 rounded-full text-xs font-semibold text-text-secondary hover:bg-surface-100 transition-colors disabled:opacity-50"
               >
-                Hủy
+                {t("email.cancel")}
               </button>
             )}
             <button
@@ -215,24 +224,28 @@ export function AccountSection() {
             >
               {editingEmail
                 ? savingEmail
-                  ? "Đang lưu..."
-                  : "Lưu thay đổi"
-                : "Thay đổi"}
+                  ? t("email.saving")
+                  : t("email.save")
+                : t("email.change")}
             </button>
           </div>
         </div>
       </SettingsCard>
 
       <SettingsCard
-        title="Đổi mật khẩu"
-        description="Nên dùng mật khẩu mạnh và không trùng với các dịch vụ khác"
+        title={t("password.title")}
+        description={t("password.description")}
       >
         <div className="flex flex-col gap-3">
           {[
-            { label: "Mật khẩu hiện tại", value: currentPw, set: setCurrentPw },
-            { label: "Mật khẩu mới", value: newPw, set: setNewPw },
             {
-              label: "Xác nhận mật khẩu mới",
+              label: t("password.currentLabel"),
+              value: currentPw,
+              set: setCurrentPw,
+            },
+            { label: t("password.newLabel"), value: newPw, set: setNewPw },
+            {
+              label: t("password.confirmLabel"),
               value: confirmPw,
               set: setConfirmPw,
             },
@@ -267,30 +280,36 @@ export function AccountSection() {
             disabled={savingPw}
             className="self-end mt-1 px-4 py-2 rounded-full text-xs font-semibold bg-primary text-white hover:bg-primary-700 transition-colors disabled:opacity-50"
           >
-            {savingPw ? "Đang lưu..." : "Cập nhật mật khẩu"}
+            {savingPw ? t("password.updating") : t("password.updateBtn")}
           </button>
         </div>
       </SettingsCard>
 
       <SettingsCard
-        title="Xóa tài khoản"
+        title={t("deletion.title")}
         description={
           deletionRequest
-            ? "Yêu cầu xóa tài khoản của bạn đang chờ xử lý"
-            : "Hành động này sẽ xóa vĩnh viễn tài khoản sau thời gian chờ"
+            ? t("deletion.descPending")
+            : t("deletion.descDefault")
         }
       >
         {deletionRequest ? (
           <>
             <div className="flex items-start gap-3 bg-amber-50 dark:bg-amber-500/15 border border-amber-100 rounded-xl p-3.5">
-              <Clock size={16} className="text-amber-500 dark:text-amber-400 shrink-0 mt-0.5" />
+              <Clock
+                size={16}
+                className="text-amber-500 dark:text-amber-400 shrink-0 mt-0.5"
+              />
               <p className="text-xs text-amber-700 leading-relaxed">
-                Tài khoản của bạn sẽ bị xóa vĩnh viễn vào ngày{" "}
-                <span className="font-semibold">
-                  {formatScheduledDate(deletionRequest.requestedAt)}
-                </span>
-                . Bạn có thể hủy yêu cầu này bất cứ lúc nào trước thời điểm
-                trên.
+                {t.rich("deletion.pendingNotice", {
+                  date: formatScheduledDate(
+                    deletionRequest.requestedAt,
+                    locale,
+                  ),
+                  b: (chunks) => (
+                    <span className="font-semibold">{chunks}</span>
+                  ),
+                })}
               </p>
             </div>
             <button
@@ -299,7 +318,9 @@ export function AccountSection() {
               className="self-start flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-semibold bg-primary text-white hover:bg-primary-700 transition-colors disabled:opacity-50"
             >
               <RotateCcw size={13} />
-              {cancelLoading ? "Đang hủy..." : "Hủy yêu cầu xóa"}
+              {cancelLoading
+                ? t("deletion.cancelling")
+                : t("deletion.cancelBtn")}
             </button>
           </>
         ) : (
@@ -310,9 +331,7 @@ export function AccountSection() {
                 className="text-red-500 dark:text-red-400 shrink-0 mt-0.5"
               />
               <p className="text-xs text-red-600 dark:text-red-400 leading-relaxed">
-                Sau khi gửi yêu cầu, tài khoản sẽ bị xóa vĩnh viễn sau{" "}
-                {DELETION_GRACE_DAYS} ngày. Trong thời gian này bạn vẫn có thể
-                đăng nhập và hủy yêu cầu bất cứ lúc nào.
+                {t("deletion.warningNotice", { days: DELETION_GRACE_DAYS })}
               </p>
             </div>
             <button
@@ -320,7 +339,7 @@ export function AccountSection() {
               className="self-start flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-semibold bg-red-50 dark:bg-red-500/15 text-red-500 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-500/25 transition-colors"
             >
               <Trash2 size={13} />
-              Xóa tài khoản của tôi
+              {t("deletion.deleteBtn")}
             </button>
           </>
         )}
@@ -330,17 +349,14 @@ export function AccountSection() {
         <ConfirmDialog
           icon={<Trash2 size={20} className="text-red-500 dark:text-red-400" />}
           iconBgClass="bg-red-100 dark:bg-red-500/20"
-          title="Gửi yêu cầu xóa tài khoản?"
-          description={
-            <>
-              Tài khoản sẽ bị xóa vĩnh viễn sau{" "}
-              <span className="font-medium text-text-secondary">
-                {DELETION_GRACE_DAYS} ngày
-              </span>
-              . Bạn có thể hủy yêu cầu bất cứ lúc nào trong thời gian chờ.
-            </>
-          }
-          confirmLabel="Gửi yêu cầu xóa"
+          title={t("deletion.confirmTitle")}
+          description={t.rich("deletion.confirmDesc", {
+            days: DELETION_GRACE_DAYS,
+            b: (chunks) => (
+              <span className="font-medium text-text-secondary">{chunks}</span>
+            ),
+          })}
+          confirmLabel={t("deletion.confirmBtn")}
           confirmVariant="danger"
           loading={deleteLoading}
           onConfirm={handleRequestDelete}

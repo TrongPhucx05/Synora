@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { SettingsCard } from "./SettingsCard";
 import { SettingsRow } from "./SettingsRow";
 import { ToggleSwitch } from "@/components/ui/ToggleSwitch";
@@ -30,35 +31,36 @@ const DEFAULTS: Record<NotifKey, boolean> = {
 };
 
 export function NotificationSection() {
+  const t = useTranslations("settings.notifications");
   const [settings, setSettings] = useState(DEFAULTS);
   const toggle = (key: NotifKey) =>
     setSettings((prev) => ({ ...prev, [key]: !prev[key] }));
 
   return (
     <div className="flex flex-col gap-5">
-      <SettingsCard title="Cộng đồng" description="Thông báo liên quan đến bài viết, bình luận và người theo dõi">
-        <SettingsRow label="Lượt thích bài viết">
+      <SettingsCard title={t("community.title")} description={t("community.desc")}>
+        <SettingsRow label={t("community.likes")}>
           <ToggleSwitch checked={settings.communityLikes} onChange={() => toggle("communityLikes")} />
         </SettingsRow>
-        <SettingsRow label="Bình luận mới">
+        <SettingsRow label={t("community.comments")}>
           <ToggleSwitch checked={settings.communityComments} onChange={() => toggle("communityComments")} />
         </SettingsRow>
-        <SettingsRow label="Người theo dõi mới">
+        <SettingsRow label={t("community.follows")}>
           <ToggleSwitch checked={settings.communityFollows} onChange={() => toggle("communityFollows")} />
         </SettingsRow>
-        <SettingsRow label="Nhắc đến bạn (@mention)">
+        <SettingsRow label={t("community.mentions")}>
           <ToggleSwitch checked={settings.communityMentions} onChange={() => toggle("communityMentions")} />
         </SettingsRow>
       </SettingsCard>
 
-      <SettingsCard title="Nhóm" description="Thông báo liên quan đến các nhóm bạn tham gia">
-        <SettingsRow label="Lời mời vào nhóm">
+      <SettingsCard title={t("group.title")} description={t("group.desc")}>
+        <SettingsRow label={t("group.invites")}>
           <ToggleSwitch checked={settings.groupInvites} onChange={() => toggle("groupInvites")} />
         </SettingsRow>
-        <SettingsRow label="Tin nhắn nhóm">
+        <SettingsRow label={t("group.messages")}>
           <ToggleSwitch checked={settings.groupMessages} onChange={() => toggle("groupMessages")} />
         </SettingsRow>
-        <SettingsRow label="Thay đổi trong nhóm" description="Đổi tên, ảnh đại diện, thành viên mới...">
+        <SettingsRow label={t("group.updates")} description={t("group.updatesDesc")}>
           <ToggleSwitch checked={settings.groupUpdates} onChange={() => toggle("groupUpdates")} />
         </SettingsRow>
       </SettingsCard>

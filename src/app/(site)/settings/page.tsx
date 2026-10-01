@@ -2,21 +2,23 @@
 import { useState } from "react";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { SettingsSidebar, type SettingsTab } from "@/components/settings/SettingsSidebar";
 import { AccountSection } from "@/components/settings/Account";
 import { PrivacySection } from "@/components/settings/Privacy";
 import { NotificationSection } from "@/components/settings/Notifications";
 import { AppearanceSection } from "@/components/settings/Theme";
 
-const TITLES: Record<SettingsTab, string> = {
-  account: "Tài khoản",
-  privacy: "Quyền riêng tư",
-  notifications: "Thông báo",
-  appearance: "Giao diện",
-};
-
 export default function SettingsPage() {
+  const t = useTranslations("settings");
   const [activeTab, setActiveTab] = useState<SettingsTab>("account");
+
+  const TITLES: Record<SettingsTab, string> = {
+    account: t("nav.account.label"),
+    privacy: t("nav.privacy.label"),
+    notifications: t("nav.notifications.label"),
+    appearance: t("nav.appearance.label"),
+  };
 
   return (
     <div className="min-h-screen bg-surface-50">
@@ -28,7 +30,7 @@ export default function SettingsPage() {
           >
             <ArrowLeft size={18} />
           </Link>
-          <h1 className="text-lg font-bold text-text-primary">Cài đặt</h1>
+          <h1 className="text-lg font-bold text-text-primary">{t("pageTitle")}</h1>
         </div>
 
         <div className="flex flex-col md:flex-row gap-6 items-start">
