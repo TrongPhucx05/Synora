@@ -1588,7 +1588,7 @@ export function InfoSidebar({
                     className="text-amber-500 dark:text-amber-400"
                   />
                   {joinRequestCount > 0 && (
-                    <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-red-500 text-white text-[9px] font-bold flex items-center justify-center">
+                    <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-badge text-white text-[9px] font-bold flex items-center justify-center">
                       {joinRequestCount > 9 ? "9+" : joinRequestCount}
                     </span>
                   )}

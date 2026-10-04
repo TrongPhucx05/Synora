@@ -19,7 +19,7 @@ export default function Sidebar() {
   const { data: session } = useSession();
   const isAdmin = session?.user?.role === "ADMIN";
   const { count: unreadCount } = useUnreadNotifCount();
-  const { count: chatUnread } = useUnreadChatCount(true);
+  const { count: chatUnread } = useUnreadChatCount(!!session?.user && !isAdmin);
   const t = useTranslations("nav");
 
   const navItems = [
@@ -67,7 +67,7 @@ export default function Sidebar() {
               />
               <span className="flex-1">{item.label}</span>
               {badge > 0 && (
-                <span className="bg-primary text-white text-xs font-semibold rounded-full w-5 h-5 flex items-center justify-center">
+                <span className="bg-badge text-white text-[10px] font-bold rounded-full min-w-5 h-5 px-1 flex items-center justify-center">
                   {badge > 99 ? "99+" : badge}
                 </span>
               )}

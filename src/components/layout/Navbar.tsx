@@ -408,7 +408,7 @@ export default function Navbar({
           >
             <MessageCircle size={18} />
             {chatUnread > 0 && (
-              <span className="absolute top-1.5 right-1.5 min-w-[16px] h-4 bg-primary rounded-full border border-white flex items-center justify-center px-1 shadow-sm">
+              <span className="absolute top-1.5 right-1.5 min-w-[16px] h-4 bg-badge rounded-full border border-surface flex items-center justify-center px-1 shadow-sm">
                 <span className="text-[9px] font-bold text-white leading-none">
                   {chatUnread > 99 ? "99+" : chatUnread}
                 </span>
@@ -430,7 +430,7 @@ export default function Navbar({
             >
               <Bell size={18} />
               {totalUnread > 0 && (
-                <span className="absolute top-1.5 right-1.5 min-w-[16px] h-4 bg-primary rounded-full border border-white flex items-center justify-center px-1 shadow-sm">
+                <span className="absolute top-1.5 right-1.5 min-w-[16px] h-4 bg-badge rounded-full border border-surface flex items-center justify-center px-1 shadow-sm">
                   <span className="text-[9px] font-bold text-white leading-none">
                     {totalUnread > 99 ? "99+" : totalUnread}
                   </span>
@@ -446,7 +446,7 @@ export default function Navbar({
                       {tBell("title")}
                     </span>
                     {totalUnread > 0 && (
-                      <span className="text-[10px] font-bold text-white bg-primary rounded-full px-1.5 py-0.5 leading-none">
+                      <span className="text-[10px] font-bold text-white bg-badge rounded-full px-1.5 py-0.5 leading-none">
                         {totalUnread}
                       </span>
                     )}
