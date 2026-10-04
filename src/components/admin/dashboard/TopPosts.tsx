@@ -14,8 +14,6 @@ import {
 import type { TopPostItem } from "@/lib/admin/dashboard/types";
 import type { Post } from "@/lib/feed/types";
 
-const MAX_SLOTS = 5;
-
 function toFeedPost(item: TopPostItem): Post {
   return {
     id: item.id,
@@ -114,8 +112,6 @@ export function TopPosts({
     />
   );
 
-  const emptySlots = Math.max(0, MAX_SLOTS - posts.length);
-
   return (
     <div className="bg-surface border border-surface-200 rounded-2xl p-5 flex flex-col h-full">
       <div className="flex items-center justify-between mb-3.5">
@@ -202,21 +198,6 @@ export function TopPosts({
               </div>
             </div>
           ))}
-
-          {emptySlots > 0 &&
-            Array.from({ length: emptySlots }).map((_, i) => (
-              <div
-                key={`empty-${i}`}
-                className="p-3 rounded-xl border border-dashed border-surface-100 flex items-center gap-3"
-              >
-                <span className="w-6 h-6 rounded-full bg-surface-50 text-text-muted text-[10px] font-bold flex items-center justify-center shrink-0">
-                  {posts.length + i + 1}
-                </span>
-                <span className="text-[11px] text-text-muted">
-                  Chưa có bài viết nổi bật ở vị trí này
-                </span>
-              </div>
-            ))}
         </div>
       )}
 
