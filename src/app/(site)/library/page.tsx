@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
+import { useSearchParams } from "next/navigation";
 import type {
   SortKey,
   LevelKey,
@@ -15,7 +16,7 @@ import FeaturedDocsWidget from "@/components/library/widgets/FeaturedDocsWidget"
 import StatsWidget from "@/components/library/widgets/StatsWidget";
 import UploadDocumentModal from "@/components/library/UploadDocumentModal";
 
-export default function LibraryPage() {
+function LibraryContent() {
   const { data: session } = useSession();
   const t = useTranslations("library");
   const isLoggedIn = !!session?.user;
@@ -27,8 +28,10 @@ export default function LibraryPage() {
   const [activeSubject, setActiveSubject] = useState("");
   const [activeMajor, setActiveMajor] = useState("");
   const [activeSort, setActiveSort] = useState<SortKey>("newest");
-  const [query, setQuery] = useState("");
-  const [debouncedQuery, setDebouncedQuery] = useState("");
+  const searchParams = useSearchParams();
+  const initialQuery = searchParams.get("query") ?? "";
+  const [query, setQuery] = useState(initialQuery);
+  const [debouncedQuery, setDebouncedQuery] = useState(initialQuery);
   const [uploadOpen, setUploadOpen] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
 
@@ -41,6 +44,11 @@ export default function LibraryPage() {
     const timer = setTimeout(() => setDebouncedQuery(query), 400);
     return () => clearTimeout(timer);
   }, [query]);
+
+  useEffect(() => {
+    setQuery(initialQuery);
+    setDebouncedQuery(initialQuery);
+  }, [initialQuery]);
 
   useEffect(() => {
     let cancelled = false;
@@ -237,5 +245,13 @@ export default function LibraryPage() {
         />
       )}
     </div>
+  );
+}
+
+export default function LibraryPage() {
+  return (
+    <Suspense fallback={null}>
+      <LibraryContent />
+    </Suspense>
   );
 }

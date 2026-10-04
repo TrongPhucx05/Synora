@@ -4,6 +4,7 @@ import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { getBlockedIds } from "@/lib/block/server";
 import { getFriendRequestEligibility } from "@/lib/chat/friends";
+import { searchUserIds, searchDocumentIds } from "@/lib/search/unaccent";
 
 export async function GET(req: NextRequest) {
   const session = await getServerSession(authOptions);
@@ -44,6 +45,15 @@ export async function GET(req: NextRequest) {
   const blockedIds = session?.user?.id
     ? await getBlockedIds(session.user.id)
     : [];
+
+  const isAdminViewer = session?.user?.role === "ADMIN";
+
+  const [personIds, docIds] = !isHashtag
+    ? await Promise.all([
+        searchUserIds(q, blockedIds),
+        searchDocumentIds(q, blockedIds),
+      ])
+    : [[] as string[], [] as string[]];
 
   const postVisibilityFilter = session?.user?.id
     ? {
@@ -150,39 +160,14 @@ export async function GET(req: NextRequest) {
   };
 
   if (countOnly) {
-    const [postCount, docCount, peopleCount, topicCount] = await Promise.all([
+    const [postCount, topicCount] = await Promise.all([
       prisma.post.count({ where: postWhere }),
-      !isHashtag
-        ? prisma.document.count({
-            where: {
-              OR: [
-                { title: { contains: q, mode: "insensitive" } },
-                { description: { contains: q, mode: "insensitive" } },
-              ],
-            },
-          })
-        : Promise.resolve(0),
-      !isHashtag
-        ? prisma.user.count({
-            where: {
-              ...(blockedIds.length > 0 ? { id: { notIn: blockedIds } } : {}),
-              OR: [
-                { username: { contains: q, mode: "insensitive" } },
-                {
-                  profile: {
-                    displayName: { contains: q, mode: "insensitive" },
-                  },
-                },
-              ],
-            },
-          })
-        : Promise.resolve(0),
       prisma.tag.count({ where: topicWhere }),
     ]);
     return NextResponse.json({
       posts: postCount,
-      documents: docCount,
-      people: peopleCount,
+      documents: docIds.length,
+      people: personIds.length,
       topics: topicCount,
     });
   }
@@ -226,15 +211,7 @@ export async function GET(req: NextRequest) {
 
     !isHashtag && (tab === "all" || tab === "documents")
       ? prisma.document.findMany({
-          where: {
-            ...(blockedIds.length > 0
-              ? { uploaderId: { notIn: blockedIds } }
-              : {}),
-            OR: [
-              { title: { contains: q, mode: "insensitive" } },
-              { description: { contains: q, mode: "insensitive" } },
-            ],
-          },
+          where: { id: { in: docIds } },
           take: tab === "all" ? 3 : 20,
           orderBy: docOrderBy,
           include: { uploader: { include: { profile: true } } },
@@ -243,17 +220,7 @@ export async function GET(req: NextRequest) {
 
     !isHashtag && (tab === "all" || tab === "people")
       ? prisma.user.findMany({
-          where: {
-            ...(blockedIds.length > 0 ? { id: { notIn: blockedIds } } : {}),
-            OR: [
-              { username: { contains: q, mode: "insensitive" } },
-              {
-                profile: {
-                  displayName: { contains: q, mode: "insensitive" },
-                },
-              },
-            ],
-          },
+          where: { id: { in: personIds } },
           take: tab === "all" ? 3 : 20,
           include: {
             profile: true,
@@ -313,8 +280,8 @@ export async function GET(req: NextRequest) {
           friendRequestBlockReason = eligibility.friendRequestBlockReason;
         }
 
-        let canMessage = true;
-        if (friendStatus !== "friends") {
+        let canMessage = !isAdminViewer;
+        if (canMessage && friendStatus !== "friends") {
           const targetMessageFriendsOnly =
             u.profile?.messageFromFriendsOnly ?? false;
           if (targetMessageFriendsOnly) {
