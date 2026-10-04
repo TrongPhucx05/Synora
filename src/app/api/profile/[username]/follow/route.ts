@@ -15,16 +15,22 @@ export async function POST(
 
   const target = await prisma.user.findUnique({
     where: { username },
-    select: { id: true },
+    select: { id: true, role: true },
   });
   if (!target)
     return NextResponse.json(
       { error: "Không tìm thấy người dùng" },
       { status: 404 },
     );
-  if (target.id === session.user.id)
+  if (target.id === session.user.id) {
     return NextResponse.json({ error: "Không thể tự follow" }, { status: 400 });
-
+  }
+  if (session.user.role === "ADMIN" || target.role === "ADMIN") {
+    return NextResponse.json(
+      { error: "Không thể gửi lời mời kết bạn cho tài khoản quản trị" },
+      { status: 403 },
+    );
+  }
   const blocked = await isBlockedEitherWay(session.user.id, target.id);
   if (blocked) {
     return NextResponse.json(

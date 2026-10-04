@@ -2,40 +2,36 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { getBlockedIds } from "@/lib/block/server";
 import { getFriendRequestEligibility } from "@/lib/chat/friends";
 
 export async function GET() {
   try {
     const session = await getServerSession(authOptions);
+    const me = session?.user?.id;
+
+    if (session?.user?.role === "ADMIN") return NextResponse.json([]);
 
     let excludeIds: string[] = [];
-    let pendingReceivedMap: Record<string, string> = {};
 
-    if (session?.user?.id) {
-      const [sentRequests, receivedRequests] = await Promise.all([
+    if (me) {
+      const [sent, received, blockedIds] = await Promise.all([
         prisma.friendRequest.findMany({
-          where: {
-            senderId: session.user.id,
-            status: { in: ["PENDING", "ACCEPTED"] },
-          },
+          where: { senderId: me, status: { in: ["PENDING", "ACCEPTED"] } },
           select: { receiverId: true },
         }),
         prisma.friendRequest.findMany({
-          where: {
-            receiverId: session.user.id,
-            status: "PENDING",
-          },
-          select: { senderId: true, id: true },
+          where: { receiverId: me, status: { in: ["PENDING", "ACCEPTED"] } },
+          select: { senderId: true },
         }),
+        getBlockedIds(me),
       ]);
-
-      const sentIds = sentRequests.map((r) => r.receiverId);
-      const receivedIds = receivedRequests.map((r) => r.senderId);
-      excludeIds = [session.user.id, ...sentIds, ...receivedIds];
-
-      for (const r of receivedRequests) {
-        pendingReceivedMap[r.senderId] = r.id;
-      }
+      excludeIds = [
+        me,
+        ...sent.map((r) => r.receiverId),
+        ...received.map((r) => r.senderId),
+        ...blockedIds,
+      ];
     }
 
     const users = await prisma.user.findMany({
@@ -43,8 +39,10 @@ export async function GET() {
         ...(excludeIds.length > 0 && { id: { notIn: excludeIds } }),
         profile: { isNot: null },
         role: { not: "ADMIN" },
+        status: "ACTIVE",
       },
-      take: 10,
+      orderBy: { followers: { _count: "desc" } },
+      take: 20,
       select: {
         id: true,
         username: true,
@@ -62,31 +60,29 @@ export async function GET() {
 
     const result = await Promise.all(
       users.map(async (u) => {
-        const eligibility = session?.user?.id
-          ? await getFriendRequestEligibility(session.user.id, u.id)
+        const eligibility = me
+          ? await getFriendRequestEligibility(me, u.id)
           : { canSendFriendRequest: true, friendRequestBlockReason: null };
         return {
           id: u.id,
           username: u.username,
           displayName: u.profile?.displayName ?? u.username,
           avatarUrl: u.profile?.avatarUrl ?? null,
-          role:
-            [u.profile?.major, u.profile?.school].filter(Boolean).join(" · ") ||
-            "",
+          role: [u.profile?.major, u.profile?.school]
+            .filter(Boolean)
+            .join(" · "),
           followerCount: u._count.followers,
           friendStatus: "none" as const,
-          incomingRequestId: pendingReceivedMap[u.id] ?? null,
+          incomingRequestId: null,
           canSendFriendRequest: eligibility.canSendFriendRequest,
           friendRequestBlockReason: eligibility.friendRequestBlockReason,
         };
       }),
     );
 
-    const sorted = result
-      .sort((a, b) => b.followerCount - a.followerCount)
-      .slice(0, 5);
-
-    return NextResponse.json(sorted);
+    return NextResponse.json(
+      result.filter((u) => u.canSendFriendRequest).slice(0, 5),
+    );
   } catch (error) {
     console.error("[/api/users/suggested]", error);
     return NextResponse.json(

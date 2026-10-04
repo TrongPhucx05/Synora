@@ -53,6 +53,13 @@ export async function getFriendRequestEligibility(
   if (viewerId === targetId) {
     return { canSendFriendRequest: false, friendRequestBlockReason: null };
   }
+  const roles = await prisma.user.findMany({
+    where: { id: { in: [viewerId, targetId] } },
+    select: { role: true },
+  });
+  if (roles.some((u) => u.role === "ADMIN")) {
+    return { canSendFriendRequest: false, friendRequestBlockReason: null };
+  }
   const targetProfile = await prisma.profile.findUnique({
     where: { userId: targetId },
     select: { friendRequestPermission: true },

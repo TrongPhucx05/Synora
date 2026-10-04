@@ -300,13 +300,15 @@ function UserRow({
               onClick={(e) => handleRequestAction(e, "accept")}
               className="w-full flex items-center gap-2 px-3.5 py-2.5 text-xs font-medium text-text-primary hover:bg-surface-50 transition-colors"
             >
-              <UserCheck size={12} className="text-primary" /> {tPerson("accept")}
+              <UserCheck size={12} className="text-primary" />{" "}
+              {tPerson("accept")}
             </button>
             <button
               onClick={(e) => handleRequestAction(e, "reject")}
               className="w-full flex items-center gap-2 px-3.5 py-2.5 text-xs font-medium text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/20 transition-colors"
             >
-              <span className="text-sm leading-none">✕</span> {tPerson("decline")}
+              <span className="text-sm leading-none">✕</span>{" "}
+              {tPerson("decline")}
             </button>
           </div>,
           document.body,
@@ -342,19 +344,27 @@ export default function SuggestedPeople({ variant = "feed" }: Props) {
   const t = useTranslations("widgets.suggestedPeople");
   const [users, setUsers] = useState<SuggestedUser[]>([]);
   const [loading, setLoading] = useState(true);
+  const isAdmin = session?.user?.role === "ADMIN";
 
   useEffect(() => {
+    if (isAdmin) {
+      setUsers([]);
+      setLoading(false);
+      return;
+    }
     fetch("/api/users/suggested")
       .then((r) => r.json())
       .then((data) => {
         if (Array.isArray(data)) setUsers(data);
       })
       .finally(() => setLoading(false));
-  }, [session]);
+  }, [session, isAdmin]);
 
   const handleRemove = (id: string) => {
     setUsers((prev) => prev.filter((u) => u.id !== id));
   };
+
+  if (isAdmin || (!loading && users.length === 0)) return null;
 
   return (
     <div
@@ -388,9 +398,7 @@ export default function SuggestedPeople({ variant = "feed" }: Props) {
           <Loader2 size={16} className="animate-spin text-text-muted" />
         </div>
       ) : users.length === 0 ? (
-        <p className="text-xs text-text-muted text-center py-3">
-          {t("empty")}
-        </p>
+        <p className="text-xs text-text-muted text-center py-3">{t("empty")}</p>
       ) : (
         <div className="flex flex-col gap-3">
           {users.map((u) => (
