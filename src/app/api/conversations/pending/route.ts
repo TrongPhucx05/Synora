@@ -14,7 +14,7 @@ export async function GET(_req: NextRequest) {
   const pending = await prisma.conversationMember.findMany({
     where: { userId, isAccepted: false, hiddenAt: null, origin: "INVITED" },
     select: {
-      hiddenAt: true,
+      clearedAt: true,
       invitedById: true,
       conversation: {
         select: {
@@ -22,7 +22,6 @@ export async function GET(_req: NextRequest) {
           isGroup: true,
           name: true,
           avatarUrl: true,
-          lastMessageAt: true,
           members: {
             where: { userId: { not: userId } },
             take: 1,
@@ -37,42 +36,48 @@ export async function GET(_req: NextRequest) {
               },
             },
           },
-          messages: {
-            orderBy: { createdAt: "desc" },
-            take: 1,
-            where: { deletedAt: null },
-            select: {
-              content: true,
-              createdAt: true,
-              senderId: true,
-              attachments: { select: { type: true } },
-            },
-          },
-          _count: {
-            select: {
-              messages: { where: { deletedAt: null, isSystemMessage: false } },
-            },
-          },
         },
       },
     },
     orderBy: { joinedAt: "desc" },
   });
 
-  const visible = pending.filter((m) => {
-    if (m.hiddenAt) {
-      const lastMsgAt = m.conversation.lastMessageAt;
-      if (!lastMsgAt || lastMsgAt <= m.hiddenAt) return false;
-    }
-    if (!m.conversation.isGroup && m.conversation._count.messages === 0) {
-      return false;
-    }
-    return true;
-  });
+  const enriched = await Promise.all(
+    pending.map(async (m) => {
+      const conv = m.conversation;
+      const base = {
+        conversationId: conv.id,
+        deletedAt: null,
+        ...(m.clearedAt ? { createdAt: { gt: m.clearedAt } } : {}),
+      };
+
+      const [messageCount, lastMsg] = await Promise.all([
+        prisma.message.count({
+          where: {
+            ...base,
+            isSystemMessage: false,
+            senderId: { not: userId },
+          },
+        }),
+        prisma.message.findFirst({
+          where: base,
+          orderBy: { createdAt: "desc" },
+          select: {
+            content: true,
+            createdAt: true,
+            attachments: { select: { type: true } },
+          },
+        }),
+      ]);
+
+      return { m, conv, messageCount, lastMsg };
+    }),
+  );
+
+  const visible = enriched.filter((e) => e.conv.isGroup || e.messageCount > 0);
 
   const result = await Promise.all(
-    visible.map(async (m) => {
-      const conv = m.conversation;
+    visible.map(async ({ m, conv, messageCount, lastMsg }) => {
       let other = conv.members[0]?.user;
 
       if (conv.isGroup && m.invitedById) {
@@ -86,7 +91,6 @@ export async function GET(_req: NextRequest) {
         });
         if (inviter) other = inviter;
       }
-      const lastMsg = conv.messages[0];
 
       let content: string | null = null;
       if (lastMsg) {
@@ -109,7 +113,7 @@ export async function GET(_req: NextRequest) {
                 other?.profile?.displayName ?? other?.username ?? "ai đó"
               } mời vào nhóm`,
             createdAt: lastMsg?.createdAt?.toISOString() ?? null,
-            messageCount: conv._count.messages,
+            messageCount,
           }
         : {
             id: conv.id,
@@ -121,7 +125,7 @@ export async function GET(_req: NextRequest) {
             avatarUrl: other?.profile?.avatarUrl ?? null,
             content,
             createdAt: lastMsg?.createdAt?.toISOString() ?? null,
-            messageCount: conv._count.messages,
+            messageCount,
           };
     }),
   );
