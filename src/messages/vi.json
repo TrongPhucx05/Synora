@@ -514,8 +514,8 @@
       "showMorePinned": "Xem {count} tin ghim khác"
     },
     "time": {
-      "minutes": "{count} phút",
-      "hours": "{count} giờ",
+      "minutes": "{count} phút trước",
+      "hours": "{count} giờ trước",
       "yesterday": "Hôm qua"
     },
     "list": {

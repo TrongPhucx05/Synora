@@ -38,10 +38,10 @@ function formatTime(
   if (!iso) return "";
   const diff = Date.now() - new Date(iso).getTime();
   if (diff < 3_600_000)
-    return t("time.minutes", { count: Math.floor(diff / 60_000) });
+    return t("minutes", { count: Math.floor(diff / 60_000) });
   if (diff < 86_400_000)
-    return t("time.hours", { count: Math.floor(diff / 3_600_000) });
-  if (diff < 172_800_000) return t("time.yesterday");
+    return t("hours", { count: Math.floor(diff / 3_600_000) });
+  if (diff < 172_800_000) return t("yesterday");
   return new Date(iso).toLocaleDateString();
 }
 
@@ -226,7 +226,7 @@ export function ConversationList({
             {chip.key === "unread" &&
               totalUnread > 0 &&
               activeFilter !== "unread" && (
-                <span className="ml-1 inline-flex items-center justify-center min-w-[14px] h-[14px] px-1 text-[9px] font-bold text-white bg-primary rounded-full">
+                <span className="ml-1 inline-flex items-center justify-center min-w-[14px] h-[14px] px-1 text-[9px] font-bold text-white bg-badge rounded-full">
                   {totalUnread}
                 </span>
               )}
@@ -333,7 +333,7 @@ export function ConversationList({
                       {conv.lastMessage}
                     </p>
                     {conv.unreadCount > 0 && !conv.lastMessageAt ? (
-                      <span className="w-1.5 h-1.5 rounded-full bg-primary shrink-0 ml-1" />
+                      <span className="w-1.5 h-1.5 rounded-full bg-badge shrink-0 ml-1" />
                     ) : (
                       <Badge
                         count={conv.unreadCount}

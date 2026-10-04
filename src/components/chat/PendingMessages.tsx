@@ -37,10 +37,10 @@ function formatTime(
   if (!iso) return "";
   const diff = Date.now() - new Date(iso).getTime();
   if (diff < 3_600_000)
-    return t("time.minutes", { count: Math.floor(diff / 60_000) });
+    return t("minutes", { count: Math.floor(diff / 60_000) });
   if (diff < 86_400_000)
-    return t("time.hours", { count: Math.floor(diff / 3_600_000) });
-  if (diff < 172_800_000) return t("time.yesterday");
+    return t("hours", { count: Math.floor(diff / 3_600_000) });
+  if (diff < 172_800_000) return t("yesterday");
   return new Date(iso).toLocaleDateString();
 }
 
@@ -472,9 +472,7 @@ export function PendingMessages({
                 <span
                   className={clsx(
                     "ml-0.5 text-[9px] font-bold px-1.5 py-0.5 rounded-full",
-                    tab === "pending"
-                      ? "bg-primary/10 text-primary"
-                      : "bg-surface-200 text-text-muted",
+                    "bg-badge text-white",
                   )}
                 >
                   {items.length}
@@ -702,7 +700,7 @@ export function PendingMessages({
                                 {conv.lastMessage}
                               </p>
                               {conv.unreadCount > 0 && !conv.lastMessageAt ? (
-                                <span className="w-1.5 h-1.5 rounded-full bg-primary shrink-0 ml-1" />
+                                <span className="w-1.5 h-1.5 rounded-full bg-badge shrink-0 ml-1" />
                               ) : (
                                 <Badge
                                   count={conv.unreadCount}
