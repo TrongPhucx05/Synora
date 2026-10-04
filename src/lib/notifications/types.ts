@@ -44,3 +44,30 @@ export interface NotifItem {
   actorId?: string;
   supportRequestId?: string;
 }
+
+export const ACTIVITY_TYPES = [
+  "FRIEND_REQUEST",
+  "FRIEND_ACCEPT",
+  "LIKE",
+  "COMMENT",
+  "REPLY",
+  "MENTION",
+];
+export const DOCUMENT_TYPES = [
+  "DOCUMENT_REPORTED",
+  "DOCUMENT_APPROVED",
+  "DOCUMENT_REJECTED",
+  "DOCUMENT_REMOVED",
+];
+export const GROUP_TYPES = [
+  "GROUP_INVITE",
+  "GROUP_JOIN_REQUEST",
+  "GROUP_JOIN_APPROVED",
+  "GROUP_JOIN_REJECTED",
+];
+
+export type UnreadByTab = {
+  activity: number;
+  groups: number;
+  documents: number;
+};

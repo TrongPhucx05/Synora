@@ -1,32 +1,17 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { Bell, Loader2, CheckCheck } from "lucide-react";
 import { NotifRow } from "@/components/notifications/NotifRow";
-import type { NotifItem } from "@/lib/notifications/types";
+import {
+  ACTIVITY_TYPES,
+  DOCUMENT_TYPES,
+  GROUP_TYPES,
+  type NotifItem,
+  type UnreadByTab,
+} from "@/lib/notifications/types";
 import { emitUnreadCount } from "@/lib/notifications/hooks";
 import { useTranslations } from "next-intl";
-
-const ACTIVITY_TYPES = [
-  "FRIEND_REQUEST",
-  "FRIEND_ACCEPT",
-  "LIKE",
-  "COMMENT",
-  "REPLY",
-  "MENTION",
-];
-const DOCUMENT_TYPES = [
-  "DOCUMENT_REPORTED",
-  "DOCUMENT_APPROVED",
-  "DOCUMENT_REJECTED",
-  "DOCUMENT_REMOVED",
-];
-const GROUP_TYPES = [
-  "GROUP_INVITE",
-  "GROUP_JOIN_REQUEST",
-  "GROUP_JOIN_APPROVED",
-  "GROUP_JOIN_REJECTED",
-];
 
 export default function NotificationsPage() {
   const [notifs, setNotifs] = useState<NotifItem[]>([]);
@@ -34,6 +19,13 @@ export default function NotificationsPage() {
   const [loading, setLoading] = useState(true);
   const [totalUnread, setTotalUnread] = useState(0);
   const [nextCursor, setNextCursor] = useState<string | null>(null);
+  const [unreadByTab, setUnreadByTab] = useState<UnreadByTab>({
+    activity: 0,
+    groups: 0,
+    documents: 0,
+  });
+  const notifsRef = useRef<NotifItem[]>([]);
+  notifsRef.current = notifs;
   const t = useTranslations("notifications.page");
   const tc = useTranslations("common");
 
@@ -45,6 +37,9 @@ export default function NotificationsPage() {
         setNotifs(data.items ?? []);
         setNextCursor(data.nextCursor ?? null);
         setTotalUnread(data.totalUnread ?? 0);
+        setUnreadByTab(
+          data.unreadByTab ?? { activity: 0, groups: 0, documents: 0 },
+        );
       })
       .finally(() => setLoading(false));
   }, []);
@@ -62,10 +57,24 @@ export default function NotificationsPage() {
   };
 
   const markRead = useCallback((id: string) => {
+    const target = notifsRef.current.find((n) => n.id === id);
+    if (!target?.unread) return;
+
     setNotifs((prev) =>
       prev.map((n) => (n.id === id ? { ...n, unread: false } : n)),
     );
     setTotalUnread((prev) => Math.max(0, prev - 1));
+    setUnreadByTab((prev) => ({
+      activity: ACTIVITY_TYPES.includes(target.type)
+        ? Math.max(0, prev.activity - 1)
+        : prev.activity,
+      groups: GROUP_TYPES.includes(target.type)
+        ? Math.max(0, prev.groups - 1)
+        : prev.groups,
+      documents: DOCUMENT_TYPES.includes(target.type)
+        ? Math.max(0, prev.documents - 1)
+        : prev.documents,
+    }));
     fetch("/api/notifications", {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
@@ -76,6 +85,7 @@ export default function NotificationsPage() {
   const markAllRead = () => {
     setNotifs((prev) => prev.map((n) => ({ ...n, unread: false })));
     setTotalUnread(0);
+    setUnreadByTab({ activity: 0, groups: 0, documents: 0 });
     fetch("/api/notifications", {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
@@ -83,22 +93,12 @@ export default function NotificationsPage() {
     });
   };
 
-  const unreadActivity = notifs.filter(
-    (n) => n.unread && ACTIVITY_TYPES.includes(n.type),
-  ).length;
-  const unreadDocs = notifs.filter(
-    (n) => n.unread && DOCUMENT_TYPES.includes(n.type),
-  ).length;
-  const unreadGroups = notifs.filter(
-    (n) => n.unread && GROUP_TYPES.includes(n.type),
-  ).length;
-
   const tabs = [
     { id: "all", label: t("tabAll"), badge: totalUnread },
     { id: "unread", label: t("tabUnread"), badge: 0 },
-    { id: "activity", label: t("tabActivity"), badge: unreadActivity },
-    { id: "groups", label: t("tabGroups"), badge: unreadGroups },
-    { id: "documents", label: t("tabDocuments"), badge: unreadDocs },
+    { id: "activity", label: t("tabActivity"), badge: unreadByTab.activity },
+    { id: "groups", label: t("tabGroups"), badge: unreadByTab.groups },
+    { id: "documents", label: t("tabDocuments"), badge: unreadByTab.documents },
   ];
 
   const filteredNotifs = notifs.filter((n) => {
@@ -146,7 +146,7 @@ export default function NotificationsPage() {
                   className={`ml-1.5 inline-flex items-center justify-center text-[9px] font-bold rounded-full px-1 min-w-[14px] h-[14px] leading-none ${
                     activeTab === tab.id
                       ? "bg-white/30 text-white"
-                      : "bg-red-500 text-white"
+                      : "bg-badge text-white"
                   }`}
                 >
                   {tab.badge > 99 ? "99+" : tab.badge}

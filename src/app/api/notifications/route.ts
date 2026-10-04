@@ -3,6 +3,11 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { initialsFor } from "@/lib/avatar";
+import {
+  ACTIVITY_TYPES,
+  DOCUMENT_TYPES,
+  GROUP_TYPES,
+} from "@/lib/notifications/types";
 
 function formatActorName(actor: any) {
   return actor?.profile?.displayName ?? actor?.username ?? "Người dùng";
@@ -19,6 +24,32 @@ export async function GET(req: NextRequest) {
   const take = 30;
 
   const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 3600 * 1000);
+
+  const grouped = await prisma.notification.groupBy({
+    by: ["type"],
+    where: {
+      recipientId: session.user.id,
+      isRead: false,
+      createdAt: { gte: thirtyDaysAgo },
+    },
+    _count: { _all: true },
+  });
+  const sumOf = (types: string[]) =>
+    grouped
+      .filter((g) => types.includes(g.type))
+      .reduce((s, g) => s + g._count._all, 0);
+
+  const totalUnread = grouped.reduce((s, g) => s + g._count._all, 0);
+
+  const unreadByTab = {
+    activity: sumOf(ACTIVITY_TYPES),
+    groups: sumOf(GROUP_TYPES),
+    documents: sumOf(DOCUMENT_TYPES),
+  };
+
+  if (searchParams.get("countOnly") === "1") {
+    return NextResponse.json({ totalUnread, unreadByTab });
+  }
 
   const notifs = await prisma.notification.findMany({
     where: {
@@ -224,11 +255,8 @@ export async function GET(req: NextRequest) {
 
   const nextCursor =
     notifs.length === take ? notifs[notifs.length - 1].id : null;
-  const totalUnread = await prisma.notification.count({
-    where: { recipientId: session.user.id, isRead: false },
-  });
 
-  return NextResponse.json({ items, nextCursor, totalUnread });
+  return NextResponse.json({ items, nextCursor, totalUnread, unreadByTab });
 }
 
 export async function PATCH(req: NextRequest) {
