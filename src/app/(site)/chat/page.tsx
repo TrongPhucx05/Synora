@@ -13,8 +13,6 @@ import Link from "next/link";
 import {
   Home,
   Edit,
-  Phone,
-  Video,
   Info,
   Send,
   Paperclip,
@@ -1443,14 +1441,6 @@ export default function ChatPage() {
                 </div>
               </div>
               <div className="flex items-center gap-0.5">
-                {([Phone, Video] as const).map((Icon, i) => (
-                  <button
-                    key={i}
-                    className="p-2 text-text-secondary hover:bg-surface-100 rounded-lg transition-colors"
-                  >
-                    <Icon size={17} />
-                  </button>
-                ))}
                 <button
                   onClick={() => setInfoOpen((v) => !v)}
                   className={clsx(
