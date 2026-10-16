@@ -74,7 +74,7 @@ function SearchDropdown({
 
   if (!hasQuery) {
     return (
-      <div className="absolute top-full left-0 right-0 mt-2 bg-surface rounded-2xl shadow-xl border border-surface-200 overflow-hidden z-50">
+      <div className="absolute top-full left-0 right-0 mx-2 md:mx-0 mt-2 bg-surface rounded-2xl shadow-xl border border-surface-200 overflow-hidden z-50">
         {history.length === 0 ? (
           <div className="px-4 py-6 text-center text-xs text-text-muted">
             {t("history.empty")}
@@ -117,7 +117,7 @@ function SearchDropdown({
                       e.stopPropagation();
                       onRemoveHistory(h);
                     }}
-                    className="opacity-0 group-hover/item:opacity-100 transition-opacity p-0.5 rounded hover:bg-surface-200 text-text-muted shrink-0"
+                    className="opacity-0 group-hover/item:opacity-100 touch:opacity-100 transition-opacity p-0.5 touch:p-1.5 rounded hover:bg-surface-200 text-text-muted shrink-0"
                   >
                     <X size={11} />
                   </button>
@@ -335,10 +335,10 @@ export default function Navbar({
 
   return (
     <header className="fixed top-0 left-0 right-0 h-14 bg-surface border-b border-surface-200 flex items-center z-30">
-      <div className="w-[330px] shrink-0 px-4">
+      <div className="shrink-0 px-3 md:w-[72px] md:px-0 lg:w-[330px] lg:px-4">
         <Link
           href="/feed"
-          className="inline-flex flex-none w-fit items-center gap-2"
+          className="flex w-fit items-center gap-2 md:mx-auto lg:mx-0"
         >
           <div className="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center">
             <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
@@ -351,14 +351,14 @@ export default function Navbar({
               <circle cx="9" cy="9" r="2" fill="white" />
             </svg>
           </div>
-          <span className="text-lg font-bold text-text-primary tracking-tight">
+          <span className="hidden sm:inline md:hidden lg:inline text-lg font-bold text-text-primary tracking-tight">
             Synora
           </span>
         </Link>
       </div>
 
-      <div className="flex-1 flex items-center px-18">
-        <div ref={searchRef} className="w-full max-w-[520px] relative">
+      <div className="flex-1 min-w-0 flex items-center px-2 sm:px-6 lg:px-18">
+        <div ref={searchRef} className="w-full max-w-[520px] md:relative">
           <div className="relative">
             <Search
               size={15}
@@ -371,7 +371,7 @@ export default function Navbar({
               onFocus={() => setSearchFocused(true)}
               onKeyDown={handleSearchKeyDown}
               placeholder={t("searchPlaceholder")}
-              className={`w-full pl-9 pr-8 py-2 bg-surface-100 border rounded-full text-sm text-text-primary placeholder:text-text-muted focus:outline-none transition-colors ${
+              className={`w-full pl-9 pr-8 py-2 bg-surface-100 border rounded-full text-base sm:text-sm text-text-primary placeholder:text-text-muted placeholder:text-[13px] focus:outline-none transition-colors ${
                 searchFocused
                   ? "border-blue-400 bg-surface shadow-sm shadow-blue-100"
                   : "border-surface-200 hover:border-surface-200"
@@ -399,11 +399,11 @@ export default function Navbar({
         </div>
       </div>
 
-      <div className="flex items-center gap-5 px-4 shrink-0">
+      <div className="flex items-center gap-1 sm:gap-3 lg:gap-5 px-3 sm:px-4 shrink-0">
         {isLoggedIn && !isAdmin && (
           <Link
             href="/chat"
-            className="relative p-2.5 rounded-full hover:bg-surface-100 text-text-secondary hover:text-blue-500 transition-colors block"
+            className="hidden md:block relative p-2.5 rounded-full hover:bg-surface-100 text-text-secondary hover:text-blue-500 transition-colors"
             title={t("messagesTooltip")}
           >
             <MessageCircle size={18} />
@@ -418,7 +418,7 @@ export default function Navbar({
         )}
 
         {isLoggedIn && !isAdmin && (
-          <div ref={bellRef} className="relative">
+          <div ref={bellRef} className="hidden md:block relative">
             <button
               onClick={handleBellOpen}
               className={`relative p-2.5 rounded-full cursor-pointer transition-colors ${
@@ -439,7 +439,7 @@ export default function Navbar({
             </button>
 
             {bellOpen && (
-              <div className="absolute top-full right-0 mt-2 w-[380px] bg-surface rounded-2xl shadow-xl border border-surface-200 overflow-hidden z-50">
+              <div className="fixed sm:absolute top-14 sm:top-full left-2 right-2 sm:left-auto sm:right-0 sm:mt-2 w-auto sm:w-[380px] bg-surface rounded-2xl shadow-xl border border-surface-200 overflow-hidden z-50">
                 <div className="flex items-center justify-between px-4 py-3 border-b border-surface-200">
                   <div className="flex items-center gap-2">
                     <span className="text-sm font-bold text-text-primary">
@@ -512,7 +512,7 @@ export default function Navbar({
             </button>
 
             {avatarOpen && (
-              <div className="absolute top-full right-0 mt-2 w-[220px] bg-surface rounded-2xl shadow-xl border border-surface-200 overflow-hidden z-50">
+              <div className="absolute top-full right-0 mt-2 w-64 bg-surface rounded-2xl shadow-xl border border-surface-200 overflow-hidden z-50">
                 <div className="flex items-center gap-3 px-4 py-3 border-b border-surface-100">
                   <Avatar
                     src={avatarUrl}
@@ -529,74 +529,51 @@ export default function Navbar({
                     </p>
                   </div>
                 </div>
-                <div className="p-1.5">
+                <div className="py-1">
                   {isAdmin ? (
                     <Link
                       href="/admin"
                       onClick={() => setAvatarOpen(false)}
-                      className="flex items-center gap-2.5 px-3 py-2 rounded-xl hover:bg-surface-50 transition-colors"
+                      className="flex items-center gap-2.5 px-4 py-2.5 text-xs text-text-primary hover:bg-surface-50 transition-colors"
                     >
-                      <div className="w-7 h-7 rounded-lg bg-blue-50 dark:bg-blue-500/15 flex items-center justify-center shrink-0">
-                        <Shield
-                          size={13}
-                          className="text-blue-500 dark:text-blue-400"
-                        />
-                      </div>
-                      <span className="text-sm text-text-secondary">
-                        {t("adminPage")}
-                      </span>
+                      <Shield size={14} className="text-text-muted shrink-0" />
+                      {t("adminPage")}
                     </Link>
                   ) : (
                     <>
                       <Link
                         href={`/profile/${session?.user?.username}`}
                         onClick={() => setAvatarOpen(false)}
-                        className="flex items-center gap-2.5 px-3 py-2 rounded-xl hover:bg-surface-50 transition-colors"
+                        className="flex items-center gap-2.5 px-4 py-2.5 text-xs text-text-primary hover:bg-surface-50 transition-colors"
                       >
-                        <div className="w-7 h-7 rounded-lg bg-blue-50 dark:bg-blue-500/15 flex items-center justify-center shrink-0">
-                          <User
-                            size={13}
-                            className="text-blue-500 dark:text-blue-400"
-                          />
-                        </div>
-                        <span className="text-sm text-text-secondary">
-                          {tAvatar("profile")}
-                        </span>
+                        <User size={14} className="text-text-muted shrink-0" />
+                        {tAvatar("profile")}
                       </Link>
                       <Link
                         href="/settings"
                         onClick={() => setAvatarOpen(false)}
-                        className="flex items-center gap-2.5 px-3 py-2 rounded-xl hover:bg-surface-50 transition-colors"
+                        className="flex items-center gap-2.5 px-4 py-2.5 text-xs text-text-primary hover:bg-surface-50 transition-colors"
                       >
-                        <div className="w-7 h-7 rounded-lg bg-emerald-50 dark:bg-emerald-500/15 flex items-center justify-center shrink-0">
-                          <Settings
-                            size={13}
-                            className="text-emerald-500 dark:text-emerald-400"
-                          />
-                        </div>
-                        <span className="text-sm text-text-secondary">
-                          {tAvatar("settings")}
-                        </span>
+                        <Settings
+                          size={14}
+                          className="text-text-muted shrink-0"
+                        />
+                        {tAvatar("settings")}
                       </Link>
                     </>
                   )}
-                  <div className="my-1 border-t border-surface-100" />
+                </div>
+
+                <div className="border-t border-surface-100 py-1">
                   <button
                     onClick={() => {
                       setAvatarOpen(false);
                       signOut({ callbackUrl: "/login" });
                     }}
-                    className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors"
+                    className="w-full flex items-center gap-2.5 px-4 py-2.5 text-xs text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/20 transition-colors"
                   >
-                    <div className="w-7 h-7 rounded-lg bg-red-50 dark:bg-red-500/15 flex items-center justify-center shrink-0">
-                      <LogOut
-                        size={13}
-                        className="text-red-500 dark:text-red-400"
-                      />
-                    </div>
-                    <span className="text-sm text-red-500 dark:text-red-400 font-medium">
-                      {tAvatar("logout")}
-                    </span>
+                    <LogOut size={14} className="shrink-0" />
+                    {tAvatar("logout")}
                   </button>
                 </div>
               </div>
@@ -606,13 +583,13 @@ export default function Navbar({
           <div className="flex items-center gap-2">
             <Link
               href="/login"
-              className="px-4 py-1.5 text-sm font-semibold text-text-secondary border border-surface-200 hover:border-surface-200 hover:bg-surface-50 rounded-full transition-colors"
+              className="px-3 sm:px-4 py-1.5 text-xs sm:text-sm font-semibold text-text-secondary border border-surface-200 hover:border-surface-200 hover:bg-surface-50 rounded-full transition-colors"
             >
               {t("login")}
             </Link>
             <Link
               href="/register"
-              className="px-4 py-1.5 text-sm font-semibold text-white bg-blue-500 hover:bg-blue-600 rounded-full transition-colors shadow-sm shadow-blue-200"
+              className="px-3 sm:px-4 py-1.5 text-xs sm:text-sm font-semibold text-white bg-blue-500 hover:bg-blue-600 rounded-full transition-colors shadow-sm shadow-blue-200"
             >
               {t("register")}
             </Link>
