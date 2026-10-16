@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { cookies } from "next/headers";
 import "./globals.css";
 import NextAuthProvider from "@/components/providers/NextAuthProvider";
@@ -16,6 +16,12 @@ import {
 export const metadata: Metadata = {
   title: "Synora - Nền tảng học tập cộng đồng",
   description: "Modern collaborative social-learning platform",
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
 };
 
 export default async function RootLayout({

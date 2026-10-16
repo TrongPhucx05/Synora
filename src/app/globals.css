@@ -2,7 +2,10 @@
 
 @import "tailwindcss";
 
+@import "tw-animate-css";
+
 @custom-variant dark (&:where(.dark, .dark *));
+@custom-variant touch (@media (hover: none));
 
 @theme {
   --color-primary: #4f6ef7;
@@ -52,11 +55,16 @@
   box-sizing: border-box;
 }
 
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
 body {
   font-family: var(--font-sans);
   background-color: var(--color-surface-50);
   color: var(--color-text-primary);
   -webkit-font-smoothing: antialiased;
+  overflow-x: clip;
 }
 
 ::-webkit-scrollbar {
@@ -94,9 +102,22 @@ body {
     box-shadow 0.2s ease,
     transform 0.2s ease;
 }
-.card-hover:hover {
-  box-shadow: var(--shadow-card-hover);
-  transform: translateY(-1px);
+@media (hover: hover) {
+  .card-hover:hover {
+    box-shadow: var(--shadow-card-hover);
+    transform: translateY(-1px);
+  }
+}
+@media (hover: none) and (pointer: coarse) {
+  input,
+  textarea,
+  select {
+    font-size: 16px;
+  }
+}
+
+@utility pb-safe {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
 }
  
 @keyframes slide-in-left {
