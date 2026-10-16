@@ -242,6 +242,7 @@
     "save": "Lưu",
     "saving": "Đang lưu...",
     "close": "Đóng",
+    "back": "Quay lại",
     "report": "Báo cáo",
     "block": "Chặn",
     "blocking": "Đang chặn...",
@@ -573,17 +574,7 @@
       "profile": "Trang cá nhân",
       "settings": "Cài đặt",
       "help": "Trợ giúp",
-      "logout": "Đăng xuất",
-      "activityStatus": "Trạng thái hoạt động",
-      "activityStatusDesc": "Cho bạn bè thấy bạn đang online",
-      "pushNotif": "Thông báo đẩy",
-      "pushNotifDesc": "Nhận thông báo tin nhắn mới",
-      "sound": "Âm thanh",
-      "soundDesc": "Phát âm khi có tin nhắn",
-      "messagePreview": "Xem trước tin nhắn",
-      "messagePreviewDesc": "Hiện nội dung ở thông báo",
-      "language": "Ngôn ngữ",
-      "theme": "Chủ đề"
+      "logout": "Đăng xuất"
     },
     "bubble": {
       "reactionsTitle": "Cảm xúc",

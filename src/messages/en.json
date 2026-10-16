@@ -238,6 +238,7 @@
     "save": "Save",
     "saving": "Saving...",
     "close": "Close",
+    "back": "Back",
     "report": "Report",
     "block": "Block",
     "blocking": "Blocking...",
@@ -569,17 +570,7 @@
       "profile": "Profile",
       "settings": "Settings",
       "help": "Help",
-      "logout": "Log out",
-      "activityStatus": "Activity status",
-      "activityStatusDesc": "Let friends see when you're online",
-      "pushNotif": "Push notifications",
-      "pushNotifDesc": "Get notified about new messages",
-      "sound": "Sound",
-      "soundDesc": "Play a sound for new messages",
-      "messagePreview": "Message preview",
-      "messagePreviewDesc": "Show content in notifications",
-      "language": "Language",
-      "theme": "Theme"
+      "logout": "Log out"
     },
     "bubble": {
       "reactionsTitle": "Reactions",
