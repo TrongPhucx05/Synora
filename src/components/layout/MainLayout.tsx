@@ -37,16 +37,22 @@ export default function MainLayout({
   }
 
   return (
-    <div className="min-h-screen bg-surface-50">
+    <div className="min-h-dvh bg-surface-50">
       <PresenceHeartbeat />
       <Navbar
         isLoggedIn={status === "authenticated"}
         session={session}
         status={status}
       />
-      {!hideSidebar && <Sidebar />}
-      <main className={`pt-14 min-h-screen ${hideSidebar ? "" : "ml-[300px]"}`}>
-        <div className={isFullWidth ? "w-full" : "w-full px-6"}>{children}</div>
+      <Sidebar hideOnDesktop={hideSidebar} />
+      <main
+        className={`pt-14 min-h-dvh pb-[calc(4rem+env(safe-area-inset-bottom,0px))] md:pb-0 ${
+          hideSidebar ? "" : "md:ml-[72px] lg:ml-[330px]"
+        }`}
+      >
+        <div className={isFullWidth ? "w-full" : "w-full px-3 sm:px-4 lg:px-6"}>
+          {children}
+        </div>
       </main>
     </div>
   );

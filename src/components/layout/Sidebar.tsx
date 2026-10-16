@@ -3,18 +3,16 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
-import {
-  Home,
-  BookOpen,
-  MessageCircle,
-  Bell,
-  HelpCircle,
-} from "lucide-react";
+import { Home, BookOpen, MessageCircle, Bell, HelpCircle } from "lucide-react";
 import { clsx } from "clsx";
 import { useUnreadNotifCount } from "@/lib/notifications/hooks";
 import { useUnreadChatCount } from "@/lib/chat/hooks";
 
-export default function Sidebar() {
+export default function Sidebar({
+  hideOnDesktop = false,
+}: {
+  hideOnDesktop?: boolean;
+}) {
   const pathname = usePathname();
   const { data: session } = useSession();
   const isAdmin = session?.user?.role === "ADMIN";
@@ -35,8 +33,16 @@ export default function Sidebar() {
     : navItems;
 
   return (
-    <aside className="fixed left-0 top-14 h-[calc(100vh-56px)] w-[330px] bg-surface border-r border-surface-200 flex flex-col overflow-y-auto z-20">
-      <nav className="flex flex-col gap-0.5 p-3">
+    <aside
+      className={clsx(
+        "fixed z-20 bg-surface border-surface-200",
+        "bottom-0 inset-x-0 h-[calc(4rem+env(safe-area-inset-bottom,0px))] border-t pb-safe",
+        "md:inset-x-auto md:left-0 md:top-14 md:bottom-auto md:h-[calc(100dvh-56px)] md:w-[72px] md:border-t-0 md:border-r md:pb-0 md:overflow-y-auto",
+        "lg:w-[330px]",
+        hideOnDesktop && "md:hidden",
+      )}
+    >
+      <nav className="flex h-full flex-row md:flex-col md:gap-0.5 md:p-3">
         {visibleNavItems.map((item) => {
           const isActive =
             pathname === item.href || pathname.startsWith(item.href + "/");
@@ -50,24 +56,36 @@ export default function Sidebar() {
             <Link
               key={item.href}
               href={item.href}
+              title={item.label}
               className={clsx(
-                "nav-item flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium group",
+                "nav-item group relative flex flex-1 flex-col items-center justify-center gap-0.5 text-[10px] font-medium",
+                "md:flex-none md:py-2.5 md:rounded-lg",
+                "lg:flex-row lg:justify-start lg:gap-3 lg:px-3 lg:text-sm",
                 isActive
-                  ? "bg-primary/10 text-primary"
-                  : "text-text-secondary hover:bg-surface-100 hover:text-text-primary",
+                  ? "text-primary md:bg-primary/10"
+                  : "text-text-secondary hover:text-text-primary md:hover:bg-surface-100",
               )}
             >
               <item.icon
-                size={18}
+                size={20}
                 className={clsx(
                   isActive
                     ? "text-primary"
                     : "text-text-muted group-hover:text-text-primary",
                 )}
               />
-              <span className="flex-1">{item.label}</span>
+              <span className="md:hidden lg:inline lg:flex-1">
+                {item.label}
+              </span>
               {badge > 0 && (
-                <span className="bg-badge text-white text-[10px] font-bold rounded-full min-w-5 h-5 px-1 flex items-center justify-center">
+                <span
+                  className={clsx(
+                    "bg-badge text-white text-[10px] font-bold rounded-full min-w-5 h-5 px-1 flex items-center justify-center",
+                    "absolute top-1 left-1/2 ml-2",
+                    "md:left-auto md:right-1 md:ml-0",
+                    "lg:static lg:ml-0",
+                  )}
+                >
                   {badge > 99 ? "99+" : badge}
                 </span>
               )}
