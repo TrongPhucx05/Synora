@@ -57,11 +57,11 @@ export default function AttachmentRow({
   return (
     <div
       className={clsx(
-        "flex items-center justify-between p-3 bg-surface-50 rounded-lg border border-surface-200",
+        "flex items-center justify-between gap-2 p-3 bg-surface-50 rounded-lg border border-surface-200",
         className,
       )}
     >
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-3 min-w-0">
         <div
           className={clsx(
             "w-9 h-9 rounded-lg flex items-center justify-center text-white text-xs font-bold shrink-0",
@@ -70,14 +70,14 @@ export default function AttachmentRow({
         >
           {attachment.type}
         </div>
-        <div>
-          <p className="text-sm font-medium text-text-primary">
+        <div className="min-w-0">
+          <p className="text-sm font-medium text-text-primary truncate">
             {attachment.name}
           </p>
           <p className="text-xs text-text-secondary">{attachment.size}</p>
         </div>
       </div>
-      <div className="flex items-center gap-1">
+      <div className="flex items-center gap-1 shrink-0">
         <button
           onClick={handlePreview}
           disabled={!attachment.url}

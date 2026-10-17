@@ -83,7 +83,7 @@ export default function ReplyInput({
           onClick={() => hasContent && onSubmit(text.trim())}
           disabled={!hasContent}
           className={clsx(
-            "w-6 h-6 rounded-full flex items-center justify-center transition-colors shrink-0",
+            "w-6 h-6 touch:w-8 touch:h-8 rounded-full flex items-center justify-center transition-colors shrink-0",
             hasContent
               ? "bg-primary text-white"
               : "bg-surface-200 text-text-secondary cursor-not-allowed",

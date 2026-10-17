@@ -44,7 +44,7 @@ export default function EditCommentInput({
       <div className="flex gap-1.5 mt-1.5 justify-end">
         <button
           onClick={onCancel}
-          className="px-3 py-1 text-xs text-text-secondary rounded-lg hover:bg-surface-100 transition-colors"
+          className="px-3 py-1 touch:py-2 text-xs text-text-secondary rounded-lg hover:bg-surface-100 transition-colors"
         >
           {t("cancel")}
         </button>
@@ -52,7 +52,7 @@ export default function EditCommentInput({
           onClick={() => canSave && onSave(text.trim())}
           disabled={!canSave}
           className={clsx(
-            "px-3 py-1 text-xs rounded-lg font-medium transition-colors",
+            "px-3 py-1 touch:py-2 text-xs rounded-lg font-medium transition-colors",
             canSave
               ? "bg-primary text-white hover:bg-primary-600"
               : "bg-surface-100 text-text-secondary cursor-not-allowed",

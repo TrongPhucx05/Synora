@@ -108,8 +108,7 @@ export default function CommentBubbleMenu({
               null,
               {
                 icon: <Ban size={14} />,
-                label: t("menu.block",
-                { name: authorName.split(" ").pop() }),
+                label: t("menu.block", { name: authorName.split(" ").pop() }),
                 onClick: () => {
                   onBlock?.();
                   setOpen(false);
@@ -149,7 +148,7 @@ export default function CommentBubbleMenu({
     <div className="relative" ref={ref}>
       <button
         onClick={() => setOpen((p) => !p)}
-        className="w-6 h-6 rounded-full flex items-center justify-center text-text-primary hover:bg-surface-200 hover:text-text-secondary transition-colors"
+        className="w-6 h-6 touch:w-8 touch:h-8 rounded-full flex items-center justify-center text-text-primary hover:bg-surface-200 hover:text-text-secondary transition-colors"
       >
         <MoreHorizontal size={13} />
       </button>
@@ -167,7 +166,9 @@ export default function CommentBubbleMenu({
                 }}
                 className={clsx(
                   "w-full flex items-center gap-2.5 px-3.5 py-2 text-xs hover:bg-surface-50 transition-colors",
-                  item.danger ? "text-red-500 dark:text-red-400" : "text-text-primary",
+                  item.danger
+                    ? "text-red-500 dark:text-red-400"
+                    : "text-text-primary",
                 )}
               >
                 {item.icon}

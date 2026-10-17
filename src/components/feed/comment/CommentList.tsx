@@ -299,7 +299,7 @@ export default function CommentList({
                   size="sm"
                 />
               </NextLink>
-              <div className="min-w-0 max-w-[85%]">
+              <div className="min-w-0 max-w-[calc(100%-5rem)] lg:max-w-[85%]">
                 <div className="relative">
                   <div
                     className={clsx(
@@ -382,7 +382,7 @@ export default function CommentList({
                         );
                       })()}
                   </div>
-                  <div className="absolute -right-8 top-1 opacity-0 group-hover/comment:opacity-100 transition-opacity">
+                  <div className="absolute -right-8 top-1 opacity-0 group-hover/comment:opacity-100 touch:opacity-100 transition-opacity">
                     {!isAdmin && (
                       <CommentBubbleMenu
                         role={
@@ -542,7 +542,7 @@ export default function CommentList({
                           color={r.author.color}
                         />
                       </NextLink>
-                      <div className="min-w-0 max-w-[85%]">
+                      <div className="min-w-0 max-w-[calc(100%-5rem)] lg:max-w-[85%]">
                         <div className="relative">
                           <div
                             className={clsx(
@@ -565,7 +565,7 @@ export default function CommentList({
                               {r.content}
                             </p>
                           </div>
-                          <div className="absolute -right-8 top-1 opacity-0 group-hover/reply:opacity-100 transition-opacity">
+                          <div className="absolute -right-8 top-1 opacity-0 group-hover/reply:opacity-100 touch:opacity-100 transition-opacity">
                             {!isAdmin && (
                               <CommentBubbleMenu
                                 role={

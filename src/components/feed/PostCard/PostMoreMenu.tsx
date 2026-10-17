@@ -112,7 +112,7 @@ export default function PostMoreMenu({
     <div className="relative" ref={ref}>
       <button
         onClick={() => setOpen((p) => !p)}
-        className="p-1.5 rounded-lg hover:bg-surface-100 text-text-secondary transition-colors"
+        className="p-1.5 touch:p-2 rounded-lg hover:bg-surface-100 text-text-secondary transition-colors"
       >
         <MoreHorizontal size={16} />
       </button>
@@ -126,7 +126,7 @@ export default function PostMoreMenu({
                 key={i}
                 onClick={item.onClick}
                 className={clsx(
-                  "w-full flex items-center gap-2.5 px-3.5 py-2 text-sm hover:bg-surface-50 transition-colors",
+                  "w-full flex items-center gap-2.5 px-3.5 py-2.5 sm:py-2 text-sm hover:bg-surface-50 transition-colors",
                   item.danger
                     ? "text-red-500 dark:text-red-400"
                     : "text-text-primary",

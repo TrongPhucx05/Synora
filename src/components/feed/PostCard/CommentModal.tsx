@@ -23,6 +23,7 @@ import ImageGrid from "./ImageGrid";
 import MediaLightbox from "./MediaLightbox";
 import CommentList from "@/components/feed/comment/CommentList";
 import CommentInput from "@/components/feed/comment/CommentInput";
+import { useLockBodyScroll } from "@/lib/useLockBodyScroll";
 
 export default function CommentModal({
   post,
@@ -49,6 +50,7 @@ export default function CommentModal({
   targetCommentId?: string | null;
   isAdmin?: boolean;
 }) {
+  useLockBodyScroll();
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
   const [sort, setSort] = useState<CommentSort>("default");
   const { data: session, status } = useSession();
@@ -114,11 +116,11 @@ export default function CommentModal({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 dark:bg-black/25 backdrop-blur-sm"
+      className="fixed inset-0 z-50 flex items-stretch justify-center sm:items-center sm:p-4 bg-black/40 dark:bg-black/25 sm:backdrop-blur-sm"
       onClick={(e) => e.target === e.currentTarget && onClose()}
     >
-      <div className="bg-surface rounded-2xl shadow-2xl w-full max-w-lg flex flex-col overflow-hidden max-h-[90vh]">
-        <div className="flex items-start gap-3 px-4 pt-4 pb-3 shrink-0">
+      <div className="bg-surface shadow-2xl w-full sm:max-w-lg flex flex-col overflow-hidden h-full sm:h-auto sm:max-h-[90dvh] sm:rounded-2xl">
+        <div className="flex items-start gap-3 px-4 pt-[max(1rem,env(safe-area-inset-top))] sm:pt-4 pb-3 shrink-0">
           <NextLink
             href={
               post.author.username ? `/profile/${post.author.username}` : "#"
@@ -170,13 +172,13 @@ export default function CommentModal({
           {menuSlot}
           <button
             onClick={onClose}
-            className="w-7 h-7 rounded-full bg-surface-100 flex items-center justify-center text-text-secondary hover:bg-surface-200 transition-colors shrink-0"
+            className="w-9 h-9 sm:w-7 sm:h-7 rounded-full bg-surface-100 flex items-center justify-center text-text-secondary hover:bg-surface-200 transition-colors shrink-0"
           >
             <X size={14} />
           </button>
         </div>
 
-        <div className="px-4 pb-3 shrink-0">
+        <div className="px-4 pb-3 shrink-0 max-h-[35dvh] overflow-y-auto overscroll-contain sm:max-h-none sm:overflow-visible">
           <RichContent
             text={post.content}
             className="text-sm text-text-primary leading-relaxed mb-2"
@@ -258,7 +260,7 @@ export default function CommentModal({
 
         <div
           ref={scrollContainerRef}
-          className="flex-1 overflow-y-auto overflow-x-visible px-4 pr-12 py-3 flex flex-col gap-3 min-h-0"
+          className="flex-1 overflow-y-auto overflow-x-visible overscroll-contain px-4 pr-4 sm:pr-12 py-3 flex flex-col gap-3 min-h-0"
         >
           <CommentList
             comments={sortedComments}
@@ -300,7 +302,7 @@ export default function CommentModal({
           />
         </div>
 
-        <div className="px-4 pb-4 pt-3 border-t border-surface-100 shrink-0">
+        <div className="px-4 pt-3 pb-[max(1rem,env(safe-area-inset-bottom))] border-t border-surface-100 shrink-0">
           {isAdmin ? (
             <p className="w-full py-2.5 text-center text-xs font-medium text-text-secondary bg-surface-50 rounded-2xl">
               {t("comments.adminCannotComment")}

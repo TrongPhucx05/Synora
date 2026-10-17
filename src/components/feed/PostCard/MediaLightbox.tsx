@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { clsx } from "clsx";
 import {
   X,
@@ -25,6 +25,7 @@ import RichContent from "./RichContent";
 import AttachmentRow from "./AttachmentRow";
 import CommentList from "@/components/feed/comment/CommentList";
 import CommentInput from "@/components/feed/comment/CommentInput";
+import { useLockBodyScroll } from "@/lib/useLockBodyScroll";
 
 export default function MediaLightbox({
   images,
@@ -53,11 +54,13 @@ export default function MediaLightbox({
   menuSlot?: React.ReactNode;
   isAdmin?: boolean;
 }) {
+  useLockBodyScroll();
   const [index, setIndex] = useState(initialIndex);
   const { data: session, status } = useSession();
   const t = useTranslations("post");
   const [sort, setSort] = useState<CommentSort>("default");
   const [authModal, setAuthModal] = useState<string | null>(null);
+  const touchStartX = useRef<number | null>(null);
 
   const {
     comments,
@@ -108,15 +111,29 @@ export default function MediaLightbox({
   const isVideo = isVideoItem(currentSrc, mediaTypes?.[index]);
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/95 flex" onClick={onClose}>
+    <div
+      className="fixed inset-0 z-50 bg-black/95 flex flex-col lg:flex-row"
+      onClick={onClose}
+    >
       <div
-        className="flex-1 flex items-center justify-center relative"
-        style={{ height: "100vh" }}
+        className="relative flex h-[35dvh] shrink-0 items-center justify-center lg:h-auto lg:flex-1 lg:shrink"
         onClick={(e) => e.stopPropagation()}
+        onTouchStart={(e) => {
+          touchStartX.current = e.touches[0].clientX;
+        }}
+        onTouchEnd={(e) => {
+          if (touchStartX.current === null || images.length < 2) return;
+          const dx = e.changedTouches[0].clientX - touchStartX.current;
+          touchStartX.current = null;
+          if (Math.abs(dx) > 50) {
+            if (dx > 0) prev();
+            else next();
+          }
+        }}
       >
         <button
           onClick={onClose}
-          className="absolute top-4 left-4 w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition z-10"
+          className="absolute top-[max(1rem,env(safe-area-inset-top))] left-4 w-10 h-10 lg:w-9 lg:h-9 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition z-10"
         >
           <X size={16} />
         </button>
@@ -175,8 +192,7 @@ export default function MediaLightbox({
       </div>
 
       <div
-        className="w-[380px] shrink-0 bg-surface flex flex-col"
-        style={{ height: "100vh" }}
+        className="flex min-h-0 w-full flex-1 flex-col bg-surface lg:w-[380px] lg:flex-none lg:shrink-0"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center gap-3 px-4 py-3 border-b border-surface-100 shrink-0">
@@ -231,7 +247,7 @@ export default function MediaLightbox({
           {menuSlot}
         </div>
 
-        <div className="px-4 pt-3 pb-2 shrink-0">
+        <div className="px-4 pt-3 pb-2 shrink-0 max-h-[15dvh] overflow-y-auto overscroll-contain lg:max-h-none lg:overflow-visible">
           <RichContent
             text={post.content}
             className="text-sm text-text-primary leading-relaxed"
@@ -303,7 +319,7 @@ export default function MediaLightbox({
           ))}
         </div>
 
-        <div className="flex-1 overflow-y-auto overflow-x-visible px-4 pr-12 py-3 flex flex-col gap-3">
+        <div className="flex-1 min-h-0 overflow-y-auto overflow-x-visible overscroll-contain px-4 pr-4 lg:pr-12 py-3 flex flex-col gap-3">
           <CommentList
             comments={sortedComments}
             replyingToId={replyingToId}
@@ -329,7 +345,7 @@ export default function MediaLightbox({
           />
         </div>
 
-        <div className="border-t border-surface-100 px-4 py-3 shrink-0">
+        <div className="border-t border-surface-100 px-4 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] shrink-0">
           {isAdmin ? (
             <p className="w-full py-2.5 text-center text-xs font-medium text-text-secondary bg-surface-50 rounded-2xl">
               {t("comments.adminCannotComment")}

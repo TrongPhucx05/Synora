@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, useRef } from "react";
 import { clsx } from "clsx";
@@ -105,7 +105,7 @@ export function CommentMediaThumb({
         ) : (
           <img
             src={url}
-            alt={fileName ?? "ảnh"}
+            alt={fileName ?? "áº£nh"}
             className="w-full max-h-52 object-cover group-hover:brightness-90 transition"
           />
         )}
@@ -145,7 +145,7 @@ export function CommentMediaThumb({
         >
           <button
             onClick={() => setOpen(false)}
-            className="absolute top-4 right-4 w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition z-10"
+            className="absolute top-[max(1rem,env(safe-area-inset-top))] right-4 w-10 h-10 sm:w-9 sm:h-9 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition z-10"
           >
             <X size={16} />
           </button>
@@ -154,14 +154,14 @@ export function CommentMediaThumb({
               src={url}
               controls
               autoPlay
-              className="max-w-[90vw] max-h-[85vh] rounded-lg"
+              className="max-w-[90vw] max-h-[85dvh] rounded-lg"
               onClick={(e) => e.stopPropagation()}
             />
           ) : (
             <img
               src={url}
-              alt={fileName ?? "ảnh"}
-              className="max-w-[90vw] max-h-[85vh] rounded-lg object-contain"
+              alt={fileName ?? "áº£nh"}
+              className="max-w-[90vw] max-h-[85dvh] rounded-lg object-contain"
               onClick={(e) => e.stopPropagation()}
             />
           )}
@@ -346,7 +346,7 @@ export default function CommentInput({
             )}
             <button
               onClick={removeAttachment}
-              className="absolute -top-1.5 -right-1.5 bg-text-primary text-white rounded-full p-0.5"
+              className="absolute -top-1.5 -right-1.5 bg-text-primary text-surface rounded-full p-0.5 touch:p-1.5"
             >
               <X size={11} />
             </button>
@@ -384,8 +384,8 @@ export default function CommentInput({
             <button
               onClick={() => fileRef.current?.click()}
               disabled={uploading || disabled}
-              className="p-1 text-text-secondary hover:text-primary transition-colors disabled:opacity-40"
-              title={t("input.previewFile")}
+              className="p-1 touch:p-2 text-text-secondary hover:text-primary transition-colors disabled:opacity-40"
+              title={t("input.attach")}
             >
               <Paperclip size={16} />
             </button>
@@ -399,7 +399,7 @@ export default function CommentInput({
               onClick={handleSubmit}
               disabled={!canSubmit}
               className={clsx(
-                "p-1.5 rounded-full transition-all",
+                "p-1.5 touch:p-2 rounded-full transition-all",
                 canSubmit
                   ? "text-white bg-primary hover:bg-primary-600 shadow-sm"
                   : "text-text-secondary cursor-not-allowed",

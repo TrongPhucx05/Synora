@@ -27,6 +27,7 @@ import {
   type AttachedFile as ComposerAttachedFile,
 } from "@/components/feed/PostComposer";
 import type { Post, EditVisibility, ExistingMedia } from "@/lib/feed/types";
+import { useLockBodyScroll } from "@/lib/useLockBodyScroll";
 
 function getEditVisibilityOptions(t: ReturnType<typeof useTranslations>) {
   return [
@@ -116,6 +117,7 @@ export default function EditPostComposer({
   onSave: (result: { content: string; updatedPost: any }) => void;
   onClose: () => void;
 }) {
+  useLockBodyScroll();
   const [content, setContent] = useState(post.content);
   const [visibility, setVisibility] = useState<EditVisibility>(
     (post.visibility as EditVisibility) ?? "PUBLIC",
@@ -323,10 +325,10 @@ export default function EditPostComposer({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 dark:bg-black/35 backdrop-blur-sm p-4"
+      className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/50 dark:bg-black/35 backdrop-blur-sm p-0 sm:p-4"
       onClick={(e) => e.target === e.currentTarget && onClose()}
     >
-      <div className="bg-surface rounded-2xl shadow-2xl w-full max-w-lg flex flex-col overflow-hidden max-h-[90vh]">
+      <div className="bg-surface rounded-t-2xl sm:rounded-2xl shadow-2xl w-full max-w-lg flex flex-col overflow-hidden max-h-[90dvh]">
         <div className="flex items-center justify-between px-5 py-4 border-b border-surface-100 shrink-0">
           <div className="flex items-center gap-3">
             <h2 className="text-sm font-bold text-text-primary">
@@ -354,7 +356,7 @@ export default function EditPostComposer({
                 el.style.height = `${el.scrollHeight}px`;
               }}
               placeholder={t("post.edit.placeholder")}
-              className="w-full resize-none text-sm text-text-primary placeholder:text-text-muted outline-none leading-relaxed min-h-[100px] max-h-[300px] bg-transparent"
+              className="w-full resize-none text-base sm:text-sm text-text-primary placeholder:text-text-muted outline-none leading-relaxed min-h-[100px] max-h-[300px] bg-transparent"
               rows={4}
             />
             {content.length > charLimit * 0.8 && (
@@ -394,7 +396,7 @@ export default function EditPostComposer({
                       e.stopPropagation();
                       removeExistingMedia(m.id);
                     }}
-                    className="absolute top-1 right-1 bg-black/60 dark:bg-black/45 hover:bg-black/80 text-white rounded-full p-0.5 opacity-0 group-hover:opacity-100 transition-opacity z-10"
+                    className="absolute top-1 right-1 bg-black/60 dark:bg-black/45 hover:bg-black/80 text-white rounded-full p-1 touch:opacity-100 opacity-0 group-hover:opacity-100 transition-opacity z-10"
                   >
                     <X size={11} />
                   </button>
@@ -453,13 +455,13 @@ export default function EditPostComposer({
           )}
         </div>
 
-        <div className="border-t border-surface-100 shrink-0">
+        <div className="border-t border-surface-100 shrink-0 pb-[env(safe-area-inset-bottom)]">
           {uploadError && (
             <p className="text-xs text-red-500 dark:text-red-400 px-5 pt-3">
               {uploadError}
             </p>
           )}
-          <div className="flex items-center justify-between px-4 py-3">
+          <div className="flex flex-wrap items-center justify-between gap-2 px-4 py-3">
             <div className="flex items-center gap-1">
               <input
                 ref={fileInputRef}
