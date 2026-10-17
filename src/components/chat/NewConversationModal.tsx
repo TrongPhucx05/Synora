@@ -231,12 +231,12 @@ export function NewConversationModal({
         className="fixed inset-0 bg-black/50 dark:bg-black/35 z-[80] backdrop-blur-sm"
         onClick={onClose}
       />
-      <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[440px] bg-surface rounded-2xl shadow-2xl z-[80] flex flex-col overflow-hidden max-h-[80vh]">
+      <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[calc(100vw-2rem)] max-w-[440px] bg-surface rounded-2xl shadow-2xl z-[80] flex flex-col overflow-hidden max-h-[85dvh]">
         <div className="flex items-center justify-between px-5 py-4 border-b border-surface-100">
           <p className="text-sm font-bold text-text-primary">{t("title")}</p>
           <button
             onClick={onClose}
-            className="p-1.5 hover:bg-surface-100 rounded-lg transition-colors text-text-muted"
+            className="p-2 sm:p-1.5 hover:bg-surface-100 rounded-lg transition-colors text-text-muted"
           >
             <X size={15} />
           </button>
@@ -280,7 +280,7 @@ export function NewConversationModal({
                 value={groupName}
                 onChange={(e) => setGroupName(e.target.value)}
                 placeholder={t("groupNamePlaceholder")}
-                className="w-full px-3 py-2.5 bg-surface-100 rounded-xl text-sm placeholder:text-text-muted focus:outline-none border border-transparent focus:border-primary focus:bg-surface transition-colors"
+                className="w-full px-3 py-2.5 bg-surface-100 rounded-xl text-base sm:text-sm placeholder:text-text-muted focus:outline-none border border-transparent focus:border-primary focus:bg-surface transition-colors"
               />
             </div>
           )}
@@ -322,7 +322,7 @@ export function NewConversationModal({
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder={t("searchFriendsPlaceholder")}
-                className="w-full pl-8 pr-3 py-2 bg-surface-100 rounded-xl text-xs placeholder:text-text-muted focus:outline-none border border-transparent focus:border-primary focus:bg-surface transition-colors"
+                className="w-full pl-8 pr-3 py-2 bg-surface-100 rounded-xl text-base sm:text-xs placeholder:text-text-muted focus:outline-none border border-transparent focus:border-primary focus:bg-surface transition-colors"
               />
             </div>
           </div>
@@ -356,7 +356,7 @@ export function NewConversationModal({
           </div>
         )}
 
-        <div className="px-5 py-4 border-t border-surface-100 flex items-center justify-between gap-3">
+        <div className="px-5 py-4 border-t border-surface-100 flex flex-wrap items-center justify-between gap-3">
           <p className="text-xs text-text-muted">
             {selected.length === 0
               ? tab === "direct"
@@ -364,7 +364,7 @@ export function NewConversationModal({
                 : t("selectAtLeastTwo")
               : t("selectedCount", { count: selected.length })}
           </p>
-          <div className="flex gap-2">
+          <div className="flex gap-2 ml-auto">
             <button
               onClick={onClose}
               className="px-4 py-2 rounded-xl border border-surface-200 text-xs font-semibold text-text-secondary hover:bg-surface-50 transition-colors"

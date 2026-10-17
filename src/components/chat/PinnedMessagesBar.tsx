@@ -43,7 +43,7 @@ function PinnedItemMenu({
           setOpen((v) => !v);
         }}
         title={t("options")}
-        className="p-1 hover:bg-primary/10 rounded-lg text-primary/70 transition-colors cursor-pointer"
+        className="p-1.5 sm:p-1 hover:bg-primary/10 rounded-lg text-primary/70 transition-colors cursor-pointer"
       >
         <MoreVertical size={15} />
       </button>
@@ -59,7 +59,7 @@ function PinnedItemMenu({
               onJump();
               setOpen(false);
             }}
-            className="w-full flex items-center gap-2.5 px-3.5 py-2 text-sm text-text-primary hover:bg-surface-50 transition-colors"
+            className="w-full flex items-center gap-2.5 px-3.5 py-2.5 sm:py-2 text-sm text-text-primary hover:bg-surface-50 transition-colors"
           >
             <ArrowRight size={14} className="text-text-muted shrink-0" />
             {t("jumpTo")}
@@ -70,7 +70,7 @@ function PinnedItemMenu({
               onUnpin();
               setOpen(false);
             }}
-            className="w-full flex items-center gap-2.5 px-3.5 py-2 text-sm text-text-primary hover:bg-surface-50 transition-colors"
+            className="w-full flex items-center gap-2.5 px-3.5 py-2.5 sm:py-2 text-sm text-text-primary hover:bg-surface-50 transition-colors"
           >
             <PinOff size={14} className="text-text-muted shrink-0" />
             {t("unpin")}

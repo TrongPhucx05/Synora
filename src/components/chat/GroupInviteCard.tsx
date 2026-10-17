@@ -53,7 +53,7 @@ export function GroupInviteCard({ token }: { token: string }) {
   };
 
   return (
-    <div className="w-64 rounded-2xl border border-surface-200 bg-surface overflow-hidden shadow-sm">
+    <div className="w-64 max-w-[calc(100vw-10rem)] rounded-2xl border border-surface-200 bg-surface overflow-hidden shadow-sm">
       <div className="flex items-center gap-3 px-4 py-3">
         <Avatar
           src={preview.avatarUrl}

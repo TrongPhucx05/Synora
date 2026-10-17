@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import {
   useState,
@@ -48,7 +48,7 @@ import {
   downloadFile,
 } from "@/lib/chat/utils";
 
-const QUICK_EMOJIS = ["👍", "❤️", "😂", "😮", "😢"];
+const QUICK_EMOJIS = ["ðŸ‘", "â¤ï¸", "ðŸ˜‚", "ðŸ˜®", "ðŸ˜¢"];
 
 interface ReactionModalProps {
   reactions: ReactionGroup[];
@@ -378,7 +378,7 @@ function MediaLightbox({
             }}
             className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white z-10"
           >
-            ‹
+            â€¹
           </button>
           <button
             onClick={(e) => {
@@ -387,7 +387,7 @@ function MediaLightbox({
             }}
             className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white z-10"
           >
-            ›
+            â€º
           </button>
         </>
       )}
@@ -397,13 +397,13 @@ function MediaLightbox({
             src={current.url}
             controls
             autoPlay
-            className="max-w-[90vw] max-h-[85vh] rounded-lg"
+            className="max-w-[90vw] max-h-[85dvh] rounded-lg"
           />
         ) : (
           <img
             src={current.url}
             alt={current.name}
-            className="max-w-[90vw] max-h-[85vh] rounded-lg"
+            className="max-w-[90vw] max-h-[85dvh] rounded-lg"
           />
         )}
       </div>
@@ -433,7 +433,7 @@ function MessageActions({
   return (
     <div
       className={clsx(
-        "flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity shrink-0",
+        "flex items-center gap-0.5 opacity-0 group-hover:opacity-100 touch:opacity-100 transition-opacity shrink-0",
         "self-center",
         isMe ? "flex-row-reverse mr-1" : "ml-1",
       )}
@@ -825,7 +825,12 @@ export function MessageBubble({
     onReactionsUpdated(msg.id, optimistic);
 
     try {
-      const data = await toggleMessageReaction(conversationId, msg.id, emoji, tu);
+      const data = await toggleMessageReaction(
+        conversationId,
+        msg.id,
+        emoji,
+        tu,
+      );
       const grouped = groupReactions(
         data.reactions as ApiReaction[],
         currentUserId,
@@ -932,7 +937,7 @@ export function MessageBubble({
               msg.isMe ? "text-right" : "text-left",
             )}
           >
-            {msg.isMe ? `${t("you")} · ${msg.time}` : msg.time}
+            {msg.isMe ? `${t("you")} Â· ${msg.time}` : msg.time}
           </p>
         </div>
       </div>
@@ -1070,7 +1075,7 @@ export function MessageBubble({
                   return (
                     <div
                       className={clsx(
-                        "px-4 py-3 rounded-2xl text-sm leading-relaxed",
+                        "px-4 py-3 rounded-2xl text-sm leading-relaxed [overflow-wrap:anywhere]",
                         msg.isMe
                           ? "bg-primary text-white rounded-br-sm"
                           : "bg-surface border border-surface-200 text-text-primary rounded-bl-sm shadow-sm",
@@ -1114,7 +1119,7 @@ export function MessageBubble({
               msg.isMe ? "text-right" : "text-left",
             )}
           >
-            {msg.isMe ? `${t("you")} · ${msg.time}` : msg.time}
+            {msg.isMe ? `${t("you")} Â· ${msg.time}` : msg.time}
           </p>
         </div>
       </div>
