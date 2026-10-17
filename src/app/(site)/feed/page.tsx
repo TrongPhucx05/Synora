@@ -229,8 +229,8 @@ export default function FeedPage() {
   });
 
   return (
-    <div className="flex w-full py-5 items-start">
-      <div className="flex-1 flex flex-col gap-4 mx-auto max-w-[820px]">
+    <div className="flex w-full py-3 sm:py-5 items-start">
+      <div className="flex-1 min-w-0 flex flex-col gap-3 sm:gap-4 mx-auto max-w-[820px]">
         {session && session.user?.role !== "ADMIN" && (
           <PostComposer onPost={handlePost} currentUser={currentUser} />
         )}
@@ -263,7 +263,7 @@ export default function FeedPage() {
           })()
         )}
       </div>
-      <div className="w-[320px] shrink-0 flex flex-col gap-4">
+      <div className="hidden xl:flex w-[320px] shrink-0 flex-col gap-4">
         <TrendingTopics />
         {!isAdmin && <SuggestedPeople />}
       </div>

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, useRef } from "react";
 import {
@@ -243,7 +243,7 @@ function MediaLightboxPreview({
       )}
 
       <div
-        className="relative max-w-[90vw] max-h-[85vh] flex items-center justify-center"
+        className="relative max-w-[90vw] max-h-[85dvh] flex items-center justify-center"
         onClick={(e) => e.stopPropagation()}
       >
         {isVideo ? (
@@ -251,14 +251,14 @@ function MediaLightboxPreview({
             src={current.previewUrl}
             controls
             autoPlay
-            className="max-w-[90vw] max-h-[85vh] rounded-lg shadow-2xl"
+            className="max-w-[90vw] max-h-[85dvh] rounded-lg shadow-2xl"
             style={{ objectFit: "contain" }}
           />
         ) : (
           <img
             src={current.previewUrl}
             alt={current.name}
-            className="max-w-[90vw] max-h-[85vh] rounded-lg shadow-2xl"
+            className="max-w-[90vw] max-h-[85dvh] rounded-lg shadow-2xl"
             style={{ objectFit: "contain" }}
           />
         )}
@@ -277,7 +277,7 @@ function MediaLightboxPreview({
       )}
 
       <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-black/50 dark:bg-black/35 text-white text-xs px-3 py-1 rounded-full max-w-xs truncate">
-        {current.name} · {current.size}
+        {current.name} Â· {current.size}
       </div>
 
       {files.length > 1 && (
@@ -353,7 +353,7 @@ function MediaPreview({
           e.stopPropagation();
           onRemove();
         }}
-        className="absolute top-1 right-1 bg-black/60 dark:bg-black/45 hover:bg-black/80 text-white rounded-full p-0.5 opacity-0 group-hover:opacity-100 transition-opacity z-10"
+        className="absolute top-1 right-1 bg-black/60 dark:bg-black/45 hover:bg-black/80 text-white rounded-full p-0.5 touch:p-1.5 opacity-0 group-hover:opacity-100 touch:opacity-100 transition-opacity z-10"
         aria-label={t("post.composer.removeFile")}
       >
         <X size={11} />
@@ -382,7 +382,7 @@ export default function PostComposer({
   const { startUpload: startDocUpload } = useUploadThing("postDocument");
 
   const tags = Array.from(
-    new Set((content.match(/#[\wÀ-ỹ]+/gu) ?? []).map((t) => t.toLowerCase())),
+    new Set((content.match(/#[\p{L}\p{M}\p{N}_]+/gu) ?? []).map((t) => t.toLowerCase())),
   );
 
   const fileInputRef = useRef<HTMLInputElement>(null);
