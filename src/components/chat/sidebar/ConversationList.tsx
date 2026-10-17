@@ -190,7 +190,7 @@ export function ConversationList({
   const isSearching = searchQuery.trim().length > 0;
 
   return (
-    <div className="w-[268px] shrink-0 border-r border-surface-200 bg-surface flex flex-col">
+        <div className="w-full flex-1 min-h-0 md:w-[268px] md:flex-none md:shrink-0 border-r border-surface-200 bg-surface flex flex-col">
       <div className="px-4 pt-4 pb-3 border-b border-surface-100">
         <h2 className="text-base font-bold text-text-primary mb-3">
           {t("title")}
@@ -356,7 +356,7 @@ export function ConversationList({
                       menuOpen && "bg-surface-200",
                       menuOpen || activeId === conv.id
                         ? "opacity-100"
-                        : "opacity-0 group-hover:opacity-100",
+                                                : "opacity-0 group-hover:opacity-100 touch:opacity-100",
                     )}
                   >
                     <MoreVertical size={15} />

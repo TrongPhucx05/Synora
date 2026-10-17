@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, useRef, useEffect, useCallback } from "react";
 import Link from "next/link";
@@ -102,8 +102,11 @@ function MediaModal({
 
   return (
     <>
-      <div className="fixed inset-0 bg-black/40 dark:bg-black/25 z-[60]" onClick={onClose} />
-      <div className="fixed inset-y-0 right-0 w-[380px] bg-surface z-[60] flex flex-col shadow-2xl">
+      <div
+        className="fixed inset-0 bg-black/40 dark:bg-black/25 z-[60]"
+        onClick={onClose}
+      />
+      <div className="fixed inset-y-0 right-0 w-full sm:w-[380px] bg-surface z-[60] flex flex-col shadow-2xl">
         <div className="flex items-center justify-between px-5 py-4 border-b border-surface-100">
           <p className="text-sm font-bold text-text-primary">{t("title")}</p>
           <button
@@ -242,13 +245,13 @@ function MediaModal({
                 src={media[lightboxIndex].url}
                 controls
                 autoPlay
-                className="max-w-[85vw] max-h-[85vh] rounded-lg"
+                className="max-w-[85vw] max-h-[85dvh] rounded-lg"
               />
             ) : (
               <img
                 src={media[lightboxIndex].url}
                 alt={media[lightboxIndex].name}
-                className="max-w-[85vw] max-h-[85vh] rounded-lg"
+                className="max-w-[85vw] max-h-[85dvh] rounded-lg"
               />
             )}
           </div>
@@ -399,8 +402,11 @@ function InviteMembersModal({
 
   return (
     <>
-      <div className="fixed inset-0 bg-black/50 dark:bg-black/35 z-[70]" onClick={onClose} />
-      <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[380px] max-h-[70vh] bg-surface rounded-2xl shadow-2xl z-[70] flex flex-col overflow-hidden">
+      <div
+        className="fixed inset-0 bg-black/50 dark:bg-black/35 z-[70]"
+        onClick={onClose}
+      />
+      <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[min(380px,calc(100vw-2rem))] max-h-[70dvh] bg-surface rounded-2xl shadow-2xl z-[70] flex flex-col overflow-hidden">
         <div className="flex items-center justify-between px-5 py-4 border-b border-surface-100">
           <p className="text-sm font-bold text-text-primary">{t("title")}</p>
           <button
@@ -553,8 +559,11 @@ function MembersModal({
 
   return (
     <>
-      <div className="fixed inset-0 bg-black/40 dark:bg-black/25 z-[60]" onClick={onClose} />
-      <div className="fixed inset-y-0 right-0 w-[320px] bg-surface z-[60] flex flex-col shadow-2xl">
+      <div
+        className="fixed inset-0 bg-black/40 dark:bg-black/25 z-[60]"
+        onClick={onClose}
+      />
+      <div className="fixed inset-y-0 right-0 w-full sm:w-[320px] bg-surface z-[60] flex flex-col shadow-2xl">
         <div className="flex items-center justify-between px-5 py-4 border-b border-surface-100">
           <div>
             <p className="text-sm font-bold text-text-primary">{t("title")}</p>
@@ -620,7 +629,9 @@ function MembersModal({
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-1.5 flex-wrap">
                       <p className="text-sm font-semibold text-text-primary truncate">
-                        {isMe ? `${m.displayName} ${t("youSuffix")}` : m.displayName}
+                        {isMe
+                          ? `${m.displayName} ${t("youSuffix")}`
+                          : m.displayName}
                       </p>
                       <RoleBadge isLeader={m.isLeader} />
                       {!m.isAccepted && (
@@ -639,7 +650,7 @@ function MembersModal({
                         onClick={() =>
                           setOpenMenu(openMenu === m.userId ? null : m.userId)
                         }
-                        className="opacity-0 group-hover:opacity-100 p-1.5 hover:bg-surface-200 rounded-lg transition-all text-text-muted"
+                        className="opacity-0 group-hover:opacity-100 touch:opacity-100 p-1.5 hover:bg-surface-200 rounded-lg transition-all text-text-muted"
                       >
                         <MoreHorizontal size={15} />
                       </button>
@@ -685,8 +696,12 @@ function MembersModal({
           <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] bg-surface rounded-2xl shadow-2xl z-[70] p-6">
             <p className="text-sm font-bold text-text-primary mb-1">
               {confirmTarget.type === "remove"
-                ? t("removeConfirmTitle", { name: confirmTarget.member.displayName })
-                : t("transferConfirmTitle", { name: confirmTarget.member.displayName })}
+                ? t("removeConfirmTitle", {
+                    name: confirmTarget.member.displayName,
+                  })
+                : t("transferConfirmTitle", {
+                    name: confirmTarget.member.displayName,
+                  })}
             </p>
             <p className="text-xs text-text-muted mb-5">
               {confirmTarget.type === "remove"
@@ -752,7 +767,10 @@ function RenameGroupModal({
 
   return (
     <>
-      <div className="fixed inset-0 bg-black/50 dark:bg-black/35 z-[70]" onClick={onClose} />
+      <div
+        className="fixed inset-0 bg-black/50 dark:bg-black/35 z-[70]"
+        onClick={onClose}
+      />
       <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[320px] bg-surface rounded-2xl shadow-2xl z-[70] p-6">
         <p className="text-sm font-bold text-text-primary mb-4">{t("title")}</p>
         <input
@@ -804,7 +822,10 @@ function LeaveChoiceModal({
   const tc = useTranslations("common");
   return (
     <>
-      <div className="fixed inset-0 bg-black/50 dark:bg-black/35 z-[70]" onClick={onClose} />
+      <div
+        className="fixed inset-0 bg-black/50 dark:bg-black/35 z-[70]"
+        onClick={onClose}
+      />
       <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[320px] bg-surface rounded-2xl shadow-2xl z-[70] p-6">
         <p className="text-sm font-bold text-text-primary mb-1">{t("title")}</p>
         <p className="text-xs text-text-muted mb-5">{t("desc")}</p>
@@ -860,8 +881,11 @@ function TransferLeaderAndLeaveModal({
 
   return (
     <>
-      <div className="fixed inset-0 bg-black/50 dark:bg-black/35 z-[70]" onClick={onClose} />
-      <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[340px] max-h-[70vh] bg-surface rounded-2xl shadow-2xl z-[70] flex flex-col overflow-hidden">
+      <div
+        className="fixed inset-0 bg-black/50 dark:bg-black/35 z-[70]"
+        onClick={onClose}
+      />
+      <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[340px] max-h-[70dvh] bg-surface rounded-2xl shadow-2xl z-[70] flex flex-col overflow-hidden">
         <div className="px-5 py-4 border-b border-surface-100">
           <p className="text-sm font-bold text-text-primary">{t("title")}</p>
           <p className="text-xs text-text-muted mt-0.5">{t("desc")}</p>
@@ -961,7 +985,9 @@ function DisbandGroupModal({
         onClick={() => !submitting && onClose()}
       />
       <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] bg-surface rounded-2xl shadow-2xl z-[70] p-6">
-        <p className="text-sm font-bold mb-1">{t("title", { name: groupName })}</p>
+        <p className="text-sm font-bold mb-1">
+          {t("title", { name: groupName })}
+        </p>
         <p className="text-xs text-text-muted mb-5">{t("desc")}</p>
         <div className="flex gap-2">
           <button
@@ -1019,8 +1045,11 @@ function InviteLinkPanel({
 
   return (
     <>
-      <div className="fixed inset-0 bg-black/40 dark:bg-black/25 z-[60]" onClick={onClose} />
-      <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[380px] bg-surface rounded-2xl shadow-2xl z-[60] p-6">
+      <div
+        className="fixed inset-0 bg-black/40 dark:bg-black/25 z-[60]"
+        onClick={onClose}
+      />
+      <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[min(380px,calc(100vw-2rem))] bg-surface rounded-2xl shadow-2xl z-[60] p-6">
         <div className="flex items-center justify-between mb-1">
           <p className="text-sm font-bold text-text-primary">{t("title")}</p>
           <button
@@ -1113,8 +1142,11 @@ function JoinRequestsPanel({
 
   return (
     <>
-      <div className="fixed inset-0 bg-black/40 dark:bg-black/25 z-[60]" onClick={onClose} />
-      <div className="fixed inset-y-0 right-0 w-[340px] bg-surface z-[60] flex flex-col shadow-2xl">
+      <div
+        className="fixed inset-0 bg-black/40 dark:bg-black/25 z-[60]"
+        onClick={onClose}
+      />
+      <div className="fixed inset-y-0 right-0 w-full sm:w-[340px] bg-surface z-[60] flex flex-col shadow-2xl">
         <div className="flex items-center justify-between px-5 py-4 border-b border-surface-100">
           <div>
             <p className="text-sm font-bold text-text-primary">{t("title")}</p>
@@ -1289,7 +1321,11 @@ export function InfoSidebar({
       const url = results?.[0]?.ufsUrl ?? results?.[0]?.url;
       const key = results?.[0]?.key;
       if (!url) throw new Error(t("avatarUploadFailed"));
-      await updateConversationInfo(conv.id, { avatarUrl: url, avatarKey: key }, tu);
+      await updateConversationInfo(
+        conv.id,
+        { avatarUrl: url, avatarKey: key },
+        tu,
+      );
       onConvUpdated?.({ avatarUrl: url });
       showToast(t("avatarChangedToast"), "success");
     } catch (e) {
@@ -1375,7 +1411,11 @@ export function InfoSidebar({
 
   return (
     <>
-      <div className="w-[280px] shrink-0 border-l border-surface-200 bg-surface flex flex-col overflow-y-auto">
+      <div
+        className="fixed inset-0 z-40 bg-black/40 lg:hidden"
+        onClick={onClose}
+      />
+      <div className="fixed inset-y-0 right-0 z-40 w-full sm:w-[320px] pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)] lg:static lg:z-auto lg:w-[280px] lg:pt-0 lg:pb-0 shrink-0 border-l border-surface-200 bg-surface flex flex-col overflow-y-auto">
         <div className="flex items-center justify-between px-4 py-3 border-b border-surface-100 shrink-0">
           <p className="text-sm font-bold text-text-primary">{t("header")}</p>
           <button
@@ -1465,7 +1505,7 @@ export function InfoSidebar({
           {!conv.isGroup &&
             (isOnline ? (
               <p className="text-xs text-green-500 dark:text-green-400 mt-0.5 font-medium">
-                ● {t("activeNow")}
+                â— {t("activeNow")}
               </p>
             ) : (
               formatLastSeen(lastActiveAt) && (
@@ -1487,9 +1527,7 @@ export function InfoSidebar({
         {conv.isPending ? (
           <div className="px-4 py-4 text-center">
             <p className="text-xs text-text-muted">
-              {conv.isGroup
-                ? t("acceptGroupInviteHint")
-                : t("acceptConvHint")}
+              {conv.isGroup ? t("acceptGroupInviteHint") : t("acceptConvHint")}
             </p>
           </div>
         ) : (
@@ -1866,7 +1904,7 @@ export function InfoSidebar({
             <img
               src={conv.avatarUrl}
               alt={conv.name}
-              className="max-w-[85vw] max-h-[85vh] rounded-lg"
+              className="max-w-[85vw] max-h-[85dvh] rounded-lg"
             />
           </div>
         </div>

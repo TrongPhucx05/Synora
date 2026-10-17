@@ -427,8 +427,7 @@ export function PendingMessages({
 
       {open && (
         <div
-          className="fixed inset-y-0 left-0 z-50 flex flex-col bg-surface shadow-2xl border-r border-surface-200 animate-slide-in-left"
-          style={{ width: "320px" }}
+          className="fixed inset-y-0 left-0 z-50 flex flex-col w-full sm:w-[320px] pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)] bg-surface shadow-2xl border-r border-surface-200 animate-slide-in-left"
           role="dialog"
           aria-modal="true"
           aria-label={t("title")}
@@ -721,7 +720,8 @@ export function PendingMessages({
                               }
                               className={clsx(
                                 "p-1.5 rounded-full hover:bg-surface-200 text-text-muted transition-colors",
-                                menuOpen || "opacity-0 group-hover:opacity-100",
+                                menuOpen ||
+                                  "opacity-0 group-hover:opacity-100 touch:opacity-100",
                               )}
                             >
                               <MoreVertical size={15} />
@@ -791,31 +791,35 @@ export function PendingMessages({
                   : t("confirm.deleteConvTitle")
           }
           description={
-            confirmAction.type === "unarchive" ? (
-              t.rich("confirm.unarchiveDesc", {
-                name: confirmAction.conv.name,
-                b: (chunks) => (
-                  <span className="font-medium text-text-secondary">{chunks}</span>
-                ),
-              })
-            ) : confirmAction.type === "block" ? (
-              t.rich("confirm.blockDesc", {
-                name: confirmAction.name,
-                b: (chunks) => (
-                  <span className="font-medium text-text-secondary">{chunks}</span>
-                ),
-              })
-            ) : (
-              t.rich("confirm.deleteConvDesc", {
-                name:
-                  confirmAction.type === "deletePending"
-                    ? confirmAction.name
-                    : confirmAction.conv.name,
-                b: (chunks) => (
-                  <span className="font-medium text-text-secondary">{chunks}</span>
-                ),
-              })
-            )
+            confirmAction.type === "unarchive"
+              ? t.rich("confirm.unarchiveDesc", {
+                  name: confirmAction.conv.name,
+                  b: (chunks) => (
+                    <span className="font-medium text-text-secondary">
+                      {chunks}
+                    </span>
+                  ),
+                })
+              : confirmAction.type === "block"
+                ? t.rich("confirm.blockDesc", {
+                    name: confirmAction.name,
+                    b: (chunks) => (
+                      <span className="font-medium text-text-secondary">
+                        {chunks}
+                      </span>
+                    ),
+                  })
+                : t.rich("confirm.deleteConvDesc", {
+                    name:
+                      confirmAction.type === "deletePending"
+                        ? confirmAction.name
+                        : confirmAction.conv.name,
+                    b: (chunks) => (
+                      <span className="font-medium text-text-secondary">
+                        {chunks}
+                      </span>
+                    ),
+                  })
           }
           confirmLabel={
             confirmAction.type === "unarchive"

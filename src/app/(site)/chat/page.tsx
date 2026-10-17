@@ -23,6 +23,7 @@ import {
   Trash2,
   Archive,
   Ban,
+  ChevronLeft,
 } from "lucide-react";
 import { clsx } from "clsx";
 import { useTranslations } from "next-intl";
@@ -216,7 +217,7 @@ export default function ChatPage() {
           ? m.content.length > 30
             ? m.content.slice(0, 30) + "..."
             : m.content
-          : buildAttachmentLabel(m.attachments, tu)
+          : buildAttachmentLabel(m.attachments, tu);
         setPinNotices((prev) => [
           ...prev,
           {
@@ -423,7 +424,7 @@ export default function ChatPage() {
         if (!res.ok) return;
         const data = await res.json();
         const adapted = (data.messages as ApiMessage[]).map((m) =>
-          adaptApiMessage(m, currentUserId, tu, locale)
+          adaptApiMessage(m, currentUserId, tu, locale),
         );
         scrollModeRef.current = "instant";
         setMessages(adapted);
@@ -531,7 +532,7 @@ export default function ChatPage() {
       if (msgRes.ok) {
         const data = await msgRes.json();
         const adapted = (data.messages as ApiMessage[]).map((m) =>
-          adaptApiMessage(m, currentUserId, tu, locale)
+          adaptApiMessage(m, currentUserId, tu, locale),
         );
         setMessages((prev) => {
           const lastPrev = prev[prev.length - 1];
@@ -609,7 +610,7 @@ export default function ChatPage() {
       if (!res.ok) return;
       const data = await res.json();
       const adapted = (data.messages as ApiMessage[]).map((m) =>
-        adaptApiMessage(m, currentUserId, tu, locale)
+        adaptApiMessage(m, currentUserId, tu, locale),
       );
       setMessages((prev) => [...adapted, ...prev]);
       setNextCursor(data.nextCursor);
@@ -873,7 +874,9 @@ export default function ChatPage() {
         const real: ApiMessage = await res.json();
         setMessages((prev) =>
           prev.map((m) =>
-            m.id === tempId ? adaptApiMessage(real, currentUserId, tu, locale) : m,
+            m.id === tempId
+              ? adaptApiMessage(real, currentUserId, tu, locale)
+              : m,
           ),
         );
         setConvList((prev) =>
@@ -1292,138 +1295,169 @@ export default function ChatPage() {
       currentConv && !currentConv.isGroup ? currentConv.otherUserId : null,
     );
 
+  const handleBackToList = () => {
+    isPreviewingPendingRef.current = false;
+    setCloseDrawerSignal((k) => k + 1);
+    setActiveId(null);
+    setMessages([]);
+    setNextCursor(null);
+    setInfoOpen(false);
+    setReplyingTo(null);
+    setPinNotices([]);
+    setHasNewMessage(false);
+  };
+
   return (
-    <div className="flex h-screen overflow-hidden">
-      <div className="w-[52px] shrink-0 bg-surface border-r border-surface-200 flex flex-col items-center py-3 gap-2 z-20">
-        <Link
-          href="/feed"
-          className="w-9 h-9 rounded-xl bg-surface-100 hover:bg-primary/10 flex items-center justify-center text-text-muted hover:text-primary transition-colors"
-          title={t("home")}
-        >
-          <Home size={16} />
-        </Link>
-        <div className="h-px w-6 bg-surface-200 my-1" />
-        <button
-          onClick={() => setNewConvOpen(true)}
-          disabled={isAdmin}
-          className={clsx(
-            "w-9 h-9 rounded-xl bg-surface-100 flex items-center justify-center text-text-muted transition-colors",
-            isAdmin
-              ? "opacity-40 cursor-not-allowed"
-              : "hover:bg-primary/10 hover:text-primary",
-          )}
-          title={t("newConversation")}
-        >
-          <Edit size={16} />
-        </button>
-        <PendingMessages
-          refreshKey={pendingRefreshKey}
-          closeDrawerSignal={closeDrawerSignal}
-          onMarkUnread={handleToggleReadStatus}
-          onUnarchived={(id) => {
-            fetchConversations();
-            if (activeIdRef.current === id) {
-              isPreviewingPendingRef.current = false;
-            }
-          }}
-          onOpen={(conv) => {
-            isPreviewingPendingRef.current = true;
-            setConvList((prev) => {
-              const patch = {
-                isPending: conv.kind === "pending",
-                isArchived: conv.kind === "archived",
-              };
-              if (prev.some((c) => c.id === conv.id)) {
-                return prev.map((c) =>
-                  c.id === conv.id ? { ...c, ...patch } : c,
-                );
+    <div className="flex h-dvh overflow-hidden">
+      <div
+        className={clsx(
+          "w-full min-h-0 flex-col md:w-auto md:flex-none md:flex-row",
+          currentConv ? "hidden md:flex" : "flex",
+        )}
+      >
+        <div className="shrink-0 z-20 flex items-center gap-2 px-3 bg-surface border-b border-surface-200 h-[calc(3.5rem+env(safe-area-inset-top,0px))] pt-[env(safe-area-inset-top,0px)] md:h-auto md:w-[52px] md:flex-col md:px-0 md:py-3 md:pt-3 md:border-b-0 md:border-r">
+          <Link
+            href="/feed"
+            className="w-9 h-9 rounded-xl bg-surface-100 hover:bg-primary/10 flex items-center justify-center text-text-muted hover:text-primary transition-colors"
+            title={t("home")}
+          >
+            <Home size={16} />
+          </Link>
+          <div className="w-px h-6 mx-1 bg-surface-200 md:h-px md:w-6 md:mx-0 md:my-1" />
+          <button
+            onClick={() => setNewConvOpen(true)}
+            disabled={isAdmin}
+            className={clsx(
+              "w-9 h-9 rounded-xl bg-surface-100 flex items-center justify-center text-text-muted transition-colors",
+              isAdmin
+                ? "opacity-40 cursor-not-allowed"
+                : "hover:bg-primary/10 hover:text-primary",
+            )}
+            title={t("newConversation")}
+          >
+            <Edit size={16} />
+          </button>
+          <PendingMessages
+            refreshKey={pendingRefreshKey}
+            closeDrawerSignal={closeDrawerSignal}
+            onMarkUnread={handleToggleReadStatus}
+            onUnarchived={(id) => {
+              fetchConversations();
+              if (activeIdRef.current === id) {
+                isPreviewingPendingRef.current = false;
               }
-              return [
-                ...prev,
-                {
-                  id: conv.id,
-                  name: conv.name,
-                  avatarUrl: conv.avatarUrl,
-                  isGroup: conv.isGroup,
-                  otherUsername: conv.otherUsername,
-                  otherUserId: conv.otherUserId,
-                  lastMessage: conv.lastMessage || "",
-                  lastMessageAt: conv.lastMessageAt,
-                  unreadCount: 0,
-                  ...patch,
-                },
-              ];
-            });
-            setActiveId(conv.id);
-            setInfoOpen(false);
-            setReplyingTo(null);
-            setPinNotices([]);
-            setHasNewMessage(false);
-          }}
-          onClose={() => {
-            if (isPreviewingPendingRef.current) {
-              isPreviewingPendingRef.current = false;
-              setActiveId(null);
-              setMessages([]);
-              setNextCursor(null);
+            }}
+            onOpen={(conv) => {
+              isPreviewingPendingRef.current = true;
+              setConvList((prev) => {
+                const patch = {
+                  isPending: conv.kind === "pending",
+                  isArchived: conv.kind === "archived",
+                };
+                if (prev.some((c) => c.id === conv.id)) {
+                  return prev.map((c) =>
+                    c.id === conv.id ? { ...c, ...patch } : c,
+                  );
+                }
+                return [
+                  ...prev,
+                  {
+                    id: conv.id,
+                    name: conv.name,
+                    avatarUrl: conv.avatarUrl,
+                    isGroup: conv.isGroup,
+                    otherUsername: conv.otherUsername,
+                    otherUserId: conv.otherUserId,
+                    lastMessage: conv.lastMessage || "",
+                    lastMessageAt: conv.lastMessageAt,
+                    unreadCount: 0,
+                    ...patch,
+                  },
+                ];
+              });
+              setActiveId(conv.id);
               setInfoOpen(false);
               setReplyingTo(null);
               setPinNotices([]);
               setHasNewMessage(false);
-            }
-          }}
-          onDeleted={(id) => {
-            setConvList((prev) => prev.filter((c) => c.id !== id));
-            if (activeIdRef.current === id) {
-              setActiveId(null);
-              setMessages([]);
-            }
-          }}
+            }}
+            onClose={() => {
+              if (isPreviewingPendingRef.current) {
+                isPreviewingPendingRef.current = false;
+                setActiveId(null);
+                setMessages([]);
+                setNextCursor(null);
+                setInfoOpen(false);
+                setReplyingTo(null);
+                setPinNotices([]);
+                setHasNewMessage(false);
+              }
+            }}
+            onDeleted={(id) => {
+              setConvList((prev) => prev.filter((c) => c.id !== id));
+              if (activeIdRef.current === id) {
+                setActiveId(null);
+                setMessages([]);
+              }
+            }}
+          />
+          <div className="flex-1" />
+          <AvatarMenu />
+        </div>
+
+        <ConversationList
+          conversations={filtered}
+          hiddenResults={hiddenResults}
+          searchingHidden={searchingHidden}
+          onSelectHidden={handleSelectHiddenConv}
+          activeId={activeId}
+          onSelect={handleSelectConv}
+          searchQuery={searchQuery}
+          onSearchChange={setSearchQuery}
+          activeFilter={activeFilter}
+          onFilterChange={setActiveFilter}
+          totalUnread={totalUnread}
+          loading={convLoading}
+          onMarkUnread={handleToggleReadStatus}
+          onBlock={handleBlockConv}
+          onArchive={requestArchiveConv}
+          onDelete={requestDeleteConv}
+          onReport={handleReportConv}
         />
-        <div className="flex-1" />
-        <AvatarMenu />
       </div>
 
-      <ConversationList
-        conversations={filtered}
-        hiddenResults={hiddenResults}
-        searchingHidden={searchingHidden}
-        onSelectHidden={handleSelectHiddenConv}
-        activeId={activeId}
-        onSelect={handleSelectConv}
-        searchQuery={searchQuery}
-        onSearchChange={setSearchQuery}
-        activeFilter={activeFilter}
-        onFilterChange={setActiveFilter}
-        totalUnread={totalUnread}
-        loading={convLoading}
-        onMarkUnread={handleToggleReadStatus}
-        onBlock={handleBlockConv}
-        onArchive={requestArchiveConv}
-        onDelete={requestDeleteConv}
-        onReport={handleReportConv}
-      />
-
-      <div className="flex-1 flex flex-col bg-surface min-w-0 relative">
+      <div
+        className={clsx(
+          "flex-1 flex-col bg-surface min-w-0 relative pb-[env(safe-area-inset-bottom)] md:pb-0",
+          currentConv ? "flex" : "hidden md:flex",
+        )}
+      >
         {!currentConv ? (
           <div className="flex-1 flex items-center justify-center text-text-muted text-sm">
             {convLoading ? tc("loading") : t("selectConversation")}
           </div>
         ) : (
           <>
-            <div className="flex items-center justify-between px-5 py-3 border-b border-surface-200 shrink-0">
-              <div className="flex items-center gap-3">
+            <div className="flex items-center justify-between gap-2 px-3 md:px-5 pt-[max(0.75rem,env(safe-area-inset-top))] md:pt-3 pb-3 border-b border-surface-200 shrink-0">
+              <div className="flex items-center gap-2 md:gap-3 min-w-0">
+                <button
+                  onClick={handleBackToList}
+                  className="md:hidden p-2 -ml-1 rounded-lg text-text-secondary hover:bg-surface-100"
+                  aria-label={tc("back")}
+                >
+                  <ChevronLeft size={20} />
+                </button>
                 <Avatar
                   src={currentConv.avatarUrl ?? undefined}
                   initials={getInitials(currentConv.name)}
                   size="md"
                   shape="circle"
                 />
-                <div>
-                  <p className="text-sm font-bold text-text-primary">
+                <div className="min-w-0">
+                  <p className="text-sm font-bold text-text-primary truncate">
                     {currentConv.name}
                   </p>
-                  <p className="text-xs text-text-muted">
+                  <p className="text-xs text-text-muted truncate">
                     {currentConv.isGroup
                       ? currentConv.totalMemberCount &&
                         currentConv.totalMemberCount !== currentConv.memberCount
@@ -1440,7 +1474,7 @@ export default function ChatPage() {
                   </p>
                 </div>
               </div>
-              <div className="flex items-center gap-0.5">
+              <div className="flex items-center gap-0.5 shrink-0">
                 <button
                   onClick={() => setInfoOpen((v) => !v)}
                   className={clsx(
@@ -1470,7 +1504,7 @@ export default function ChatPage() {
                 isAtBottomRef.current = atBottom;
                 if (atBottom) setHasNewMessage(false);
               }}
-              className="flex-1 overflow-y-auto px-5 py-5 flex flex-col gap-3 bg-surface-50"
+              className="flex-1 overflow-y-auto overscroll-contain px-3 py-3 md:px-5 md:py-5 flex flex-col gap-3 bg-surface-50"
             >
               {nextCursor && (
                 <button
@@ -1828,7 +1862,7 @@ export default function ChatPage() {
                   </div>
                 )}
 
-                <div className="px-4 py-3 border-t border-surface-200 bg-surface shrink-0">
+                <div className="px-3 py-3 md:px-4 border-t border-surface-200 bg-surface shrink-0">
                   <div className="flex items-center gap-2">
                     <button
                       onClick={() => docInputRef.current?.click()}
