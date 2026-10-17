@@ -2,27 +2,13 @@
 
 import { useState, useRef } from "react";
 import Link from "next/link";
-import {
-  User,
-  Settings,
-  HelpCircle,
-  LogOut,
-  ChevronRight,
-  Bell,
-  MessageSquare,
-  ArrowLeft,
-} from "lucide-react";
+import { User, Settings, HelpCircle, LogOut } from "lucide-react";
 import { clsx } from "clsx";
 import { useSession, signOut } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import { useOutsideClick } from "@/lib/chat/hooks";
-import { ToggleSwitch } from "@/components/ui/ToggleSwitch";
 import Avatar from "@/components/ui/Avatar";
 import { getColorForUser, getInitialsFromName } from "@/lib/chat/utils";
-import type { AvatarMenuPanel } from "@/lib/chat/types";
-import { useSyncedBoolean } from "@/lib/settings/hooks";
-import { useTheme } from "@/components/providers/ThemeProvider";
-import { useLanguage } from "@/components/providers/LanguageProvider";
 
 export function AvatarMenu() {
   const { data: session } = useSession();
@@ -31,45 +17,19 @@ export function AvatarMenu() {
   const avatarUrl = user?.image ?? null;
   const initials = getInitialsFromName(displayName);
   const color = getColorForUser(user?.id ?? "");
-  const {
-    value: showActivity,
-    loading: loadingActivity,
-    toggle: toggleActivity,
-  } = useSyncedBoolean({
-    key: "activityStatus",
-    apiPath: "/api/settings/activity-status",
-    field: "showActivityStatus",
-  });
-  const { resolvedTheme } = useTheme();
-  const { locale } = useLanguage();
   const t = useTranslations("chat.avatarMenu");
-  const tTheme = useTranslations("settings.theme");
-  const tLang = useTranslations("settings.language");
-
   const [open, setOpen] = useState(false);
-  const [panel, setPanel] = useState<AvatarMenuPanel>("main");
   const ref = useRef<HTMLDivElement>(null);
-  useOutsideClick(ref, () => {
-    setOpen(false);
-    setPanel("main");
-  });
-
-  const closeMenu = () => {
-    setOpen(false);
-    setPanel("main");
-  };
-
-  const currentThemeLabel =
-    resolvedTheme === "dark" ? tTheme("dark") : tTheme("light");
-  const currentLanguageLabel = locale === "en" ? tLang("en") : tLang("vi");
+  useOutsideClick(ref, () => setOpen(false));
+  const closeMenu = () => setOpen(false);
 
   return (
-    <div ref={ref} className="relative w-full flex flex-col items-center">
+    <div
+      ref={ref}
+      className="relative shrink-0 md:w-full flex flex-col items-center"
+    >
       <button
-        onClick={() => {
-          setOpen((v) => !v);
-          setPanel("main");
-        }}
+        onClick={() => setOpen((v) => !v)}
         className={clsx(
           "rounded-full transition-all",
           open
@@ -87,8 +47,8 @@ export function AvatarMenu() {
       </button>
 
       {open && (
-        <div className="absolute left-full bottom-0 ml-2 w-64 bg-surface rounded-2xl shadow-xl border border-surface-200 overflow-hidden z-50">
-          {panel === "main" && (
+        <div className="absolute right-0 top-full mt-2 w-64 md:left-full md:right-auto md:top-auto md:bottom-0 md:mt-0 md:ml-2 bg-surface rounded-2xl shadow-xl border border-surface-200 overflow-hidden z-50">
+          {
             <>
               <div className="px-4 py-3.5 border-b border-surface-100 flex items-center gap-3">
                 <Avatar
@@ -117,19 +77,23 @@ export function AvatarMenu() {
                   <User size={14} className="text-text-muted shrink-0" />
                   {t("profile")}
                 </Link>
-                <button
-                  onClick={() => setPanel("settings")}
+                <Link
+                  href="/settings"
+                  onClick={closeMenu}
                   className="w-full flex items-center gap-2.5 px-4 py-2.5 text-xs text-text-primary hover:bg-surface-50 transition-colors"
                 >
                   <Settings size={14} className="text-text-muted shrink-0" />
                   {t("settings")}
-                  <ChevronRight size={12} className="text-text-muted ml-auto" />
-                </button>
+                </Link>
 
-                <button className="w-full flex items-center gap-2.5 px-4 py-2.5 text-xs text-text-primary hover:bg-surface-50 transition-colors">
+                <Link
+                  href="/support"
+                  onClick={closeMenu}
+                  className="w-full flex items-center gap-2.5 px-4 py-2.5 text-xs text-text-primary hover:bg-surface-50 transition-colors"
+                >
                   <HelpCircle size={14} className="text-text-muted shrink-0" />
                   {t("help")}
-                </button>
+                </Link>
               </div>
 
               <div className="border-t border-surface-100 py-1">
@@ -142,116 +106,7 @@ export function AvatarMenu() {
                 </button>
               </div>
             </>
-          )}
-          {panel === "settings" && (
-            <>
-              <div className="flex items-center gap-2 px-4 py-3.5 border-b border-surface-100">
-                <button
-                  onClick={() => setPanel("main")}
-                  className="p-1 hover:bg-surface-100 rounded-lg transition-colors text-text-muted"
-                >
-                  <ArrowLeft size={14} />
-                </button>
-                <p className="text-sm font-bold text-text-primary">
-                  {t("settings")}
-                </p>
-              </div>
-              <div className="py-2">
-                <div className="flex items-center gap-3 px-4 py-3 hover:bg-surface-50 transition-colors">
-                  <div className="w-8 h-8 rounded-xl bg-green-50 dark:bg-green-500/15 flex items-center justify-center shrink-0">
-                    <span className="w-2 h-2 rounded-full bg-green-500" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-xs font-semibold text-text-primary">
-                      {t("activityStatus")}
-                    </p>
-                    <p className="text-[10px] text-text-muted">
-                      {t("activityStatusDesc")}
-                    </p>
-                  </div>
-                  <ToggleSwitch
-                    checked={showActivity}
-                    disabled={loadingActivity}
-                    onChange={() => {
-                      toggleActivity().catch(() => {});
-                    }}
-                  />
-                </div>
-                <div className="h-px bg-surface-100 my-1 mx-4" />
-                {[
-                  {
-                    label: t("pushNotif"),
-                    desc: t("pushNotifDesc"),
-                    icon: <Bell size={13} className="text-primary" />,
-                    val: true,
-                  },
-                  {
-                    label: t("sound"),
-                    desc: t("soundDesc"),
-                    icon: (
-                      <Bell
-                        size={13}
-                        className="text-amber-500 dark:text-amber-400"
-                      />
-                    ),
-                    val: true,
-                  },
-                  {
-                    label: t("messagePreview"),
-                    desc: t("messagePreviewDesc"),
-                    icon: (
-                      <MessageSquare
-                        size={13}
-                        className="text-teal-500 dark:text-teal-400"
-                      />
-                    ),
-                    val: false,
-                  },
-                ].map((item, i) => (
-                  <div
-                    key={i}
-                    className="flex items-center gap-3 px-4 py-3 hover:bg-surface-50 transition-colors"
-                  >
-                    <div className="w-8 h-8 rounded-xl bg-surface-100 flex items-center justify-center shrink-0">
-                      {item.icon}
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-xs font-semibold text-text-primary">
-                        {item.label}
-                      </p>
-                      <p className="text-[10px] text-text-muted">{item.desc}</p>
-                    </div>
-                    <ToggleSwitch checked={item.val} onChange={() => {}} />
-                  </div>
-                ))}
-                <div className="h-px bg-surface-100 my-1 mx-4" />
-                {[
-                  { label: t("language"), value: currentLanguageLabel },
-                  { label: t("theme"), value: currentThemeLabel },
-                ].map((item, i) => (
-                  <div
-                    key={i}
-                    className="flex items-center gap-3 px-4 py-3 hover:bg-surface-50 transition-colors cursor-pointer"
-                  >
-                    <div className="w-8 h-8 rounded-xl bg-surface-100 flex items-center justify-center shrink-0">
-                      <Settings size={13} className="text-text-muted" />
-                    </div>
-                    <div className="flex-1">
-                      <p className="text-xs font-semibold text-text-primary">
-                        {item.label}
-                      </p>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <span className="text-[10px] text-text-muted">
-                        {item.value}
-                      </span>
-                      <ChevronRight size={12} className="text-text-muted" />
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </>
-          )}
+          }
         </div>
       )}
     </div>
