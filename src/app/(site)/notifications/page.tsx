@@ -110,9 +110,9 @@ export default function NotificationsPage() {
   });
 
   return (
-    <div className="max-w-2xl mx-auto px-4 py-6 pb-12">
+    <div className="max-w-2xl mx-auto py-4 sm:py-6 pb-6">
       <div className="space-y-3">
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between gap-3">
           <div>
             <h1 className="text-xl font-bold tracking-tight text-text-primary">
               {t("title")}
@@ -122,14 +122,14 @@ export default function NotificationsPage() {
           <button
             onClick={markAllRead}
             disabled={totalUnread === 0}
-            className="flex items-center gap-1.5 text-xs font-semibold text-blue-500 dark:text-blue-400 bg-blue-50 dark:bg-blue-500/15 hover:bg-blue-100 dark:hover:bg-blue-500/25 px-3 py-2 rounded-xl disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+            className="flex items-center gap-1.5 text-xs font-semibold text-blue-500 dark:text-blue-400 bg-blue-50 dark:bg-blue-500/15 hover:bg-blue-100 dark:hover:bg-blue-500/25 px-3 py-2 rounded-xl disabled:opacity-40 disabled:cursor-not-allowed transition-colors shrink-0 whitespace-nowrap"
           >
             <CheckCheck size={13} />
             {t("markAllRead")}
           </button>
         </div>
 
-        <div className="flex items-center gap-1 bg-surface rounded-xl border border-surface-200 p-1 overflow-x-auto">
+        <div className="flex items-center gap-1 bg-surface rounded-xl border border-surface-200 p-1 overflow-x-auto scrollbar-hide">
           {tabs.map((tab) => (
             <button
               key={tab.id}
@@ -176,7 +176,7 @@ export default function NotificationsPage() {
                 <div className="flex justify-center p-3">
                   <button
                     onClick={loadMore}
-                    className="px-5 py-2 text-sm font-semibold text-blue-500 dark:text-blue-400 border border-blue-200 rounded-xl hover:bg-blue-50 dark:hover:bg-blue-500/20 transition-colors"
+                    className="px-5 py-2 text-sm font-semibold text-blue-500 dark:text-blue-400 border border-blue-200 dark:border-blue-500/30 rounded-xl hover:bg-blue-50 dark:hover:bg-blue-500/20 transition-colors"
                   >
                     {t("loadMore")}
                   </button>

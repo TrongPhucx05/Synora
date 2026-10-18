@@ -46,7 +46,7 @@ interface ToastState {
 function Toast({ toast }: { toast: ToastState | null }) {
   if (!toast) return null;
   return (
-    <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[80] flex items-center gap-2 bg-text-primary text-white text-xs font-medium px-4 py-2.5 rounded-full shadow-lg animate-in fade-in slide-in-from-bottom-2 duration-200 pointer-events-none">
+    <div className="fixed bottom-24 md:bottom-6 left-1/2 -translate-x-1/2 z-[80] flex items-center gap-2 bg-text-primary text-surface text-xs font-medium px-4 py-2.5 rounded-full shadow-lg animate-in fade-in slide-in-from-bottom-2 duration-200 pointer-events-none max-w-[calc(100vw-2rem)]">
       {toast.type === "delete" ? <Trash2 size={13} /> : <UserCheck size={13} />}
       {toast.msg}
     </div>
@@ -74,7 +74,7 @@ function ConfirmDialog({
       className="fixed inset-0 z-[90] flex items-center justify-center bg-black/40 dark:bg-black/25 backdrop-blur-sm p-4"
       onClick={(e) => e.target === e.currentTarget && onCancel()}
     >
-      <div className="bg-surface rounded-2xl shadow-xl p-6 w-80 mx-4 animate-in fade-in zoom-in-95 duration-150">
+      <div className="bg-surface rounded-2xl shadow-xl p-6 w-full max-w-xs animate-in fade-in zoom-in-95 duration-150">
         <div className="flex items-center justify-center w-11 h-11 rounded-full bg-red-100 dark:bg-red-500/20 mx-auto mb-4">
           {icon}
         </div>
@@ -106,7 +106,7 @@ function ConfirmDialog({
 function EmptyState({ message }: { message: string }) {
   const t = useTranslations("friendsPage.empty");
   return (
-    <div className="col-span-2 flex flex-col items-center justify-center py-16 text-center">
+    <div className="col-span-full flex flex-col items-center justify-center py-16 text-center">
       <div className="w-14 h-14 rounded-2xl bg-surface-100 flex items-center justify-center mb-3">
         <Users size={22} className="text-text-muted" />
       </div>
@@ -318,7 +318,7 @@ export default function FriendsPage() {
   const showHiddenState = hidden && !isOwner;
 
   return (
-    <div className="min-h-screen bg-surface-50">
+    <div className="min-h-[calc(100dvh-3.5rem)] bg-surface-50">
       <Toast toast={toast} />
 
       {confirm?.type === "unfriend" && (
@@ -354,7 +354,7 @@ export default function FriendsPage() {
         />
       )}
 
-      <div className="max-w-[900px] mx-auto px-4 py-8">
+      <div className="max-w-[900px] mx-auto px-4 py-5 sm:py-8">
         <div className="mb-6 flex items-center gap-3">
           <NextLink
             href={`/profile/${username}`}
@@ -377,13 +377,13 @@ export default function FriendsPage() {
             </div>
           ) : (
             <>
-              <div className="flex border-b border-surface-100 px-2 pt-2">
+              <div className="flex border-b border-surface-100 px-2 pt-2 overflow-x-auto scrollbar-hide">
                 {tabs.map((tabItem) => (
                   <button
                     key={tabItem.key}
                     onClick={() => setTab(tabItem.key)}
                     className={clsx(
-                      "px-4 py-2.5 text-xs font-medium transition-colors border-b-2 -mb-px rounded-t-lg",
+                      "px-4 py-2.5 text-xs font-medium transition-colors border-b-2 -mb-px rounded-t-lg whitespace-nowrap shrink-0",
                       tab === tabItem.key
                         ? "border-primary text-primary bg-primary/5"
                         : "border-transparent text-text-muted hover:text-text-primary hover:bg-surface-50",
@@ -408,7 +408,7 @@ export default function FriendsPage() {
 
               <div className="p-4">
                 {loading ? (
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     {[1, 2, 3, 4].map((i) => (
                       <div
                         key={i}
@@ -417,7 +417,7 @@ export default function FriendsPage() {
                     ))}
                   </div>
                 ) : isEmpty ? (
-                  <div className="grid grid-cols-2">
+                  <div className="grid grid-cols-1 sm:grid-cols-2">
                     <EmptyState
                       message={
                         tab === "all"
@@ -429,7 +429,7 @@ export default function FriendsPage() {
                     />
                   </div>
                 ) : (
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     {tab === "all" &&
                       friends.map((f) => (
                         <div
