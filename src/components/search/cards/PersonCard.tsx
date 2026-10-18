@@ -128,13 +128,13 @@ export function PersonCard({ r }: { r: SearchResult }) {
     <>
       <Link
         href={r.href}
-        className="group flex items-center gap-3 p-4 rounded-xl hover:bg-surface-50 border border-transparent hover:border-surface-200 transition-all"
+        className="group flex flex-wrap sm:flex-nowrap items-center gap-3 p-4 rounded-xl hover:bg-surface-50 border border-transparent hover:border-surface-200 transition-all"
       >
         {r.avatarUrl ? (
           <img
             src={r.avatarUrl}
             alt={r.title}
-            className="w-11 h-11 rounded-full object-cover shrink-0 border-2 border-white shadow-sm"
+            className="w-11 h-11 rounded-full object-cover shrink-0 border-2 border-surface shadow-sm"
           />
         ) : (
           <div
@@ -161,7 +161,7 @@ export function PersonCard({ r }: { r: SearchResult }) {
             e.preventDefault();
             e.stopPropagation();
           }}
-          className="shrink-0"
+          className="shrink-0 w-full sm:w-auto pl-14 sm:pl-0"
         >
           {status === "friends" ? (
             <div className="flex items-center gap-1.5">

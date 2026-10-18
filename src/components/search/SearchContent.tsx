@@ -222,7 +222,7 @@
   }) {
     if (topics.length === 0) return null;
     return (
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         {topics.map((t) => {
           const name = t.title.replace(/^#/, "");
           return (
@@ -288,7 +288,7 @@
         <p className="text-xs text-text-secondary mb-3">
           {t("trending.count", { count: tags.length })}
         </p>
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           {tags.map((tg, i) => (
             <button
               key={tg.name}
@@ -430,7 +430,7 @@
     const showResultBar = rawQuery && !loading && countsReady && !selectedTopic;
 
     return (
-      <div className="min-h-screen bg-surface-50">
+      <div className="min-h-[calc(100dvh-3.5rem)] bg-surface-50">
         <SearchTabs
           activeTab={activeTab}
           tabCounts={counts}
@@ -439,7 +439,7 @@
           onSortChange={handleSortChange}
         />
 
-        <div className="max-w-6xl mx-auto px-6 py-6 flex gap-6">
+        <div className="max-w-6xl mx-auto px-3 sm:px-6 py-4 sm:py-6 flex gap-6">
           <div className="flex-1 min-w-0">
             {showResultBar && (
               <p className="text-sm text-text-secondary mb-4">

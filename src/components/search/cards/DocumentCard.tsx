@@ -34,7 +34,7 @@ export function DocumentCard({ r }: { r: SearchResult }) {
           </div>
         )}
         {r.stats && r.stats.length > 0 && (
-          <div className="flex items-center gap-4 mt-2">
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mt-2">
             {downloads && (
               <span className="flex items-center gap-1 text-[11px] text-text-muted">
                 <Download size={11} /> {downloads.value} {downloads.label}

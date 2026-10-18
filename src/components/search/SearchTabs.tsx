@@ -52,14 +52,14 @@ export function SearchTabs({
 
   return (
     <div className="sticky top-14 z-20 bg-surface border-b border-surface-200">
-      <div className="max-w-6xl mx-auto px-6">
+      <div className="max-w-6xl mx-auto px-2 sm:px-6">
         <div className="flex items-center justify-between">
           <div className="flex items-center overflow-x-auto scrollbar-hide">
             {TAB_CONFIG.map((tab) => (
               <button
                 key={tab.key}
                 onClick={() => onTabChange(tab.key)}
-                className={`flex items-center gap-1.5 px-4 py-3.5 text-xs font-semibold whitespace-nowrap border-b-2 transition-all ${
+                className={`flex items-center gap-1.5 px-3 sm:px-4 py-3.5 text-xs font-semibold whitespace-nowrap border-b-2 transition-all ${
                   activeTab === tab.key
                     ? "border-primary text-primary"
                     : "border-transparent text-text-secondary hover:text-text-primary"
@@ -83,7 +83,7 @@ export function SearchTabs({
           </div>
 
           <div
-            className="shrink-0 pl-4 ml-2 border-l border-surface-100"
+            className="shrink-0 pl-2 sm:pl-4 ml-1 sm:ml-2 border-l border-surface-100"
             ref={dropdownRef}
           >
             <div className="relative">
