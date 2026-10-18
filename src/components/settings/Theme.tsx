@@ -21,9 +21,9 @@ export function AppearanceSection() {
     { value: "system", label: t("theme.system"), icon: Monitor },
   ];
 
-  const languageOptions: { value: Locale; label: string; flag: string }[] = [
-    { value: "vi", label: t("language.vi"), flag: "🇻🇳" },
-    { value: "en", label: t("language.en"), flag: "🇬🇧" },
+  const languageOptions: { value: Locale; label: string; code: string }[] = [
+    { value: "vi", label: t("language.vi"), code: "VI" },
+    { value: "en", label: t("language.en"), code: "EN" },
   ];
 
   return (
@@ -32,7 +32,7 @@ export function AppearanceSection() {
         title={t("theme.title")}
         description={t("theme.description")}
       >
-        <div className="grid grid-cols-3 gap-3">
+        <div className="grid grid-cols-3 gap-2 sm:gap-3">
           {themeOptions.map((opt) => {
             const Icon = opt.icon;
             const isActive = theme === opt.value;
@@ -46,7 +46,7 @@ export function AppearanceSection() {
                   );
                 }}
                 className={clsx(
-                  "relative flex flex-col items-center gap-2 px-3 py-4 rounded-xl border transition-colors disabled:opacity-50",
+                  "relative flex flex-col items-center gap-2 px-2 sm:px-3 py-4 rounded-xl border transition-colors disabled:opacity-50",
                   isActive
                     ? "border-primary bg-primary/5"
                     : "border-surface-200 hover:bg-surface-50",
@@ -69,7 +69,7 @@ export function AppearanceSection() {
                 </div>
                 <p
                   className={clsx(
-                    "text-xs font-semibold",
+                    "text-xs font-semibold text-center",
                     isActive ? "text-primary" : "text-text-secondary",
                   )}
                 >
@@ -103,7 +103,14 @@ export function AppearanceSection() {
               )}
             >
               <div className="flex items-center gap-2.5">
-                <span className="text-lg">{opt.flag}</span>
+                <span
+                  className={clsx(
+                    "w-8 text-xs font-bold",
+                    locale === opt.value ? "text-primary" : "text-text-muted",
+                  )}
+                >
+                  {opt.code}
+                </span>
                 <p className="text-sm font-medium text-text-primary">
                   {opt.label}
                 </p>

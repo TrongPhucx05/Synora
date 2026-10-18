@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { X, Search, MoreVertical, User, Ban, Flag } from "lucide-react";
 import { useOutsideClickRefs } from "@/lib/chat/hooks";
+import { useLockBodyScroll } from "@/lib/useLockBodyScroll";
 import Avatar from "@/components/ui/Avatar";
 
 export type BlockedUser = {
@@ -108,6 +109,7 @@ export function BlockedUsersModal({
   onReport: (id: string) => void;
 }) {
   const t = useTranslations("settings.blockModal");
+  useLockBodyScroll();
   const [query, setQuery] = useState("");
   const [menuOpenId, setMenuOpenId] = useState<string | null>(null);
   const buttonRefs = useRef<Record<string, HTMLButtonElement | null>>({});
@@ -126,7 +128,7 @@ export function BlockedUsersModal({
       className="fixed inset-0 z-[90] flex items-center justify-center bg-black/40 dark:bg-black/25 backdrop-blur-sm p-4"
       onClick={(e) => e.target === e.currentTarget && onClose()}
     >
-      <div className="bg-surface rounded-2xl shadow-xl w-full max-w-md max-h-[80vh] flex flex-col animate-in fade-in zoom-in-95 duration-150">
+      <div className="bg-surface rounded-2xl shadow-xl w-full max-w-md max-h-[85dvh] flex flex-col animate-in fade-in zoom-in-95 duration-150">
         <div className="flex items-center justify-between px-5 py-4 border-b border-surface-100 shrink-0">
           <div>
             <h3 className="text-sm font-bold text-text-primary">

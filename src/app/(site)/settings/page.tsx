@@ -21,7 +21,7 @@ export default function SettingsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-surface-50">
+    <div className="min-h-[calc(100dvh-3.5rem)] bg-surface-50">
       <div className="max-w-5xl mx-auto px-4 py-6">
         <div className="flex items-center gap-3 mb-6">
           <Link
@@ -34,7 +34,7 @@ export default function SettingsPage() {
         </div>
 
         <div className="flex flex-col md:flex-row gap-6 items-start">
-          <aside className="w-full md:w-72 shrink-0 bg-surface border border-surface-200 rounded-2xl p-3 md:sticky md:top-6">
+          <aside className="w-full md:w-72 shrink-0 bg-surface border border-surface-200 rounded-2xl p-3 md:sticky md:top-20">
             <SettingsSidebar active={activeTab} onSelect={setActiveTab} />
           </aside>
 

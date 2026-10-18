@@ -15,6 +15,7 @@ import {
 import { SettingsCard } from "./SettingsCard";
 import { useToast } from "@/components/ui/Toast";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
+import { isValidEmail } from "@/lib/email/validate";
 
 const DELETION_GRACE_DAYS = 7;
 
@@ -66,6 +67,10 @@ export function AccountSection() {
     if (!trimmed || trimmed === currentEmail) {
       setEditingEmail(false);
       setNewEmail(currentEmail);
+      return;
+    }
+    if (!isValidEmail(trimmed)) {
+      showToast(t("email.invalid"), "error");
       return;
     }
     setSavingEmail(true);
@@ -295,12 +300,12 @@ export function AccountSection() {
       >
         {deletionRequest ? (
           <>
-            <div className="flex items-start gap-3 bg-amber-50 dark:bg-amber-500/15 border border-amber-100 rounded-xl p-3.5">
+            <div className="flex items-start gap-3 bg-amber-50 dark:bg-amber-500/15 border border-amber-100 dark:border-amber-500/20 rounded-xl p-3.5">
               <Clock
                 size={16}
                 className="text-amber-500 dark:text-amber-400 shrink-0 mt-0.5"
               />
-              <p className="text-xs text-amber-700 leading-relaxed">
+              <p className="text-xs text-amber-700 dark:text-amber-300 leading-relaxed">
                 {t.rich("deletion.pendingNotice", {
                   date: formatScheduledDate(
                     deletionRequest.requestedAt,
@@ -325,7 +330,7 @@ export function AccountSection() {
           </>
         ) : (
           <>
-            <div className="flex items-start gap-3 bg-red-50 dark:bg-red-500/15 border border-red-100 rounded-xl p-3.5">
+            <div className="flex items-start gap-3 bg-red-50 dark:bg-red-500/15 border border-red-100 dark:border-red-500/20 rounded-xl p-3.5">
               <AlertTriangle
                 size={16}
                 className="text-red-500 dark:text-red-400 shrink-0 mt-0.5"
