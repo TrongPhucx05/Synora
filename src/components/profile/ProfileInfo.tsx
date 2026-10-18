@@ -25,20 +25,27 @@ export function ProfileInfo({
   const locale = useLocale();
 
   const joinDate = joinedAt
-    ? new Date(joinedAt).toLocaleDateString(locale === "en" ? "en-US" : "vi-VN", {
-        month: "long",
-        year: "numeric",
-      })
+    ? new Date(joinedAt).toLocaleDateString(
+        locale === "en" ? "en-US" : "vi-VN",
+        {
+          month: "long",
+          year: "numeric",
+        },
+      )
     : null;
 
   return (
     <div className="px-1 mb-4">
       <div className="flex items-center gap-2 mb-0.5">
-        <h1 className="text-lg font-bold text-text-primary">{displayName}</h1>
+        <h1 className="text-lg font-bold text-text-primary break-words min-w-0">
+          {displayName}
+        </h1>
       </div>
       <p className="text-xs text-text-muted mb-2">@{username}</p>
       {bio && (
-        <p className="text-sm text-text-primary max-w-[540px] leading-relaxed mb-3">{bio}</p>
+        <p className="text-sm text-text-primary max-w-[540px] leading-relaxed mb-3">
+          {bio}
+        </p>
       )}
       <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-text-muted">
         {school && (
@@ -64,7 +71,7 @@ export function ProfileInfo({
             href={website.startsWith("http") ? website : `https://${website}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-1.5 text-primary hover:underline"
+            className="flex items-center gap-1.5 text-primary hover:underline max-w-full break-all"
           >
             <Globe size={12} />
             {website}

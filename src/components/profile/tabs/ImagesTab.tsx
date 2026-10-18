@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
+import { useLockBodyScroll } from "@/lib/useLockBodyScroll";
 import { clsx } from "clsx";
 import { X, ChevronLeft, ChevronRight } from "lucide-react";
 import { useTranslations } from "next-intl";
@@ -22,6 +23,8 @@ function ImageLightbox({
   initialIndex: number;
   onClose: () => void;
 }) {
+  useLockBodyScroll();
+  const touchStartX = useRef<number | null>(null);
   const [index, setIndex] = useState(initialIndex);
 
   const prev = () => setIndex((i) => (i > 0 ? i - 1 : images.length - 1));
@@ -46,7 +49,7 @@ function ImageLightbox({
     >
       <button
         onClick={onClose}
-        className="absolute top-4 left-4 w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition z-10"
+        className="absolute top-[max(1rem,env(safe-area-inset-top))] left-4 w-10 h-10 sm:w-9 sm:h-9 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition z-10"
       >
         <X size={16} />
       </button>
@@ -57,15 +60,27 @@ function ImageLightbox({
             e.stopPropagation();
             prev();
           }}
-          className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition"
+          className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 hidden sm:flex items-center justify-center text-white transition"
         >
           <ChevronLeft size={20} />
         </button>
       )}
 
       <div
-        className="w-full h-full flex items-center justify-center px-16"
+        className="w-full h-full flex items-center justify-center px-2 sm:px-16"
         onClick={(e) => e.stopPropagation()}
+        onTouchStart={(e) => {
+          touchStartX.current = e.touches[0].clientX;
+        }}
+        onTouchEnd={(e) => {
+          if (touchStartX.current === null || images.length < 2) return;
+          const dx = e.changedTouches[0].clientX - touchStartX.current;
+          touchStartX.current = null;
+          if (Math.abs(dx) > 50) {
+            if (dx > 0) prev();
+            else next();
+          }
+        }}
       >
         {current.type === "VIDEO" ? (
           <video
@@ -91,11 +106,11 @@ function ImageLightbox({
               e.stopPropagation();
               next();
             }}
-            className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition"
+            className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 hidden sm:flex items-center justify-center text-white transition"
           >
             <ChevronRight size={20} />
           </button>
-          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-1.5">
+          <div className="absolute bottom-[max(1rem,env(safe-area-inset-bottom))] left-1/2 -translate-x-1/2 flex gap-1.5">
             {images.map((_, i) => (
               <button
                 key={i}

@@ -15,14 +15,16 @@ export function ProfileTabs({ activeTab, onChange }: ProfileTabsProps) {
 
   return (
     <div className="bg-surface border border-surface-200 rounded-2xl mb-3 px-1">
-      <div className="flex">
+      <div className="flex overflow-x-auto scrollbar-hide">
         {PROFILE_TABS.map((tab) => (
           <button
             key={tab}
             onClick={() => onChange(tab)}
             className={clsx(
-              "flex-1 py-3 text-xs font-medium transition-colors relative",
-              activeTab === tab ? "text-primary" : "text-text-muted hover:text-text-primary"
+              "flex-1 whitespace-nowrap px-3 py-3 text-xs font-medium transition-colors relative",
+              activeTab === tab
+                ? "text-primary"
+                : "text-text-muted hover:text-text-primary",
             )}
           >
             {t(tab)}

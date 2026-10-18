@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
@@ -129,7 +129,7 @@ export function ProfileHeader({
     .toUpperCase();
 
   return (
-    <div className="relative mb-16">
+    <div className="relative mb-4 sm:mb-16">
       <div className="h-40 rounded-2xl overflow-hidden relative bg-surface-200">
         {coverUrl ? (
           <img
@@ -150,16 +150,16 @@ export function ProfileHeader({
         )}
       </div>
 
-      <div className="absolute -bottom-12">
+      <div className="absolute top-28">
         <div className="relative">
           {avatarUrl ? (
             <img
               src={avatarUrl}
               alt={displayName}
-              className="w-24 h-24 rounded-full border-4 border-white object-cover shadow-md"
+              className="w-24 h-24 rounded-full border-4 border-surface object-cover shadow-md"
             />
           ) : (
-            <div className="w-24 h-24 rounded-full bg-primary border-4 border-white flex items-center justify-center text-white text-2xl font-bold shadow-md">
+            <div className="w-24 h-24 rounded-full bg-primary border-4 border-surface flex items-center justify-center text-white text-2xl font-bold shadow-md">
               {ini}
             </div>
           )}
@@ -174,9 +174,9 @@ export function ProfileHeader({
         </div>
       </div>
 
-      <div className="absolute -bottom-10 right-0 flex items-center gap-2">
+      <div className="flex flex-wrap items-center justify-end gap-2 mt-2 pl-28 min-h-10 sm:min-h-0 sm:mt-0 sm:pl-0 sm:flex-nowrap sm:absolute sm:-bottom-10 sm:right-0">
         {!isAdmin && (
-          <button className="flex items-center gap-1.5 border border-surface-200 bg-surface text-text-secondary text-xs font-medium px-3 py-1.5 rounded-lg hover:bg-surface-50 transition-colors">
+          <button className="hidden sm:flex items-center gap-1.5 border border-surface-200 bg-surface text-text-secondary text-xs font-medium px-3 py-1.5 rounded-lg hover:bg-surface-50 transition-colors">
             <Share2 size={13} /> {t("share")}
           </button>
         )}
@@ -228,13 +228,17 @@ export function ProfileHeader({
                         onClick={() => handleRequestAction("accept")}
                         className="w-full flex items-center gap-2 px-3 py-2.5 text-xs font-medium text-text-primary hover:bg-surface-50 transition-colors"
                       >
-                        <UserCheck size={13} className="text-primary" /> {t("accept")}
+                        <UserCheck size={13} className="text-primary" />{" "}
+                        {t("accept")}
                       </button>
                       <button
                         onClick={() => handleRequestAction("reject")}
                         className="w-full flex items-center gap-2 px-3 py-2.5 text-xs font-medium text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/20 transition-colors"
                       >
-                        <span className="text-red-500 dark:text-red-400">✕</span> {t("decline")}
+                        <span className="text-red-500 dark:text-red-400">
+                          âœ•
+                        </span>{" "}
+                        {t("decline")}
                       </button>
                     </div>
                   )}

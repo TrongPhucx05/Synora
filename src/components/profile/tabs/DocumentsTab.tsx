@@ -179,7 +179,7 @@ function DocCard({
                 <div ref={menuRef} className="relative shrink-0">
                   <button
                     onClick={() => setMenuOpen((p) => !p)}
-                    className="p-0.5 rounded text-text-muted hover:text-text-primary hover:bg-surface-100 transition-colors"
+                    className="p-0.5 touch:p-1.5 rounded text-text-muted hover:text-text-primary hover:bg-surface-100 transition-colors"
                   >
                     <MoreHorizontal size={13} />
                   </button>
@@ -337,7 +337,7 @@ function MyDocsTab({
 
   return (
     <>
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         {docs.map((doc) => (
           <DocCard
             key={doc.id}
@@ -404,7 +404,7 @@ function SavedDocsTab({
 
   return (
     <>
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         {docs.map((doc) => (
           <DocCard
             key={doc.id}
@@ -431,7 +431,7 @@ function SavedDocsTab({
 
 function LoadingSkeleton() {
   return (
-    <div className="grid grid-cols-2 gap-3">
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
       {[1, 2, 3, 4].map((i) => (
         <div
           key={i}

@@ -22,7 +22,7 @@ export function ProfileStats({ stats }: ProfileStatsProps) {
   ];
 
   return (
-    <div className="flex items-center gap-5 px-1 mb-5 border-b border-surface-100 pb-4">
+    <div className="flex flex-wrap items-center gap-x-5 gap-y-1 px-1 mb-5 border-b border-surface-100 pb-4">
       {LABELS.map(({ key, label }) => (
         <button
           key={key}

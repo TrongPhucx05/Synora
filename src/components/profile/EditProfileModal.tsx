@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, useRef } from "react";
 import {
@@ -15,6 +15,7 @@ import {
 import { useUploadThing } from "@/lib/uploadthing";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
+import { useLockBodyScroll } from "@/lib/useLockBodyScroll";
 
 interface EditProfileModalProps {
   username: string;
@@ -38,6 +39,7 @@ export function EditProfileModal({
   onClose,
   onSaved,
 }: EditProfileModalProps) {
+  useLockBodyScroll();
   const { update } = useSession();
 
   const [displayName, setDisplayName] = useState(initial.displayName ?? "");
@@ -122,7 +124,7 @@ export function EditProfileModal({
         }),
       });
 
-      if (!res.ok) throw new Error("Lưu thất bại");
+      if (!res.ok) throw new Error("LÆ°u tháº¥t báº¡i");
 
       await update({
         name: displayName.trim() || initial.displayName,
@@ -148,7 +150,7 @@ export function EditProfileModal({
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 dark:bg-black/35 backdrop-blur-sm p-4"
       onClick={(e) => e.target === e.currentTarget && onClose()}
     >
-      <div className="bg-surface rounded-2xl shadow-2xl w-full max-w-lg flex flex-col overflow-hidden max-h-[90vh]">
+      <div className="bg-surface rounded-2xl shadow-2xl w-full max-w-lg flex flex-col overflow-hidden max-h-[90dvh]">
         <div className="flex items-center justify-between px-5 py-4 border-b border-surface-100 shrink-0">
           <h2 className="text-sm font-bold text-text-primary">
             {t("title")}
@@ -162,7 +164,7 @@ export function EditProfileModal({
         </div>
 
         <div className="overflow-y-auto flex-1">
-          <div className="relative h-28 bg-surface-100 shrink-0">
+          <div className="relative h-24 sm:h-32 bg-surface-100 shrink-0">
             {displayCover ? (
               <img
                 src={displayCover}
@@ -173,7 +175,7 @@ export function EditProfileModal({
               <div className="w-full h-full bg-[repeating-linear-gradient(45deg,#e2e5ec,#e2e5ec_10px,#eaecf2_10px,#eaecf2_20px)]" />
             )}
             <label className="absolute inset-0 flex items-center justify-center bg-black/20 hover:bg-black/30 transition-colors cursor-pointer group">
-              <div className="flex items-center gap-1.5 bg-black/40 dark:bg-black/25 text-white text-xs font-medium px-3 py-1.5 rounded-full backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity">
+              <div className="flex items-center gap-1.5 bg-black/40 dark:bg-black/25 text-white text-xs font-medium px-3 py-1.5 rounded-full backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity touch:opacity-100">
                 <Camera size={12} /> {t("changeCover")}
               </div>
               <input
@@ -191,14 +193,14 @@ export function EditProfileModal({
                   <img
                     src={displayAvatar}
                     alt="avatar"
-                    className="w-20 h-20 rounded-full border-4 border-white object-cover shadow-md"
+                    className="w-20 h-20 rounded-full border-4 border-surface object-cover shadow-md"
                   />
                 ) : (
-                  <div className="w-20 h-20 rounded-full bg-primary border-4 border-white flex items-center justify-center text-white text-xl font-bold shadow-md">
+                  <div className="w-20 h-20 rounded-full bg-primary border-4 border-surface flex items-center justify-center text-white text-xl font-bold shadow-md">
                     {ini}
                   </div>
                 )}
-                <label className="absolute inset-0 rounded-full flex items-center justify-center bg-black/30 hover:bg-black/40 dark:bg-black/25 transition-colors cursor-pointer opacity-0 hover:opacity-100">
+                <label className="absolute inset-0 rounded-full flex items-center justify-center bg-black/30 hover:bg-black/40 dark:bg-black/25 transition-colors cursor-pointer opacity-0 hover:opacity-100 touch:opacity-100">
                   <Camera size={16} className="text-white" />
                   <input
                     ref={avatarInputRef}

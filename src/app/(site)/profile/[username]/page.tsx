@@ -17,7 +17,7 @@ import { FriendsWidget } from "@/components/profile/widgets/FriendsWidget";
 import { RecentDocsWidget } from "@/components/profile/widgets/RecentDocsWidget";
 import { PROFILE_TABS } from "@/lib/profile/data";
 import type { ProfileTab } from "@/lib/profile/data";
-import { formatCount } from "@/lib/profile/utils";  
+import { formatCount } from "@/lib/profile/utils";
 
 export default function ProfilePage() {
   const { username } = useParams<{ username: string }>();
@@ -65,9 +65,7 @@ export default function ProfilePage() {
   if (!profileData || profileData.error) {
     return (
       <div className="max-w-[1080px] mx-auto px-4 pb-12 pt-20 text-center">
-        <p className="text-text-muted text-sm">
-          {t("notFound")}
-        </p>
+        <p className="text-text-muted text-sm">{t("notFound")}</p>
       </div>
     );
   }
@@ -107,7 +105,7 @@ export default function ProfilePage() {
       />
       <ProfileStats stats={stats} />
 
-      <div className="flex gap-5">
+      <div className="flex flex-col md:flex-row gap-4 md:gap-5">
         <div className="flex-1 min-w-0">
           <ProfileTabs activeTab={activeTab} onChange={setActiveTab} />
           <div className="mt-3">
@@ -132,9 +130,13 @@ export default function ProfilePage() {
             )}
           </div>
         </div>
-        <div className="w-[252px] shrink-0 flex flex-col gap-3">
+        <div className="w-full md:w-[252px] md:shrink-0 flex flex-col gap-3">
           <SubjectsWidget subjects={profileData.subjects} />
-          <FriendsWidget username={username} refreshKey={friendsRefreshKey} onUnfriend={refreshProfile} />
+          <FriendsWidget
+            username={username}
+            refreshKey={friendsRefreshKey}
+            onUnfriend={refreshProfile}
+          />
           <RecentDocsWidget docs={profileData.recentDocs} username={username} />
         </div>
       </div>

@@ -57,7 +57,7 @@ export function RecentDocsWidget({ docs = [], username }: RecentDocsWidgetProps)
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={(e) => e.stopPropagation()}
-                className="shrink-0 flex items-center gap-1 text-[10px] font-medium text-primary border border-primary/25 px-2 py-0.5 rounded-full hover:bg-primary/5 transition-colors opacity-0 group-hover:opacity-100"
+                className="shrink-0 flex items-center gap-1 text-[10px] font-medium text-primary border border-primary/25 px-2 py-0.5 rounded-full hover:bg-primary/5 transition-colors opacity-0 group-hover:opacity-100 touch:opacity-100"
                 title={t("viewTooltip")}
               >
                 <ExternalLink size={9} />
