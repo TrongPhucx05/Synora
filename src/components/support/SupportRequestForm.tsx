@@ -8,6 +8,7 @@ import { useSupportRateLimitStatus } from "@/lib/support/hooks";
 import { RateLimitNotice } from "./RateLimitNotice";
 import { useSupportLabels } from "@/lib/support/labels.client";
 import type { SupportRequestType } from "@/lib/support/types";
+import { isValidEmail } from "@/lib/email/validate";
 
 const TYPE_OPTIONS: SupportRequestType[] = [
   "ACCOUNT_SUPPORT",
@@ -47,6 +48,10 @@ export function SupportRequestForm() {
       setError(t("errors.missingEmail"));
       return;
     }
+    if (contactEmail.trim() && !isValidEmail(contactEmail)) {
+      setError(t("errors.invalidEmail"));
+      return;
+    }
 
     setLoading(true);
     try {
@@ -78,7 +83,7 @@ export function SupportRequestForm() {
 
   if (result) {
     return (
-      <div className="bg-surface border border-surface-200 rounded-2xl p-8 text-center">
+      <div className="bg-surface border border-surface-200 rounded-2xl p-5 sm:p-8 text-center">
         <div className="w-12 h-12 rounded-full bg-emerald-50 dark:bg-emerald-500/15 text-emerald-500 dark:text-emerald-400 flex items-center justify-center mx-auto mb-3">
           <CheckCircle2 size={24} />
         </div>
@@ -100,7 +105,7 @@ export function SupportRequestForm() {
             setSubject("");
             setMessage("");
           }}
-          className="px-5 py-2 text-xs font-semibold text-white bg-slate-900 rounded-lg hover:bg-slate-800 transition-colors"
+          className="px-5 py-2.5 sm:py-2 text-xs font-semibold text-white bg-slate-900 dark:bg-primary rounded-lg hover:bg-slate-800 dark:hover:bg-primary-600 transition-colors"
         >
           {t("submitAnother")}
         </button>
@@ -161,7 +166,7 @@ export function SupportRequestForm() {
               value={contactEmail}
               onChange={(e) => setContactEmail(e.target.value)}
               placeholder={t("emailPlaceholder")}
-              className="w-full text-xs border border-surface-200 rounded-lg px-2.5 py-2 focus:outline-none focus:ring-2 focus:ring-primary/30"
+              className="w-full text-xs border border-surface-200 rounded-lg px-2.5 py-2 bg-surface text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-primary/30"
             />
           </div>
           <div>
@@ -172,7 +177,7 @@ export function SupportRequestForm() {
               type="text"
               value={guestName}
               onChange={(e) => setGuestName(e.target.value)}
-              className="w-full text-xs border border-surface-200 rounded-lg px-2.5 py-2 focus:outline-none focus:ring-2 focus:ring-primary/30"
+              className="w-full text-xs border border-surface-200 rounded-lg px-2.5 py-2 bg-surface text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-primary/30"
             />
           </div>
         </>
@@ -188,7 +193,7 @@ export function SupportRequestForm() {
             value={contactEmail}
             onChange={(e) => setContactEmail(e.target.value)}
             placeholder={session?.user?.email ?? ""}
-            className="w-full text-xs border border-surface-200 rounded-lg px-2.5 py-2 focus:outline-none focus:ring-2 focus:ring-primary/30"
+            className="w-full text-xs border border-surface-200 rounded-lg px-2.5 py-2 bg-surface text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-primary/30"
           />
         </div>
       )}
@@ -202,7 +207,7 @@ export function SupportRequestForm() {
           value={subject}
           onChange={(e) => setSubject(e.target.value)}
           placeholder={t("subjectPlaceholder")}
-          className="w-full text-xs border border-surface-200 rounded-lg px-2.5 py-2 focus:outline-none focus:ring-2 focus:ring-primary/30"
+          className="w-full text-xs border border-surface-200 rounded-lg px-2.5 py-2 bg-surface text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-primary/30"
         />
       </div>
 
@@ -215,7 +220,7 @@ export function SupportRequestForm() {
           onChange={(e) => setMessage(e.target.value)}
           rows={6}
           placeholder={t("contentPlaceholder")}
-          className="w-full text-xs border border-surface-200 rounded-lg px-2.5 py-2 resize-none focus:outline-none focus:ring-2 focus:ring-primary/30"
+          className="w-full text-xs border border-surface-200 rounded-lg px-2.5 py-2 bg-surface text-text-primary placeholder:text-text-muted resize-none focus:outline-none focus:ring-2 focus:ring-primary/30"
         />
         <p className="text-[10px] text-text-muted mt-1 text-right">
           {t("charCount", { count: message.length })}
@@ -228,7 +233,7 @@ export function SupportRequestForm() {
         onClick={handleSubmit}
         disabled={disabled}
         className={clsx(
-          "self-end px-5 py-2 text-xs font-semibold text-white bg-primary rounded-lg hover:opacity-90 transition-opacity",
+          "w-full sm:w-auto sm:self-end px-5 py-2.5 sm:py-2 text-xs font-semibold text-white bg-primary rounded-lg hover:opacity-90 transition-opacity",
           disabled && "opacity-50 cursor-not-allowed",
         )}
       >

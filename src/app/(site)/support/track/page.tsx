@@ -10,7 +10,7 @@ export default async function TrackSupportRequestPage({
   const t = await getTranslations("support.track");
 
   return (
-    <div className="max-w-lg mx-auto px-4 py-8">
+    <div className="max-w-lg mx-auto py-5 sm:py-8">
       <h1 className="text-lg font-bold text-text-primary mb-1">
         {t("pageTitle")}
       </h1>

@@ -19,7 +19,7 @@ export function RateLimitNotice({
 
   if (status.allowed) {
     return (
-      <p className="text-xs text-text-muted whitespace-nowrap">
+      <p className="text-xs text-text-muted sm:whitespace-nowrap">
         {t.rich("remaining", {
           remaining: status.remaining,
           limit: status.limit,
@@ -33,7 +33,7 @@ export function RateLimitNotice({
 
   if (status.reason === "COOLDOWN") {
     return (
-      <div className="flex items-start gap-2 text-xs text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-500/15 border border-amber-100 rounded-lg px-3 py-2">
+      <div className="flex items-start gap-2 text-xs text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-500/15 border border-amber-100 dark:border-amber-500/20 rounded-lg px-3 py-2">
         <Clock size={14} className="mt-0.5 shrink-0" />
         <span>{t("cooldown", { time: formatRetry(status.retryAfterSeconds) })}</span>
       </div>
@@ -41,7 +41,7 @@ export function RateLimitNotice({
   }
 
   return (
-    <div className="flex items-start gap-2 text-xs text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-500/15 border border-red-100 rounded-lg px-3 py-2">
+    <div className="flex items-start gap-2 text-xs text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-500/15 border border-red-100 dark:border-red-500/20 rounded-lg px-3 py-2">
       <AlertTriangle size={14} className="mt-0.5 shrink-0" />
       <span>{t("dailyLimit", { limit: status.limit })}</span>
     </div>

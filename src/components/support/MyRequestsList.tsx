@@ -72,7 +72,7 @@ export function MyRequestsList() {
 
   if (items.length === 0) {
     return (
-      <div className="bg-surface border border-surface-200 rounded-2xl p-10 text-center text-sm text-text-muted">
+      <div className="bg-surface border border-surface-200 rounded-2xl p-6 sm:p-10 text-center text-sm text-text-muted">
         <LifeBuoy size={22} className="mx-auto mb-2 opacity-40" />
         {t("empty")}
       </div>
@@ -88,7 +88,7 @@ export function MyRequestsList() {
             onClick={() => openDetail(r.id)}
             className="w-full flex items-center justify-between gap-3 px-4 py-3 border-b border-surface-100 last:border-0 hover:bg-surface-50 text-left"
           >
-            <div className="min-w-0">
+            <div className="min-w-0 flex-1">
               <p className="text-xs font-mono text-text-muted">{r.code}</p>
               <p className="text-sm font-medium text-text-secondary truncate">
                 {r.subject}
@@ -114,19 +114,19 @@ export function MyRequestsList() {
           className="fixed inset-0 bg-slate-900/40 dark:bg-black/25 flex items-center justify-center z-50 p-4"
           onClick={(e) => e.target === e.currentTarget && setDetail(null)}
         >
-          <div className="bg-surface rounded-2xl shadow-xl w-full max-w-[560px] max-h-[85vh] overflow-y-auto">
-            <div className="flex items-center justify-between px-6 py-4 border-b border-surface-100">
+          <div className="bg-surface rounded-2xl shadow-xl w-full max-w-[560px] max-h-[85dvh] overflow-y-auto">
+            <div className="flex items-center justify-between px-4 sm:px-6 py-4 border-b border-surface-100">
               <h2 className="text-base font-semibold text-text-primary">
                 {t("detailTitle")}
               </h2>
               <button
                 onClick={() => setDetail(null)}
-                className="p-1 rounded-lg hover:bg-surface-100 text-text-muted"
+                className="p-2 sm:p-1 rounded-lg hover:bg-surface-100 text-text-muted"
               >
                 <X size={18} />
               </button>
             </div>
-            <div className="px-6 py-5">
+            <div className="px-4 py-4 sm:px-6 sm:py-5">
               {detailLoading && !detail ? (
                 <p className="text-sm text-text-muted text-center py-6">
                   {tCommon("loading")}

@@ -33,12 +33,12 @@ export function SupportRequestDetail({
 
       <div>
         <p className="text-xs text-text-muted mb-1">{t("subject")}</p>
-        <p className="text-sm font-medium text-text-secondary">{request.subject}</p>
+        <p className="text-sm font-medium text-text-secondary break-words">{request.subject}</p>
       </div>
 
       <div>
         <p className="text-xs text-text-muted mb-1">{t("content")}</p>
-        <p className="text-sm text-text-secondary bg-surface-50 rounded-lg p-3 whitespace-pre-wrap">
+        <p className="text-sm text-text-secondary bg-surface-50 rounded-lg p-3 whitespace-pre-wrap break-words">
           {request.message}
         </p>
       </div>
@@ -53,14 +53,14 @@ export function SupportRequestDetail({
           <div className="flex flex-col gap-3">
             {request.replies.map((r, i) => (
               <div key={i} className="border border-surface-100 rounded-lg p-3">
-                <div className="flex items-center justify-between mb-1">
+                <div className="flex flex-wrap items-center justify-between gap-1 mb-1">
                   <StatusBadge status={r.statusAtReply} />
                   <span className="text-[11px] text-text-muted">
                     {new Date(r.createdAt).toLocaleString(dateLocale)}
                   </span>
                 </div>
                 {r.message && (
-                  <p className="text-sm text-text-secondary whitespace-pre-wrap">
+                  <p className="text-sm text-text-secondary whitespace-pre-wrap break-words">
                     {r.message}
                   </p>
                 )}

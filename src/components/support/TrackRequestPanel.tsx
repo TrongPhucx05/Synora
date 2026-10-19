@@ -68,7 +68,7 @@ export function TrackRequestPanel({
         <SupportRequestDetail request={result} />
         <button
           onClick={() => setResult(null)}
-          className="mt-4 text-xs font-semibold text-primary hover:underline"
+          className="mt-4 py-2 text-xs font-semibold text-primary hover:underline"
         >
           {t("trackAnother")}
         </button>
@@ -91,7 +91,7 @@ export function TrackRequestPanel({
           value={code}
           onChange={(e) => setCode(e.target.value)}
           placeholder={t("codePlaceholder")}
-          className="w-full text-xs border border-surface-200 rounded-lg px-2.5 py-2 font-mono focus:outline-none focus:ring-2 focus:ring-primary/30"
+          className="w-full text-xs border border-surface-200 rounded-lg px-2.5 py-2 font-mono bg-surface text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-primary/30"
         />
       </div>
       <div>
@@ -103,7 +103,7 @@ export function TrackRequestPanel({
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder={t("emailPlaceholder")}
-          className="w-full text-xs border border-surface-200 rounded-lg px-2.5 py-2 focus:outline-none focus:ring-2 focus:ring-primary/30"
+          className="w-full text-xs border border-surface-200 rounded-lg px-2.5 py-2 bg-surface text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-primary/30"
         />
       </div>
 
@@ -112,7 +112,7 @@ export function TrackRequestPanel({
       <button
         onClick={handleSearch}
         disabled={loading}
-        className="self-end flex items-center gap-1.5 px-5 py-2 text-xs font-semibold text-white bg-primary rounded-lg hover:opacity-90 transition-opacity disabled:opacity-50"
+        className="w-full sm:w-auto sm:self-end justify-center flex items-center gap-1.5 px-5 py-2.5 sm:py-2 text-xs font-semibold text-white bg-primary rounded-lg hover:opacity-90 transition-opacity disabled:opacity-50"
       >
         <Search size={14} /> {loading ? t("searching") : t("searchBtn")}
       </button>
