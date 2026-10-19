@@ -80,10 +80,11 @@ export default function LibraryFilters({
         {isLoggedIn && (
           <button
             onClick={onUpload}
-            className="flex items-center gap-2 px-4 py-2.5 bg-primary text-white text-sm font-semibold rounded-xl hover:bg-primary-700 transition-colors shrink-0"
+            aria-label={t("upload")}
+            className="flex items-center gap-2 px-3 sm:px-4 py-2.5 bg-primary text-white text-sm font-semibold rounded-xl hover:bg-primary-700 transition-colors shrink-0"
           >
             <Upload size={14} />
-            {t("upload")}
+            <span className="hidden sm:inline">{t("upload")}</span>
           </button>
         )}
       </div>
@@ -99,14 +100,14 @@ export default function LibraryFilters({
         onMajorChange={setActiveMajor}
       />
 
-      <div className="flex items-center justify-between gap-3">
-        <div className="flex items-center gap-1 border-b border-surface-200">
+      <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+        <div className="flex items-center gap-1 border-b border-surface-200 overflow-x-auto scrollbar-hide">
           {TYPE_TABS.map((tab) => (
             <button
               key={tab.id}
               onClick={() => setActiveType(tab.id)}
               className={clsx(
-                "px-4 py-2 text-sm font-medium border-b-2 transition-colors whitespace-nowrap",
+                "px-3 sm:px-4 py-2 text-sm font-medium border-b-2 transition-colors whitespace-nowrap",
                 activeType === tab.id
                   ? "border-primary text-primary"
                   : "border-transparent text-text-secondary hover:text-text-primary",
@@ -117,7 +118,7 @@ export default function LibraryFilters({
           ))}
         </div>
 
-        <div className="flex items-center gap-1 shrink-0 bg-surface-100 rounded-lg p-0.5">
+        <div className="flex items-center gap-1 shrink-0 bg-surface-100 rounded-lg p-0.5 max-w-full overflow-x-auto scrollbar-hide self-start">
           {visibleSortOptions.map((opt) => (
             <button
               key={opt.key}

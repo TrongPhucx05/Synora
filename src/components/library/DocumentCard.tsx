@@ -13,7 +13,7 @@ import {
   ChevronDown,
 } from "lucide-react";
 import clsx from "clsx";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { FILE_TYPE_COLORS } from "@/lib/library/data";
 import type { Document } from "@/lib/library/types";
 import EditDocumentModal from "@/components/library/EditDocumentModal";
@@ -65,6 +65,7 @@ export default function DocumentCard({
   const isOwner = !!currentUserId && currentUserId === doc.uploader?.id;
   const t = useTranslations("library.card");
   const tc = useTranslations("common");
+  const locale = useLocale();
 
   useEffect(() => {
     const handler = (e: MouseEvent) => {
@@ -178,7 +179,9 @@ export default function DocumentCard({
     doc.downloadCount >= 1000
       ? `${(doc.downloadCount / 1000).toFixed(1)}k`
       : String(doc.downloadCount);
-  const formattedDate = new Date(doc.createdAt).toLocaleDateString("vi-VN");
+  const formattedDate = new Date(doc.createdAt).toLocaleDateString(
+    locale === "en" ? "en-US" : "vi-VN",
+  );
 
   return (
     <>
@@ -198,7 +201,7 @@ export default function DocumentCard({
               <button
                 onClick={() => setMenuOpen((p) => !p)}
                 aria-label={t("options")}
-                className="p-1.5 rounded-lg text-text-muted hover:text-text-primary hover:bg-surface-100 transition-colors"
+                className="p-2 sm:p-1.5 rounded-lg text-text-muted hover:text-text-primary hover:bg-surface-100 transition-colors"
               >
                 <MoreHorizontal size={15} />
               </button>
@@ -211,7 +214,7 @@ export default function DocumentCard({
                         setShowAdminDeleteConfirm(true);
                         setMenuOpen(false);
                       }}
-                      className="w-full flex items-center gap-2.5 px-3.5 py-2 text-sm text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/20 transition-colors"
+                      className="w-full flex items-center gap-2.5 px-3.5 py-2.5 sm:py-2 text-sm text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/20 transition-colors"
                     >
                       <Trash2 size={14} />
                       {t("delete")}
@@ -220,7 +223,7 @@ export default function DocumentCard({
                     <>
                       <button
                         onClick={handleToggleSaveWithToast}
-                        className="w-full flex items-center gap-2.5 px-3.5 py-2 text-sm text-text-secondary hover:bg-surface-50 hover:text-text-primary transition-colors"
+                        className="w-full flex items-center gap-2.5 px-3.5 py-2.5 sm:py-2 text-sm text-text-secondary hover:bg-surface-50 hover:text-text-primary transition-colors"
                       >
                         {isSaved ? (
                           <BookmarkCheck size={14} className="text-primary" />
@@ -238,7 +241,7 @@ export default function DocumentCard({
                               setShowEditModal(true);
                               setMenuOpen(false);
                             }}
-                            className="w-full flex items-center gap-2.5 px-3.5 py-2 text-sm text-text-secondary hover:bg-surface-50 hover:text-text-primary transition-colors"
+                            className="w-full flex items-center gap-2.5 px-3.5 py-2.5 sm:py-2 text-sm text-text-secondary hover:bg-surface-50 hover:text-text-primary transition-colors"
                           >
                             <Pencil size={14} />
                             {t("edit")}
@@ -248,7 +251,7 @@ export default function DocumentCard({
                               setShowDeleteConfirm(true);
                               setMenuOpen(false);
                             }}
-                            className="w-full flex items-center gap-2.5 px-3.5 py-2 text-sm text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/20 transition-colors"
+                            className="w-full flex items-center gap-2.5 px-3.5 py-2.5 sm:py-2 text-sm text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/20 transition-colors"
                           >
                             <Trash2 size={14} />
                             {t("delete")}
@@ -262,7 +265,7 @@ export default function DocumentCard({
                               setShowReportModal(true);
                               setMenuOpen(false);
                             }}
-                            className="w-full flex items-center gap-2.5 px-3.5 py-2 text-sm text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/20 transition-colors"
+                            className="w-full flex items-center gap-2.5 px-3.5 py-2.5 sm:py-2 text-sm text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/20 transition-colors"
                           >
                             <Flag size={14} />
                             {t("report")}
@@ -312,10 +315,10 @@ export default function DocumentCard({
           </div>
         )}
 
-        <div className="mt-auto pt-3 border-t border-surface-100 flex items-center justify-between">
+        <div className="mt-auto pt-3 border-t border-surface-100 flex items-center justify-between gap-2">
           <div className="flex items-center gap-1.5 min-w-0">
             {doc.subject && (
-              <span className="text-xs px-2 py-0.5 bg-surface-100 rounded-full text-text-secondary font-medium whitespace-nowrap">
+              <span className="text-xs px-2 py-0.5 bg-surface-100 rounded-full text-text-secondary font-medium truncate max-w-[110px] sm:max-w-[140px]">
                 {doc.subject}
               </span>
             )}
@@ -335,7 +338,7 @@ export default function DocumentCard({
             <button
               onClick={handleDownload}
               aria-label={t("download")}
-              className="p-1.5 text-primary hover:bg-primary/10 rounded-md transition-colors"
+              className="p-2 sm:p-1.5 text-primary hover:bg-primary/10 rounded-md transition-colors"
             >
               <Download size={14} />
             </button>
@@ -364,8 +367,8 @@ export default function DocumentCard({
       )}
 
       {showDeleteConfirm && (
-        <div className="fixed inset-0 z-[90] flex items-center justify-center bg-black/40 dark:bg-black/25 backdrop-blur-sm">
-          <div className="bg-surface rounded-2xl shadow-xl p-6 w-80 mx-4 animate-in fade-in zoom-in-95 duration-150">
+        <div className="fixed inset-0 z-[90] p-4 flex items-center justify-center bg-black/40 dark:bg-black/25 backdrop-blur-sm">
+          <div className="bg-surface rounded-2xl shadow-xl p-6 w-full max-w-xs animate-in fade-in zoom-in-95 duration-150">
             <div className="flex items-center justify-center w-11 h-11 rounded-full bg-red-100 dark:bg-red-500/20 mx-auto mb-4">
               <Trash2 size={20} className="text-red-500 dark:text-red-400" />
             </div>
@@ -404,7 +407,7 @@ export default function DocumentCard({
 
       {showAdminDeleteConfirm && (
         <div className="fixed inset-0 z-[90] flex items-center justify-center bg-black/40 dark:bg-black/25 backdrop-blur-sm p-4">
-          <div className="bg-surface rounded-2xl shadow-xl p-6 w-full max-w-sm animate-in fade-in zoom-in-95 duration-150">
+          <div className="bg-surface rounded-2xl shadow-xl p-6 w-full max-w-sm animate-in fade-in zoom-in-95 duration-150 max-h-[90dvh] overflow-y-auto">
             <div className="flex items-center justify-center w-11 h-11 rounded-full bg-red-100 dark:bg-red-500/20 mx-auto mb-4">
               <Trash2 size={20} className="text-red-500 dark:text-red-400" />
             </div>

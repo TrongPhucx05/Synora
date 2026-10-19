@@ -65,7 +65,7 @@ export default function LevelFilterBar({
 
   return (
     <div className="flex flex-col gap-3">
-      <div className="flex items-center gap-2 flex-wrap">
+      <div className="flex items-center gap-2 flex-wrap relative sm:static">
         {LEVEL_TABS.map((tab) => (
           <button
             key={tab.id}
@@ -83,7 +83,7 @@ export default function LevelFilterBar({
       </div>
 
       {activeLevel === "academic" && (
-        <div className="flex items-center gap-2 flex-wrap">
+        <div className="flex items-center gap-2 flex-wrap relative sm:static">
           <SubjectDropdown
             label={td("chooseGrade")}
             options={gradeOptions}
@@ -109,7 +109,7 @@ export default function LevelFilterBar({
       )}
 
       {activeLevel === "university" && (
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 relative sm:static">
           <SubjectDropdown
             label={td("chooseMajor")}
             options={majorOptions}

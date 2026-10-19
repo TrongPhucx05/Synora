@@ -186,7 +186,7 @@ export default function EditDocumentModal({ doc, onClose, onSuccess }: Props) {
     >
       <div
         ref={modalRef}
-        className="relative flex flex-col bg-surface shadow-2xl w-full max-w-lg rounded-2xl animate-in fade-in zoom-in-95 duration-200 overflow-hidden max-h-[90vh]"
+        className="relative flex flex-col bg-surface shadow-2xl w-full max-w-lg rounded-2xl animate-in fade-in zoom-in-95 duration-200 overflow-hidden max-h-[90dvh]"
       >
         <div className="flex items-center justify-between px-5 py-4 border-b border-surface-200 shrink-0">
           <h2 className="text-sm font-semibold text-text-primary">
@@ -281,7 +281,7 @@ export default function EditDocumentModal({ doc, onClose, onSuccess }: Props) {
               </div>
 
               {level === "academic" && (
-                <div className="flex gap-3">
+                <div className="flex flex-col sm:flex-row gap-3">
                   <div className="flex-1 flex flex-col gap-1.5">
                     <label className="text-xs font-semibold text-text-primary">
                       {t("gradeLabel")}

@@ -148,7 +148,7 @@ function LibraryContent() {
   };
 
   return (
-    <div className="flex gap-5 py-5 max-w-[1100px] mx-auto w-full items-start">
+    <div className="flex gap-5 py-4 sm:py-5 max-w-[1100px] mx-auto w-full items-start">
       <div className="flex-1 min-w-0 flex flex-col gap-4">
         <LibraryFilters
           query={query}
@@ -171,7 +171,7 @@ function LibraryContent() {
         />
 
         {loading && docs.length === 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 2xl:grid-cols-3 gap-4">
             {Array.from({ length: 6 }).map((_, i) => (
               <div
                 key={i}
@@ -185,7 +185,7 @@ function LibraryContent() {
           </div>
         ) : (
           <>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 items-stretch">
+            <div className="grid grid-cols-1 sm:grid-cols-2 2xl:grid-cols-3 gap-4 items-stretch">
               {docs.length > 0 ? (
                 docs.map((doc) => (
                   <DocumentCard
@@ -220,7 +220,7 @@ function LibraryContent() {
                 <button
                   onClick={() => nextCursor && fetchMore(nextCursor)}
                   disabled={loading}
-                  className="px-5 py-2 text-sm font-semibold text-primary border border-primary/30 rounded-xl hover:bg-primary/5 transition-colors disabled:opacity-50"
+                  className="w-full sm:w-auto px-5 py-2.5 sm:py-2 text-sm font-semibold text-primary border border-primary/30 rounded-xl hover:bg-primary/5 transition-colors disabled:opacity-50"
                 >
                   {loading ? t("loading") : t("loadMore")}
                 </button>
@@ -230,7 +230,7 @@ function LibraryContent() {
         )}
       </div>
 
-      <div className="w-[268px] shrink-0 flex flex-col gap-4">
+      <div className="hidden xl:flex w-[268px] shrink-0 flex-col gap-4">
         <FeaturedDocsWidget refreshKey={refreshKey} />
         <StatsWidget refreshKey={refreshKey} />
       </div>

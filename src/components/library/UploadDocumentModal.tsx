@@ -70,7 +70,9 @@ export default function UploadDocumentModal({ onClose, onSuccess }: Props) {
   const { startUpload } = useUploadThing("postDocument");
 
   useEffect(() => {
-    firstFieldRef.current?.focus();
+    if (window.matchMedia("(hover: hover)").matches) {
+      firstFieldRef.current?.focus();
+    }
   }, []);
 
   useEffect(() => {
@@ -192,9 +194,9 @@ export default function UploadDocumentModal({ onClose, onSuccess }: Props) {
     >
       <div
         ref={modalRef}
-        className="relative flex flex-col bg-surface shadow-2xl w-full max-w-lg rounded-2xl animate-in fade-in zoom-in-95 duration-200 max-sm:fixed max-sm:inset-0 max-sm:max-w-none max-sm:rounded-none overflow-hidden"
+        className="relative flex flex-col bg-surface shadow-2xl w-full max-w-lg rounded-2xl animate-in fade-in zoom-in-95 duration-200 max-sm:fixed max-sm:inset-0 max-sm:max-w-none max-sm:rounded-none overflow-hidden sm:max-h-[90dvh]"
       >
-        <div className="flex items-center justify-between px-5 py-4 border-b border-surface-200 shrink-0">
+        <div className="flex items-center justify-between px-5 pb-4 pt-[calc(1rem+env(safe-area-inset-top,0px))] sm:pt-4 border-b border-surface-200 shrink-0">
           <h2 className="text-sm font-semibold text-text-primary">
             {t("uploadTitle")}
           </h2>
@@ -300,7 +302,7 @@ export default function UploadDocumentModal({ onClose, onSuccess }: Props) {
               </div>
 
               {level === "academic" && (
-                <div className="flex gap-3">
+                <div className="flex flex-col sm:flex-row gap-3">
                   <div className="flex-1 flex flex-col gap-1.5">
                     <label className="text-xs font-semibold text-text-primary">
                       {t("gradeLabel")}
@@ -505,18 +507,18 @@ export default function UploadDocumentModal({ onClose, onSuccess }: Props) {
               )}
             </div>
 
-            <div className="flex items-center justify-end gap-2 px-5 py-4 border-t border-surface-200 shrink-0">
+            <div className="flex items-center justify-end gap-2 px-5 pt-4 pb-[calc(1rem+env(safe-area-inset-bottom,0px))] sm:pb-4 border-t border-surface-200 shrink-0">
               <button
                 onClick={onClose}
                 disabled={uploadState !== "idle"}
-                className="px-4 py-2 text-sm font-semibold text-text-secondary border border-surface-200 rounded-xl hover:border-surface-300 transition-colors disabled:opacity-50"
+                className="px-4 py-2 text-sm font-semibold text-text-secondary border border-surface-200 rounded-xl hover:border-surface-300 transition-colors disabled:opacity-50 flex-1 sm:flex-none justify-center"
               >
                 {tc("cancel")}
               </button>
               <button
                 onClick={handleSubmit}
                 disabled={uploadState !== "idle"}
-                className="flex items-center gap-2 px-4 py-2 bg-primary text-white text-sm font-semibold rounded-xl hover:bg-primary-700 transition-colors disabled:opacity-70"
+                className="flex items-center gap-2 px-4 py-2 bg-primary text-white text-sm font-semibold rounded-xl hover:bg-primary-700 transition-colors disabled:opacity-70 flex-1 sm:flex-none justify-center"
               >
                 {uploadState === "uploading" ? (
                   <>

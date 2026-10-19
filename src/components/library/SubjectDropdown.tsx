@@ -47,7 +47,7 @@ export default function SubjectDropdown({
   }, [open]);
 
   return (
-    <div ref={ref} className="relative">
+    <div ref={ref} className="sm:relative">
       <button
         onClick={() => setOpen((p) => !p)}
         aria-haspopup="listbox"
@@ -72,7 +72,7 @@ export default function SubjectDropdown({
       {open && (
         <div
           role="listbox"
-          className="absolute top-full left-0 mt-2 z-30 w-56 bg-surface border border-surface-200 rounded-xl shadow-lg py-1.5 animate-in fade-in zoom-in-95 duration-150 origin-top-left"
+          className="absolute top-full left-0 right-0 sm:right-auto mt-2 z-30 w-auto sm:w-56 max-h-72 overflow-y-auto bg-surface border border-surface-200 rounded-xl shadow-lg py-1.5 animate-in fade-in zoom-in-95 duration-150 origin-top-left"
         >
           {value && (
             <button
