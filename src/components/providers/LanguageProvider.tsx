@@ -17,6 +17,7 @@ import {
 } from "@/lib/settings/syncedSetting";
 import {
   LOCALE_CACHE_KEY,
+  WAS_AUTH_KEY,
   isValidLocale,
   type Locale,
 } from "@/lib/i18n/constants";
@@ -87,6 +88,23 @@ export function LanguageProvider({
       .catch(() => {})
       .finally(() => setLoading(false));
   }, [isLoggedIn, session?.user?.id]);
+
+  useEffect(() => {
+    if (status === "loading") return;
+    try {
+      if (status === "authenticated") {
+        localStorage.setItem(WAS_AUTH_KEY, "1");
+        return;
+      }
+      if (localStorage.getItem(WAS_AUTH_KEY)) {
+        localStorage.removeItem(WAS_AUTH_KEY);
+        fetchedForUser.current = null;
+        setCachedValue(LOCALE_CACHE_KEY, "vi");
+        setLocaleCookie("vi");
+        setLocaleState("vi");
+      }
+    } catch {}
+  }, [status]);
 
   const setLocale = useCallback(
     async (next: Locale) => {
