@@ -17,6 +17,7 @@ import {
 import {
   THEME_CACHE_KEY,
   THEME_STORAGE_KEY,
+  THEME_WAS_AUTH_KEY,
   isValidTheme,
   resolveSystemTheme,
   type Theme,
@@ -94,6 +95,23 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
       .catch(() => {})
       .finally(() => setLoading(false));
   }, [isLoggedIn, session?.user?.id]);
+
+  useEffect(() => {
+    if (status === "loading") return;
+    try {
+      if (status === "authenticated") {
+        window.localStorage.setItem(THEME_WAS_AUTH_KEY, "1");
+        return;
+      }
+      if (window.localStorage.getItem(THEME_WAS_AUTH_KEY)) {
+        window.localStorage.removeItem(THEME_WAS_AUTH_KEY);
+        window.localStorage.removeItem(THEME_STORAGE_KEY);
+        fetchedForUser.current = null;
+        setCachedValue(THEME_CACHE_KEY, "system");
+        setThemeState("system");
+      }
+    } catch {}
+  }, [status]);
 
   const setTheme = useCallback(
     async (next: Theme) => {

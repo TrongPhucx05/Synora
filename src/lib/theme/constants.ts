@@ -2,6 +2,7 @@ export type Theme = "light" | "dark" | "system";
 
 export const THEME_STORAGE_KEY = "synora-theme";
 export const THEME_CACHE_KEY = "theme";
+export const THEME_WAS_AUTH_KEY = "synora-theme-was-auth";
 
 export function isValidTheme(value: unknown): value is Theme {
   return value === "light" || value === "dark" || value === "system";
