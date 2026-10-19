@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
@@ -39,7 +39,7 @@ export default function JoinGroupPage() {
     }
     fetchJoinPreview(token)
       .then(setPreview)
-      .catch((e) => setError(e instanceof Error ? e.message : "Có lỗi xảy ra"))
+      .catch((e) => setError(e instanceof Error ? e.message : "CÃ³ lá»—i xáº£y ra"))
       .finally(() => setLoading(false));
   }, [token, authStatus]);
 
@@ -52,7 +52,7 @@ export default function JoinGroupPage() {
         setTimeout(() => router.push(`/chat`), 1200);
       }
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Có lỗi xảy ra");
+      setError(e instanceof Error ? e.message : "CÃ³ lá»—i xáº£y ra");
     } finally {
       setSubmitting(false);
     }
@@ -60,7 +60,7 @@ export default function JoinGroupPage() {
 
   if (authStatus === "loading" || loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-surface-50">
+      <div className="min-h-dvh flex items-center justify-center bg-surface-50">
         <Loader2 size={24} className="animate-spin text-primary" />
       </div>
     );
@@ -68,23 +68,23 @@ export default function JoinGroupPage() {
 
   if (authStatus === "unauthenticated") {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-surface-50 px-4">
-        <div className="bg-white border border-surface-200 rounded-2xl p-8 max-w-sm w-full text-center">
+      <div className="min-h-dvh flex items-center justify-center bg-surface-50 px-4">
+        <div className="bg-surface border border-surface-200 rounded-2xl p-8 max-w-sm w-full text-center">
           <div className="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
             <Users size={24} className="text-primary" />
           </div>
           <p className="text-sm font-bold text-text-primary mb-1">
-            Đăng nhập để tham gia nhóm
+            ÄÄƒng nháº­p Ä‘á»ƒ tham gia nhÃ³m
           </p>
           <p className="text-xs text-text-muted mb-5">
-            Bạn cần đăng nhập trước khi có thể xem hoặc gửi yêu cầu tham gia
-            nhóm này.
+            Báº¡n cáº§n Ä‘Äƒng nháº­p trÆ°á»›c khi cÃ³ thá»ƒ xem hoáº·c gá»­i yÃªu cáº§u tham gia
+            nhÃ³m nÃ y.
           </p>
           <Link
             href={`/login?callbackUrl=${encodeURIComponent(`/join/${token}`)}`}
             className="block w-full py-2.5 rounded-xl bg-primary text-white text-xs font-semibold hover:bg-primary-700 transition-colors"
           >
-            Đăng nhập
+            ÄÄƒng nháº­p
           </Link>
         </div>
       </div>
@@ -93,22 +93,22 @@ export default function JoinGroupPage() {
 
   if (error || !preview) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-surface-50 px-4">
-        <div className="bg-white border border-surface-200 rounded-2xl p-8 max-w-sm w-full text-center">
-          <div className="w-14 h-14 rounded-full bg-red-50 flex items-center justify-center mx-auto mb-4">
+      <div className="min-h-dvh flex items-center justify-center bg-surface-50 px-4">
+        <div className="bg-surface border border-surface-200 rounded-2xl p-8 max-w-sm w-full text-center">
+          <div className="w-14 h-14 rounded-full bg-red-50 dark:bg-red-500/15 flex items-center justify-center mx-auto mb-4">
             <XCircle size={24} className="text-red-500" />
           </div>
           <p className="text-sm font-bold text-text-primary mb-1">
-            Link mời không hợp lệ
+            Link má»i khÃ´ng há»£p lá»‡
           </p>
           <p className="text-xs text-text-muted mb-5">
-            {error ?? "Link đã hết hiệu lực hoặc không tồn tại."}
+            {error ?? "Link Ä‘Ã£ háº¿t hiá»‡u lá»±c hoáº·c khÃ´ng tá»“n táº¡i."}
           </p>
           <Link
             href="/feed"
             className="block w-full py-2.5 rounded-xl border border-surface-200 text-xs font-semibold text-text-secondary hover:bg-surface-50 transition-colors"
           >
-            Về trang chủ
+            Vá» trang chá»§
           </Link>
         </div>
       </div>
@@ -118,11 +118,11 @@ export default function JoinGroupPage() {
   const effectiveStatus = result ?? preview.viewerStatus;
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-surface-50 px-4">
-      <div className="bg-white border border-surface-200 rounded-2xl p-8 max-w-sm w-full text-center">
+    <div className="min-h-dvh flex items-center justify-center bg-surface-50 px-4">
+      <div className="bg-surface border border-surface-200 rounded-2xl p-8 max-w-sm w-full text-center">
         <Avatar
           src={preview.avatarUrl}
-          initials={getInitials(preview.name ?? "Nhóm")}
+          initials={getInitials(preview.name ?? "NhÃ³m")}
           size="xl"
           shape="circle"
           className="mx-auto mb-4"
@@ -131,7 +131,7 @@ export default function JoinGroupPage() {
           {preview.name}
         </p>
         <p className="text-xs text-text-muted mb-6">
-          {preview.memberCount} thành viên
+          {preview.memberCount} thÃ nh viÃªn
         </p>
 
         {effectiveStatus === "member" ||
@@ -139,20 +139,20 @@ export default function JoinGroupPage() {
           <div className="flex flex-col items-center gap-2">
             <CheckCircle2 size={20} className="text-green-500" />
             <p className="text-xs text-text-secondary">
-              Bạn đã là thành viên của nhóm này
+              Báº¡n Ä‘Ã£ lÃ  thÃ nh viÃªn cá»§a nhÃ³m nÃ y
             </p>
             <Link
               href="/chat"
               className="mt-2 w-full py-2.5 rounded-xl bg-primary text-white text-xs font-semibold hover:bg-primary-700 transition-colors"
             >
-              Mở cuộc trò chuyện
+              Má»Ÿ cuá»™c trÃ² chuyá»‡n
             </Link>
           </div>
         ) : effectiveStatus === "joined" ? (
           <div className="flex flex-col items-center gap-2">
             <CheckCircle2 size={20} className="text-green-500" />
             <p className="text-xs text-text-secondary">
-              Đã tham gia nhóm! Đang chuyển hướng...
+              ÄÃ£ tham gia nhÃ³m! Äang chuyá»ƒn hÆ°á»›ng...
             </p>
           </div>
         ) : effectiveStatus === "requested" ||
@@ -160,14 +160,14 @@ export default function JoinGroupPage() {
           <div className="flex flex-col items-center gap-2">
             <Clock size={20} className="text-amber-500" />
             <p className="text-xs text-text-secondary">
-              Yêu cầu tham gia đang chờ trưởng nhóm duyệt
+              YÃªu cáº§u tham gia Ä‘ang chá» trÆ°á»Ÿng nhÃ³m duyá»‡t
             </p>
           </div>
         ) : effectiveStatus === "cooldown" ? (
           <div className="flex flex-col items-center gap-2">
             <Clock size={20} className="text-amber-500" />
             <p className="text-xs text-text-secondary">
-              Yêu cầu trước đó đã bị từ chối. Bạn có thể gửi lại sau{" "}
+              YÃªu cáº§u trÆ°á»›c Ä‘Ã³ Ä‘Ã£ bá»‹ tá»« chá»‘i. Báº¡n cÃ³ thá»ƒ gá»­i láº¡i sau{" "}
               {preview.cooldownEndsAt &&
                 new Date(preview.cooldownEndsAt).toLocaleDateString("vi-VN")}
               .
@@ -180,7 +180,7 @@ export default function JoinGroupPage() {
             className="w-full py-2.5 rounded-xl bg-primary text-white text-xs font-semibold hover:bg-primary-700 transition-colors disabled:opacity-50 flex items-center justify-center gap-1.5"
           >
             {submitting && <Loader2 size={12} className="animate-spin" />}
-            Bạn đã được mời — Tham gia ngay
+            Báº¡n Ä‘Ã£ Ä‘Æ°á»£c má»i â€” Tham gia ngay
           </button>
         ) : (
           <button
@@ -189,7 +189,7 @@ export default function JoinGroupPage() {
             className="w-full py-2.5 rounded-xl bg-primary text-white text-xs font-semibold hover:bg-primary-700 transition-colors disabled:opacity-50 flex items-center justify-center gap-1.5"
           >
             {submitting && <Loader2 size={12} className="animate-spin" />}
-            Gửi yêu cầu tham gia
+            Gá»­i yÃªu cáº§u tham gia
           </button>
         )}
       </div>

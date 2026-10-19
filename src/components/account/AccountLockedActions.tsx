@@ -23,7 +23,7 @@ export function AccountLockedActions({
         </button>
         <button
           onClick={() => signOut({ callbackUrl: "/login" })}
-          className="w-full py-2.5 text-xs font-semibold text-white bg-slate-900 rounded-xl hover:bg-slate-800 transition-colors"
+          className="w-full py-2.5 text-xs font-semibold text-white bg-slate-900 dark:bg-primary rounded-xl hover:bg-slate-800 dark:hover:bg-primary-600 transition-colors"
         >
           Đăng xuất
         </button>

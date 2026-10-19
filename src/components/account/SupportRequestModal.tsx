@@ -48,7 +48,7 @@ export function SupportRequestModal({
       className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/40 dark:bg-black/25 backdrop-blur-sm"
       onClick={(e) => e.target === e.currentTarget && onClose()}
     >
-      <div className="bg-surface rounded-2xl shadow-2xl w-full max-w-md overflow-hidden">
+      <div className="bg-surface rounded-2xl shadow-2xl w-full max-w-md max-h-[90dvh] overflow-y-auto">
         {code ? (
           <div className="p-8 text-center">
             <div className="w-12 h-12 rounded-full bg-emerald-50 dark:bg-emerald-500/15 text-emerald-500 dark:text-emerald-400 flex items-center justify-center mx-auto mb-3">
@@ -69,7 +69,7 @@ export function SupportRequestModal({
             </p>
             <button
               onClick={onClose}
-              className="px-5 py-2 text-xs font-semibold text-white bg-slate-900 rounded-lg hover:bg-slate-800 transition-colors"
+              className="px-5 py-2 text-xs font-semibold text-white bg-slate-900 dark:bg-primary rounded-lg hover:bg-slate-800 dark:hover:bg-primary-600 transition-colors"
             >
               Đóng
             </button>
@@ -101,7 +101,7 @@ export function SupportRequestModal({
                   value={subject}
                   onChange={(e) => setSubject(e.target.value)}
                   placeholder="Ví dụ: Khiếu nại về việc khóa tài khoản"
-                  className="w-full text-xs border border-surface-200 rounded-lg px-2.5 py-2 focus:outline-none focus:ring-2 focus:ring-primary/30"
+                  className="w-full text-xs border border-surface-200 rounded-lg px-2.5 py-2 bg-surface text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-primary/30"
                 />
               </div>
               <div>
@@ -113,7 +113,7 @@ export function SupportRequestModal({
                   onChange={(e) => setMessage(e.target.value)}
                   rows={5}
                   placeholder="Mô tả chi tiết lý do bạn muốn khiếu nại..."
-                  className="w-full text-xs border border-surface-200 rounded-lg px-2.5 py-2 resize-none focus:outline-none focus:ring-2 focus:ring-primary/30"
+                  className="w-full text-xs border border-surface-200 rounded-lg px-2.5 py-2 bg-surface text-text-primary placeholder:text-text-muted resize-none focus:outline-none focus:ring-2 focus:ring-primary/30"
                 />
                 <p className="text-[10px] text-text-muted mt-1 text-right">
                   {message.length}/2000
@@ -121,7 +121,9 @@ export function SupportRequestModal({
               </div>
 
               {error && (
-                <p className="text-[11px] text-red-500 dark:text-red-400 -mt-1">{error}</p>
+                <p className="text-[11px] text-red-500 dark:text-red-400 -mt-1">
+                  {error}
+                </p>
               )}
             </div>
 
