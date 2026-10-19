@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { Mail } from "lucide-react";
 import { useState } from "react";
+import { isValidEmail } from "@/lib/email/validate";
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState("");
@@ -11,8 +12,13 @@ export default function ForgotPasswordPage() {
   const [error, setError] = useState("");
 
   const handleSubmit = async () => {
-    if (!email) {
+    const trimmed = email.trim();
+    if (!trimmed) {
       setError("Vui lòng nhập email");
+      return;
+    }
+    if (!isValidEmail(trimmed)) {
+      setError("Email không đúng định dạng (ví dụ: ten@gmail.com)");
       return;
     }
     setLoading(true);
@@ -21,7 +27,7 @@ export default function ForgotPasswordPage() {
       const res = await fetch("/api/auth/forgot-password", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({ email: trimmed }),
       });
       if (!res.ok) {
         const data = await res.json().catch(() => null);
@@ -37,7 +43,7 @@ export default function ForgotPasswordPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary/5 via-surface dark:via-surface to-indigo-50 dark:to-surface-100 flex items-center justify-center p-4">
+    <div className="min-h-dvh bg-gradient-to-br from-primary/5 via-surface dark:via-surface to-indigo-50 dark:to-surface-100 flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-6">
           <div className="w-10 h-10 bg-blue-500 rounded-xl flex items-center justify-center mx-auto mb-3">

@@ -3,6 +3,7 @@ import { PrismaAdapter } from "@auth/prisma-adapter";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
+import { isValidEmail } from "@/lib/email/validate";
 
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma) as any,
@@ -26,6 +27,10 @@ export const authOptions: NextAuthOptions = {
         }
 
         const identifier = credentials.email.trim().toLowerCase();
+
+        if (identifier.includes("@") && !isValidEmail(identifier)) {
+          throw new Error("Email không đúng định dạng");
+        }
 
         const user = await prisma.user.findFirst({
           where: {

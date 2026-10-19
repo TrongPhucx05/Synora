@@ -11,6 +11,7 @@ import {
   hashIp,
 } from "@/lib/support/rate-limit";
 import { supportRequestCreatedEmail } from "@/lib/email/templates/support-request-lifecycle";
+import { isValidEmail } from "@/lib/email/validate";
 import type { SupportRequestType } from "@/generated/prisma/enums";
 
 const VALID_TYPES: SupportRequestType[] = [
@@ -21,7 +22,6 @@ const VALID_TYPES: SupportRequestType[] = [
   "ACCOUNT_DELETION",
   "OTHER",
 ];
-const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const PAGE_SIZE = 10;
 
 export async function POST(req: NextRequest) {
@@ -72,7 +72,7 @@ export async function POST(req: NextRequest) {
     userId = session.user.id;
     const trimmed = contactEmailInput?.trim();
     if (trimmed) {
-      if (!EMAIL_RE.test(trimmed)) {
+      if (!isValidEmail(trimmed)) {
         return NextResponse.json(
           { error: "Email liên hệ không hợp lệ" },
           { status: 400 },
@@ -89,7 +89,7 @@ export async function POST(req: NextRequest) {
     }
   } else {
     const trimmed = contactEmailInput?.trim();
-    if (!trimmed || !EMAIL_RE.test(trimmed)) {
+    if (!trimmed || !isValidEmail(trimmed)) {
       return NextResponse.json(
         { error: "Vui lòng nhập email liên hệ hợp lệ" },
         { status: 400 },

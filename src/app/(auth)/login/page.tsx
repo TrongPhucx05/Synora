@@ -5,6 +5,7 @@ import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 import { signIn, getSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { isValidEmail } from "@/lib/email/validate";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -15,15 +16,25 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
 
   const handleLogin = async () => {
-    if (!email || !password) {
+    const identifier = email.trim();
+    if (!identifier || !password) {
       setError("Vui lòng nhập đầy đủ email và mật khẩu");
+      return;
+    }
+    if (identifier.includes("@")) {
+      if (!isValidEmail(identifier)) {
+        setError("Email không đúng định dạng (ví dụ: ten@gmail.com)");
+        return;
+      }
+    } else if (!/^[a-z0-9_]+$/i.test(identifier)) {
+      setError("Tên người dùng chỉ gồm chữ, số và dấu _");
       return;
     }
     setLoading(true);
     setError("");
 
     const result = await signIn("credentials", {
-      email,
+      email: identifier,
       password,
       redirect: false,
     });
@@ -47,7 +58,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary/5 via-surface dark:via-surface to-indigo-50 dark:to-surface-100 flex items-center justify-center p-4">
+    <div className="min-h-dvh bg-gradient-to-br from-primary/5 via-surface dark:via-surface to-indigo-50 dark:to-surface-100 flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-6">
           <div className="w-10 h-10 bg-blue-500 rounded-xl flex items-center justify-center mx-auto mb-3">
@@ -106,6 +117,10 @@ export default function LoginPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="Email hoặc tên người dùng"
+                autoComplete="username"
+                autoCapitalize="none"
+                autoCorrect="off"
+                spellCheck={false}
                 className="w-full px-4 py-2.5 border border-surface-200 rounded-lg text-sm focus:outline-none focus:border-blue-400 transition-colors"
               />
             </div>

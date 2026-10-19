@@ -5,6 +5,7 @@ import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { isValidEmail } from "@/lib/email/validate";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -17,8 +18,12 @@ export default function RegisterPage() {
   const [loading, setLoading] = useState(false);
 
   const handleRegister = async () => {
-    if (!displayName || !username || !email || !password) {
+    if (!displayName.trim() || !username || !email.trim() || !password) {
       setError("Vui lòng nhập đầy đủ thông tin");
+      return;
+    }
+    if (!isValidEmail(email)) {
+      setError("Email không đúng định dạng (ví dụ: ten@gmail.com)");
       return;
     }
     if (password.length < 8) {
@@ -37,7 +42,12 @@ export default function RegisterPage() {
       const res = await fetch("/api/auth/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ displayName, username, email, password }),
+        body: JSON.stringify({
+          displayName: displayName.trim(),
+          username,
+          email: email.trim().toLowerCase(),
+          password,
+        }),
       });
 
       const data = await res.json();
@@ -56,7 +66,7 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary/5 via-surface dark:via-surface to-indigo-50 dark:to-surface-100 flex items-center justify-center p-4">
+    <div className="min-h-dvh bg-gradient-to-br from-primary/5 via-surface dark:via-surface to-indigo-50 dark:to-surface-100 flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-6">
           <div className="w-10 h-10 bg-blue-500 rounded-xl flex items-center justify-center mx-auto mb-3">
@@ -147,6 +157,11 @@ export default function RegisterPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="email@example.com"
+                inputMode="email"
+                autoComplete="email"
+                autoCapitalize="none"
+                autoCorrect="off"
+                spellCheck={false}
                 className="w-full px-4 py-2.5 border border-surface-200 rounded-lg text-sm focus:outline-none focus:border-blue-400 transition-colors"
               />
             </div>

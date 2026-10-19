@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { emailService } from "@/lib/email/service";
 import { resetPasswordTemplate } from "@/lib/email/templates/reset-password";
 import { generateResetToken } from "@/lib/email/token";
+import { isValidEmail } from "@/lib/email/validate";
 
 const RESET_TOKEN_EXPIRY_MINUTES = 30;
 
@@ -15,6 +16,13 @@ export async function POST(req: NextRequest) {
     if (!email) {
       return NextResponse.json(
         { error: "Vui lòng nhập email" },
+        { status: 400 },
+      );
+    }
+
+    if (!isValidEmail(email)) {
+      return NextResponse.json(
+        { error: "Email không đúng định dạng" },
         { status: 400 },
       );
     }

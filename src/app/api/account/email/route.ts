@@ -1,8 +1,7 @@
 import { NextResponse } from "next/server";
 import { getSession } from "@/lib/session";
 import { prisma } from "@/lib/prisma";
-
-const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+import { isValidEmail } from "@/lib/email/validate";
 
 export async function PATCH(req: Request) {
   const session = await getSession();
@@ -14,7 +13,7 @@ export async function PATCH(req: Request) {
   const email =
     typeof body?.email === "string" ? body.email.trim().toLowerCase() : "";
 
-  if (!EMAIL_REGEX.test(email)) {
+  if (!isValidEmail(email)) {
     return NextResponse.json({ error: "Email không hợp lệ" }, { status: 400 });
   }
 
