@@ -10,7 +10,7 @@ export function EmptyPlaceholder({
   description?: string;
 }) {
   return (
-    <div className="bg-surface border border-surface-200 rounded-2xl py-16 flex flex-col items-center justify-center gap-3">
+    <div className="bg-surface border border-surface-200 rounded-2xl py-10 sm:py-16 flex flex-col items-center justify-center gap-3">
       <div className="w-11 h-11 rounded-full bg-surface-50 flex items-center justify-center">
         <Icon size={18} className="text-text-muted" />
       </div>

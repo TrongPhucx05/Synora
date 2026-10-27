@@ -40,7 +40,7 @@ export function Pagination({
   const pages = getPageNumbers(page, totalPages);
 
   return (
-    <div className="flex items-center justify-center gap-1 mt-4">
+    <div className="flex flex-wrap items-center justify-center gap-1 mt-4">
       <button
         onClick={() => onChange(page - 1)}
         disabled={page <= 1}
@@ -58,7 +58,7 @@ export function Pagination({
             key={p}
             onClick={() => onChange(p)}
             className={clsx(
-              "min-w-[32px] h-8 px-2 rounded-lg text-xs font-semibold transition-colors",
+              "min-w-[32px] h-8 touch:min-w-9 touch:h-9 px-2 rounded-lg text-xs font-semibold transition-colors",
               p === page
                 ? "bg-blue-500 text-white"
                 : "text-text-muted hover:bg-surface-100",
