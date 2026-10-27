@@ -61,8 +61,8 @@ export function PersonCard({ r }: { r: SearchResult }) {
         setShowReplyMenu(false);
       }
     };
-    document.addEventListener("mousedown", handler);
-    return () => document.removeEventListener("mousedown", handler);
+    document.addEventListener("pointerdown", handler);
+    return () => document.removeEventListener("pointerdown", handler);
   }, [showReplyMenu]);
 
   const handleFriendAction = async (e: React.MouseEvent) => {

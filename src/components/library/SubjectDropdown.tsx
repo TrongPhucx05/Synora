@@ -34,8 +34,8 @@ export default function SubjectDropdown({
       if (ref.current && !ref.current.contains(e.target as Node))
         setOpen(false);
     };
-    if (open) document.addEventListener("mousedown", handler);
-    return () => document.removeEventListener("mousedown", handler);
+    if (open) document.addEventListener("pointerdown", handler);
+    return () => document.removeEventListener("pointerdown", handler);
   }, [open]);
 
   useEffect(() => {

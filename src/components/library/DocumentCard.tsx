@@ -72,8 +72,8 @@ export default function DocumentCard({
       if (menuRef.current && !menuRef.current.contains(e.target as Node))
         setMenuOpen(false);
     };
-    if (menuOpen) document.addEventListener("mousedown", handler);
-    return () => document.removeEventListener("mousedown", handler);
+    if (menuOpen) document.addEventListener("pointerdown", handler);
+    return () => document.removeEventListener("pointerdown", handler);
   }, [menuOpen]);
 
   const handleToggleSaveWithToast = () => {

@@ -42,8 +42,8 @@ export function SearchTabs({
         setDropdownOpen(false);
       }
     };
-    document.addEventListener("mousedown", handler);
-    return () => document.removeEventListener("mousedown", handler);
+    document.addEventListener("pointerdown", handler);
+    return () => document.removeEventListener("pointerdown", handler);
   }, []);
 
   const currentSortLabel = SORT_OPTIONS.find((o) => o.key === sort)?.labelKey

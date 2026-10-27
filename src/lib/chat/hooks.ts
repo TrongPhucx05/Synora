@@ -10,8 +10,8 @@ export function useOutsideClick(
     const handler = (e: MouseEvent) => {
       if (ref.current && !ref.current.contains(e.target as Node)) cb();
     };
-    document.addEventListener("mousedown", handler);
-    return () => document.removeEventListener("mousedown", handler);
+    document.addEventListener("pointerdown", handler);
+    return () => document.removeEventListener("pointerdown", handler);
   }, [ref, cb]);
 }
 
@@ -32,8 +32,8 @@ export function useOutsideClickRefs(
       );
       if (!isInside) cbRef.current();
     };
-    document.addEventListener("mousedown", handler);
-    return () => document.removeEventListener("mousedown", handler);
+    document.addEventListener("pointerdown", handler);
+    return () => document.removeEventListener("pointerdown", handler);
   }, []);
 }
 

@@ -42,8 +42,8 @@ export default function CommentBubbleMenu({
       if (ref.current && !ref.current.contains(e.target as Node))
         setOpen(false);
     };
-    document.addEventListener("mousedown", handler);
-    return () => document.removeEventListener("mousedown", handler);
+    document.addEventListener("pointerdown", handler);
+    return () => document.removeEventListener("pointerdown", handler);
   }, []);
 
   type MenuItem = {

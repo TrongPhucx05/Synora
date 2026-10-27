@@ -285,8 +285,8 @@ export default function Navbar({
       if (avatarRef.current && !avatarRef.current.contains(e.target as Node))
         setAvatarOpen(false);
     }
-    document.addEventListener("mousedown", handler);
-    return () => document.removeEventListener("mousedown", handler);
+    document.addEventListener("pointerdown", handler);
+    return () => document.removeEventListener("pointerdown", handler);
   }, []);
 
   useEffect(() => {

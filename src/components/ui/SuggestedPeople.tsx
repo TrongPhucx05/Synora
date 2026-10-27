@@ -90,8 +90,8 @@ function UserRow({
         setShowReplyMenu(false);
       }
     };
-    document.addEventListener("mousedown", handler);
-    return () => document.removeEventListener("mousedown", handler);
+    document.addEventListener("pointerdown", handler);
+    return () => document.removeEventListener("pointerdown", handler);
   }, [showReplyMenu]);
 
   const openReplyMenu = (e: React.MouseEvent) => {
