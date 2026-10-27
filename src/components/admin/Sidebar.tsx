@@ -12,6 +12,7 @@ import {
   ScrollText,
   ArrowLeft,
   LifeBuoy,
+  X,
 } from "lucide-react";
 import { clsx } from "clsx";
 
@@ -47,7 +48,13 @@ type Counts = {
   pendingDocumentReports: number;
 };
 
-export default function Sidebar() {
+export default function Sidebar({
+  open = false,
+  onClose,
+}: {
+  open?: boolean;
+  onClose?: () => void;
+}) {
   const pathname = usePathname();
   const [counts, setCounts] = useState<Counts>({
     pendingReports: 0,
@@ -70,7 +77,21 @@ export default function Sidebar() {
   }, []);
 
   return (
-    <aside className="fixed left-0 top-0 h-screen w-[260px] bg-slate-900 text-text-muted flex flex-col z-30">
+    <>
+      {open && (
+        <div
+          className="fixed inset-0 z-30 bg-black/50 lg:hidden"
+          onClick={onClose}
+          aria-hidden="true"
+        />
+      )}
+      <aside
+        className={clsx(
+          "fixed left-0 top-0 z-40 h-dvh w-[260px] max-w-[85vw] bg-slate-900 text-text-muted flex flex-col pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)] transition-transform duration-200 ease-out",
+          "lg:z-30 lg:max-w-none lg:translate-x-0",
+          open ? "translate-x-0" : "-translate-x-full",
+        )}
+      >
       <div className="flex items-center gap-2.5 px-5 py-5">
         <div className="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center shrink-0">
           <svg width="16" height="16" viewBox="0 0 18 18" fill="none">
@@ -89,6 +110,13 @@ export default function Sidebar() {
             Admin Panel
           </p>
         </div>
+        <button
+          onClick={onClose}
+          aria-label="Đóng menu"
+          className="ml-auto lg:hidden p-2 -mr-2 rounded-lg text-text-muted hover:bg-white/5 hover:text-slate-100 transition-colors"
+        >
+          <X size={18} />
+        </button>
       </div>
 
       <nav className="flex-1 flex flex-col gap-0.5 px-3 overflow-y-auto">
@@ -103,6 +131,7 @@ export default function Sidebar() {
             <Link
               key={item.href}
               href={item.href}
+              onClick={onClose}
               className={clsx(
                 "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors",
                 isActive
@@ -131,6 +160,7 @@ export default function Sidebar() {
           Về trang chính
         </Link>
       </div>
-    </aside>
+      </aside>
+    </>
   );
 }

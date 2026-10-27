@@ -1,8 +1,7 @@
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 import { authOptions } from "@/lib/auth";
-import Sidebar from "@/components/admin/Sidebar";
-import Navbar from "@/components/admin/Navbar";
+import AdminShell from "@/components/admin/AdminShell";
 
 export default async function AdminLayout({
   children,
@@ -19,13 +18,5 @@ export default async function AdminLayout({
     redirect("/feed");
   }
 
-  return (
-    <div className="min-h-screen bg-surface-50">
-      <Sidebar />
-      <div className="ml-[260px] flex flex-col min-h-screen">
-        <Navbar />
-        <main className="flex-1 p-6">{children}</main>
-      </div>
-    </div>
-  );
+  return <AdminShell>{children}</AdminShell>;
 }

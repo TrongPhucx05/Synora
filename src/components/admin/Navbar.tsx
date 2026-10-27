@@ -1,7 +1,7 @@
 "use client";
 import { useState, useRef, useEffect } from "react";
 import { useSession, signOut } from "next-auth/react";
-import { LogOut, ShieldCheck } from "lucide-react";
+import { LogOut, Menu, ShieldCheck } from "lucide-react";
 import Avatar from "@/components/ui/Avatar";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
 
@@ -9,7 +9,11 @@ const ROLE_LABELS: Record<string, string> = {
   ADMIN: "Administrator",
 };
 
-export default function Navbar() {
+export default function Navbar({
+  onMenuClick,
+}: {
+  onMenuClick?: () => void;
+}) {
   const { data: session } = useSession();
   const [menuOpen, setMenuOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
@@ -23,13 +27,22 @@ export default function Navbar() {
       if (ref.current && !ref.current.contains(e.target as Node))
         setMenuOpen(false);
     }
-    document.addEventListener("mousedown", handler);
-    return () => document.removeEventListener("mousedown", handler);
+    document.addEventListener("pointerdown", handler);
+    return () => document.removeEventListener("pointerdown", handler);
   }, []);
 
   return (
-    <header className="h-14 bg-surface border-b border-surface-200 flex items-center justify-between px-6 sticky top-0 z-20">
-      <ThemeToggle />
+    <header className="h-14 bg-surface border-b border-surface-200 flex items-center justify-between px-3 sm:px-6 sticky top-0 z-20">
+      <div className="flex items-center gap-2">
+        <button
+          onClick={onMenuClick}
+          aria-label="Mở menu"
+          className="lg:hidden p-2 -ml-1 rounded-lg text-text-secondary hover:bg-surface-100 transition-colors"
+        >
+          <Menu size={20} />
+        </button>
+        <ThemeToggle />
+      </div>
       <div className="flex items-center gap-3">
         <div ref={ref} className="relative">
           <button

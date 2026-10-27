@@ -37,7 +37,7 @@ export function ThemeToggle({ className }: { className?: string }) {
               );
             }}
             className={clsx(
-              "w-7 h-7 rounded-full flex items-center justify-center transition-colors disabled:opacity-50",
+              "w-7 h-7 touch:w-9 touch:h-9 rounded-full flex items-center justify-center transition-colors disabled:opacity-50",
               active
                 ? "bg-surface text-primary shadow-sm"
                 : "text-text-muted hover:text-text-secondary",
