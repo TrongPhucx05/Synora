@@ -19,13 +19,13 @@ export function StatCard({
   return (
     <div
       className={clsx(
-        "bg-surface border border-surface-200 rounded-2xl p-4 flex items-center gap-3.5 transition-opacity",
+        "bg-surface border border-surface-200 rounded-2xl p-3 sm:p-4 flex items-center gap-2.5 sm:gap-3.5 transition-opacity",
         comingSoon && "opacity-70",
       )}
     >
       <div
         className={clsx(
-          "w-11 h-11 rounded-xl flex items-center justify-center shrink-0",
+          "w-9 h-9 sm:w-11 sm:h-11 rounded-xl flex items-center justify-center shrink-0",
           colorClass,
         )}
       >
@@ -50,7 +50,7 @@ export function StatCard({
           )}
         </div>
         <div className="flex items-center gap-1.5 mt-1">
-          <p className="text-xs text-text-muted truncate">{label}</p>
+          <p className="text-xs text-text-muted leading-snug line-clamp-2 min-w-0">{label}</p>
           {comingSoon && (
             <span className="shrink-0 text-[9px] font-medium text-text-muted bg-surface-100 rounded-full px-1.5 py-[1px]">
               Sắp có

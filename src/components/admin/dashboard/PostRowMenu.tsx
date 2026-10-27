@@ -21,8 +21,8 @@ export function PostRowMenu({
       if (ref.current && !ref.current.contains(e.target as Node))
         setOpen(false);
     };
-    document.addEventListener("mousedown", handler);
-    return () => document.removeEventListener("mousedown", handler);
+    document.addEventListener("pointerdown", handler);
+    return () => document.removeEventListener("pointerdown", handler);
   }, []);
 
   const items = [
@@ -47,7 +47,7 @@ export function PostRowMenu({
           e.stopPropagation();
           setOpen((p) => !p);
         }}
-        className="p-1.5 rounded-lg hover:bg-surface-100 text-text-muted transition-colors"
+        className="p-1.5 touch:p-2 rounded-lg hover:bg-surface-100 text-text-muted transition-colors"
       >
         <MoreHorizontal size={15} />
       </button>
@@ -62,7 +62,7 @@ export function PostRowMenu({
                 item.onClick();
               }}
               className={clsx(
-                "w-full flex items-center gap-2.5 px-3.5 py-2 text-xs hover:bg-surface-50 transition-colors",
+                "w-full flex items-center gap-2.5 px-3.5 py-2.5 sm:py-2 text-xs hover:bg-surface-50 transition-colors",
                 item.danger ? "text-red-500 dark:text-red-400" : "text-text-secondary",
               )}
             >

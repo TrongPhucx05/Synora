@@ -31,8 +31,8 @@ export function RecentActivity() {
   }, []);
 
   return (
-    <div className="bg-surface border border-surface-200 rounded-2xl p-5">
-      <div className="flex items-center justify-between mb-4">
+    <div className="bg-surface border border-surface-200 rounded-2xl p-4 sm:p-5">
+      <div className="flex items-center justify-between gap-3 mb-4">
         <h3 className="text-sm font-bold text-text-primary">
           Hoạt động gần đây của admin
         </h3>
@@ -63,17 +63,17 @@ export function RecentActivity() {
             return (
               <div
                 key={e.id}
-                className="flex items-center gap-3 py-2.5 border-b border-surface-100 last:border-b-0"
+                className="flex flex-wrap sm:flex-nowrap items-center gap-x-3 gap-y-0.5 py-2.5 border-b border-surface-100 last:border-b-0"
               >
                 <Icon size={14} className="text-text-muted shrink-0" />
-                <span className="text-xs font-semibold text-blue-600 dark:text-blue-400 shrink-0">
+                <span className="text-xs font-semibold text-blue-600 dark:text-blue-400 shrink-0 max-w-[45%] truncate sm:max-w-none">
                   {e.actor.name}
                 </span>
                 <span className="text-xs text-text-secondary truncate flex-1">
                   {ACTION_LABELS[e.action] ?? e.action}
                   {e.targetLabel ? ` · ${e.targetLabel}` : ""}
                 </span>
-                <span className="text-[11px] font-mono text-text-muted shrink-0">
+                <span className="text-[11px] font-mono text-text-muted shrink-0 basis-full pl-[26px] sm:basis-auto sm:pl-0">
                   {e.createdAt}
                 </span>
               </div>

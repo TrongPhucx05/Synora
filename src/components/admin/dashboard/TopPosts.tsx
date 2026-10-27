@@ -50,9 +50,9 @@ function toFeedPost(item: TopPostItem): Post {
 }
 
 const RANK_STYLES = [
-  "bg-amber-100 dark:bg-amber-500/20 text-amber-700",
+  "bg-amber-100 dark:bg-amber-500/20 text-amber-700 dark:text-amber-300",
   "bg-surface-200 text-text-secondary",
-  "bg-orange-100 dark:bg-orange-500/20 text-orange-700",
+  "bg-orange-100 dark:bg-orange-500/20 text-orange-700 dark:text-orange-300",
   "bg-surface-100 text-text-muted",
   "bg-surface-100 text-text-muted",
 ];
@@ -113,7 +113,7 @@ export function TopPosts({
   );
 
   return (
-    <div className="bg-surface border border-surface-200 rounded-2xl p-5 flex flex-col h-full">
+    <div className="bg-surface border border-surface-200 rounded-2xl p-4 sm:p-5 flex flex-col h-full">
       <div className="flex items-center justify-between mb-3.5">
         <h3 className="text-sm font-bold text-text-primary">
           Top 5 bài viết nhiều tương tác

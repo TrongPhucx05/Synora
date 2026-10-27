@@ -44,7 +44,7 @@ export default function AdminDashboardPage() {
         description="Tổng quan tình trạng hệ thống Synora"
       />
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+      <div className="grid grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-4 mb-3 sm:mb-4">
         <StatCard
           icon={Users}
           label="Tổng người dùng"
@@ -71,7 +71,7 @@ export default function AdminDashboardPage() {
         />
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+      <div className="grid grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-4 mb-5 sm:mb-6">
         <StatCard
           icon={UsersRound}
           label="Tổng nhóm"
@@ -98,7 +98,7 @@ export default function AdminDashboardPage() {
         />
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 mb-5">
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 sm:gap-5 mb-4 sm:mb-5">
         <TopPosts
           posts={topPosts}
           loading={loading}
