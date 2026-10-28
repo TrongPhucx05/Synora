@@ -122,7 +122,7 @@ export function ReportsTable({
             <th className="px-5 py-3 font-medium whitespace-nowrap">
               Ngày báo cáo
             </th>
-            <th className="px-5 py-3 font-medium w-[140px]" />
+            <th className="px-5 py-3 font-medium w-[140px] max-lg:sticky max-lg:right-0 max-lg:bg-surface" />
           </tr>
         </thead>
         <tbody>
@@ -159,12 +159,12 @@ export function ReportsTable({
               <td className="px-5 py-3 text-text-muted whitespace-nowrap">
                 {r.createdAt}
               </td>
-              <td className="px-5 py-3 whitespace-nowrap">
+              <td className="px-5 py-3 whitespace-nowrap max-lg:sticky max-lg:right-0 max-lg:bg-surface">
                 <div className="flex items-center justify-end gap-1">
                   <button
                     onClick={() => onViewDetail(r)}
                     title="Xem chi tiết"
-                    className="p-1.5 rounded-lg hover:bg-surface-100 text-text-muted hover:text-text-secondary"
+                    className="p-1.5 touch:p-2 rounded-lg hover:bg-surface-100 text-text-muted hover:text-text-secondary"
                   >
                     <Eye size={15} />
                   </button>
@@ -173,14 +173,14 @@ export function ReportsTable({
                       <button
                         onClick={() => onQuickResolve(r)}
                         title="Đánh dấu đã xử lý"
-                        className="p-1.5 rounded-lg hover:bg-emerald-50 dark:hover:bg-emerald-500/20 text-text-muted hover:text-emerald-500"
+                        className="p-1.5 touch:p-2 rounded-lg hover:bg-emerald-50 dark:hover:bg-emerald-500/20 text-text-muted hover:text-emerald-500"
                       >
                         <CheckCircle2 size={15} />
                       </button>
                       <button
                         onClick={() => onQuickDismiss(r)}
                         title="Bỏ qua báo cáo"
-                        className="p-1.5 rounded-lg hover:bg-surface-100 text-text-muted hover:text-text-secondary"
+                        className="p-1.5 touch:p-2 rounded-lg hover:bg-surface-100 text-text-muted hover:text-text-secondary"
                       >
                         <XCircle size={15} />
                       </button>

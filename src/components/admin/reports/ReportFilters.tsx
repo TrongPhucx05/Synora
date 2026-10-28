@@ -1,6 +1,11 @@
 "use client";
 import { Search } from "lucide-react";
-import { REASON_LABELS, type ReportReasonKey, type ReportStatus, type ReportTargetType } from "@/lib/reports/types";
+import {
+  REASON_LABELS,
+  type ReportReasonKey,
+  type ReportStatus,
+  type ReportTargetType,
+} from "@/lib/reports/types";
 
 export type ReportFilterState = {
   query: string;
@@ -15,6 +20,7 @@ const TARGET_LABELS: Record<ReportTargetType, string> = {
   COMMENT: "Bình luận",
   MESSAGE: "Tin nhắn",
   DOCUMENT: "Tài liệu",
+  GROUP: "Nhóm chat",
 };
 
 export function ReportFilters({
@@ -26,7 +32,7 @@ export function ReportFilters({
 }) {
   return (
     <div className="flex flex-wrap items-center gap-3 mb-4">
-      <div className="flex items-center gap-2 bg-surface border border-surface-200 rounded-lg px-3 py-2 w-[260px]">
+      <div className="flex items-center gap-2 bg-surface border border-surface-200 rounded-lg px-3 py-2 w-full sm:w-[260px]">
         <Search size={15} className="text-text-muted shrink-0" />
         <input
           value={value.query}
@@ -38,19 +44,31 @@ export function ReportFilters({
 
       <select
         value={value.targetType}
-        onChange={(e) => onChange({ ...value, targetType: e.target.value as ReportFilterState["targetType"] })}
-        className="text-sm border border-surface-200 rounded-lg px-3 py-2 text-text-secondary bg-surface focus:outline-none"
+        onChange={(e) =>
+          onChange({
+            ...value,
+            targetType: e.target.value as ReportFilterState["targetType"],
+          })
+        }
+        className="flex-1 min-w-[140px] sm:flex-none text-sm border border-surface-200 rounded-lg px-3 py-2 text-text-secondary bg-surface focus:outline-none"
       >
         <option value="ALL">Tất cả loại</option>
         {Object.entries(TARGET_LABELS).map(([k, v]) => (
-          <option key={k} value={k}>{v}</option>
+          <option key={k} value={k}>
+            {v}
+          </option>
         ))}
       </select>
 
       <select
         value={value.status}
-        onChange={(e) => onChange({ ...value, status: e.target.value as ReportFilterState["status"] })}
-        className="text-sm border border-surface-200 rounded-lg px-3 py-2 text-text-secondary bg-surface focus:outline-none"
+        onChange={(e) =>
+          onChange({
+            ...value,
+            status: e.target.value as ReportFilterState["status"],
+          })
+        }
+        className="flex-1 min-w-[140px] sm:flex-none text-sm border border-surface-200 rounded-lg px-3 py-2 text-text-secondary bg-surface focus:outline-none"
       >
         <option value="ALL">Tất cả trạng thái</option>
         <option value="PENDING">Chưa xử lý</option>
@@ -60,12 +78,19 @@ export function ReportFilters({
 
       <select
         value={value.reason}
-        onChange={(e) => onChange({ ...value, reason: e.target.value as ReportFilterState["reason"] })}
-        className="text-sm border border-surface-200 rounded-lg px-3 py-2 text-text-secondary bg-surface focus:outline-none"
+        onChange={(e) =>
+          onChange({
+            ...value,
+            reason: e.target.value as ReportFilterState["reason"],
+          })
+        }
+        className="flex-1 min-w-[140px] sm:flex-none text-sm border border-surface-200 rounded-lg px-3 py-2 text-text-secondary bg-surface focus:outline-none"
       >
         <option value="ALL">Tất cả lý do</option>
         {Object.entries(REASON_LABELS).map(([k, v]) => (
-          <option key={k} value={k}>{v}</option>
+          <option key={k} value={k}>
+            {v}
+          </option>
         ))}
       </select>
     </div>
