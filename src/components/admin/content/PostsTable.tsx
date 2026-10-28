@@ -89,8 +89,8 @@ function RowMenu({
         setOpen(false);
       }
     }
-    document.addEventListener("mousedown", handler);
-    return () => document.removeEventListener("mousedown", handler);
+    document.addEventListener("pointerdown", handler);
+    return () => document.removeEventListener("pointerdown", handler);
   }, []);
 
   return (
@@ -98,7 +98,7 @@ function RowMenu({
       <button
         ref={btnRef}
         onClick={() => setOpen((v) => !v)}
-        className="p-1.5 rounded-lg hover:bg-surface-100 text-text-muted hover:text-text-secondary"
+        className="p-1.5 touch:p-2 rounded-lg hover:bg-surface-100 text-text-muted hover:text-text-secondary"
       >
         <MoreVertical size={16} />
       </button>
@@ -115,7 +115,7 @@ function RowMenu({
                 onViewDetail(post);
                 setOpen(false);
               }}
-              className="w-full flex items-center gap-2.5 px-3.5 py-2 text-sm text-text-secondary hover:bg-surface-50"
+              className="w-full flex items-center gap-2.5 px-3.5 py-2.5 sm:py-2 text-sm text-text-secondary hover:bg-surface-50"
             >
               <Eye size={14} /> Xem chi tiết
             </button>
@@ -124,7 +124,7 @@ function RowMenu({
                 onToggleVisibility(post);
                 setOpen(false);
               }}
-              className="w-full flex items-center gap-2.5 px-3.5 py-2 text-sm text-text-secondary hover:bg-surface-50"
+              className="w-full flex items-center gap-2.5 px-3.5 py-2.5 sm:py-2 text-sm text-text-secondary hover:bg-surface-50"
             >
               <EyeOff size={14} />
               {post.status === "VISIBLE" ? "Ẩn bài viết" : "Bỏ ẩn bài viết"}
@@ -135,7 +135,7 @@ function RowMenu({
                 onDelete(post);
                 setOpen(false);
               }}
-              className="w-full flex items-center gap-2.5 px-3.5 py-2 text-sm text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/20"
+              className="w-full flex items-center gap-2.5 px-3.5 py-2.5 sm:py-2 text-sm text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/20"
             >
               <Trash2 size={14} /> Xóa vĩnh viễn
             </button>
@@ -177,7 +177,7 @@ export function PostsTable({
             <th className="px-5 py-3 font-medium text-center whitespace-nowrap">Báo cáo</th>
             <th className="px-5 py-3 font-medium whitespace-nowrap">Trạng thái</th>
             <th className="px-5 py-3 font-medium whitespace-nowrap">Ngày đăng</th>
-            <th className="px-5 py-3 font-medium w-12" />
+            <th className="px-5 py-3 font-medium w-12 max-lg:sticky max-lg:right-0 max-lg:bg-surface" />
           </tr>
         </thead>
         <tbody>
@@ -217,7 +217,7 @@ export function PostsTable({
                 <StatusBadge status={post.status} />
               </td>
               <td className="px-5 py-3 text-text-muted whitespace-nowrap">{post.createdAt}</td>
-              <td className="px-5 py-3 whitespace-nowrap">
+              <td className="px-5 py-3 whitespace-nowrap max-lg:sticky max-lg:right-0 max-lg:bg-surface">
                 <RowMenu
                   post={post}
                   onViewDetail={onViewDetail}

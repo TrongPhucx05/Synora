@@ -23,7 +23,7 @@ export function CommentsTable({
   return (
     <div className="bg-surface rounded-2xl border border-surface-200 divide-y divide-surface-50">
       {comments.map((c) => (
-        <div key={c.id} className="flex items-start gap-3 px-5 py-4">
+        <div key={c.id} className="flex items-start gap-2.5 sm:gap-3 px-3 sm:px-5 py-3 sm:py-4">
           <Avatar
             src={c.author.avatarUrl}
             name={c.author.name}
@@ -32,8 +32,8 @@ export function CommentsTable({
             size="sm"
           />
           <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2">
-              <p className="text-sm font-medium text-text-secondary">
+            <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5">
+              <p className="text-sm font-medium text-text-secondary truncate max-w-full">
                 {c.author.name}
               </p>
               <span className="text-xs text-text-muted">
@@ -52,7 +52,7 @@ export function CommentsTable({
                 </span>
               )}
             </div>
-            <p className="text-sm text-text-secondary mt-1">{c.content}</p>
+            <p className="text-sm text-text-secondary mt-1 break-words">{c.content}</p>
             <p className="text-xs text-text-muted mt-1.5 truncate">
               Trong bài viết: <span className="italic">"{c.postExcerpt}"</span>
             </p>
@@ -61,7 +61,7 @@ export function CommentsTable({
             <button
               onClick={() => onToggleVisibility(c)}
               title={c.status === "VISIBLE" ? "Ẩn bình luận" : "Bỏ ẩn"}
-              className="p-1.5 rounded-lg hover:bg-surface-100 text-text-muted hover:text-text-secondary"
+              className="p-1.5 touch:p-2 rounded-lg hover:bg-surface-100 text-text-muted hover:text-text-secondary"
             >
               {c.status === "VISIBLE" ? (
                 <EyeOff size={15} />
@@ -72,7 +72,7 @@ export function CommentsTable({
             <button
               onClick={() => onDelete(c)}
               title="Xóa vĩnh viễn"
-              className="p-1.5 rounded-lg hover:bg-red-50 dark:hover:bg-red-500/20 text-text-muted hover:text-red-500"
+              className="p-1.5 touch:p-2 rounded-lg hover:bg-red-50 dark:hover:bg-red-500/20 text-text-muted hover:text-red-500"
             >
               <Trash2 size={15} />
             </button>

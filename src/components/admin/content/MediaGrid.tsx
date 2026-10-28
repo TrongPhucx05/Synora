@@ -12,6 +12,7 @@ import {
 import type { AdminMediaRow } from "@/lib/content/types";
 import Avatar from "@/components/ui/Avatar";
 import { clsx } from "clsx";
+import { useLockBodyScroll } from "@/lib/useLockBodyScroll";
 
 function MediaLightbox({
   item,
@@ -20,30 +21,31 @@ function MediaLightbox({
   item: AdminMediaRow;
   onClose: () => void;
 }) {
+  useLockBodyScroll();
   return (
     <div
       className="fixed inset-0 z-[95] bg-black/90 dark:bg-black/70 flex items-center justify-center"
       onClick={onClose}
     >
-      <div className="absolute top-4 right-4 flex items-center gap-2 z-10">
+      <div className="absolute top-[max(1rem,env(safe-area-inset-top))] right-4 flex items-center gap-2 z-10">
         <a
           href={item.url}
           target="_blank"
           rel="noreferrer"
           onClick={(e) => e.stopPropagation()}
-          className="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors"
+          className="w-10 h-10 sm:w-9 sm:h-9 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors"
         >
           <Download size={16} />
         </a>
         <button
           onClick={onClose}
-          className="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors"
+          className="w-10 h-10 sm:w-9 sm:h-9 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors"
         >
           <X size={18} />
         </button>
       </div>
       <div
-        className="absolute top-4 left-4 flex items-center gap-2 z-10 text-white"
+        className="absolute top-[max(1rem,env(safe-area-inset-top))] left-4 flex items-center gap-2 z-10 text-white"
         onClick={(e) => e.stopPropagation()}
       >
         <Avatar
@@ -68,13 +70,13 @@ function MediaLightbox({
             src={item.url}
             controls
             autoPlay
-            className="w-[90vw] h-[85vh] rounded-lg object-contain"
+            className="w-[90vw] h-[85dvh] rounded-lg object-contain"
           />
         ) : (
           <img
             src={item.url}
             alt=""
-            className="w-[90vw] h-[85vh] rounded-lg object-contain"
+            className="w-[90vw] h-[85dvh] rounded-lg object-contain"
           />
         )}
       </div>
@@ -133,7 +135,7 @@ export function MediaGrid({
             )}
             {m.status === "HIDDEN" && (
               <div className="absolute inset-0 bg-slate-900/60 dark:bg-black/45 flex items-center justify-center pointer-events-none">
-                <span className="text-[11px] font-medium bg-white/90 text-text-secondary px-2 py-0.5 rounded-full">
+                <span className="text-[11px] font-medium bg-surface/90 text-text-secondary px-2 py-0.5 rounded-full">
                   Đã ẩn
                 </span>
               </div>
@@ -146,7 +148,7 @@ export function MediaGrid({
             <div
               className={clsx(
                 "absolute inset-x-0 bottom-0 flex items-center justify-between gap-1.5 px-2 py-1.5",
-                "bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity",
+                "bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 touch:opacity-100 transition-opacity",
               )}
             >
               <div className="flex items-center gap-1.5 min-w-0">
@@ -168,7 +170,7 @@ export function MediaGrid({
                     e.stopPropagation();
                     onToggleVisibility(m);
                   }}
-                  className="p-1 rounded-md hover:bg-white/20 text-white"
+                  className="p-1 touch:p-2 rounded-md hover:bg-white/20 text-white"
                 >
                   {m.status === "VISIBLE" ? (
                     <EyeOff size={13} />
@@ -181,7 +183,7 @@ export function MediaGrid({
                     e.stopPropagation();
                     onDelete(m);
                   }}
-                  className="p-1 rounded-md hover:bg-white/20 text-white"
+                  className="p-1 touch:p-2 rounded-md hover:bg-white/20 text-white"
                 >
                   <Trash2 size={13} />
                 </button>

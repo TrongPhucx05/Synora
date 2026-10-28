@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { X } from "lucide-react";
 import PostCard from "@/components/feed/PostCard";
+import { useLockBodyScroll } from "@/lib/useLockBodyScroll";
 import type { Post } from "@/lib/feed/types";
 
 export function PostDetailModal({
@@ -11,6 +12,7 @@ export function PostDetailModal({
   postId: string;
   onClose: () => void;
 }) {
+  useLockBodyScroll();
   const [post, setPost] = useState<Post | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -37,14 +39,14 @@ export function PostDetailModal({
       className="fixed inset-0 z-[95] flex items-center justify-center p-4 bg-black/40 dark:bg-black/25 backdrop-blur-sm"
       onClick={(e) => e.target === e.currentTarget && onClose()}
     >
-      <div className="bg-transparent w-full max-w-lg max-h-[90vh] overflow-y-auto rounded-2xl">
+      <div className="bg-transparent w-full max-w-lg max-h-[90dvh] overflow-y-auto rounded-2xl">
         <div className="flex items-center justify-between px-1 pb-2">
           <h2 className="text-sm font-semibold text-white/90">
             Chi tiết bài viết
           </h2>
           <button
             onClick={onClose}
-            className="w-8 h-8 rounded-full bg-white/90 dark:bg-surface hover:bg-surface dark:hover:bg-surface-100 flex items-center justify-center text-text-secondary shadow shrink-0"
+            className="w-8 h-8 touch:w-10 touch:h-10 rounded-full bg-white/90 dark:bg-surface hover:bg-surface dark:hover:bg-surface-100 flex items-center justify-center text-text-secondary shadow shrink-0"
           >
             <X size={16} />
           </button>
