@@ -38,7 +38,7 @@ export function GroupsTable({
 
   return (
     <div className="bg-surface border border-surface-200 rounded-2xl overflow-x-auto">
-      <table className="w-full text-sm">
+      <table className="w-full text-sm min-w-[820px]">
         <thead>
           <tr className="border-b border-surface-100 bg-surface-50">
             <th className="text-left font-semibold text-text-muted text-xs px-5 py-3">
@@ -59,7 +59,7 @@ export function GroupsTable({
             <th className="text-left font-semibold text-text-muted text-xs px-4 py-3">
               Ngày tạo
             </th>
-            <th className="w-12 px-4 py-3" />
+            <th className="w-12 px-4 py-3 max-lg:sticky max-lg:right-0 max-lg:bg-surface-50" />
           </tr>
         </thead>
         <tbody>
@@ -82,15 +82,15 @@ export function GroupsTable({
                 </div>
               </td>
               <td className="px-4 py-3">
-                <p className="text-xs font-medium text-text-secondary">
+                <p className="text-xs font-medium text-text-secondary truncate max-w-[140px]">
                   {g.leaderName}
                 </p>
-                <p className="text-[11px] text-text-muted">
+                <p className="text-[11px] text-text-muted truncate max-w-[140px]">
                   @{g.leaderUsername}
                 </p>
               </td>
               <td className="px-4 py-3">
-                <div className="flex items-center gap-1.5 text-xs text-text-muted">
+                <div className="flex items-center gap-1.5 text-xs text-text-muted whitespace-nowrap">
                   <UsersIcon size={13} className="text-text-muted" />
                   {g.acceptedMemberCount}/{g.memberCount}
                   {g.acceptedMemberCount < g.memberCount && (
@@ -112,17 +112,17 @@ export function GroupsTable({
               <td className="px-4 py-3">
                 <span
                   className={clsx(
-                    "text-[11px] font-semibold px-2 py-0.5 rounded-full",
+                    "text-[11px] font-semibold px-2 py-0.5 rounded-full whitespace-nowrap",
                     STATUS_BADGE[g.status],
                   )}
                 >
                   {STATUS_LABEL[g.status]}
                 </span>
               </td>
-              <td className="px-4 py-3 text-xs text-text-muted">
+              <td className="px-4 py-3 text-xs text-text-muted whitespace-nowrap">
                 {g.createdAt}
               </td>
-              <td className="px-4 py-3">
+              <td className="px-4 py-3 max-lg:sticky max-lg:right-0 max-lg:bg-surface">
                 <GroupActionsMenu
                   group={g}
                   onViewDetail={() => onViewDetail(g)}

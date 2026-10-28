@@ -48,11 +48,12 @@ export function GroupActionsMenu({
   useLayoutEffect(() => {
     if (!open) return;
     updatePosition();
-    window.addEventListener("scroll", () => setOpen(false), true);
-    window.addEventListener("resize", () => setOpen(false));
+    const close = () => setOpen(false);
+    window.addEventListener("scroll", close, true);
+    window.addEventListener("resize", close);
     return () => {
-      window.removeEventListener("scroll", () => setOpen(false), true);
-      window.removeEventListener("resize", () => setOpen(false));
+      window.removeEventListener("scroll", close, true);
+      window.removeEventListener("resize", close);
     };
   }, [open, updatePosition]);
 
@@ -65,7 +66,7 @@ export function GroupActionsMenu({
       <button
         ref={triggerRef}
         onClick={() => setOpen((v) => !v)}
-        className="p-1.5 rounded-full hover:bg-surface-100 text-text-muted transition-colors"
+        className="p-1.5 touch:p-2 rounded-full hover:bg-surface-100 text-text-muted transition-colors"
       >
         <MoreVertical size={15} />
       </button>
@@ -83,7 +84,7 @@ export function GroupActionsMenu({
                 setOpen(false);
                 onViewDetail();
               }}
-              className="w-full flex items-center gap-2.5 px-3.5 py-2.5 text-xs text-text-secondary hover:bg-surface-50 transition-colors"
+              className="w-full flex items-center gap-2.5 px-3.5 py-2.5 touch:py-3 text-xs text-text-secondary hover:bg-surface-50 transition-colors"
             >
               <Eye size={13} className="text-text-muted shrink-0" />
               Xem chi tiết
@@ -97,7 +98,7 @@ export function GroupActionsMenu({
                   setOpen(false);
                   onEnable();
                 }}
-                className="w-full flex items-center gap-2.5 px-3.5 py-2.5 text-xs text-emerald-600 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-500/20 transition-colors"
+                className="w-full flex items-center gap-2.5 px-3.5 py-2.5 touch:py-3 text-xs text-emerald-600 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-500/20 transition-colors"
               >
                 <CheckCircle2 size={13} className="shrink-0" />
                 Mở lại nhóm
@@ -108,7 +109,7 @@ export function GroupActionsMenu({
                   setOpen(false);
                   onDisable();
                 }}
-                className="w-full flex items-center gap-2.5 px-3.5 py-2.5 text-xs text-amber-600 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-500/20 transition-colors"
+                className="w-full flex items-center gap-2.5 px-3.5 py-2.5 touch:py-3 text-xs text-amber-600 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-500/20 transition-colors"
               >
                 <Ban size={13} className="shrink-0" />
                 Vô hiệu hóa nhóm
@@ -120,7 +121,7 @@ export function GroupActionsMenu({
                 setOpen(false);
                 onDelete();
               }}
-              className="w-full flex items-center gap-2.5 px-3.5 py-2.5 text-xs text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/20 transition-colors"
+              className="w-full flex items-center gap-2.5 px-3.5 py-2.5 touch:py-3 text-xs text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/20 transition-colors"
             >
               <Trash2 size={13} className="shrink-0" />
               Xóa nhóm

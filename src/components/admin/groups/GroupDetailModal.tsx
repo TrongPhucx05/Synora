@@ -11,6 +11,7 @@ import {
 import { clsx } from "clsx";
 import Avatar from "@/components/ui/Avatar";
 import type { AdminGroupRow, AdminGroupMember } from "@/lib/admin/groups/types";
+import { useLockBodyScroll } from "@/lib/useLockBodyScroll";
 
 export function GroupDetailModal({
   group,
@@ -19,6 +20,7 @@ export function GroupDetailModal({
   group: AdminGroupRow;
   onClose: () => void;
 }) {
+  useLockBodyScroll();
   const [members, setMembers] = useState<AdminGroupMember[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -36,20 +38,20 @@ export function GroupDetailModal({
       className="fixed inset-0 z-[90] flex items-center justify-center bg-black/40 dark:bg-black/25 backdrop-blur-sm p-4"
       onClick={(e) => e.target === e.currentTarget && onClose()}
     >
-      <div className="bg-surface rounded-2xl shadow-xl w-full max-w-md mx-4 overflow-hidden max-h-[85vh] flex flex-col">
+      <div className="bg-surface rounded-2xl shadow-xl w-full max-w-md overflow-hidden max-h-[85dvh] flex flex-col">
         <div className="flex items-center justify-between px-5 py-4 border-b border-surface-100 shrink-0">
           <h3 className="text-sm font-semibold text-text-primary">
             Chi tiết nhóm
           </h3>
           <button
             onClick={onClose}
-            className="p-1.5 rounded-full hover:bg-surface-100 text-text-muted transition-colors"
+            className="p-1.5 touch:p-2 rounded-full hover:bg-surface-100 text-text-muted transition-colors"
           >
             <X size={16} />
           </button>
         </div>
 
-        <div className="p-5 overflow-y-auto">
+        <div className="p-4 sm:p-5 overflow-y-auto">
           <div className="flex items-center gap-3 mb-5">
             <Avatar
               src={group.avatarUrl ?? undefined}
@@ -144,7 +146,7 @@ export function GroupDetailModal({
                         <Crown size={12} className="text-amber-500 dark:text-amber-400 shrink-0" />
                       )}
                     </div>
-                    <p className="text-[11px] text-text-muted">@{m.username}</p>
+                    <p className="text-[11px] text-text-muted truncate">@{m.username}</p>
                   </div>
                   <span
                     className={clsx(
