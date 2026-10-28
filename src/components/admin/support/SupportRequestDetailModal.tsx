@@ -7,6 +7,7 @@ import type {
   AdminSupportRequestRow,
   SupportRequestStatus,
 } from "@/lib/support/types";
+import { useLockBodyScroll } from "@/lib/useLockBodyScroll";
 
 const TERMINAL_STATUSES: SupportRequestStatus[] = [
   "RESOLVED",
@@ -31,6 +32,7 @@ export function SupportRequestDetailModal({
   onClose: () => void;
   onUpdate: (status: SupportRequestStatus, reply: string) => void;
 }) {
+  useLockBodyScroll();
   const [status, setStatus] = useState<SupportRequestStatus>(
     request.status === "PENDING" ? "IN_PROGRESS" : request.status,
   );
@@ -39,20 +41,20 @@ export function SupportRequestDetailModal({
 
   return (
     <div className="fixed inset-0 bg-slate-900/40 dark:bg-black/25 flex items-center justify-center z-50 p-4">
-      <div className="bg-surface rounded-2xl shadow-xl w-full max-w-[560px] max-h-[85vh] overflow-y-auto">
-        <div className="flex items-center justify-between px-6 py-4 border-b border-surface-100">
+      <div className="bg-surface rounded-2xl shadow-xl w-full max-w-[560px] max-h-[85dvh] overflow-y-auto">
+        <div className="flex items-center justify-between px-4 sm:px-6 py-4 border-b border-surface-100">
           <h2 className="text-base font-semibold text-text-primary">
             Chi tiết yêu cầu hỗ trợ
           </h2>
           <button
             onClick={onClose}
-            className="p-1 rounded-lg hover:bg-surface-100 text-text-muted"
+            className="p-1 touch:p-2 rounded-lg hover:bg-surface-100 text-text-muted"
           >
             <X size={18} />
           </button>
         </div>
 
-        <div className="px-6 py-5 space-y-5">
+        <div className="px-4 sm:px-6 py-4 sm:py-5 space-y-4 sm:space-y-5">
           <div className="flex items-center justify-between flex-wrap gap-2">
             <div>
               <p className="text-xs text-text-muted">Mã yêu cầu</p>
@@ -79,7 +81,7 @@ export function SupportRequestDetailModal({
                 {request.guestName || "Khách (chưa đăng nhập)"}
               </p>
             )}
-            <p className="text-xs text-text-muted mt-0.5">
+            <p className="text-xs text-text-muted mt-0.5 break-all">
               {request.contactEmail}
             </p>
           </div>
@@ -93,14 +95,14 @@ export function SupportRequestDetailModal({
 
           <div>
             <p className="text-xs text-text-muted mb-1">Tiêu đề</p>
-            <p className="text-sm font-medium text-text-secondary">
+            <p className="text-sm font-medium text-text-secondary break-words">
               {request.subject}
             </p>
           </div>
 
           <div>
             <p className="text-xs text-text-muted mb-1">Nội dung</p>
-            <p className="text-sm text-text-secondary bg-surface-50 rounded-lg p-3 whitespace-pre-wrap">
+            <p className="text-sm text-text-secondary bg-surface-50 rounded-lg p-3 whitespace-pre-wrap break-words">
               {request.message}
             </p>
           </div>
@@ -134,7 +136,7 @@ export function SupportRequestDetailModal({
                   onChange={(e) => setReply(e.target.value)}
                   rows={3}
                   placeholder="Vd: Chúng tôi đã xem xét và..."
-                  className="w-full text-sm border border-surface-200 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-100 resize-none"
+                  className="w-full text-sm border border-surface-200 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-100 dark:focus:ring-blue-500/20 resize-none"
                 />
               </div>
             </>
@@ -149,7 +151,7 @@ export function SupportRequestDetailModal({
         </div>
 
         {!isTerminal && (
-          <div className="flex items-center justify-end gap-2 px-6 py-4 border-t border-surface-100">
+          <div className="flex items-center justify-end gap-2 px-4 sm:px-6 py-4 border-t border-surface-100">
             <button
               onClick={onClose}
               className="px-4 py-2 rounded-lg text-sm font-medium text-text-secondary hover:bg-surface-100"

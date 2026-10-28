@@ -28,7 +28,7 @@ export function SupportRequestFilters({
 }) {
   return (
     <div className="flex flex-wrap items-center gap-3 mb-4">
-      <div className="flex items-center gap-2 bg-surface border border-surface-200 rounded-lg px-3 py-2 w-[260px]">
+      <div className="flex items-center gap-2 bg-surface border border-surface-200 rounded-lg px-3 py-2 w-full sm:w-[260px]">
         <Search size={15} className="text-text-muted shrink-0" />
         <input
           value={value.query}
@@ -41,7 +41,7 @@ export function SupportRequestFilters({
       <select
         value={value.status}
         onChange={(e) => onChange({ ...value, status: e.target.value as SupportRequestFilterState["status"] })}
-        className="text-sm border border-surface-200 rounded-lg px-3 py-2 text-text-secondary bg-surface focus:outline-none"
+        className="flex-1 min-w-[140px] sm:flex-none text-sm border border-surface-200 rounded-lg px-3 py-2 text-text-secondary bg-surface focus:outline-none"
       >
         {STATUS_OPTIONS.map((s) => (
           <option key={s.value} value={s.value}>{s.label}</option>

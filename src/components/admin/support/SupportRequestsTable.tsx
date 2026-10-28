@@ -87,7 +87,7 @@ export function SupportRequestsTable({
                     onViewDetail(r);
                   }}
                   title="Xem chi tiết"
-                  className="p-1.5 rounded-lg hover:bg-surface-100 text-text-muted hover:text-text-secondary"
+                  className="p-1.5 touch:p-2 rounded-lg hover:bg-surface-100 text-text-muted hover:text-text-secondary"
                 >
                   <Eye size={15} />
                 </button>
