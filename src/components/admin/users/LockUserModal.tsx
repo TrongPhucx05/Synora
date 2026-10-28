@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { AlertTriangle, Ban, Clock } from "lucide-react";
 import { clsx } from "clsx";
+import { useLockBodyScroll } from "@/lib/useLockBodyScroll";
 import {
   LOCK_REASONS,
   LOCK_REASON_LABELS,
@@ -29,6 +30,7 @@ export function LockUserModal({
   onConfirm: (payload: LockPayload) => void;
   onCancel: () => void;
 }) {
+  useLockBodyScroll();
   const [type, setType] = useState<"SUSPEND" | "BAN">("SUSPEND");
   const [reason, setReason] = useState<LockReason>("INAPPROPRIATE");
   const [note, setNote] = useState("");
@@ -55,7 +57,7 @@ export function LockUserModal({
       className="fixed inset-0 z-[95] flex items-center justify-center p-4 bg-black/40 dark:bg-black/25 backdrop-blur-sm"
       onClick={(e) => e.target === e.currentTarget && onCancel()}
     >
-      <div className="bg-surface rounded-2xl shadow-2xl w-full max-w-md overflow-hidden max-h-[90vh] flex flex-col">
+      <div className="bg-surface rounded-2xl shadow-2xl w-full max-w-md overflow-hidden max-h-[90dvh] flex flex-col">
         <div className="flex items-start gap-3 px-5 pt-5 pb-4 shrink-0">
           <div className="w-10 h-10 rounded-xl bg-red-100 dark:bg-red-500/20 text-red-500 dark:text-red-400 flex items-center justify-center shrink-0">
             <AlertTriangle size={19} />
@@ -77,7 +79,7 @@ export function LockUserModal({
               className={clsx(
                 "flex items-center gap-2 justify-center px-3 py-2.5 rounded-xl text-xs font-semibold border transition-colors",
                 type === "SUSPEND"
-                  ? "border-amber-300 bg-amber-50 dark:bg-amber-500/15 text-amber-700"
+                  ? "border-amber-300 bg-amber-50 dark:bg-amber-500/15 text-amber-700 dark:text-amber-300"
                   : "border-surface-200 text-text-muted hover:bg-surface-50",
               )}
             >
@@ -110,7 +112,7 @@ export function LockUserModal({
                       setCustomDate("");
                     }}
                     className={clsx(
-                      "px-2.5 py-1.5 rounded-full text-[11px] font-medium border transition-colors",
+                      "px-2.5 py-1.5 touch:py-2 rounded-full text-[11px] font-medium border transition-colors",
                       presetHours === p.hours
                         ? "bg-primary text-white border-primary"
                         : "border-surface-200 text-text-secondary hover:bg-surface-50",

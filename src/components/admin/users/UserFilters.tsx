@@ -43,7 +43,7 @@ export function UserFilters({
           })
         }
         className={clsx(
-          "bg-surface border border-surface-200 rounded-full px-4 py-2 text-sm text-text-secondary",
+          "w-full sm:w-auto bg-surface border border-surface-200 rounded-full px-4 py-2 text-sm text-text-secondary",
           "focus:outline-none focus:border-blue-400",
         )}
       >

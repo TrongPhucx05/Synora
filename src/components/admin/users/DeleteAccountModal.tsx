@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { AlertTriangle, Trash2 } from "lucide-react";
 import { clsx } from "clsx";
+import { useLockBodyScroll } from "@/lib/useLockBodyScroll";
 
 export type DeleteAccountPayload = { note?: string; notifyUser: boolean };
 
@@ -16,6 +17,7 @@ export function DeleteAccountModal({
   onConfirm: (payload: DeleteAccountPayload) => void;
   onCancel: () => void;
 }) {
+  useLockBodyScroll();
   const [note, setNote] = useState("");
   const [notifyUser, setNotifyUser] = useState(true);
 
@@ -24,7 +26,7 @@ export function DeleteAccountModal({
       className="fixed inset-0 z-[95] flex items-center justify-center p-4 bg-black/40 dark:bg-black/25 backdrop-blur-sm"
       onClick={(e) => e.target === e.currentTarget && onCancel()}
     >
-      <div className="bg-surface rounded-2xl shadow-2xl w-full max-w-md overflow-hidden">
+      <div className="bg-surface rounded-2xl shadow-2xl w-full max-w-md max-h-[90dvh] overflow-y-auto">
         <div className="flex items-start gap-3 px-5 pt-5 pb-4">
           <div className="w-10 h-10 rounded-xl bg-red-100 dark:bg-red-500/20 text-red-500 dark:text-red-400 flex items-center justify-center shrink-0">
             <Trash2 size={19} />
@@ -41,12 +43,12 @@ export function DeleteAccountModal({
         </div>
 
         <div className="px-5 flex flex-col gap-4">
-          <div className="flex items-start gap-2.5 bg-amber-50 dark:bg-amber-500/15 border border-amber-100 rounded-xl p-3">
+          <div className="flex items-start gap-2.5 bg-amber-50 dark:bg-amber-500/15 border border-amber-100 dark:border-amber-500/20 rounded-xl p-3">
             <AlertTriangle
               size={15}
               className="text-amber-500 dark:text-amber-400 shrink-0 mt-0.5"
             />
-            <p className="text-[11px] text-amber-700 leading-relaxed">
+            <p className="text-[11px] text-amber-700 dark:text-amber-300 leading-relaxed">
               Toàn bộ bài viết, tài liệu, bình luận và tin nhắn của người dùng
               sẽ bị xóa vĩnh viễn cùng tài khoản khi hết hạn.
             </p>

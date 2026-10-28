@@ -91,7 +91,7 @@ export function UsersTable({
               <th className="text-left font-semibold text-text-muted text-xs px-3 py-3">
                 Ngày tham gia
               </th>
-              <th className="w-12 px-4 py-3" />
+              <th className="w-12 px-4 py-3 max-lg:sticky max-lg:right-0 max-lg:bg-surface-50" />
             </tr>
           </thead>
           <tbody>
@@ -154,7 +154,7 @@ export function UsersTable({
                 <td className="px-3 py-3 text-xs text-text-muted whitespace-nowrap">
                   {u.joinedAt}
                 </td>
-                <td className="px-4 py-3 text-center">
+                <td className="px-4 py-3 text-center max-lg:sticky max-lg:right-0 max-lg:bg-surface">
                   <button
                     onClick={(e) =>
                       setMenuAnchor(
@@ -163,7 +163,7 @@ export function UsersTable({
                           : { id: u.id, el: e.currentTarget },
                       )
                     }
-                    className="p-1.5 rounded-full hover:bg-surface-100 text-text-muted transition-colors"
+                    className="p-1.5 touch:p-2 rounded-full hover:bg-surface-100 text-text-muted transition-colors"
                   >
                     <MoreVertical size={15} />
                   </button>
