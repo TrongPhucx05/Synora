@@ -8,6 +8,7 @@ import {
   ACTION_BADGE,
   type AuditLogEntry,
 } from "@/lib/audit-log/types";
+import { useLockBodyScroll } from "@/lib/useLockBodyScroll";
 
 export function AuditLogDetailModal({
   entry,
@@ -16,6 +17,7 @@ export function AuditLogDetailModal({
   entry: AuditLogEntry;
   onClose: () => void;
 }) {
+  useLockBodyScroll();
   const Icon = ACTION_ICON[entry.action] ?? FileQuestion;
 
   return (
@@ -23,20 +25,20 @@ export function AuditLogDetailModal({
       className="fixed inset-0 z-[90] flex items-center justify-center bg-black/40 dark:bg-black/25 backdrop-blur-sm p-4"
       onClick={(e) => e.target === e.currentTarget && onClose()}
     >
-      <div className="bg-surface rounded-2xl shadow-xl w-full max-w-md mx-4 overflow-hidden">
+      <div className="bg-surface rounded-2xl shadow-xl w-full max-w-md max-h-[90dvh] overflow-y-auto">
         <div className="flex items-center justify-between px-5 py-4 border-b border-surface-100">
           <h3 className="text-sm font-semibold text-text-primary">
             Chi tiết nhật ký
           </h3>
           <button
             onClick={onClose}
-            className="p-1.5 rounded-full hover:bg-surface-100 text-text-muted transition-colors"
+            className="p-1.5 touch:p-2 rounded-full hover:bg-surface-100 text-text-muted transition-colors"
           >
             <X size={16} />
           </button>
         </div>
 
-        <div className="p-5">
+        <div className="p-4 sm:p-5">
           <div className="flex items-center gap-3 mb-5">
             <Avatar
               src={entry.actor.avatarUrl ?? undefined}
@@ -74,7 +76,7 @@ export function AuditLogDetailModal({
               <p className="text-[11px] font-medium text-text-muted mb-1">
                 Đối tượng tác động
               </p>
-              <p className="text-xs text-text-secondary">{entry.targetLabel}</p>
+              <p className="text-xs text-text-secondary break-words">{entry.targetLabel}</p>
             </div>
 
             {entry.reasonLabel && (
@@ -91,7 +93,7 @@ export function AuditLogDetailModal({
                 <p className="text-[11px] font-medium text-text-muted mb-1">
                   Chi tiết
                 </p>
-                <p className="text-xs text-text-secondary leading-relaxed">
+                <p className="text-xs text-text-secondary leading-relaxed break-words">
                   {entry.detail}
                 </p>
               </div>

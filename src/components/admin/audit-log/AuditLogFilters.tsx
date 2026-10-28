@@ -37,7 +37,7 @@ export function AuditLogFilters({
             group: e.target.value as AuditLogFilterState["group"],
           })
         }
-        className="bg-surface border border-surface-200 rounded-full px-4 py-2 text-sm text-text-secondary focus:outline-none focus:border-blue-400"
+        className="w-full sm:w-auto bg-surface border border-surface-200 rounded-full px-4 py-2 text-sm text-text-secondary focus:outline-none focus:border-blue-400"
       >
         {Object.entries(GROUP_LABELS).map(([key, label]) => (
           <option key={key} value={key}>
@@ -46,19 +46,21 @@ export function AuditLogFilters({
         ))}
       </select>
 
-      <input
-        type="date"
-        value={value.dateFrom}
-        onChange={(e) => onChange({ ...value, dateFrom: e.target.value })}
-        className="bg-surface border border-surface-200 rounded-full px-4 py-2 text-sm text-text-secondary focus:outline-none focus:border-blue-400"
-      />
-      <span className="text-xs text-text-muted">đến</span>
-      <input
-        type="date"
-        value={value.dateTo}
-        onChange={(e) => onChange({ ...value, dateTo: e.target.value })}
-        className="bg-surface border border-surface-200 rounded-full px-4 py-2 text-sm text-text-secondary focus:outline-none focus:border-blue-400"
-      />
+      <div className="flex items-center gap-2 w-full sm:w-auto">
+        <input
+          type="date"
+          value={value.dateFrom}
+          onChange={(e) => onChange({ ...value, dateFrom: e.target.value })}
+          className="flex-1 min-w-0 bg-surface border border-surface-200 rounded-full px-4 py-2 text-sm text-text-secondary focus:outline-none focus:border-blue-400"
+        />
+        <span className="text-xs text-text-muted shrink-0">đến</span>
+        <input
+          type="date"
+          value={value.dateTo}
+          onChange={(e) => onChange({ ...value, dateTo: e.target.value })}
+          className="flex-1 min-w-0 bg-surface border border-surface-200 rounded-full px-4 py-2 text-sm text-text-secondary focus:outline-none focus:border-blue-400"
+        />
+      </div>
     </div>
   );
 }

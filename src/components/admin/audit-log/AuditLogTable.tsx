@@ -28,8 +28,8 @@ export function AuditLogTable({
   }
 
   return (
-    <div className="bg-surface border border-surface-200 rounded-2xl overflow-hidden">
-      <table className="w-full text-sm">
+    <div className="bg-surface border border-surface-200 rounded-2xl overflow-x-auto">
+      <table className="w-full text-sm min-w-[760px]">
         <thead>
           <tr className="border-b border-surface-100 bg-surface-50">
             <th className="text-left font-semibold text-text-muted text-xs px-5 py-3">
@@ -44,7 +44,7 @@ export function AuditLogTable({
             <th className="text-left font-semibold text-text-muted text-xs px-4 py-3">
               Thời gian
             </th>
-            <th className="w-12 px-4 py-3" />
+            <th className="w-12 px-4 py-3 max-lg:sticky max-lg:right-0 max-lg:bg-surface-50" />
           </tr>
         </thead>
         <tbody>
@@ -75,7 +75,7 @@ export function AuditLogTable({
                 <td className="px-4 py-3">
                   <span
                     className={clsx(
-                      "inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 rounded-full",
+                      "inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 rounded-full whitespace-nowrap",
                       ACTION_BADGE[e.action] ?? "bg-surface-50 text-text-secondary",
                     )}
                   >
@@ -89,11 +89,11 @@ export function AuditLogTable({
                 <td className="px-4 py-3 text-xs text-text-muted whitespace-nowrap">
                   {e.createdAt}
                 </td>
-                <td className="px-4 py-3">
+                <td className="px-4 py-3 max-lg:sticky max-lg:right-0 max-lg:bg-surface">
                   <button
                     onClick={() => onViewDetail(e)}
                     title="Xem chi tiết"
-                    className="p-1.5 rounded-lg hover:bg-surface-100 text-text-muted hover:text-text-secondary"
+                    className="p-1.5 touch:p-2 rounded-lg hover:bg-surface-100 text-text-muted hover:text-text-secondary"
                   >
                     <Eye size={15} />
                   </button>
