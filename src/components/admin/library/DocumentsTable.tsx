@@ -56,7 +56,7 @@ export function DocumentsTable({
             <th className="px-5 py-3 font-medium whitespace-nowrap">
               Ngày đăng
             </th>
-            <th className="px-5 py-3 font-medium w-[110px]" />
+            <th className="px-5 py-3 font-medium w-[110px] max-lg:sticky max-lg:right-0 max-lg:bg-surface" />
           </tr>
         </thead>
         <tbody>
@@ -125,7 +125,7 @@ export function DocumentsTable({
               <td className="px-5 py-3 text-text-muted whitespace-nowrap">
                 {doc.createdAt}
               </td>
-              <td className="px-5 py-3 whitespace-nowrap">
+              <td className="px-5 py-3 whitespace-nowrap max-lg:sticky max-lg:right-0 max-lg:bg-surface">
                 <div className="flex items-center justify-end gap-1">
                   <button
                     type="button"
@@ -137,14 +137,14 @@ export function DocumentsTable({
                       )
                     }
                     title="Xem tài liệu"
-                    className="p-1.5 rounded-lg hover:bg-surface-100 text-text-muted hover:text-text-secondary"
+                    className="p-1.5 touch:p-2 rounded-lg hover:bg-surface-100 text-text-muted hover:text-text-secondary"
                   >
                     <ExternalLink size={15} />
                   </button>
                   <button
                     onClick={() => onToggleVisibility(doc)}
                     title={doc.status === "VISIBLE" ? "Ẩn tài liệu" : "Bỏ ẩn"}
-                    className="p-1.5 rounded-lg hover:bg-surface-100 text-text-muted hover:text-text-secondary"
+                    className="p-1.5 touch:p-2 rounded-lg hover:bg-surface-100 text-text-muted hover:text-text-secondary"
                   >
                     {doc.status === "VISIBLE" ? (
                       <EyeOff size={15} />
@@ -155,7 +155,7 @@ export function DocumentsTable({
                   <button
                     onClick={() => onDelete(doc)}
                     title="Xóa vĩnh viễn"
-                    className="p-1.5 rounded-lg hover:bg-red-50 dark:hover:bg-red-500/20 text-text-muted hover:text-red-500"
+                    className="p-1.5 touch:p-2 rounded-lg hover:bg-red-50 dark:hover:bg-red-500/20 text-text-muted hover:text-red-500"
                   >
                     <Trash2 size={15} />
                   </button>

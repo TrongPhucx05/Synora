@@ -2,6 +2,7 @@
 import { useState, useRef, useEffect } from "react";
 import { X, Trash2, ChevronDown, Check } from "lucide-react";
 import { clsx } from "clsx";
+import { useLockBodyScroll } from "@/lib/useLockBodyScroll";
 import {
   VIOLATION_REASON_LABELS,
   VIOLATION_REASONS,
@@ -19,6 +20,7 @@ export function DeleteDocumentDialog({
   onConfirm: (reason: ViolationReason, note: string) => void;
   onCancel: () => void;
 }) {
+  useLockBodyScroll();
   const [reason, setReason] = useState<ViolationReason | "">("");
   const [note, setNote] = useState("");
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -33,13 +35,13 @@ export function DeleteDocumentDialog({
         setDropdownOpen(false);
       }
     };
-    if (dropdownOpen) document.addEventListener("mousedown", handler);
-    return () => document.removeEventListener("mousedown", handler);
+    if (dropdownOpen) document.addEventListener("pointerdown", handler);
+    return () => document.removeEventListener("pointerdown", handler);
   }, [dropdownOpen]);
 
   return (
     <div className="fixed inset-0 z-[90] flex items-center justify-center bg-slate-900/40 dark:bg-black/25 p-4">
-      <div className="bg-surface rounded-2xl shadow-xl w-full max-w-sm p-6">
+      <div className="bg-surface rounded-2xl shadow-xl w-full max-w-sm max-h-[90dvh] overflow-y-auto p-6">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2.5">
             <div className="w-9 h-9 rounded-full bg-red-100 dark:bg-red-500/20 flex items-center justify-center">
@@ -51,7 +53,7 @@ export function DeleteDocumentDialog({
           </div>
           <button
             onClick={onCancel}
-            className="p-1 text-text-muted hover:text-text-secondary"
+            className="p-1 touch:p-2 text-text-muted hover:text-text-secondary"
           >
             <X size={16} />
           </button>
@@ -72,7 +74,7 @@ export function DeleteDocumentDialog({
             className={clsx(
               "w-full flex items-center justify-between px-3 py-2.5 bg-surface border rounded-xl text-sm text-left transition-colors",
               dropdownOpen
-                ? "border-blue-400 ring-2 ring-blue-100"
+                ? "border-blue-400 ring-2 ring-blue-100 dark:ring-blue-500/20"
                 : "border-surface-200",
               !reason && "text-text-muted",
             )}
@@ -98,7 +100,7 @@ export function DeleteDocumentDialog({
                     setDropdownOpen(false);
                   }}
                   className={clsx(
-                    "w-full flex items-center justify-between px-3.5 py-2 text-sm text-left transition-colors",
+                    "w-full flex items-center justify-between px-3.5 py-2.5 sm:py-2 text-sm text-left transition-colors",
                     reason === r
                       ? "bg-blue-50 dark:bg-blue-500/15 text-blue-600 dark:text-blue-400 font-medium"
                       : "text-text-secondary hover:bg-surface-50",
