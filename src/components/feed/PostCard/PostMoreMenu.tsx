@@ -90,7 +90,7 @@ export default function PostMoreMenu({
           null,
           {
             icon: <Ban size={15} />,
-            label: t("menu.block", { name: authorName.split(" ").pop() }),
+            label: t("menu.block", { name: authorName.split(" ").pop() ?? authorName }),
             onClick: () => {
               onBlock();
               setOpen(false);

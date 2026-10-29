@@ -108,7 +108,7 @@ export default function CommentBubbleMenu({
               null,
               {
                 icon: <Ban size={14} />,
-                label: t("menu.block", { name: authorName.split(" ").pop() }),
+                label: t("menu.block", { name: authorName.split(" ").pop() ?? authorName }),
                 onClick: () => {
                   onBlock?.();
                   setOpen(false);

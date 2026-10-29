@@ -51,7 +51,12 @@ interface PostComposerProps {
     }[];
     visibility: string;
   }) => void;
-  currentUser?: { name: string; initials: string; image?: string | null };
+  currentUser?: {
+    name: string;
+    initials: string;
+    image?: string | null;
+    username?: string;
+  };
 }
 
 type Visibility = "public" | "friends" | "private";
@@ -277,7 +282,7 @@ function MediaLightboxPreview({
       )}
 
       <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-black/50 dark:bg-black/35 text-white text-xs px-3 py-1 rounded-full max-w-xs truncate">
-        {current.name} Â· {current.size}
+        {current.name} · {current.size}
       </div>
 
       {files.length > 1 && (
@@ -382,7 +387,11 @@ export default function PostComposer({
   const { startUpload: startDocUpload } = useUploadThing("postDocument");
 
   const tags = Array.from(
-    new Set((content.match(/#[\p{L}\p{M}\p{N}_]+/gu) ?? []).map((t) => t.toLowerCase())),
+    new Set(
+      (content.match(/#[\p{L}\p{M}\p{N}_]+/gu) ?? []).map((t) =>
+        t.toLowerCase(),
+      ),
+    ),
   );
 
   const fileInputRef = useRef<HTMLInputElement>(null);

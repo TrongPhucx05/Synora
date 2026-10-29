@@ -33,7 +33,7 @@ interface DocumentCardProps {
   onReport?: (id: string) => void;
   onDownload?: () => void;
   currentUserId?: string;
-  onEdited?: (updated: Partial<Document>) => void;
+  onEdited?: (updated: any) => void;
   onDeleted?: (id: string) => void;
   isAdmin?: boolean;
 }

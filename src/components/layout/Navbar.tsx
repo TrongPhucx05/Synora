@@ -47,9 +47,9 @@ function clearHistory(userId: string) {
 }
 
 const CATEGORY_TABS = [
-  { tab: "documents", labelKey: "categories.documents" },
-  { tab: "posts", labelKey: "categories.posts" },
-  { tab: "people", labelKey: "categories.people" },
+  { tab: "documents", labelKey: "categories.documents", isTopic: false },
+  { tab: "posts", labelKey: "categories.posts", isTopic: false },
+  { tab: "people", labelKey: "categories.people", isTopic: false },
   { tab: "topics", labelKey: "categories.topics", isTopic: true },
 ] as const;
 
