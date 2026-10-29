@@ -1,5 +1,6 @@
 ﻿import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
+import { randomBytes } from "crypto";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { emailService } from "@/lib/email/service";
@@ -10,9 +11,15 @@ export async function POST(req: NextRequest) {
   if (!session?.user?.id) {
     return NextResponse.json({ error: "Chưa đăng nhập" }, { status: 401 });
   }
+  if (!session.user.email) {
+    return NextResponse.json(
+      { error: "Tài khoản của bạn chưa có email để gửi xác nhận" },
+      { status: 400 },
+    );
+  }
 
   const { subject, message, type } = await req.json().catch(() => ({}));
-  const requestType = type === "BAN_APPEAL" ? "BAN_APPEAL" : "GENERAL";
+  const requestType = type === "BAN_APPEAL" ? "BAN_APPEAL" : "ACCOUNT_SUPPORT";
 
   if (!subject?.trim() || !message?.trim()) {
     return NextResponse.json(
@@ -42,28 +49,25 @@ export async function POST(req: NextRequest) {
 
   const created = await prisma.supportRequest.create({
     data: {
+      code: `SR-${randomBytes(4).toString("hex").toUpperCase()}`,
       userId: session.user.id,
+      contactEmail: session.user.email,
       subject: subject.trim(),
       message: message.trim(),
       type: requestType,
     },
   });
 
-  if (requestType === "GENERAL") {
+  if (requestType === "ACCOUNT_SUPPORT") {
     await prisma.notification.create({
       data: {
         recipientId: session.user.id,
         type: "SUPPORT_REQUEST_SUBMITTED",
         message: "Yêu cầu hỗ trợ của bạn đã được gửi và đang chờ xử lý.",
+        supportRequestId: created.id,
       },
     });
   } else {
-    if (!session.user.email) {
-      return NextResponse.json(
-        { error: "Tài khoản của bạn chưa có email để gửi xác nhận" },
-        { status: 400 },
-      );
-    }
     const { subject: mailSubject, html } = supportRequestReceivedEmail(
       created.subject,
     );
