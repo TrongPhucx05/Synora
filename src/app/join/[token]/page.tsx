@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
+import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { Users, Loader2, CheckCircle2, Clock, XCircle } from "lucide-react";
 import Avatar from "@/components/ui/Avatar";
@@ -22,6 +23,7 @@ export default function JoinGroupPage() {
   const { token } = useParams<{ token: string }>();
   const { data: session, status: authStatus } = useSession();
   const router = useRouter();
+  const t = useTranslations("chat.utils");
 
   const [preview, setPreview] = useState<JoinLinkPreview | null>(null);
   const [loading, setLoading] = useState(true);
@@ -37,22 +39,24 @@ export default function JoinGroupPage() {
       setLoading(false);
       return;
     }
-    fetchJoinPreview(token)
+    fetchJoinPreview(token, t)
       .then(setPreview)
-      .catch((e) => setError(e instanceof Error ? e.message : "CÃ³ lá»—i xáº£y ra"))
+      .catch((e) =>
+        setError(e instanceof Error ? e.message : t("genericError")),
+      )
       .finally(() => setLoading(false));
   }, [token, authStatus]);
 
   const handleJoin = async () => {
     setSubmitting(true);
     try {
-      const data = await submitJoinRequest(token);
+      const data = await submitJoinRequest(token, t);
       setResult(data.status as typeof result);
       if (data.status === "joined" || data.status === "already_member") {
         setTimeout(() => router.push(`/chat`), 1200);
       }
     } catch (e) {
-      setError(e instanceof Error ? e.message : "CÃ³ lá»—i xáº£y ra");
+      setError(e instanceof Error ? e.message : t("genericError"));
     } finally {
       setSubmitting(false);
     }
@@ -74,17 +78,17 @@ export default function JoinGroupPage() {
             <Users size={24} className="text-primary" />
           </div>
           <p className="text-sm font-bold text-text-primary mb-1">
-            ÄÄƒng nháº­p Ä‘á»ƒ tham gia nhÃ³m
+            Đăng nhập để tham gia nhóm
           </p>
           <p className="text-xs text-text-muted mb-5">
-            Báº¡n cáº§n Ä‘Äƒng nháº­p trÆ°á»›c khi cÃ³ thá»ƒ xem hoáº·c gá»­i yÃªu cáº§u tham gia
-            nhÃ³m nÃ y.
+            Bạn cần đăng nhập trước khi có thể xem hoặc gửi yêu cầu tham gia
+            nhóm này.
           </p>
           <Link
             href={`/login?callbackUrl=${encodeURIComponent(`/join/${token}`)}`}
             className="block w-full py-2.5 rounded-xl bg-primary text-white text-xs font-semibold hover:bg-primary-700 transition-colors"
           >
-            ÄÄƒng nháº­p
+            Đăng nhập
           </Link>
         </div>
       </div>
@@ -99,16 +103,16 @@ export default function JoinGroupPage() {
             <XCircle size={24} className="text-red-500" />
           </div>
           <p className="text-sm font-bold text-text-primary mb-1">
-            Link má»i khÃ´ng há»£p lá»‡
+            Link mời không hợp lệ
           </p>
           <p className="text-xs text-text-muted mb-5">
-            {error ?? "Link Ä‘Ã£ háº¿t hiá»‡u lá»±c hoáº·c khÃ´ng tá»“n táº¡i."}
+            {error ?? "Link đã hết hiệu lực hoặc không tồn tại."}
           </p>
           <Link
             href="/feed"
             className="block w-full py-2.5 rounded-xl border border-surface-200 text-xs font-semibold text-text-secondary hover:bg-surface-50 transition-colors"
           >
-            Vá» trang chá»§
+            Về trang chủ
           </Link>
         </div>
       </div>
@@ -122,7 +126,7 @@ export default function JoinGroupPage() {
       <div className="bg-surface border border-surface-200 rounded-2xl p-8 max-w-sm w-full text-center">
         <Avatar
           src={preview.avatarUrl}
-          initials={getInitials(preview.name ?? "NhÃ³m")}
+          initials={getInitials(preview.name ?? "Nhóm")}
           size="xl"
           shape="circle"
           className="mx-auto mb-4"
@@ -131,7 +135,7 @@ export default function JoinGroupPage() {
           {preview.name}
         </p>
         <p className="text-xs text-text-muted mb-6">
-          {preview.memberCount} thÃ nh viÃªn
+          {preview.memberCount} thành viên
         </p>
 
         {effectiveStatus === "member" ||
@@ -139,20 +143,20 @@ export default function JoinGroupPage() {
           <div className="flex flex-col items-center gap-2">
             <CheckCircle2 size={20} className="text-green-500" />
             <p className="text-xs text-text-secondary">
-              Báº¡n Ä‘Ã£ lÃ  thÃ nh viÃªn cá»§a nhÃ³m nÃ y
+              Bạn đã là thành viên của nhóm này
             </p>
             <Link
               href="/chat"
               className="mt-2 w-full py-2.5 rounded-xl bg-primary text-white text-xs font-semibold hover:bg-primary-700 transition-colors"
             >
-              Má»Ÿ cuá»™c trÃ² chuyá»‡n
+              Mở cuộc trò chuyện
             </Link>
           </div>
         ) : effectiveStatus === "joined" ? (
           <div className="flex flex-col items-center gap-2">
             <CheckCircle2 size={20} className="text-green-500" />
             <p className="text-xs text-text-secondary">
-              ÄÃ£ tham gia nhÃ³m! Äang chuyá»ƒn hÆ°á»›ng...
+              Đã tham gia nhóm! Đang chuyển hướng...
             </p>
           </div>
         ) : effectiveStatus === "requested" ||
@@ -160,14 +164,14 @@ export default function JoinGroupPage() {
           <div className="flex flex-col items-center gap-2">
             <Clock size={20} className="text-amber-500" />
             <p className="text-xs text-text-secondary">
-              YÃªu cáº§u tham gia Ä‘ang chá» trÆ°á»Ÿng nhÃ³m duyá»‡t
+              Yêu cầu tham gia đang chờ trưởng nhóm duyệt
             </p>
           </div>
         ) : effectiveStatus === "cooldown" ? (
           <div className="flex flex-col items-center gap-2">
             <Clock size={20} className="text-amber-500" />
             <p className="text-xs text-text-secondary">
-              YÃªu cáº§u trÆ°á»›c Ä‘Ã³ Ä‘Ã£ bá»‹ tá»« chá»‘i. Báº¡n cÃ³ thá»ƒ gá»­i láº¡i sau{" "}
+              Yêu cầu trước đó đã bị từ chối. Bạn có thể gửi lại sau{" "}
               {preview.cooldownEndsAt &&
                 new Date(preview.cooldownEndsAt).toLocaleDateString("vi-VN")}
               .
@@ -180,7 +184,7 @@ export default function JoinGroupPage() {
             className="w-full py-2.5 rounded-xl bg-primary text-white text-xs font-semibold hover:bg-primary-700 transition-colors disabled:opacity-50 flex items-center justify-center gap-1.5"
           >
             {submitting && <Loader2 size={12} className="animate-spin" />}
-            Báº¡n Ä‘Ã£ Ä‘Æ°á»£c má»i â€” Tham gia ngay
+            Bạn đã được mời — Tham gia ngay
           </button>
         ) : (
           <button
@@ -189,7 +193,7 @@ export default function JoinGroupPage() {
             className="w-full py-2.5 rounded-xl bg-primary text-white text-xs font-semibold hover:bg-primary-700 transition-colors disabled:opacity-50 flex items-center justify-center gap-1.5"
           >
             {submitting && <Loader2 size={12} className="animate-spin" />}
-            Gá»­i yÃªu cáº§u tham gia
+            Gửi yêu cầu tham gia
           </button>
         )}
       </div>
