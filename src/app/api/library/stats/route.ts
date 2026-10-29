@@ -2,11 +2,13 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import type { DocumentType } from "@/generated/prisma/enums";
 
+const EXCLUDED_TYPES: DocumentType[] = ["IMAGE", "VIDEO"];
+
 export async function GET() {
   try {
     const libraryWhere = {
       postId: null,
-      type: { notIn: ["IMAGE", "VIDEO"] as const },
+      type: { notIn: EXCLUDED_TYPES },
       hidden: false,
     };
 
