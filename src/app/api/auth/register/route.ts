@@ -11,8 +11,6 @@ export async function POST(req: NextRequest) {
     const password = typeof body.password === "string" ? body.password : "";
     const displayName = typeof body.displayName === "string" ? body.displayName.trim() : "";
 
-api/auth/forgot-password/route.ts
-
     if (!isValidEmail(email)) {
       return NextResponse.json(
         { error: "Email không đúng định dạng" },
