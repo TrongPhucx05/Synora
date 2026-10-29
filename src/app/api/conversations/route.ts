@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
+import { getTranslations } from "next-intl/server";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { buildAttachmentLabel } from "@/lib/chat/utils";
@@ -15,6 +16,13 @@ export async function GET(_req: NextRequest) {
     return NextResponse.json({ error: "Chưa đăng nhập" }, { status: 401 });
   }
   const userId = session.user.id;
+
+  const profile = await prisma.profile.findUnique({
+    where: { userId },
+    select: { language: true },
+  });
+  const locale = profile?.language === "EN" ? "en" : "vi";
+  const t = await getTranslations({ locale, namespace: "chat.utils" });
 
   const me = await prisma.user.findUnique({
     where: { id: userId },
@@ -143,7 +151,7 @@ export async function GET(_req: NextRequest) {
         } else if (lastMsg.content) {
           lastMessage = lastMsg.content;
         } else if (lastMsg.attachments.length > 0) {
-          lastMessage = buildAttachmentLabel(lastMsg.attachments);
+          lastMessage = buildAttachmentLabel(lastMsg.attachments, t);
         }
       }
 

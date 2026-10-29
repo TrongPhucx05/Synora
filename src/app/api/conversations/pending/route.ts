@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { getTranslations } from "next-intl/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
@@ -10,6 +11,12 @@ export async function GET(_req: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const userId = session.user.id;
+  const profile = await prisma.profile.findUnique({
+    where: { userId },
+    select: { language: true },
+  });
+  const locale = profile?.language === "EN" ? "en" : "vi";
+  const t = await getTranslations({ locale, namespace: "chat.utils" });
 
   const pending = await prisma.conversationMember.findMany({
     where: { userId, isAccepted: false, hiddenAt: null, origin: "INVITED" },
@@ -96,7 +103,7 @@ export async function GET(_req: NextRequest) {
       if (lastMsg) {
         if (lastMsg.content) content = lastMsg.content;
         else if (lastMsg.attachments.length > 0)
-          content = buildAttachmentLabel(lastMsg.attachments);
+          content = buildAttachmentLabel(lastMsg.attachments, t);
       }
 
       return conv.isGroup
