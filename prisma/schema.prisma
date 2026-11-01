@@ -256,6 +256,9 @@ model User {
   supportRequests    SupportRequest[]
   createdInviteLinks GroupInviteLink[] @relation("inviteLinkCreator")
 
+  aiConversations AiConversation[]
+  aiSavedPrompts  AiSavedPrompt[]
+
   @@map("users")
 }
 
@@ -280,6 +283,8 @@ model Profile {
   showActivityStatus      Boolean                 @default(true)
   theme Theme @default(SYSTEM)
   language Language @default(VI)
+  aiSettings Json?
+  aiMemory   String?
 
   updatedAt DateTime @updatedAt
 
@@ -439,6 +444,8 @@ model Document {
   scheduledDeleteAt DateTime?
 
   downloadCount Int @default(0)
+
+  aiSummaries AiDocumentSummary[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -813,4 +820,91 @@ model ModerationAction {
   createdAt DateTime @default(now())
 
   @@map("moderation_actions")
+}
+
+enum AiMessageRole {
+  USER
+  ASSISTANT
+}
+
+model AiConversation {
+  id       String @id @default(cuid())
+  userId   String
+  user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title    String?
+  messages AiMessage[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId, updatedAt])
+  @@map("ai_conversations")
+}
+
+model AiMessage {
+  id             String         @id @default(cuid())
+  conversationId String
+  conversation   AiConversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+
+  role    AiMessageRole
+  content String
+
+  documentId   String?
+  attachmentId String?
+
+  createdAt DateTime @default(now())
+
+  @@index([conversationId, createdAt])
+  @@map("ai_messages")
+}
+
+model AiSavedPrompt {
+  id       String @id @default(cuid())
+  userId   String
+  user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name     String
+  template String
+  useCount Int    @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@map("ai_saved_prompts")
+}
+
+model AiDocumentSummary {
+  id         String   @id @default(cuid())
+  documentId String
+  document   Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  action     String
+  language   Language
+  content    String
+  model      String?
+
+  createdAt DateTime @default(now())
+
+  @@unique([documentId, action, language])
+  @@map("ai_document_summaries")
+}
+
+model AiUsage {
+  id    String @id @default(cuid())
+  scope String
+  day   String
+  count Int    @default(0)
+
+  @@unique([scope, day])
+  @@map("ai_usage")
+}
+
+model AiExtractedText {
+  id         String   @id @default(cuid())
+  sourceType String
+  sourceId   String
+  text       String
+  createdAt  DateTime @default(now())
+
+  @@unique([sourceType, sourceId])
+  @@map("ai_extracted_texts")
 }
