@@ -24,6 +24,7 @@ import {
   Archive,
   Ban,
   ChevronLeft,
+  Sparkles,
 } from "lucide-react";
 import { clsx } from "clsx";
 import { useTranslations } from "next-intl";
@@ -67,6 +68,7 @@ import { useToast } from "@/components/ui/Toast";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 import { ReportModal } from "@/components/ui/ReportModal";
 import { useLanguage } from "@/components/providers/LanguageProvider";
+import { useAiAssistant } from "@/components/ai/AiAssistantProvider";
 
 function getInitials(name: string) {
   return name
@@ -100,6 +102,8 @@ export default function ChatPage() {
   const tu = useTranslations("chat.utils");
   const { locale } = useLanguage();
   const tPending = useTranslations("chat.pending");
+  const tAi = useTranslations("ai");
+  const ai = useAiAssistant();
 
   const [convList, setConvList] = useState<Conversation[]>([]);
   const [convLoading, setConvLoading] = useState(true);
@@ -1401,6 +1405,16 @@ export default function ChatPage() {
               }
             }}
           />
+          {ai.enabled && (
+            <button
+              onClick={() => ai.openWith()}
+              className="w-9 h-9 rounded-xl bg-surface-100 hover:bg-primary/10 flex items-center justify-center text-text-muted hover:text-primary transition-colors"
+              title={tAi("open")}
+              aria-label={tAi("open")}
+            >
+              <Sparkles size={16} />
+            </button>
+          )}
           <div className="flex-1" />
           <AvatarMenu />
         </div>
@@ -1475,6 +1489,16 @@ export default function ChatPage() {
                 </div>
               </div>
               <div className="flex items-center gap-0.5 shrink-0">
+                {ai.enabled && (
+                  <button
+                    onClick={() => ai.openWith()}
+                    className="md:hidden p-2 rounded-lg text-text-secondary hover:bg-surface-100 transition-colors"
+                    title={tAi("open")}
+                    aria-label={tAi("open")}
+                  >
+                    <Sparkles size={17} />
+                  </button>
+                )}
                 <button
                   onClick={() => setInfoOpen((v) => !v)}
                   className={clsx(

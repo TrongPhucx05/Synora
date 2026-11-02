@@ -23,6 +23,7 @@ import {
   User,
   BanIcon,
   MessageSquare,
+  Sparkles,
 } from "lucide-react";
 import { clsx } from "clsx";
 import { useTranslations } from "next-intl";
@@ -32,6 +33,7 @@ import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 import { useOutsideClickRefs } from "@/lib/chat/hooks";
 import { ReportModal } from "@/components/ui/ReportModal";
 import { GroupInviteCard } from "@/components/chat/GroupInviteCard";
+import { useAiAssistant } from "@/components/ai/AiAssistantProvider";
 import type {
   Message,
   Attachment,
@@ -260,6 +262,8 @@ function AttachmentGrid({
 }) {
   const media = attachments.filter((a) => isPreviewable(a.type));
   const docs = attachments.filter((a) => a.type === "DOCUMENT");
+  const ai = useAiAssistant();
+  const tAi = useTranslations("ai");
 
   return (
     <div className="flex flex-col gap-2">
@@ -305,9 +309,10 @@ function AttachmentGrid({
 
       {docs.map((d) => {
         const ext = getFileExt(d.name);
+        const canAskAi = ai.enabled && /\.(pdf|docx|pptx)$/i.test(d.name);
         return (
+          <div key={d.id} className="flex items-center gap-1.5">
           <button
-            key={d.id}
             onClick={() => downloadFile(d.url, d.name)}
             className="flex items-center gap-3 p-3 bg-surface border border-surface-200 rounded-2xl shadow-sm min-w-[200px] hover:bg-surface-50 transition-colors text-left"
           >
@@ -327,6 +332,19 @@ function AttachmentGrid({
             </div>
             <Download size={14} className="text-text-secondary shrink-0" />
           </button>
+          {canAskAi && (
+            <button
+              onClick={() =>
+                ai.openWith({ type: "ATTACHMENT", id: d.id, title: d.name })
+              }
+              aria-label={tAi("ask")}
+              title={tAi("ask")}
+              className="w-8 h-8 shrink-0 rounded-full bg-surface border border-surface-200 text-primary hover:bg-primary/10 flex items-center justify-center transition-colors"
+            >
+              <Sparkles size={14} />
+            </button>
+          )}
+          </div>
         );
       })}
     </div>

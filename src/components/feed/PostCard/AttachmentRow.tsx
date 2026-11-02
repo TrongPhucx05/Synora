@@ -1,6 +1,6 @@
 "use client";
 
-import { Eye, Download } from "lucide-react";
+import { Eye, Download, Sparkles } from "lucide-react";
 import { clsx } from "clsx";
 import { useTranslations } from "next-intl";
 import {
@@ -9,6 +9,7 @@ import {
   MEDIA_VIDEO_TYPES,
 } from "@/lib/feed/utils";
 import type { Attachment } from "@/lib/feed/types";
+import { useAiAssistant } from "@/components/ai/AiAssistantProvider";
 
 export default function AttachmentRow({
   attachment,
@@ -18,6 +19,8 @@ export default function AttachmentRow({
   className?: string;
 }) {
   const t = useTranslations("common");
+  const tAi = useTranslations("ai");
+  const ai = useAiAssistant();
   const isMedia =
     MEDIA_IMAGE_TYPES.has(attachment.type) ||
     MEDIA_VIDEO_TYPES.has(attachment.type);
@@ -78,6 +81,24 @@ export default function AttachmentRow({
         </div>
       </div>
       <div className="flex items-center gap-1 shrink-0">
+        {ai.enabled &&
+          !!attachment.docId &&
+          /\.(pdf|docx|pptx)$/i.test(attachment.name) && (
+            <button
+              onClick={() =>
+                ai.openWith({
+                  type: "DOCUMENT",
+                  id: attachment.docId!,
+                  title: attachment.name,
+                })
+              }
+              aria-label={tAi("ask")}
+              title={tAi("ask")}
+              className="p-1.5 text-primary hover:bg-primary/10 rounded-md transition-colors"
+            >
+              <Sparkles size={14} />
+            </button>
+          )}
         <button
           onClick={handlePreview}
           disabled={!attachment.url}

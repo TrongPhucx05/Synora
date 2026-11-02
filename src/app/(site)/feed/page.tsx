@@ -133,6 +133,9 @@ export default function FeedPage() {
               size: "",
               type: uploadedDocs[0].type,
               url: uploadedDocs[0].url,
+              docId: saved.documents?.find(
+                (x: any) => x.fileKey === uploadedDocs[0].key,
+              )?.id,
             }
           : undefined,
       attachments:
@@ -142,6 +145,7 @@ export default function FeedPage() {
               size: "",
               type: d.type,
               url: d.url,
+              docId: saved.documents?.find((x: any) => x.fileKey === d.key)?.id,
             }))
           : undefined,
       likes: 0,

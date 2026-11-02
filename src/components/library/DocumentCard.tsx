@@ -11,9 +11,11 @@ import {
   Pencil,
   Trash2,
   ChevronDown,
+  Sparkles,
 } from "lucide-react";
 import clsx from "clsx";
 import { useTranslations, useLocale } from "next-intl";
+import { useAiAssistant } from "@/components/ai/AiAssistantProvider";
 import { FILE_TYPE_COLORS } from "@/lib/library/data";
 import type { Document } from "@/lib/library/types";
 import EditDocumentModal from "@/components/library/EditDocumentModal";
@@ -66,6 +68,10 @@ export default function DocumentCard({
   const t = useTranslations("library.card");
   const tc = useTranslations("common");
   const locale = useLocale();
+  const tAi = useTranslations("ai");
+  const ai = useAiAssistant();
+  const canAskAi =
+    ai.enabled && ["PDF", "DOCX", "PPTX"].includes(doc.type?.toUpperCase());
 
   useEffect(() => {
     const handler = (e: MouseEvent) => {
@@ -221,6 +227,22 @@ export default function DocumentCard({
                     </button>
                   ) : (
                     <>
+                      {canAskAi && (
+                        <button
+                          onClick={() => {
+                            ai.openWith({
+                              type: "DOCUMENT",
+                              id: doc.id,
+                              title: doc.title,
+                            });
+                            setMenuOpen(false);
+                          }}
+                          className="w-full flex items-center gap-2.5 px-3.5 py-2.5 sm:py-2 text-sm text-primary hover:bg-primary/10 transition-colors"
+                        >
+                          <Sparkles size={14} />
+                          {tAi("askShort")}
+                        </button>
+                      )}
                       <button
                         onClick={handleToggleSaveWithToast}
                         className="w-full flex items-center gap-2.5 px-3.5 py-2.5 sm:py-2 text-sm text-text-secondary hover:bg-surface-50 hover:text-text-primary transition-colors"
@@ -335,6 +357,19 @@ export default function DocumentCard({
               <Eye size={12} />
               {t("preview")}
             </button>
+            {canAskAi && (
+              <button
+                onClick={() =>
+                  ai.openWith({ type: "DOCUMENT", id: doc.id, title: doc.title })
+                }
+                aria-label={tAi("ask")}
+                title={tAi("ask")}
+                className="flex items-center gap-1 px-2 py-1.5 text-[11px] font-semibold text-primary hover:bg-primary/10 rounded-md transition-colors"
+              >
+                <Sparkles size={12} />
+                {tAi("askShort")}
+              </button>
+            )}
             <button
               onClick={handleDownload}
               aria-label={t("download")}

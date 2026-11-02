@@ -9,12 +9,14 @@ import {
   BookmarkCheck,
   Flag,
   Trash2,
+  Sparkles,
 } from "lucide-react";
 import { clsx } from "clsx";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import { FILE_TYPE_COLORS } from "@/lib/library/data";
 import { useToast } from "@/components/ui/Toast";
+import { useAiAssistant } from "@/components/ai/AiAssistantProvider";
 
 interface DocItem {
   id: string;
@@ -88,6 +90,8 @@ function DocCard({
 }) {
   const { data: session } = useSession();
   const t = useTranslations("profile.documentsTab");
+  const tAi = useTranslations("ai");
+  const ai = useAiAssistant();
   const isLoggedIn = !!session?.user;
   const [menuOpen, setMenuOpen] = useState(false);
   const [isSaved, setIsSaved] = useState(initialSaved);
@@ -97,6 +101,7 @@ function DocCard({
   const menuRef = useRef<HTMLDivElement>(null);
   const type = resolveType(doc);
   const typeColor = FILE_TYPE_COLORS[type] ?? "bg-gray-500";
+  const canAskAi = ai.enabled && ["PDF", "DOCX", "PPTX"].includes(type);
 
   useEffect(() => {
     const handler = (e: MouseEvent) => {
@@ -185,6 +190,22 @@ function DocCard({
                   </button>
                   {menuOpen && (
                     <div className="absolute right-0 top-full mt-1 z-20 w-36 bg-surface border border-surface-200 rounded-xl shadow-lg py-1 animate-in fade-in zoom-in-95 duration-150 origin-top-right">
+                      {canAskAi && (
+                        <button
+                          onClick={() => {
+                            ai.openWith({
+                              type: "DOCUMENT",
+                              id: doc.id,
+                              title: doc.title,
+                            });
+                            setMenuOpen(false);
+                          }}
+                          className="w-full flex items-center gap-2 px-3 py-1.5 text-xs text-primary hover:bg-primary/10 transition-colors"
+                        >
+                          <Sparkles size={12} />
+                          {tAi("askShort")}
+                        </button>
+                      )}
                       <button
                         onClick={handleToggleSave}
                         className="w-full flex items-center gap-2 px-3 py-1.5 text-xs text-text-secondary hover:bg-surface-50 hover:text-text-primary transition-colors"
@@ -234,6 +255,21 @@ function DocCard({
                 {doc.downloadCount}
               </span>
               <div className="flex items-center gap-1 shrink-0">
+                {canAskAi && (
+                  <button
+                    onClick={() =>
+                      ai.openWith({
+                        type: "DOCUMENT",
+                        id: doc.id,
+                        title: doc.title,
+                      })
+                    }
+                    className="flex items-center gap-1 px-2 py-1 text-[11px] font-semibold text-primary hover:bg-primary/10 rounded-md transition-colors"
+                  >
+                    <Sparkles size={12} />
+                    {tAi("askShort")}
+                  </button>
+                )}
                 <button
                   onClick={handlePreview}
                   className="flex items-center gap-1 px-2 py-1 text-[11px] font-semibold text-primary hover:bg-primary/10 rounded-md transition-colors"
