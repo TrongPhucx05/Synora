@@ -3,6 +3,8 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import MainLayout from "@/components/layout/MainLayout";
+import { AiAssistantProvider } from "@/components/ai/AiAssistantProvider";
+import AiSidebar from "@/components/ai/AiSidebar";
 
 export const dynamic = "force-dynamic";
 
@@ -23,5 +25,10 @@ export default async function SiteLayout({
     if (user?.status === "BANNED") redirect("/account-banned");
   }
 
-  return <MainLayout>{children}</MainLayout>;
+  return (
+    <AiAssistantProvider enabled={!!session?.user?.id}>
+      <MainLayout>{children}</MainLayout>
+      <AiSidebar />
+    </AiAssistantProvider>
+  );
 }
