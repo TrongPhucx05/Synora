@@ -37,9 +37,9 @@ export async function PATCH(
   await prisma.document.update({ where: { id }, data: { hidden } });
 
   if (hidden) {
-    const reasonLabel = reason
-      ? VIOLATION_REASON_LABELS[reason as ViolationReason]
-      : "Vi phạm quy định cộng đồng";
+    const reasonLabel =
+      (reason && VIOLATION_REASON_LABELS[reason as ViolationReason]) ||
+      "Vi phạm quy định cộng đồng";
     await prisma.notification.create({
       data: {
         recipientId: doc.uploaderId,
@@ -76,9 +76,9 @@ export async function DELETE(
     );
   }
 
-  const reasonLabel = reason
-    ? VIOLATION_REASON_LABELS[reason as ViolationReason]
-    : "Vi phạm quy định cộng đồng";
+  const reasonLabel =
+    (reason && VIOLATION_REASON_LABELS[reason as ViolationReason]) ||
+    "Vi phạm quy định cộng đồng";
 
   await prisma.notification.create({
     data: {
@@ -91,12 +91,18 @@ export async function DELETE(
     },
   });
 
+  await prisma.$transaction([
+    prisma.document.delete({ where: { id } }),
+    prisma.aiExtractedText.deleteMany({
+      where: { sourceType: "DOCUMENT", sourceId: id },
+    }),
+  ]);
+
   if (doc.fileKey) {
     await utapi.deleteFiles([doc.fileKey]).catch((err) => {
       console.error("[UploadThing] Xóa file thất bại:", err);
     });
   }
 
-  await prisma.document.delete({ where: { id } });
   return NextResponse.json({ ok: true });
 }

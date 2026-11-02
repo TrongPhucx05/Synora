@@ -42,6 +42,15 @@ export async function PATCH(
       return "OTHER";
     };
 
+    if (fileUrl !== undefined) {
+      await prisma.$transaction([
+        prisma.aiExtractedText.deleteMany({
+          where: { sourceType: "DOCUMENT", sourceId: id },
+        }),
+        prisma.aiDocumentSummary.deleteMany({ where: { documentId: id } }),
+      ]);
+    }
+
     const updated = await prisma.document.update({
       where: { id },
       data: {
@@ -86,5 +95,8 @@ export async function DELETE(
     return NextResponse.json({ error: "Không có quyền" }, { status: 403 });
 
   await prisma.document.delete({ where: { id } });
+  await prisma.aiExtractedText.deleteMany({
+    where: { sourceType: "DOCUMENT", sourceId: id },
+  });
   return NextResponse.json({ ok: true });
 }
