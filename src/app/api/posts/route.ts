@@ -47,7 +47,15 @@ export async function GET() {
       orderBy: { createdAt: "desc" },
       take: 20,
       include: {
-        author: { include: { profile: true } },
+        author: {
+          select: {
+            id: true,
+            username: true,
+            profile: {
+              select: { displayName: true, avatarUrl: true, major: true },
+            },
+          },
+        },
         tags: { include: { tag: true } },
         documents: true,
         _count: { select: { likes: true, comments: true } },
@@ -157,7 +165,15 @@ export async function POST(req: NextRequest) {
             : undefined,
       },
       include: {
-        author: { include: { profile: true } },
+        author: {
+          select: {
+            id: true,
+            username: true,
+            profile: {
+              select: { displayName: true, avatarUrl: true, major: true },
+            },
+          },
+        },
         tags: { include: { tag: true } },
         documents: true,
       },
