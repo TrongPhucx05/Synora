@@ -60,7 +60,13 @@ export async function GET(req: NextRequest) {
     take,
     ...(cursor && { cursor: { id: cursor }, skip: 1 }),
     include: {
-      actor: { include: { profile: true } },
+      actor: {
+        select: {
+          id: true,
+          username: true,
+          profile: { select: { displayName: true, avatarUrl: true } },
+        },
+      },
       conversation: { select: { id: true, name: true, isGroup: true } },
     },
   });

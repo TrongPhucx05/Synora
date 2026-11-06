@@ -2,6 +2,11 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import {
+  PUBLIC_USER_INCLUDE,
+  USER_PRIVATE_OMIT,
+  PROFILE_PRIVATE_OMIT,
+} from "@/lib/privacy";
 import { getBlockedIds } from "@/lib/block/server";
 import { getFriendRequestEligibility } from "@/lib/chat/friends";
 import { searchUserIds, searchDocumentIds } from "@/lib/search/unaccent";
@@ -198,7 +203,7 @@ export async function GET(req: NextRequest) {
           take: tab === "all" ? 6 : 20,
           orderBy: postOrderBy,
           include: {
-            author: { include: { profile: true } },
+            author: PUBLIC_USER_INCLUDE,
             tags: { include: { tag: true } },
             documents: true,
             _count: { select: { likes: true, comments: true } },
@@ -214,7 +219,7 @@ export async function GET(req: NextRequest) {
           where: { id: { in: docIds } },
           take: tab === "all" ? 3 : 20,
           orderBy: docOrderBy,
-          include: { uploader: { include: { profile: true } } },
+          include: { uploader: PUBLIC_USER_INCLUDE },
         })
       : [],
 
@@ -222,8 +227,9 @@ export async function GET(req: NextRequest) {
       ? prisma.user.findMany({
           where: { id: { in: personIds } },
           take: tab === "all" ? 3 : 20,
+          omit: USER_PRIVATE_OMIT,
           include: {
-            profile: true,
+            profile: { omit: PROFILE_PRIVATE_OMIT },
             _count: { select: { followers: true, documents: true } },
           },
         })

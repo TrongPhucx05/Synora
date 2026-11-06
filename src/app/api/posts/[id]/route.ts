@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { PUBLIC_USER_INCLUDE } from "@/lib/privacy";
+import { areFriends } from "@/lib/chat/friends";
+import { isBlockedEitherWay } from "@/lib/block/server";
 
 const VALID_VISIBILITY = ["PUBLIC", "FRIENDS_ONLY", "PRIVATE"];
 
@@ -135,7 +138,7 @@ export async function PATCH(
         editedAt: new Date(),
       },
       include: {
-        author: { include: { profile: true } },
+        author: PUBLIC_USER_INCLUDE,
         tags: { include: { tag: true } },
         documents: true,
       },
@@ -156,7 +159,7 @@ export async function GET(
     const post = await prisma.post.findUnique({
       where: { id },
       include: {
-        author: { include: { profile: true } },
+        author: PUBLIC_USER_INCLUDE,
         tags: { include: { tag: true } },
         documents: true,
         _count: { select: { likes: true, comments: true } },
@@ -179,6 +182,22 @@ export async function GET(
         { error: "Không tìm thấy bài viết" },
         { status: 404 },
       );
+    }
+
+    if (!isOwner && !isAdmin) {
+      const viewerId = session?.user?.id;
+      const notFound = NextResponse.json(
+        { error: "Không tìm thấy bài viết" },
+        { status: 404 },
+      );
+      if (post.visibility === "PRIVATE") return notFound;
+      if (
+        post.visibility === "FRIENDS_ONLY" &&
+        (!viewerId || !(await areFriends(viewerId, post.authorId)))
+      )
+        return notFound;
+      if (viewerId && (await isBlockedEitherWay(viewerId, post.authorId)))
+        return notFound;
     }
 
     return NextResponse.json(post);

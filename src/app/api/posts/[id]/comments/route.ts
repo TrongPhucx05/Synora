@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { PUBLIC_USER_INCLUDE } from "@/lib/privacy";
 import { getBlockedIds, isBlockedEitherWay } from "@/lib/block/server";
 import { assertActiveSession } from "@/lib/auth/assert-active";
 
@@ -33,7 +34,7 @@ export async function GET(
       },
       orderBy: { createdAt: "asc" },
       include: {
-        author: { include: { profile: true } },
+        author: PUBLIC_USER_INCLUDE,
         replies: {
           where: {
             ...(blockedIds.length > 0
@@ -46,7 +47,7 @@ export async function GET(
             ],
           },
           include: {
-            author: { include: { profile: true } },
+            author: PUBLIC_USER_INCLUDE,
             _count: { select: { likes: true } },
             ...(likesInclude && { likes: likesInclude }),
           },
@@ -116,7 +117,7 @@ export async function POST(
         fileType: fileType ?? null,
       },
       include: {
-        author: { include: { profile: true } },
+        author: PUBLIC_USER_INCLUDE,
       },
     });
 

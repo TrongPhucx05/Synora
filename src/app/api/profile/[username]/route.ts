@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { PROFILE_PRIVATE_OMIT } from "@/lib/privacy";
 import { isBlockedEitherWay } from "@/lib/block/server";
 import { getFriendRequestEligibility } from "@/lib/chat/friends";
 
@@ -16,7 +17,7 @@ export async function GET(
     const user = await prisma.user.findUnique({
       where: { username },
       include: {
-        profile: true,
+        profile: { omit: PROFILE_PRIVATE_OMIT },
         _count: {
           select: {
             following: true,
@@ -174,7 +175,7 @@ export async function GET(
     return NextResponse.json({
       id: user.id,
       username: user.username,
-      email: user.email,
+      email: session?.user?.id === user.id ? user.email : undefined,
       role: user.role,
       createdAt: user.createdAt,
       profile: user.profile,

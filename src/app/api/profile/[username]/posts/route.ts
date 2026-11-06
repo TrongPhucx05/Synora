@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { PUBLIC_USER_INCLUDE } from "@/lib/privacy";
 
 export async function GET(
   req: NextRequest,
@@ -33,7 +34,7 @@ export async function GET(
       take,
       ...(cursor && { cursor: { id: cursor }, skip: 1 }),
       include: {
-        author: { include: { profile: true } },
+        author: PUBLIC_USER_INCLUDE,
         tags: { include: { tag: true } },
         documents: true,
         _count: { select: { likes: true, comments: true } },
