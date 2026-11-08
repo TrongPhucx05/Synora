@@ -53,12 +53,18 @@ export async function GET(req: NextRequest) {
 
   const isAdminViewer = session?.user?.role === "ADMIN";
 
-  const [personIds, docIds] = !isHashtag
-    ? await Promise.all([
+  let personIds: string[] = [];
+  let docIds: string[] = [];
+  if (!isHashtag) {
+    try {
+      [personIds, docIds] = await Promise.all([
         searchUserIds(q, blockedIds),
         searchDocumentIds(q, blockedIds),
-      ])
-    : [[] as string[], [] as string[]];
+      ]);
+    } catch (e) {
+      console.error("[api/search] raw search failed:", e);
+    }
+  }
 
   const postVisibilityFilter = session?.user?.id
     ? {
