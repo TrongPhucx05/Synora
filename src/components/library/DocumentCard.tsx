@@ -12,6 +12,7 @@ import {
   Trash2,
   ChevronDown,
   Sparkles,
+  Share2,
 } from "lucide-react";
 import clsx from "clsx";
 import { useTranslations, useLocale } from "next-intl";
@@ -19,6 +20,7 @@ import { useAiAssistant } from "@/components/ai/AiAssistantProvider";
 import { FILE_TYPE_COLORS } from "@/lib/library/data";
 import type { Document } from "@/lib/library/types";
 import EditDocumentModal from "@/components/library/EditDocumentModal";
+import ShareDocumentModal from "@/components/library/ShareDocumentModal";
 import { ReportModal } from "@/components/ui/ReportModal";
 import { useToast } from "@/components/ui/Toast";
 import {
@@ -61,6 +63,8 @@ export default function DocumentCard({
   const [adminReason, setAdminReason] = useState<ViolationReason | "">("");
   const [adminNote, setAdminNote] = useState("");
   const [isAdminDeleting, setIsAdminDeleting] = useState(false);
+  const [showShareModal, setShowShareModal] = useState(false);
+  const tShare = useTranslations("library.share");
 
   const { showToast } = useToast();
   const menuRef = useRef<HTMLDivElement>(null);
@@ -253,6 +257,16 @@ export default function DocumentCard({
                           <Bookmark size={14} />
                         )}
                         {isSaved ? t("unsave") : t("save")}
+                      </button>
+                      <button
+                        onClick={() => {
+                          setShowShareModal(true);
+                          setMenuOpen(false);
+                        }}
+                        className="w-full flex items-center gap-2.5 px-3.5 py-2.5 sm:py-2 text-sm text-text-secondary hover:bg-surface-50 hover:text-text-primary transition-colors"
+                      >
+                        <Share2 size={14} />
+                        {tShare("menu")}
                       </button>
 
                       {isOwner ? (
@@ -513,6 +527,13 @@ export default function DocumentCard({
             </div>
           </div>
         </div>
+      )}
+      {showShareModal && (
+        <ShareDocumentModal
+          docId={doc.id}
+          docTitle={doc.title}
+          onClose={() => setShowShareModal(false)}
+        />
       )}
     </>
   );

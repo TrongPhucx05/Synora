@@ -252,6 +252,8 @@
     "empty": "No posts yet",
     "justNow": "Just now",
     "share": "Share",
+    "shareAction": "share this post",
+    "shareTitle": "Share post",
     "visibility": {
       "public": "Public",
       "friends": "Friends",
@@ -488,6 +490,23 @@
       "sortMostDownloaded": "Most downloaded",
       "sortMine": "Mine",
       "sortSaved": "Saved"
+    },
+    "share": {
+      "menu": "Share",
+      "title": "Share document",
+      "searchPlaceholder": "Search friends and chats...",
+      "loading": "Loading...",
+      "loadFailed": "Couldn't load the list",
+      "empty": "No one to share with yet. Add friends or start a chat first.",
+      "noResults": "No results found",
+      "friendBadge": "Friend",
+      "pendingBadge": "Pending",
+      "send": "Send",
+      "sendCount": "Send ({count})",
+      "sending": "Sending...",
+      "sentToast": "Shared with {count, plural, one {# person} other {# people}}",
+      "partialToast": "Couldn't send to {count, plural, one {# person} other {# people}}",
+      "failed": "Couldn't share this document"
     }
   },
   "chat": {
@@ -603,7 +622,9 @@
       "recallConfirmTitle": "Recall this message?",
       "recallConfirmDesc": "Everyone in the conversation will no longer see the original content.",
       "recallFailed": "Something went wrong, please try again",
-      "you": "You"
+      "you": "You",
+      "sharedPost": "Shared post",
+      "viewPost": "Tap to view post"
     },
     "forward": {
       "title": "Forward message",

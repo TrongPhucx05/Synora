@@ -124,7 +124,7 @@ export function EditProfileModal({
         }),
       });
 
-      if (!res.ok) throw new Error("LÆ°u tháº¥t báº¡i");
+      if (!res.ok) throw new Error("L\u01B0u th\u1EA5t b\u1EA1i");
 
       await update({
         name: displayName.trim() || initial.displayName,

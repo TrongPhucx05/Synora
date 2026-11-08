@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import {
   Camera,
-  Share2,
   MessageCircle,
   UserPlus,
   UserCheck,
@@ -175,12 +174,6 @@ export function ProfileHeader({
       </div>
 
       <div className="flex flex-wrap items-center justify-end gap-2 mt-2 pl-28 min-h-10 sm:min-h-0 sm:mt-0 sm:pl-0 sm:flex-nowrap sm:absolute sm:-bottom-10 sm:right-0">
-        {!isAdmin && (
-          <button className="hidden sm:flex items-center gap-1.5 border border-surface-200 bg-surface text-text-secondary text-xs font-medium px-3 py-1.5 rounded-lg hover:bg-surface-50 transition-colors">
-            <Share2 size={13} /> {t("share")}
-          </button>
-        )}
-
         {isOwner ? (
           <button
             onClick={() => setShowEditModal(true)}
@@ -236,7 +229,7 @@ export function ProfileHeader({
                         className="w-full flex items-center gap-2 px-3 py-2.5 text-xs font-medium text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/20 transition-colors"
                       >
                         <span className="text-red-500 dark:text-red-400">
-                          âœ•
+                          &#10005;
                         </span>{" "}
                         {t("decline")}
                       </button>

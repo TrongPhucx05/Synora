@@ -17,6 +17,7 @@ import { useTranslations } from "next-intl";
 import Avatar from "@/components/ui/Avatar";
 import { useToast } from "@/components/ui/Toast";
 import AuthGuardModal from "@/components/ui/AuthGuardModal";
+import ShareDocumentModal from "@/components/library/ShareDocumentModal";
 import { notifyTagsChanged } from "@/lib/feed/utils";
 import { blockUser } from "@/lib/block/utils";
 import type { Post, ModalState } from "@/lib/feed/types";
@@ -82,6 +83,7 @@ export default function PostCard({
   } | null>(null);
   const [blockLoading, setBlockLoading] = useState(false);
   const [authModal, setAuthModal] = useState<string | null>(null);
+  const [showShareModal, setShowShareModal] = useState(false);
 
   const isOwner = session?.user?.id === post.authorId;
   const isAdmin = session?.user?.role === "ADMIN";
@@ -350,8 +352,17 @@ export default function PostCard({
               <span>{commentCount}</span>
             </button>
           </div>
-          {!isAdmin && (
-            <button className="flex items-center gap-1.5 px-3 py-1.5 text-sm text-text-secondary rounded-lg hover:bg-surface-100 transition-colors">
+          {!isAdmin && currentVisibility === "PUBLIC" && (
+            <button
+              onClick={() => {
+                if (!session?.user) {
+                  setAuthModal(t("post.shareAction"));
+                  return;
+                }
+                setShowShareModal(true);
+              }}
+              className="flex items-center gap-1.5 px-3 py-1.5 text-sm text-text-secondary rounded-lg hover:bg-surface-100 transition-colors"
+            >
               <Share2 size={15} />
               {t("post.share")}
             </button>
@@ -456,6 +467,14 @@ export default function PostCard({
           loading={blockLoading}
           onConfirm={handleConfirmBlock}
           onCancel={() => setBlockTarget(null)}
+        />
+      )}
+
+      {showShareModal && (
+        <ShareDocumentModal
+          endpoint={`/api/posts/${post.id}/share`}
+          heading={t("post.shareTitle")}
+          onClose={() => setShowShareModal(false)}
         />
       )}
 

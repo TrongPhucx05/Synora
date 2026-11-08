@@ -10,6 +10,7 @@ import {
   Flag,
   Trash2,
   Sparkles,
+  Share2,
 } from "lucide-react";
 import { clsx } from "clsx";
 import { useSession } from "next-auth/react";
@@ -17,6 +18,7 @@ import { useTranslations } from "next-intl";
 import { FILE_TYPE_COLORS } from "@/lib/library/data";
 import { useToast } from "@/components/ui/Toast";
 import { useAiAssistant } from "@/components/ai/AiAssistantProvider";
+import ShareDocumentModal from "@/components/library/ShareDocumentModal";
 
 interface DocItem {
   id: string;
@@ -102,6 +104,9 @@ function DocCard({
   const type = resolveType(doc);
   const typeColor = FILE_TYPE_COLORS[type] ?? "bg-gray-500";
   const canAskAi = ai.enabled && ["PDF", "DOCX", "PPTX"].includes(type);
+  const tShare = useTranslations("library.share");
+  const [showShareModal, setShowShareModal] = useState(false);
+  const isAdmin = session?.user?.role === "ADMIN";
 
   useEffect(() => {
     const handler = (e: MouseEvent) => {
@@ -217,6 +222,18 @@ function DocCard({
                         )}
                         {isSaved ? t("unsave") : t("save")}
                       </button>
+                      {!isAdmin && (
+                        <button
+                          onClick={() => {
+                            setShowShareModal(true);
+                            setMenuOpen(false);
+                          }}
+                          className="w-full flex items-center gap-2 px-3 py-1.5 text-xs text-text-secondary hover:bg-surface-50 hover:text-text-primary transition-colors"
+                        >
+                          <Share2 size={12} />
+                          {tShare("menu")}
+                        </button>
+                      )}
                       {isOwner && (
                         <>
                           <div className="my-1 border-t border-surface-100" />
@@ -326,6 +343,13 @@ function DocCard({
             </div>
           </div>
         </div>
+      )}
+      {showShareModal && (
+        <ShareDocumentModal
+          docId={doc.id}
+          docTitle={doc.title}
+          onClose={() => setShowShareModal(false)}
+        />
       )}
     </>
   );

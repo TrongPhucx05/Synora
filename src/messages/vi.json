@@ -256,6 +256,8 @@
     "empty": "Chưa có bài viết nào",
     "justNow": "Vừa xong",
     "share": "Chia sẻ",
+    "shareAction": "chia sẻ bài viết",
+    "shareTitle": "Chia sẻ bài viết",
     "visibility": {
       "public": "Công khai",
       "friends": "Bạn bè",
@@ -492,6 +494,23 @@
       "sortMostDownloaded": "Tải nhiều nhất",
       "sortMine": "Của tôi",
       "sortSaved": "Đã lưu"
+    },
+    "share": {
+      "menu": "Chia sẻ",
+      "title": "Chia sẻ tài liệu",
+      "searchPlaceholder": "Tìm bạn bè, đoạn chat...",
+      "loading": "Đang tải...",
+      "loadFailed": "Không thể tải danh sách",
+      "empty": "Chưa có ai để chia sẻ. Hãy kết bạn hoặc nhắn tin trước.",
+      "noResults": "Không tìm thấy kết quả",
+      "friendBadge": "Bạn bè",
+      "pendingBadge": "Pending",
+      "send": "Gửi",
+      "sendCount": "Gửi ({count})",
+      "sending": "Đang gửi...",
+      "sentToast": "Đã chia sẻ cho {count} người",
+      "partialToast": "Không gửi được cho {count} người",
+      "failed": "Không thể chia sẻ tài liệu"
     }
   },
   "chat": {
@@ -607,7 +626,9 @@
       "recallConfirmTitle": "Thu hồi tin nhắn?",
       "recallConfirmDesc": "Mọi người trong cuộc trò chuyện sẽ không còn thấy nội dung gốc.",
       "recallFailed": "Có lỗi xảy ra, vui lòng thử lại",
-      "you": "Bạn"
+      "you": "Bạn",
+      "sharedPost": "Bài viết được chia sẻ",
+      "viewPost": "Bấm để xem bài viết"
     },
     "forward": {
       "title": "Chuyển tiếp tin nhắn",
