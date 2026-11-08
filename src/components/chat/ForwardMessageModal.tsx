@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { X, Search, Check, Loader2, Forward } from "lucide-react";
 import { clsx } from "clsx";
 import { useTranslations } from "next-intl";
@@ -9,6 +9,15 @@ import type { Conversation } from "@/lib/chat/types";
 
 function getInitials(name: string) {
   return name.split(" ").slice(-2).map((w) => w[0]).join("").toUpperCase();
+}
+
+interface ShareUser {
+  id: string;
+  username: string;
+  name: string;
+  avatarUrl: string | null;
+  isFriend: boolean;
+  conversationId: string | null;
 }
 
 interface ForwardMessageModalProps {
@@ -28,21 +37,83 @@ export function ForwardMessageModal({
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [sending, setSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [people, setPeople] = useState<ShareUser[]>([]);
   const t = useTranslations("chat.forward");
+
+  useEffect(() => {
+    fetch("/api/share/recipients")
+      .then((r) => (r.ok ? r.json() : { users: [] }))
+      .then((d) => setPeople(d.users ?? []))
+      .catch(() => {});
+  }, []);
   const tc = useTranslations("common");
 
-  const filtered = conversations.filter(
-    (c) =>
-      c.id !== excludeConversationId &&
-      c.name.toLowerCase().includes(search.toLowerCase()),
+  const q = search.toLowerCase();
+  const knownConvIds = new Set(conversations.map((c) => c.id));
+  const visibleConversations = conversations.filter(
+    (c) => c.id !== excludeConversationId && c.name.toLowerCase().includes(q),
   );
+  const visiblePeople = people.filter(
+    (u) =>
+      u.conversationId !== excludeConversationId &&
+      (!u.conversationId || !knownConvIds.has(u.conversationId)) &&
+      (u.name.toLowerCase().includes(q) || u.username.toLowerCase().includes(q)),
+  );
+  const hasResults = visibleConversations.length + visiblePeople.length > 0;
+
+  const renderRow = (key: string, name: string, avatarUrl?: string) => {
+    const isSelected = selectedId === key;
+    return (
+      <button
+        key={key}
+        onClick={() => setSelectedId(key)}
+        className={clsx(
+          "w-full flex items-center gap-3 px-3 py-2.5 rounded-xl transition-colors",
+          isSelected ? "bg-primary/8" : "hover:bg-surface-50",
+        )}
+      >
+        <Avatar
+          src={avatarUrl}
+          initials={getInitials(name)}
+          size="md"
+          shape="circle"
+        />
+        <p className="flex-1 text-left text-sm font-semibold text-text-primary truncate">
+          {name}
+        </p>
+        <div
+          className={clsx(
+            "w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0",
+            isSelected ? "bg-primary border-primary" : "border-surface-300",
+          )}
+        >
+          {isSelected && (
+            <Check size={11} className="text-white" strokeWidth={3} />
+          )}
+        </div>
+      </button>
+    );
+  };
 
   const handleConfirm = async () => {
     if (!selectedId || sending) return;
     setSending(true);
     setError(null);
     try {
-      await onConfirm(selectedId);
+      let targetId: string;
+      if (selectedId.startsWith("u:")) {
+        const res = await fetch("/api/share/dm", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ userId: selectedId.slice(2) }),
+        });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) throw new Error(data.error ?? t("genericError"));
+        targetId = data.conversationId;
+      } else {
+        targetId = selectedId.slice(2);
+      }
+      await onConfirm(targetId);
     } catch (e) {
       setError(e instanceof Error ? e.message : t("genericError"));
       setSending(false);
@@ -86,46 +157,19 @@ export function ForwardMessageModal({
         </div>
 
         <div className="flex-1 overflow-y-auto px-3 pb-3">
-          {filtered.length === 0 ? (
+          {!hasResults ? (
             <p className="text-xs text-text-muted text-center py-6">
               {t("noResults")}
             </p>
           ) : (
-            filtered.map((c) => {
-              const isSelected = selectedId === c.id;
-              return (
-                <button
-                  key={c.id}
-                  onClick={() => setSelectedId(c.id)}
-                  className={clsx(
-                    "w-full flex items-center gap-3 px-3 py-2.5 rounded-xl transition-colors",
-                    isSelected ? "bg-primary/8" : "hover:bg-surface-50",
-                  )}
-                >
-                  <Avatar
-                    src={c.avatarUrl ?? undefined}
-                    initials={getInitials(c.name)}
-                    size="md"
-                    shape="circle"
-                  />
-                  <p className="flex-1 text-left text-sm font-semibold text-text-primary truncate">
-                    {c.name}
-                  </p>
-                  <div
-                    className={clsx(
-                      "w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0",
-                      isSelected
-                        ? "bg-primary border-primary"
-                        : "border-surface-300",
-                    )}
-                  >
-                    {isSelected && (
-                      <Check size={11} className="text-white" strokeWidth={3} />
-                    )}
-                  </div>
-                </button>
-              );
-            })
+            <>
+              {visibleConversations.map((c) =>
+                renderRow(`c:${c.id}`, c.name, c.avatarUrl ?? undefined),
+              )}
+              {visiblePeople.map((u) =>
+                renderRow(`u:${u.id}`, u.name, u.avatarUrl ?? undefined),
+              )}
+            </>
           )}
         </div>
 

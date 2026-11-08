@@ -108,6 +108,38 @@ export async function POST(req: NextRequest, { params }: Params) {
       { status: 403 },
     );
 
+  if (session.user.role === "ADMIN")
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+
+  const targetConv = await prisma.conversation.findUnique({
+    where: { id: targetConversationId },
+    select: {
+      isGroup: true,
+      isDisabled: true,
+      members: { select: { userId: true } },
+    },
+  });
+  if (targetConv?.isDisabled)
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  if (targetConv && !targetConv.isGroup) {
+    const otherId = targetConv.members.find((m) => m.userId !== userId)?.userId;
+    if (otherId) {
+      const blocked = await prisma.block.findFirst({
+        where: {
+          OR: [
+            { blockerId: userId, blockedId: otherId },
+            { blockerId: otherId, blockedId: userId },
+          ],
+        },
+        select: { id: true },
+      });
+      if (blocked)
+        return NextResponse.json(
+          { error: "Không thể gửi tin nhắn cho người này" },
+          { status: 403 },
+        );
+    }
+  }
   const original = await prisma.message.findFirst({
     where: { id: messageId, conversationId: sourceConversationId },
     select: {

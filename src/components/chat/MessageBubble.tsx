@@ -24,6 +24,8 @@ import {
   BanIcon,
   MessageSquare,
   Sparkles,
+  Eye,
+  Newspaper,
 } from "lucide-react";
 import { clsx } from "clsx";
 import { useTranslations } from "next-intl";
@@ -50,7 +52,13 @@ import {
   downloadFile,
 } from "@/lib/chat/utils";
 
-const QUICK_EMOJIS = ["ðŸ‘", "â¤ï¸", "ðŸ˜‚", "ðŸ˜®", "ðŸ˜¢"];
+const QUICK_EMOJIS = [
+  "\u{1F44D}",
+  "\u2764\uFE0F",
+  "\u{1F602}",
+  "\u{1F62E}",
+  "\u{1F622}",
+];
 
 interface ReactionModalProps {
   reactions: ReactionGroup[];
@@ -61,6 +69,23 @@ function extractJoinToken(content: string | null): string | null {
   if (!content) return null;
   const match = content.match(/\/join\/([a-zA-Z0-9_-]{8,})/);
   return match ? match[1] : null;
+}
+
+function extractPostId(content: string | null): string | null {
+  if (!content) return null;
+  const match = content.match(/\/feed\?post=([a-zA-Z0-9_-]{8,})/);
+  return match ? match[1] : null;
+}
+
+function previewAttachment(url: string, name: string) {
+  const encoded = encodeURIComponent(url);
+  const isOffice = /\.(docx|pptx)$/i.test(name);
+  window.open(
+    isOffice
+      ? `https://view.officeapps.live.com/op/view.aspx?src=${encoded}`
+      : `https://docs.google.com/viewer?url=${encoded}`,
+    "_blank",
+  );
 }
 
 function ReactionModal({ reactions, onClose }: ReactionModalProps) {
@@ -264,6 +289,7 @@ function AttachmentGrid({
   const docs = attachments.filter((a) => a.type === "DOCUMENT");
   const ai = useAiAssistant();
   const tAi = useTranslations("ai");
+  const tPreview = useTranslations("common");
 
   return (
     <div className="flex flex-col gap-2">
@@ -332,6 +358,16 @@ function AttachmentGrid({
             </div>
             <Download size={14} className="text-text-secondary shrink-0" />
           </button>
+          {/\.(pdf|docx|pptx)$/i.test(d.name) && (
+            <button
+              onClick={() => previewAttachment(d.url, d.name)}
+              aria-label={tPreview("preview")}
+              title={tPreview("preview")}
+              className="w-8 h-8 shrink-0 rounded-full bg-surface border border-surface-200 text-text-secondary hover:bg-surface-100 flex items-center justify-center transition-colors"
+            >
+              <Eye size={14} />
+            </button>
+          )}
           {canAskAi && (
             <button
               onClick={() =>
@@ -396,7 +432,7 @@ function MediaLightbox({
             }}
             className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white z-10"
           >
-            â€¹
+            &#8249;
           </button>
           <button
             onClick={(e) => {
@@ -405,7 +441,7 @@ function MediaLightbox({
             }}
             className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white z-10"
           >
-            â€º
+            &#8250;
           </button>
         </>
       )}
@@ -955,7 +991,7 @@ export function MessageBubble({
               msg.isMe ? "text-right" : "text-left",
             )}
           >
-            {msg.isMe ? `${t("you")} Â· ${msg.time}` : msg.time}
+            {msg.isMe ? `${t("you")} \u00B7 ${msg.time}` : msg.time}
           </p>
         </div>
       </div>
@@ -1090,6 +1126,27 @@ export function MessageBubble({
                   if (joinToken) {
                     return <GroupInviteCard token={joinToken} />;
                   }
+                  const sharedPostId = extractPostId(msg.content);
+                  if (sharedPostId) {
+                    return (
+                      <Link
+                        href={`/feed?post=${sharedPostId}`}
+                        className="flex items-center gap-3 p-3 bg-surface border border-surface-200 rounded-2xl shadow-sm min-w-[200px] hover:bg-surface-50 transition-colors"
+                      >
+                        <div className="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0">
+                          <Newspaper size={18} />
+                        </div>
+                        <div className="min-w-0">
+                          <p className="text-sm font-semibold text-text-primary">
+                            {t("sharedPost")}
+                          </p>
+                          <p className="text-xs text-text-muted">
+                            {t("viewPost")}
+                          </p>
+                        </div>
+                      </Link>
+                    );
+                  }
                   return (
                     <div
                       className={clsx(
@@ -1137,7 +1194,7 @@ export function MessageBubble({
               msg.isMe ? "text-right" : "text-left",
             )}
           >
-            {msg.isMe ? `${t("you")} Â· ${msg.time}` : msg.time}
+            {msg.isMe ? `${t("you")} \u00B7 ${msg.time}` : msg.time}
           </p>
         </div>
       </div>

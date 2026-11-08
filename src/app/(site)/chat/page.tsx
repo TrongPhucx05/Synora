@@ -1684,7 +1684,10 @@ export default function ChatPage() {
                         onReactionsUpdated={handleReactionsUpdated}
                         onRecall={handleRecall}
                         onTogglePin={handleTogglePin}
-                        onForward={(m) => setForwardingMsg(m)}
+                        onForward={(m) => {
+                          if (isAdmin) return;
+                          setForwardingMsg(m);
+                        }}
                         onStartDM={handleStartDM}
                         onBlockUser={handleRequestBlockUser}
                       />
@@ -1972,9 +1975,11 @@ export default function ChatPage() {
         />
       )}
 
-      {forwardingMsg && (
+      {forwardingMsg && !isAdmin && (
         <ForwardMessageModal
-          conversations={convList}
+          conversations={convList.filter(
+            (c) => !c.isBlockedByMe && !c.hasBlockedMe && !c.isDisabled,
+          )}
           excludeConversationId={activeId!}
           onClose={() => setForwardingMsg(null)}
           onConfirm={handleForwardConfirm}
