@@ -15,20 +15,20 @@ const ICONS = [
     key: "totalDocuments",
     labelKey: "statDocuments",
     icon: FileText,
-    iconClass: "text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-500/15",
+    iconClass: "text-red-600 dark:text-red-400 bg-red-500/10 dark:bg-red-500/15",
   },
   {
     key: "totalContributors",
     labelKey: "statContributors",
     icon: Users,
-    iconClass: "text-primary bg-primary-50",
+    iconClass: "text-primary-600 bg-primary-50 dark:text-primary-400 dark:bg-primary-500/15",
   },
   {
     key: "totalDownloads",
     labelKey: "statDownloads",
     icon: Download,
     iconClass:
-      "text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-500/15",
+      "text-green-600 dark:text-green-400 bg-green-500/10 dark:bg-green-500/15",
   },
 ];
 
