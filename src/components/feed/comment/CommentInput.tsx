@@ -105,7 +105,7 @@ export function CommentMediaThumb({
         ) : (
           <img
             src={url}
-            alt={fileName ?? "áº£nh"}
+            alt={fileName ?? "\u1EA3nh"}
             className="w-full max-h-52 object-cover group-hover:brightness-90 transition"
           />
         )}
@@ -160,7 +160,7 @@ export function CommentMediaThumb({
           ) : (
             <img
               src={url}
-              alt={fileName ?? "áº£nh"}
+              alt={fileName ?? "\u1EA3nh"}
               className="max-w-[90vw] max-h-[85dvh] rounded-lg object-contain"
               onClick={(e) => e.stopPropagation()}
             />
